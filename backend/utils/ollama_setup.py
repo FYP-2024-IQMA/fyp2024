@@ -55,17 +55,15 @@ if __name__ == "__main__":
     # repo_id = "kbang2021/unsloth-Meta-Llama-3.1-8B-Instruct-bnb-4bit"
     repo_id = "kbang2021/unsloth-Meta-Llama-3.1-8B-Instruct-bnb-4bit"
     filename = "unsloth.Q4_K_M.gguf"
-    modelfile_path = "backend\src\models"
     gguf_path = find_gguf_file()
-    print(modelfile_path)
+    print(gguf_path)
     # Ensure the local directory exits
     # Path(modelfile_path).mkdir(parents=True, exist_ok=True)
 
     # if .gguf doesn't exist, download it from the Hugging Face Hub
     if not gguf_path:
-        download_gguf(repo_id, filename, modelfile_path)
-    print(modelfile_path)
+        os.chdir("../src/models")
+        download_gguf(repo_id, filename, '.')
     
-    os.chdir("../../backend/src/models")
     create_model()
             
