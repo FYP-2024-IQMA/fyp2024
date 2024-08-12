@@ -143,7 +143,7 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
             <ScrollView contentContainerStyle={styles.chatContainer}>
                 {messages.map((msg,index) => (
                     // <ChatBubble key={index} text={msg.text} isUser={msg.isUser} />
-                    <ChatBubble position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
+                    <ChatBubble key={index} position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
                 ))}
             </ScrollView>
             <View style={styles.inputContainer}>
