@@ -1,12 +1,10 @@
-# Description: This file contains the main FastAPI application that will be used to serve api endpoints related to the chatbot.
-
 from fastapi import FastAPI, HTTPException
 import logging
 from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
 from typing import List, Optional
 
-from utils.chatgpt import ChatGPT
+from chatgpt import ChatGPT
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
