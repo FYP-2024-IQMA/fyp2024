@@ -10,16 +10,15 @@ import { DrawerScreenProps } from "@react-navigation/drawer";
 import { TextInput } from "react-native-gesture-handler";
 
 type DrawerParamList = {
-    'Decision Making': { chatId: string };
+    'Section 1: Communication': { chatId: string };
     'Creative Thinking': { chatId: string };
     'Problem Solving': { chatId: string };
 };
 
 // ensurees chatbot screen receives correct props
 // use drawerscreenprops to type the props of chatbot screen
-type ChatbotScreenProps = DrawerScreenProps<DrawerParamList, 'Decision Making' | 'Creative Thinking' | 'Problem Solving' >;
+type ChatbotScreenProps = DrawerScreenProps<DrawerParamList, 'Section 1: Communication' | 'Creative Thinking' | 'Problem Solving' >;
 
-// Useful Methods
 
 // Getting response from chatbot
 const getChatbotResponse = async (role: string, 
@@ -143,7 +142,7 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
             <ScrollView contentContainerStyle={styles.chatContainer}>
                 {messages.map((msg,index) => (
                     // <ChatBubble key={index} text={msg.text} isUser={msg.isUser} />
-                    <ChatBubble position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
+                    <ChatBubble key={index} position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
                 ))}
             </ScrollView>
             <View style={styles.inputContainer}>
@@ -154,7 +153,9 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
                 onSubmitEditing={handleSend}
                 keyboardType="email-address"/> 
                 <TouchableOpacity onPress={handleSend} style={styles.button}>
-                    <AntDesign name="upcircle" size={24} color="#8A2BE2" />
+                    {/* <AntDesign name="upcircle" size={24} color="#7654F2" /> */}
+                    <AntDesign name="arrowup" size={24} color="#7654F2" />
+                    {/* change arrow to black w purple circle */}
                 </TouchableOpacity>
             </View>
         </View>

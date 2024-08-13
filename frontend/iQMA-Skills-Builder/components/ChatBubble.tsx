@@ -1,7 +1,14 @@
 import React, { ReactNode } from 'react';
 import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-export const ChatBubble = ({ children, position }: { children: ReactNode, position: string }) => {
+interface ChatBubbleProps {
+    children: ReactNode;
+    position: 'left' | 'right';
+    bubbleColor?: string; 
+    textColor?: string;
+}
+
+export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white" }) => {
     return (
         <View style={[styles.container, getContainerAlignment(position)]}>
             <View style={[styles.arrowContainer, getArrowContainer(position)]}>
@@ -53,7 +60,7 @@ const styles = StyleSheet.create({
     bubble: {
         // maxWidth: '80%',
         position: 'relative',
-        backgroundColor: "#7654F2",
+        backgroundColor: '#7654F2',
         padding: 20,
         borderRadius: 10,
         shadowColor: 'black',
