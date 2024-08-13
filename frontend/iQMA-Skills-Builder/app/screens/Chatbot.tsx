@@ -140,10 +140,19 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
       return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.chatContainer}>
-                {messages.map((msg,index) => (
-                    // <ChatBubble key={index} text={msg.text} isUser={msg.isUser} />
-                    <ChatBubble key={index} position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
-                ))}
+            {messages.map((msg, index) => (
+                <ChatBubble
+                    key={index}
+                    position={msg.isUser ? 'right' : 'left'}
+                    bubbleColor={msg.isUser ? "#B199FF" : "#D1D5DB"}
+                    textColor={msg.isUser ? "#000000" : "#000000"}
+                    icon={!msg.isUser ? 'https://raw.githubusercontent.com/FYP-2024-IQMA/fyp2024/e00d20380b4bb7fe579fba92c177ba627066c070/iqma_logo.jpeg' : undefined}
+                    borderRadius={20}  
+                    showArrow={false}  
+                >
+                    {msg.text}
+                </ChatBubble>
+            ))}
             </ScrollView>
             <View style={styles.inputContainer}>
                 <TextInput style={styles.input} 
@@ -153,9 +162,9 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
                 onSubmitEditing={handleSend}
                 keyboardType="email-address"/> 
                 <TouchableOpacity onPress={handleSend} style={styles.button}>
-                    {/* <AntDesign name="upcircle" size={24} color="#7654F2" /> */}
-                    <AntDesign name="arrowup" size={24} color="#7654F2" />
-                    {/* change arrow to black w purple circle */}
+                    <View style={styles.sendButtonCircle}>
+                        <AntDesign name="arrowup" size={24} color="#000000" />
+                    </View>
                 </TouchableOpacity>
             </View>
         </View>
@@ -167,10 +176,11 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
   const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#FFFFFF',
     },
     chatContainer: {
         padding: 10,
+        margin: 5
     },
     inputContainer:{
         flexDirection: 'row',
@@ -185,9 +195,19 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginRight: 10,
+        paddingLeft: 30,
+        backgroundColor: '#D1D5DB',
     },
     button: {
         justifyContent: 'center',
-    }
+    },
+    sendButtonCircle: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#B199FF',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 export default ChatbotScreen;
