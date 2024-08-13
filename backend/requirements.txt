@@ -1,5 +1,4 @@
 fastapi
-logging
 openai
 pydantic
 pytest
