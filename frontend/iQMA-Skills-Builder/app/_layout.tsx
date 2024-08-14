@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Image, ImageSourcePropType } from 'react-native';
+import * as Progress from 'react-native-progress';
 import { Stack } from "expo-router";
 import { useAuth0, Auth0Provider } from "react-native-auth0";
 import config from "../config/auth0-configuration";
@@ -84,11 +85,19 @@ export default function RootLayout() {
                     <Stack.Screen name="index" />
                     <Stack.Screen 
                         name="LearnerAssessmentDemographics" 
-                        options={{ headerTitle: () => <Header imageName="progress-bar-1" /> }}
+                        options={{ headerTitle: () => <Header progress={0.25} /> }}
                     />
                     <Stack.Screen
                         name='LearnerAssessmentCognitive'
-                        options={{ headerTitle: () => <Header imageName="progress-bar-2" /> }}
+                        options={{ headerTitle: () => <Header progress={0.5} /> }}
+                    />
+                    <Stack.Screen
+                        name='LearnerAssessmentDynamics'
+                        options={{ headerTitle: () => <Header progress={0.75} /> }}
+                    />
+                    <Stack.Screen
+                        name='LearnerAssessmentExperience'
+                        options={{ headerTitle: () => <Header progress={1} /> }}
                     />
                 </Stack>
             </AuthProvider>
@@ -101,8 +110,12 @@ const images: { [key: string]: ImageSourcePropType } = {
     'progress-bar-2': require('@/assets/images/progress-bar-2.png')
 };
 
-const Header = ({ imageName } : { imageName: string }) => (
+const Header = ({ progress } : { progress: number }) => (
     <View>
-        <Image source={images[imageName]}/>
+        <Progress.Bar
+            progress={progress}
+            width={300}
+            color={'#7654F2'}
+        />
     </View>
 );

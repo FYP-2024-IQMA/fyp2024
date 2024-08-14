@@ -14,6 +14,7 @@ export default function IntroductionSegment() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
+                backgroundColor: "#FFFFFF"
             }}
         >
             <Image style={{marginBottom: 20}} source={require('@/assets/images/mascot.png')}></Image>

@@ -35,7 +35,7 @@ export default function LearnerAssessmentDemographics() {
     };
 
     return (
-        <View style={{ padding: 20, flex: 1 }}>
+        <View style={{ padding: 20, flex: 1, backgroundColor: "#FFFFFF" }}>
             <View style={{ flexDirection: 'row' }}>
                 <Image style={{ height: 100, width: 100, marginRight: 15 }} source={require('@/assets/images/mascot.png')} />
                 <View style={{ marginTop: 5 }}>
@@ -53,7 +53,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Age" value="" enabled={false} />
                             {Object.keys(age).map((key) => (
-                                <Picker.Item key={key} label={key} value={age[key]} />
+                                <Picker.Item style={{fontSize: 14}} key={key} label={key} value={age[key]} />
                             ))}
                         </Picker>
                     </View>
@@ -68,7 +68,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Gender" value="" enabled={false} />
                             {gender.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -83,7 +83,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Race" value="" enabled={false} />
                             {race.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -117,7 +117,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Job Category" value="" enabled={false} />
                             {job.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -132,7 +132,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Life Stage" value="" enabled={false} />
                             {life.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -147,7 +147,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Career Stage" value="" enabled={false} />
                             {career.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -162,7 +162,7 @@ export default function LearnerAssessmentDemographics() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Special Needs" value="" enabled={false} />
                             {need.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -171,7 +171,7 @@ export default function LearnerAssessmentDemographics() {
 
             <View style={{
                 alignSelf: 'center',
-                marginTop: 10
+                marginTop: 15
             }}>
                 <CustomButton label="continue" backgroundColor="white" onPressHandler={handlePress}/>
             </View>
@@ -187,6 +187,7 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     defaultOptionText: {
-        color: '#5C5776'
+        color: '#5C5776',
+        fontSize: 14
     }
 });

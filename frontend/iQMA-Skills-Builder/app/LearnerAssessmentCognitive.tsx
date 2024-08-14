@@ -24,7 +24,7 @@ export default function LearnerAssessmentCognitive() {
     };
 
     return (
-        <View style={{ padding: 20 }}>
+        <View style={{ padding: 20, backgroundColor: "#FFFFFF" }}>
             <View style={{ flexDirection: 'row' }}>
                 <Image style={{ height: 100, width: 100, marginRight: 15 }} source={require('@/assets/images/mascot.png')} />
                 <View style={{ marginTop: 5 }}>
@@ -42,7 +42,7 @@ export default function LearnerAssessmentCognitive() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Education Level" value="" enabled={false} />
                             {education.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -57,7 +57,7 @@ export default function LearnerAssessmentCognitive() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Language Abilities" value="" enabled={false} />
                             {language.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -72,7 +72,7 @@ export default function LearnerAssessmentCognitive() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Literacy & Numeracy Proficiency" value="" enabled={false} />
                             {literacy.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -87,7 +87,7 @@ export default function LearnerAssessmentCognitive() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Learning Preferences" value="" enabled={false} />
                             {learning.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -102,7 +102,7 @@ export default function LearnerAssessmentCognitive() {
                         >
                             <Picker.Item style={styles.defaultOptionText} label="Select Prior Knowledge & Skills" value="" enabled={false} />
                             {literacy.map((value) => (
-                                <Picker.Item key={value} label={value} value={value} />
+                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
                             ))}
                         </Picker>
                     </View>
@@ -127,6 +127,7 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     defaultOptionText: {
-        color: '#5C5776'
+        color: '#5C5776',
+        fontSize: 14
     }
 });
