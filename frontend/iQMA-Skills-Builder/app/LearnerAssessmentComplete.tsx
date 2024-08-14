@@ -6,7 +6,7 @@ import { CustomButton } from "@/components/CustomButton";
 export default function LearnerAssessmentComplete() {
     const handlePress = () => {
         // TO-DO:
-        // router.push("Home")
+        router.push("Home")
     };
 
     return (

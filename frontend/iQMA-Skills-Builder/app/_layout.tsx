@@ -1,10 +1,6 @@
 import React from 'react';
-import { View, Image, ImageSourcePropType } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { Stack } from "expo-router";
-import { useAuth0, Auth0Provider } from "react-native-auth0";
-import config from "../config/auth0-configuration";
-import { AuthProvider } from "@/context/AuthContext";
 
 import 'react-native-gesture-handler';
 
@@ -104,11 +100,6 @@ export default function RootLayout() {
         </Auth0Provider>
     );
 }
-
-const images: { [key: string]: ImageSourcePropType } = {
-    'progress-bar-1': require('@/assets/images/progress-bar-1.png'),
-    'progress-bar-2': require('@/assets/images/progress-bar-2.png')
-};
 
 const Header = ({ progress } : { progress: number }) => (
     <View>
