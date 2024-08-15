@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     bubble: {
-        // maxWidth: '90%',
+        maxWidth: '85%',
         position: 'relative',
         backgroundColor: '#7654F2',
         padding: 20,
