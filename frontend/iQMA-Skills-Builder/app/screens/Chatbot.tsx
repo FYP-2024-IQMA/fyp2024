@@ -9,6 +9,7 @@ import { ChatBubble } from "@/components/ChatBubble";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { TextInput } from "react-native-gesture-handler";
 import { useDrawerStatus } from '@react-navigation/drawer';
+import { useNavigation } from "@react-navigation/native";
 
 type DrawerParamList = {
     'Section 1: Communication': { chatId: string };
@@ -80,6 +81,7 @@ const loadChatHistory = async (chatId: string) => {
 const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
 
     const isDrawerOpen = useDrawerStatus() === 'open';
+    const navigation = useNavigation();
 
     const {chatId} = route.params;
     const [message, setMessage] = useState('');
@@ -87,6 +89,18 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
         {text: `Hello! How can I assist you with ${chatId}?`, isUser: false},
     ])
 
+    useEffect(() => {
+        navigation.getParent()?.setOptions({
+            tabBarStyle: { display: isDrawerOpen ? 'none' : 'flex',
+                backgroundColor: '#7654F2',
+                justifyContent: 'center',     
+                alignItems: 'center',
+                paddingHorizontal: 80,
+                },
+            });
+    }, [isDrawerOpen]);
+
+    
     // Load chat history
     useEffect(() => {
         const loadHistory = async () => {

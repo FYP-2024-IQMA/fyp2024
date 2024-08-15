@@ -38,7 +38,17 @@ const AppTabs: React.FC = () => {
       headerStyle: { backgroundColor: '#B199FF'},  
       tabBarActiveTintColor: tabBarOptions.activeTintColor,
       tabBarInactiveTintColor: tabBarOptions.inactiveTintColor,
-      tabBarStyle: tabBarOptions.style,
+      tabBarStyle: {
+        ...tabBarOptions.style,
+        justifyContent: 'center', 
+        alignItems: 'center',    
+        paddingHorizontal: 80,  
+    },
+    tabBarContentContainerStyle: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+      tabBarShowLabel: false,
     })}>
       <Tab.Screen name="screens/Home" component={HomeScreen} options={{ title: 'Home Page', tabBarIcon: ({ color, size }) => (
         <Ionicons name="home" color={color} size={size} />
@@ -46,7 +56,6 @@ const AppTabs: React.FC = () => {
       <Tab.Screen name="screens/Chatbot" component={ChatbotDrawer}  options={{ headerShown:false,  tabBarIcon: ({ color, size }) => (
         <Ionicons name="chatbox-ellipses-outline" color={color} size={size} />
       ), 
-        // tabBarStyle: {display: 'none'},
       }}/>
       <Tab.Screen name="screens/ProfilePage" component={ProfilePage} options={{ title: 'Profile', tabBarIcon: ({ color, size }) => (
         <MaterialIcons name="manage-accounts" size={size} color={color} />

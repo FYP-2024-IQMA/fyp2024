@@ -44,33 +44,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
 
 const handleClearChats = async () => {
     // Implement clear chats functionality here
-    // For example, you might want to clear AsyncStorage
     // await AsyncStorage.clear();
     // Then refresh the drawer or navigate to a specific screen
 };
 
-
-
-
 // to open left tab for chat bot
 const ChatbotDrawer: React.FC<any> = ({navigation}) => {
-    
-    // Use drawer status to detect if drawer is open
-     useEffect(() => {
-        navigation.getParent() ?.setOptions({
-          tabBarStyle: {
-            display: 'none'
-          }
-        });
-        return () => {
-          navigation.getParent() ?.setOptions({
-            tabBarStyle: {
-              display: 'flex'
-            }
-          });
-        }
-      }, [])
-    
     return (
         <Drawer.Navigator screenOptions={{
             drawerActiveTintColor: '#ffffff',
