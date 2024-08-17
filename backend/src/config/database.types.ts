@@ -224,6 +224,45 @@ export type Database = {
           },
         ]
       }
+      chat: {
+        Row: {
+          chattext: string
+          datecreated: string
+          role: Database["public"]["Enums"]["chat_role"]
+          sectionid: string
+          userid: string
+        }
+        Insert: {
+          chattext: string
+          datecreated?: string
+          role: Database["public"]["Enums"]["chat_role"]
+          sectionid: string
+          userid: string
+        }
+        Update: {
+          chattext?: string
+          datecreated?: string
+          role?: Database["public"]["Enums"]["chat_role"]
+          sectionid?: string
+          userid?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_sectionid_fkey"
+            columns: ["sectionid"]
+            isOneToOne: false
+            referencedRelation: "section"
+            referencedColumns: ["sectionid"]
+          },
+          {
+            foreignKeyName: "chat_userid_fkey"
+            columns: ["userid"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["userid"]
+          },
+        ]
+      }
       lesson: {
         Row: {
           datecreated: string | null
