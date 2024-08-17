@@ -48,7 +48,7 @@ export type Database = {
           barriers: Database["public"]["Enums"]["barriers_to_learning_interests_type"][]
           motivationallevel: Database["public"]["Enums"]["motivational_level_type"]
           personality: Database["public"]["Enums"]["personality_type"]
-          reasons: Database["public"]["Enums"]["reasons_for_attending_course_type"][]
+          reasons: Database["public"]["Enums"]["reasons_for_attending_section_type"][]
           userid: string
         }
         Insert: {
@@ -56,7 +56,7 @@ export type Database = {
           barriers: Database["public"]["Enums"]["barriers_to_learning_interests_type"][]
           motivationallevel: Database["public"]["Enums"]["motivational_level_type"]
           personality: Database["public"]["Enums"]["personality_type"]
-          reasons: Database["public"]["Enums"]["reasons_for_attending_course_type"][]
+          reasons: Database["public"]["Enums"]["reasons_for_attending_section_type"][]
           userid: string
         }
         Update: {
@@ -64,7 +64,7 @@ export type Database = {
           barriers?: Database["public"]["Enums"]["barriers_to_learning_interests_type"][]
           motivationallevel?: Database["public"]["Enums"]["motivational_level_type"]
           personality?: Database["public"]["Enums"]["personality_type"]
-          reasons?: Database["public"]["Enums"]["reasons_for_attending_course_type"][]
+          reasons?: Database["public"]["Enums"]["reasons_for_attending_section_type"][]
           userid?: string
         }
         Relationships: [
@@ -186,34 +186,34 @@ export type Database = {
         Row: {
           certificateid: number
           certificateurl: string | null
-          courseid: string
           issuedate: string | null
           provider: string
+          sectionid: string
           userid: string
         }
         Insert: {
           certificateid?: number
           certificateurl?: string | null
-          courseid: string
           issuedate?: string | null
           provider: string
+          sectionid: string
           userid: string
         }
         Update: {
           certificateid?: number
           certificateurl?: string | null
-          courseid?: string
           issuedate?: string | null
           provider?: string
+          sectionid?: string
           userid?: string
         }
         Relationships: [
           {
-            foreignKeyName: "certificate_courseid_fkey"
-            columns: ["courseid"]
+            foreignKeyName: "certificate_sectionid_fkey"
+            columns: ["sectionid"]
             isOneToOne: false
-            referencedRelation: "course"
-            referencedColumns: ["courseid"]
+            referencedRelation: "section"
+            referencedColumns: ["sectionid"]
           },
           {
             foreignKeyName: "certificate_userid_fkey"
@@ -224,81 +224,10 @@ export type Database = {
           },
         ]
       }
-      chat: {
-        Row: {
-          chattext: string
-          courseid: string
-          datecreated: string
-          role: Database["public"]["Enums"]["chat_role"]
-          userid: string
-        }
-        Insert: {
-          chattext: string
-          courseid: string
-          datecreated?: string
-          role: Database["public"]["Enums"]["chat_role"]
-          userid: string
-        }
-        Update: {
-          chattext?: string
-          courseid?: string
-          datecreated?: string
-          role?: Database["public"]["Enums"]["chat_role"]
-          userid?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "chat_courseid_fkey"
-            columns: ["courseid"]
-            isOneToOne: false
-            referencedRelation: "course"
-            referencedColumns: ["courseid"]
-          },
-          {
-            foreignKeyName: "chat_userid_fkey"
-            columns: ["userid"]
-            isOneToOne: false
-            referencedRelation: "accounts"
-            referencedColumns: ["userid"]
-          },
-        ]
-      }
-      course: {
-        Row: {
-          coursedescription: string | null
-          courseid: string
-          coursename: string
-          datecreated: string | null
-          skillsfutureccs: string
-        }
-        Insert: {
-          coursedescription?: string | null
-          courseid: string
-          coursename: string
-          datecreated?: string | null
-          skillsfutureccs: string
-        }
-        Update: {
-          coursedescription?: string | null
-          courseid?: string
-          coursename?: string
-          datecreated?: string | null
-          skillsfutureccs?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "course_skillsfutureccs_fkey"
-            columns: ["skillsfutureccs"]
-            isOneToOne: false
-            referencedRelation: "skillsfuturemapping"
-            referencedColumns: ["skillsfutureccs"]
-          },
-        ]
-      }
       lesson: {
         Row: {
-          courseid: string
           datecreated: string | null
+          lessoncheatsheet: string | null
           lessondescription: string | null
           lessonduration: number | null
           lessonid: string
@@ -306,11 +235,12 @@ export type Database = {
           lessonname: string
           lessontext: string | null
           lessonurl: string | null
-          moduleid: string
+          sectionid: string
+          unitid: string
         }
         Insert: {
-          courseid: string
           datecreated?: string | null
+          lessoncheatsheet?: string | null
           lessondescription?: string | null
           lessonduration?: number | null
           lessonid: string
@@ -318,11 +248,12 @@ export type Database = {
           lessonname: string
           lessontext?: string | null
           lessonurl?: string | null
-          moduleid: string
+          sectionid: string
+          unitid: string
         }
         Update: {
-          courseid?: string
           datecreated?: string | null
+          lessoncheatsheet?: string | null
           lessondescription?: string | null
           lessonduration?: number | null
           lessonid?: string
@@ -330,80 +261,49 @@ export type Database = {
           lessonname?: string
           lessontext?: string | null
           lessonurl?: string | null
-          moduleid?: string
+          sectionid?: string
+          unitid?: string
         }
         Relationships: [
           {
-            foreignKeyName: "lesson_courseid_moduleid_fkey"
-            columns: ["courseid", "moduleid"]
+            foreignKeyName: "lesson_sectionid_unitid_fkey"
+            columns: ["sectionid", "unitid"]
             isOneToOne: false
-            referencedRelation: "module"
-            referencedColumns: ["courseid", "moduleid"]
-          },
-        ]
-      }
-      module: {
-        Row: {
-          courseid: string
-          datecreated: string | null
-          moduledescription: string | null
-          moduleid: string
-          modulename: string
-        }
-        Insert: {
-          courseid: string
-          datecreated?: string | null
-          moduledescription?: string | null
-          moduleid: string
-          modulename: string
-        }
-        Update: {
-          courseid?: string
-          datecreated?: string | null
-          moduledescription?: string | null
-          moduleid?: string
-          modulename?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "module_courseid_fkey"
-            columns: ["courseid"]
-            isOneToOne: false
-            referencedRelation: "course"
-            referencedColumns: ["courseid"]
+            referencedRelation: "unit"
+            referencedColumns: ["sectionid", "unitid"]
           },
         ]
       }
       question: {
         Row: {
-          answer: string
+          answer: string | null
           isselfreflection: boolean
-          option1: string
-          option2: string
-          option3: string
-          option4: string
+          option1: Json | null
+          option2: Json | null
+          option3: Json | null
+          option4: Json | null
           question: string
           questionno: number
           quizid: number
         }
         Insert: {
-          answer: string
+          answer?: string | null
           isselfreflection: boolean
-          option1: string
-          option2: string
-          option3: string
-          option4: string
+          option1?: Json | null
+          option2?: Json | null
+          option3?: Json | null
+          option4?: Json | null
           question: string
           questionno: number
           quizid: number
         }
         Update: {
-          answer?: string
+          answer?: string | null
           isselfreflection?: boolean
-          option1?: string
-          option2?: string
-          option3?: string
-          option4?: string
+          option1?: Json | null
+          option2?: Json | null
+          option3?: Json | null
+          option4?: Json | null
           question?: string
           questionno?: number
           quizid?: number
@@ -420,53 +320,50 @@ export type Database = {
       }
       quiz: {
         Row: {
-          courseid: string
           lastupdated: string | null
           lessonid: string | null
-          moduleid: string | null
           quizid: number
-          quizname: string
           quiztype: Database["public"]["Enums"]["quiz_type"]
+          sectionid: string
+          unitid: string | null
         }
         Insert: {
-          courseid: string
           lastupdated?: string | null
           lessonid?: string | null
-          moduleid?: string | null
           quizid?: number
-          quizname: string
           quiztype: Database["public"]["Enums"]["quiz_type"]
+          sectionid: string
+          unitid?: string | null
         }
         Update: {
-          courseid?: string
           lastupdated?: string | null
           lessonid?: string | null
-          moduleid?: string | null
           quizid?: number
-          quizname?: string
           quiztype?: Database["public"]["Enums"]["quiz_type"]
+          sectionid?: string
+          unitid?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "quiz_courseid_fkey"
-            columns: ["courseid"]
+            foreignKeyName: "quiz_sectionid_fkey"
+            columns: ["sectionid"]
             isOneToOne: false
-            referencedRelation: "course"
-            referencedColumns: ["courseid"]
+            referencedRelation: "section"
+            referencedColumns: ["sectionid"]
           },
           {
-            foreignKeyName: "quiz_courseid_moduleid_fkey"
-            columns: ["courseid", "moduleid"]
+            foreignKeyName: "quiz_sectionid_unitid_fkey"
+            columns: ["sectionid", "unitid"]
             isOneToOne: false
-            referencedRelation: "module"
-            referencedColumns: ["courseid", "moduleid"]
+            referencedRelation: "unit"
+            referencedColumns: ["sectionid", "unitid"]
           },
           {
-            foreignKeyName: "quiz_courseid_moduleid_lessonid_fkey"
-            columns: ["courseid", "moduleid", "lessonid"]
+            foreignKeyName: "quiz_sectionid_unitid_lessonid_fkey"
+            columns: ["sectionid", "unitid", "lessonid"]
             isOneToOne: false
             referencedRelation: "lesson"
-            referencedColumns: ["courseid", "moduleid", "lessonid"]
+            referencedColumns: ["sectionid", "unitid", "lessonid"]
           },
         ]
       }
@@ -542,6 +439,73 @@ export type Database = {
           },
         ]
       }
+      section: {
+        Row: {
+          datecreated: string | null
+          finalassessmentintro: string | null
+          finalscenario: string | null
+          introductionurl: string | null
+          sectiondescription: string | null
+          sectionid: string
+          sectionname: string
+          skillsfutureccs: string
+        }
+        Insert: {
+          datecreated?: string | null
+          finalassessmentintro?: string | null
+          finalscenario?: string | null
+          introductionurl?: string | null
+          sectiondescription?: string | null
+          sectionid: string
+          sectionname: string
+          skillsfutureccs: string
+        }
+        Update: {
+          datecreated?: string | null
+          finalassessmentintro?: string | null
+          finalscenario?: string | null
+          introductionurl?: string | null
+          sectiondescription?: string | null
+          sectionid?: string
+          sectionname?: string
+          skillsfutureccs?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "section_skillsfutureccs_fkey"
+            columns: ["skillsfutureccs"]
+            isOneToOne: false
+            referencedRelation: "skillsfuturemapping"
+            referencedColumns: ["skillsfutureccs"]
+          },
+        ]
+      }
+      sectionsequence: {
+        Row: {
+          age: Database["public"]["Enums"]["age_type"]
+          sectionid: string
+          sequenceno: number
+        }
+        Insert: {
+          age: Database["public"]["Enums"]["age_type"]
+          sectionid: string
+          sequenceno: number
+        }
+        Update: {
+          age?: Database["public"]["Enums"]["age_type"]
+          sectionid?: string
+          sequenceno?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sectionsequence_sectionid_fkey"
+            columns: ["sectionid"]
+            isOneToOne: false
+            referencedRelation: "section"
+            referencedColumns: ["sectionid"]
+          },
+        ]
+      }
       skillsfuturemapping: {
         Row: {
           cluster: string
@@ -556,6 +520,47 @@ export type Database = {
           skillsfutureccs?: string
         }
         Relationships: []
+      }
+      unit: {
+        Row: {
+          assessmentintro: string | null
+          datecreated: string | null
+          realitycheck: string | null
+          scenario: string | null
+          sectionid: string
+          unitdescription: string | null
+          unitid: string
+          unitname: string
+        }
+        Insert: {
+          assessmentintro?: string | null
+          datecreated?: string | null
+          realitycheck?: string | null
+          scenario?: string | null
+          sectionid: string
+          unitdescription?: string | null
+          unitid: string
+          unitname: string
+        }
+        Update: {
+          assessmentintro?: string | null
+          datecreated?: string | null
+          realitycheck?: string | null
+          scenario?: string | null
+          sectionid?: string
+          unitdescription?: string | null
+          unitid?: string
+          unitname?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "unit_sectionid_fkey"
+            columns: ["sectionid"]
+            isOneToOne: false
+            referencedRelation: "section"
+            referencedColumns: ["sectionid"]
+          },
+        ]
       }
     }
     Views: {
@@ -579,14 +584,6 @@ export type Database = {
       career_stage_type: "Starter" | "Builder" | "Accelerator" | "Expert"
       chat_role: "system" | "user"
       computer_literacy_type: "Advanced" | "Intermediate" | "Basic" | "None"
-      continents:
-        | "Africa"
-        | "Antarctica"
-        | "Asia"
-        | "Europe"
-        | "Oceania"
-        | "North America"
-        | "South America"
       educational_level_type:
         | "High school or below"
         | "Some college"
@@ -622,7 +619,7 @@ export type Database = {
         | "Intermediate"
         | "Basic"
         | "None"
-      quiz_type: "course" | "module" | "lesson"
+      quiz_type: "section" | "unit" | "lesson"
       race_type:
         | "Caucasian"
         | "African American"
@@ -630,6 +627,11 @@ export type Database = {
         | "Hispanic/Latino"
         | "Other"
       reasons_for_attending_course_type:
+        | "Career advancement"
+        | "Skill development"
+        | "Personal interest"
+        | "Requirement"
+      reasons_for_attending_section_type:
         | "Career advancement"
         | "Skill development"
         | "Personal interest"
