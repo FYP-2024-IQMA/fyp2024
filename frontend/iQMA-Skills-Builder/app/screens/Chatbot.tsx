@@ -122,14 +122,6 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
             saveChatHistory(chatId, { role: 'assistant', content: response.content });
           }
     };
-    
-    // const conversation = [
-    //     { text: `Hello! How can I assist you with ${chatId}?`, isUser: false },
-    //     { text: `I need help with ${chatId}.`, isUser: true },
-    //     { text: `Sure, what do you need to know about ${chatId}?`, isUser: false },
-    //     { text: `I want to understand more about its features.`, isUser: true },
-    //     { text: `Okay, let me explain the features of ${chatId}.`, isUser: false }
-    // ];
 
     if (!chatId) {
         return (
@@ -142,7 +134,6 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.chatContainer}>
                 {messages.map((msg,index) => (
-                    // <ChatBubble key={index} text={msg.text} isUser={msg.isUser} />
                     <ChatBubble key={index} position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
                 ))}
             </ScrollView>
