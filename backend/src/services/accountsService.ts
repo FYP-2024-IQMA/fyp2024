@@ -2,10 +2,7 @@ import supabase from "../config/supabaseConfig";
 import {
     Accounts,
     Admin,
-    Age,
-    Gender,
-    Learner,
-    Role,
+    Learner
 } from "../models/accountsModel";
 
 /* CREATE */
@@ -64,10 +61,10 @@ export async function getAccountById(userid: string): Promise<Learner> {
                 data.firstname,
                 data.lastname,
                 data.email,
-                data.role as Role,
+                data.role,
                 new Date(data.datecreated!),
-                data.age as Age,
-                data.gender as Gender
+                data.age,
+                data.gender
             );
         }
         return new Learner(
@@ -75,10 +72,10 @@ export async function getAccountById(userid: string): Promise<Learner> {
             data.firstname,
             data.lastname,
             data.email,
-            data.role as Role,
+            data.role,
             new Date(data.datecreated!),
-            data.age as Age,
-            data.gender as Gender
+            data.age,
+            data.gender
         );
     }
 }
