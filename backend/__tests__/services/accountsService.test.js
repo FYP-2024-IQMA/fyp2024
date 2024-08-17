@@ -57,7 +57,7 @@ describe("createAccount", () => {
             firstname: mockData[0].firstName,
             lastname: mockData[0].lastName,
             email: mockData[0].email,
-            role: accountsModel.Role.learner,
+            role: mockData[0].role,
             age: mockData[0].age,
             gender: mockData[0].gender,
         });
@@ -81,7 +81,7 @@ describe("createAccount", () => {
             firstname: mockData[0].firstName,
             lastname: mockData[0].lastName,
             email: mockData[0].email,
-            role: accountsModel.Role.admin,
+            role: mockData[0].role,
             age: mockData[0].age,
             gender: mockData[0].gender,
         });
@@ -165,10 +165,10 @@ describe("getAccountById", () => {
         firstName: mockData.firstname,
         lastName: mockData.lastname,
         email: mockData.email,
-        role: accountsModel.Role.learner,
+        role: mockData.role,
         dateCreated: new Date(mockData.datecreated),
-        age: accountsModel.Age.Millennials,
-        gender: accountsModel.Gender.Female,
+        age: mockData.age,
+        gender: mockData.gender,
     };
 
     it("should return a Learner object when the user is a learner", async () => {
@@ -187,7 +187,7 @@ describe("getAccountById", () => {
     it("should return an Admin object when the user is an admin", async () => {
         
         mockData.role = "admin";
-        expectedResult.role = accountsModel.Role.admin;
+        expectedResult.role = "admin";
 
         const mockSingle = jest.fn().mockResolvedValue({ data: mockData, error: null });
         const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
