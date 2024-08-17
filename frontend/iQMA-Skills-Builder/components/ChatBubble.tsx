@@ -1,16 +1,33 @@
+import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import React, { ReactNode } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
 
-export const ChatBubble = ({ children, position }: { children: ReactNode, position: string }) => {
+interface ChatBubbleProps {
+    children: ReactNode;
+    position: 'left' | 'right';
+    bubbleColor?: string; 
+    textColor?: string;
+    icon?: any;
+    borderRadius?: number;
+    showArrow?: boolean;
+}
+
+export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", icon, borderRadius = 10, showArrow = true  }) => {
     return (
+        <View style={[styles.bubbleWrapper, position === 'right' ? styles.alignRight : styles.alignLeft]}>
+        {icon && position === 'left' && (
+            <Image source={{ uri: icon }} style={styles.icon} />
+        )}
         <View style={[styles.container, getContainerAlignment(position)]}>
-            <View style={[styles.arrowContainer, getArrowContainer(position)]}>
-                <View style={styles.arrow} />
-            </View>
-            <View style={styles.bubble}>
-                <Text style={styles.text}>{children}</Text>
+            {showArrow && (
+                <View style={[styles.arrowContainer, getArrowContainer(position)]}>
+                    <View style={[styles.arrow, { borderBottomColor: bubbleColor }]} />
+                </View>
+            )}
+            <View style={[styles.bubble, { backgroundColor: bubbleColor, borderRadius }]}>
+                <Text style={[styles.text, { color: textColor }]}>{children}</Text>
             </View>
         </View>
+    </View>
     );
 };
 
@@ -46,14 +63,25 @@ const getArrowContainer = (position: string) => {
 };
 
 const styles = StyleSheet.create({
+    bubbleWrapper: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        marginBottom: 20,
+    },
+    alignLeft: {
+        justifyContent: 'flex-start',
+    },
+    alignRight: {
+        justifyContent: 'flex-end',
+    },
     container: {
         flexDirection: 'column',
         marginBottom: 20,
     },
     bubble: {
-        // maxWidth: '80%',
+        maxWidth: '85%',
         position: 'relative',
-        backgroundColor: "#7654F2",
+        backgroundColor: '#7654F2',
         padding: 20,
         borderRadius: 10,
         shadowColor: 'black',
@@ -83,5 +111,11 @@ const styles = StyleSheet.create({
         borderBottomColor: '#7654F2',
         marginBottom: -2,
         position: 'absolute',
+    },
+    icon: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        marginRight: 10,
     },
 });

@@ -8,18 +8,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ChatBubble } from "@/components/ChatBubble";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { TextInput } from "react-native-gesture-handler";
+import { useDrawerStatus } from '@react-navigation/drawer';
+import { useNavigation } from "@react-navigation/native";
 
 type DrawerParamList = {
-    'Decision Making': { chatId: string };
-    'Creative Thinking': { chatId: string };
-    'Problem Solving': { chatId: string };
+    'Section 1: Communication': { chatId: string };
+    'Section 2: Decision Making': { chatId: string };
+    'Section 3: Developing People': { chatId: string };
 };
 
 // ensurees chatbot screen receives correct props
 // use drawerscreenprops to type the props of chatbot screen
-type ChatbotScreenProps = DrawerScreenProps<DrawerParamList, 'Decision Making' | 'Creative Thinking' | 'Problem Solving' >;
+type ChatbotScreenProps = DrawerScreenProps<DrawerParamList, 'Section 1: Communication' | 'Section 2: Decision Making' | 'Section 3: Developing People' >;
 
-// Useful Methods
 
 // Getting response from chatbot
 const getChatbotResponse = async (role: string, 
@@ -78,12 +79,28 @@ const loadChatHistory = async (chatId: string) => {
 
 // Main Chat component
 const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
+
+    const isDrawerOpen = useDrawerStatus() === 'open';
+    const navigation = useNavigation();
+
     const {chatId} = route.params;
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([
         {text: `Hello! How can I assist you with ${chatId}?`, isUser: false},
     ])
 
+    useEffect(() => {
+        navigation.getParent()?.setOptions({
+            tabBarStyle: { display: isDrawerOpen ? 'none' : 'flex',
+                backgroundColor: '#7654F2',
+                justifyContent: 'center',     
+                alignItems: 'center',
+                paddingHorizontal: 80,
+                },
+            });
+    }, [isDrawerOpen]);
+
+    
     // Load chat history
     useEffect(() => {
         const loadHistory = async () => {
@@ -133,9 +150,19 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
       return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.chatContainer}>
-                {messages.map((msg,index) => (
-                    <ChatBubble key={index} position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
-                ))}
+            {messages.map((msg, index) => (
+                <ChatBubble
+                    key={index}
+                    position={msg.isUser ? 'right' : 'left'}
+                    bubbleColor={msg.isUser ? "#B199FF" : "#D1D5DB"}
+                    textColor={msg.isUser ? "#000000" : "#000000"}
+                    icon={!msg.isUser ? 'https://raw.githubusercontent.com/FYP-2024-IQMA/fyp2024/e00d20380b4bb7fe579fba92c177ba627066c070/iqma_logo.jpeg' : undefined}
+                    borderRadius={20}  
+                    showArrow={false}  
+                >
+                    {msg.text}
+                </ChatBubble>
+            ))}
             </ScrollView>
             <View style={styles.inputContainer}>
                 <TextInput style={styles.input} 
@@ -145,7 +172,9 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
                 onSubmitEditing={handleSend}
                 keyboardType="email-address"/> 
                 <TouchableOpacity onPress={handleSend} style={styles.button}>
-                    <AntDesign name="upcircle" size={24} color="#8A2BE2" />
+                    <View style={styles.sendButtonCircle}>
+                        <AntDesign name="arrowup" size={24} color="#000000" />
+                    </View>
                 </TouchableOpacity>
             </View>
         </View>
@@ -157,10 +186,11 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
   const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F5F5',
+        backgroundColor: '#FFFFFF',
     },
     chatContainer: {
         padding: 10,
+        margin: 5
     },
     inputContainer:{
         flexDirection: 'row',
@@ -175,9 +205,19 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
         paddingHorizontal: 10,
         paddingVertical: 5,
         marginRight: 10,
+        paddingLeft: 30,
+        backgroundColor: '#D1D5DB',
     },
     button: {
         justifyContent: 'center',
-    }
+    },
+    sendButtonCircle: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#B199FF',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
 });
 export default ChatbotScreen;

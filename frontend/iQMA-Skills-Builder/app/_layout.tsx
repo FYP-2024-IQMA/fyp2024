@@ -10,12 +10,12 @@ import { AuthProvider } from "@/context/AuthContext";
 import ChatbotDrawer from "../components/ChatbotDrawer";
 import HomeScreen from "./screens/Home";
 import { Ionicons } from '@expo/vector-icons';
-import LogoHeader from "@/components/LogoHeader";
 import { MaterialIcons } from '@expo/vector-icons';
 import ProfilePage from "./screens/ProfilePage";
 import config from "../config/auth0-configuration";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import useColorScheme from "@/hooks/useColorScheme";
+import { useDrawerStatus } from '@react-navigation/drawer';
 
 const Tab = createBottomTabNavigator();
 
@@ -26,28 +26,37 @@ const AppTabs: React.FC = () => {
         activeTintColor: '#FFFFFF',
         inactiveTintColor: '#BBBBBB',
         style: {
-            backgroundColor: '#8A2BE2',
+            backgroundColor: '#7654F2',
         },
     }
+
     return (
     // screen options expects an object or a function that returns an object
     <Tab.Navigator
     screenOptions={({ route }) => ({
         headerTitleAlign: 'center',
-        headerTitle(props) {
-        return <LogoHeader />;
-      },
-      headerStyle: { backgroundColor: '#8A2BE2' },  
+      headerStyle: { backgroundColor: '#B199FF'},  
       tabBarActiveTintColor: tabBarOptions.activeTintColor,
       tabBarInactiveTintColor: tabBarOptions.inactiveTintColor,
-      tabBarStyle: tabBarOptions.style,
+      tabBarStyle: {
+        ...tabBarOptions.style,
+        justifyContent: 'center', 
+        alignItems: 'center',    
+        paddingHorizontal: 80,  
+    },
+    tabBarContentContainerStyle: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+      tabBarShowLabel: false,
     })}>
       <Tab.Screen name="screens/Home" component={HomeScreen} options={{ title: 'Home Page', tabBarIcon: ({ color, size }) => (
         <Ionicons name="home" color={color} size={size} />
       )}}/>
-      <Tab.Screen name="screens/Chatbot" component={ChatbotDrawer} options={{ title: 'Chat With Me', tabBarIcon: ({ color, size }) => (
+      <Tab.Screen name="screens/Chatbot" component={ChatbotDrawer}  options={{ headerShown:false,  tabBarIcon: ({ color, size }) => (
         <Ionicons name="chatbox-ellipses-outline" color={color} size={size} />
-      )}}/>
+      ), 
+      }}/>
       <Tab.Screen name="screens/ProfilePage" component={ProfilePage} options={{ title: 'Profile', tabBarIcon: ({ color, size }) => (
         <MaterialIcons name="manage-accounts" size={size} color={color} />
       )}}/>
