@@ -23,17 +23,17 @@ const accountsModel_1 = require("../models/accountsModel");
 /* CREATE */
 function createAccount(account) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userId, firstName, lastName, email, role, age, gender } = account;
+        const { userID, firstName, lastName, email, role, age, gender } = account;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .insert({
-            userid: userId,
-            firstname: firstName,
-            lastname: lastName,
-            email: email,
-            role: role,
-            age: age,
-            gender: gender,
+            userID,
+            firstName,
+            lastName,
+            email,
+            role,
+            age,
+            gender,
         })
             .select();
         if (error) {
@@ -58,12 +58,12 @@ function getAllAccounts() {
         }
     });
 }
-function getAccountById(userid) {
+function getAccountById(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .select("*")
-            .eq("userid", userid)
+            .eq("userID", userID)
             .single();
         if (error) {
             console.error(error);
@@ -71,9 +71,9 @@ function getAccountById(userid) {
         }
         else {
             if (data.role === "admin") {
-                return new accountsModel_1.Admin(data.userid, data.firstname, data.lastname, data.email, data.role, new Date(data.datecreated), data.age, data.gender);
+                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender);
             }
-            return new accountsModel_1.Learner(data.userid, data.firstname, data.lastname, data.email, data.role, new Date(data.datecreated), data.age, data.gender);
+            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender);
         }
     });
 }
@@ -95,12 +95,12 @@ function getAccountsByRole(role) {
 /* UPDATE */
 function updateAccount(account) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userId, firstName, lastName, email } = account;
+        const { userID, firstName, lastName, email } = account;
         const updateFields = {};
         if (firstName)
-            updateFields.firstname = firstName;
+            updateFields.firstName = firstName;
         if (lastName)
-            updateFields.lastname = lastName;
+            updateFields.lastName = lastName;
         if (email)
             updateFields.email = email;
         if (Object.keys(updateFields).length === 0) {
@@ -109,7 +109,7 @@ function updateAccount(account) {
         const { status, statusText, error } = yield supabaseConfig_1.default
             .from("accounts")
             .update(updateFields)
-            .eq("userid", userId);
+            .eq("userID", userID);
         if (error) {
             console.error(error);
             throw error;
@@ -120,12 +120,12 @@ function updateAccount(account) {
     });
 }
 /* DELETE */
-function deleteAccount(userid) {
+function deleteAccount(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { status, statusText, error } = yield supabaseConfig_1.default
             .from("accounts")
             .delete()
-            .eq("userid", userid);
+            .eq("userID", userID);
         if (error) {
             console.error(error);
             throw error;

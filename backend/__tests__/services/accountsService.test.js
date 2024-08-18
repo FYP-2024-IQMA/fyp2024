@@ -21,7 +21,7 @@ describe("createAccount", () => {
 
     const mockData = [
         {
-            userId: "1",
+            userID: "1",
             firstName: "Mary",
             lastName: "Brown",
             email: "mary.brown@example.com",
@@ -31,18 +31,10 @@ describe("createAccount", () => {
         },
     ];
 
-    const expectedResult = [
-        {
-            userid: "1",
-            firstname: "Mary",
-            lastname: "Brown",
-            email: "mary.brown@example.com",
-            age: "Millennials (25-40)",
-            gender: "Female",
-            dateCreated: expect.anything(),
-            role: "learner"
-        },
-    ];
+    const expectedResult = mockData.map((data) => ({
+        ...data,
+        dateCreated: expect.anything(),
+    }));
 
     it("create & returns learner account", async () => {
 
@@ -52,15 +44,7 @@ describe("createAccount", () => {
 
         const accounts = await accountsService.createAccount(mockData[0]);
 
-        expect(mockInsert).toHaveBeenCalledWith({
-            userid: mockData[0].userId,
-            firstname: mockData[0].firstName,
-            lastname: mockData[0].lastName,
-            email: mockData[0].email,
-            role: mockData[0].role,
-            age: mockData[0].age,
-            gender: mockData[0].gender,
-        });
+        expect(mockInsert).toHaveBeenCalledWith(mockData[0]);
 
         expect(accounts).toEqual(expectedResult);
     });
@@ -76,15 +60,7 @@ describe("createAccount", () => {
 
         const accounts = await accountsService.createAccount(mockData[0]);
 
-        expect(mockInsert).toHaveBeenCalledWith({
-            userid: mockData[0].userId,
-            firstname: mockData[0].firstName,
-            lastname: mockData[0].lastName,
-            email: mockData[0].email,
-            role: mockData[0].role,
-            age: mockData[0].age,
-            gender: mockData[0].gender,
-        });
+        expect(mockInsert).toHaveBeenCalledWith(mockData[0]);
 
         expect(accounts).toEqual(expectedResult);
     });
@@ -105,14 +81,14 @@ describe("createAccount", () => {
 describe("getAllAccounts", () => {
     const expectedResult = [
         {
-            userId: "1",
-            firstname: "Mary",
-            lastname: "Brown",
+            userID: "1",
+            firstName: "Mary",
+            lastName: "Brown",
             email: "mary.brown@example.com",
             role: "admin",
             age: "Millennials (25-40)",
             gender: "Female",
-            datecreated: "2024-07-13T16:11:18.442052+00:00",
+            dateCreated: "2024-07-13T16:11:18.442052+00:00",
         },
     ];
 
@@ -150,25 +126,19 @@ describe("getAllAccounts", () => {
 describe("getAccountById", () => {
     
     const mockData = {
-        userid: "123",
-        firstname: "Jane",
-        lastname: "Smith",
+        userID: "123",
+        firstName: "Jane",
+        lastName: "Smith",
         email: "jane.smith@example.com",
         role: "learner",
         age: "Millennials (25-40)",
         gender: "Female",
-        datecreated: "2024-07-23T13:48:04.443245+00:00",
+        dateCreated: "2024-07-23T13:48:04.443245+00:00",
     };
 
     const expectedResult = {
-        userId: mockData.userid,
-        firstName: mockData.firstname,
-        lastName: mockData.lastname,
-        email: mockData.email,
-        role: mockData.role,
-        dateCreated: new Date(mockData.datecreated),
-        age: mockData.age,
-        gender: mockData.gender,
+        ...mockData,
+        dateCreated: new Date(mockData.dateCreated),
     };
 
     it("should return a Learner object when the user is a learner", async () => {
@@ -178,7 +148,7 @@ describe("getAccountById", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const result = await accountsService.getAccountById(mockData.userid);
+        const result = await accountsService.getAccountById(mockData.userID);
 
         expect(result).toBeInstanceOf(accountsModel.Learner);
         expect(result).toEqual(expectedResult);
@@ -194,7 +164,7 @@ describe("getAccountById", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const result = await accountsService.getAccountById(mockData.userid);
+        const result = await accountsService.getAccountById(mockData.userID);
 
         expect(result).toBeInstanceOf(accountsModel.Admin);
         expect(result).toEqual(expectedResult);
@@ -217,22 +187,22 @@ describe("getAccountById", () => {
 describe("getAccountsByRole", () => {
     const mockData = [
         {
-            userid: "123",
-            firstname: "John",
-            lastname: "Doe",
+            userID: "123",
+            firstName: "John",
+            lastName: "Doe",
             email: "john.doe@example.com",
             role: "admin",
-            datecreated: "2023-01-01T00:00:00.000Z",
+            dateCreated: "2023-01-01T00:00:00.000Z",
             age: "twenty",
             gender: "male",
         },
         {
-            userid: "456",
-            firstname: "Jane",
-            lastname: "Doe",
+            userID: "456",
+            firstName: "Jane",
+            lastName: "Doe",
             email: "jane.doe@example.com",
             role: "admin",
-            datecreated: "2023-02-01T00:00:00.000Z",
+            dateCreated: "2023-02-01T00:00:00.000Z",
             age: "thirty",
             gender: "female",
         },
@@ -283,7 +253,7 @@ describe("getAccountsByRole", () => {
 describe("updateAccount", () => {
 
     const mockAccount = {
-        userId: "123",
+        userID: "123",
         firstName: "John",
         lastName: "Doe",
         email: "john.doe@example.com"
@@ -299,10 +269,10 @@ describe("updateAccount", () => {
         const result = await accountsService.updateAccount(mockAccount);
 
         expect(supabase.from).toHaveBeenCalledWith("accounts");
-        expect(mockEq).toHaveBeenCalledWith("userid", mockAccount.userId);
+        expect(mockEq).toHaveBeenCalledWith("userID", mockAccount.userID);
         expect(mockUpdate).toHaveBeenCalledWith({
-            firstname: mockAccount.firstName,
-            lastname: mockAccount.lastName,
+            firstName: mockAccount.firstName,
+            lastName: mockAccount.lastName,
             email: mockAccount.email,
         });
         expect(result).toEqual({ status: 204, statusText: "No Content" });
@@ -311,7 +281,7 @@ describe("updateAccount", () => {
     it("should throw an error when no fields are provided to update", async () => {
         
         const mockAccount = {
-            userId: "123"
+            userID: "123"
         };
 
         await expect(accountsService.updateAccount(mockAccount)).rejects.toThrow("No fields to update");
@@ -333,7 +303,7 @@ describe("updateAccount", () => {
 
 describe("deleteAccount", () => {
 
-    const userId = "123"
+    const userID = "123"
 
     it("should delete the account successfully", async () => {
 
@@ -342,10 +312,10 @@ describe("deleteAccount", () => {
         
         supabase.from.mockReturnValue({ delete: mockDelete });
 
-        const result = await accountsService.deleteAccount(userId);
+        const result = await accountsService.deleteAccount(userID);
 
         expect(supabase.from).toHaveBeenCalledWith("accounts");
-        expect(mockEq).toHaveBeenCalledWith("userid", userId);
+        expect(mockEq).toHaveBeenCalledWith("userID", userID);
         expect(result).toEqual({ status: 204, statusText: "No Content" });
     });
 
@@ -357,7 +327,7 @@ describe("deleteAccount", () => {
         
         supabase.from.mockReturnValue({ delete: mockDelete });
 
-        await expect(accountsService.deleteAccount(userId)).rejects.toThrow(errorMessage);
+        await expect(accountsService.deleteAccount(userID)).rejects.toThrow(errorMessage);
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
