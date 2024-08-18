@@ -18,16 +18,18 @@ exports.getAllAccounts = getAllAccounts;
 exports.getAccountById = getAccountById;
 exports.getAllLearnerAccounts = getAllLearnerAccounts;
 exports.getAllAdminAccounts = getAllAdminAccounts;
+exports.updateAccount = updateAccount;
 exports.deleteAccount = deleteAccount;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 const accountsModel_1 = require("../models/accountsModel");
 /* CREATE */
 function createLearnerAccount(learner) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { firstName, lastName, email, dateCreated, age, gender } = learner;
+        const { userId, firstName, lastName, email, dateCreated, age, gender } = learner;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .insert({
+            userid: userId,
             firstname: firstName,
             lastname: lastName,
             email: email,
@@ -48,10 +50,11 @@ function createLearnerAccount(learner) {
 }
 function createAdminAccount(admin) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { firstName, lastName, email, dateCreated, age, gender } = admin;
+        const { userId, firstName, lastName, email, dateCreated, age, gender } = admin;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .insert({
+            userid: userId,
             firstname: firstName,
             lastname: lastName,
             email: email,
@@ -136,6 +139,32 @@ function getAllAdminAccounts() {
     });
 }
 /* UPDATE */
+function updateAccount(account) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { userId, firstName, lastName, email } = account;
+        const updateFields = {};
+        if (firstName)
+            updateFields.firstname = firstName;
+        if (lastName)
+            updateFields.lastname = lastName;
+        if (email)
+            updateFields.email = email;
+        if (Object.keys(updateFields).length === 0) {
+            throw new Error("No fields to update");
+        }
+        const { status, statusText, error } = yield supabaseConfig_1.default
+            .from("accounts")
+            .update(updateFields)
+            .eq("userid", userId);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        else {
+            return { status, statusText };
+        }
+    });
+}
 /* DELETE */
 function deleteAccount(userid) {
     return __awaiter(this, void 0, void 0, function* () {

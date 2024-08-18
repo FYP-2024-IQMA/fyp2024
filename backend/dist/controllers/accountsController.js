@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.getAllAdminAccounts = exports.getAllLearnerAccounts = exports.getAccountById = exports.getAllAccounts = exports.createAdminAccount = exports.createLearnerAccount = void 0;
+exports.deleteAccount = exports.updateAccount = exports.getAllAdminAccounts = exports.getAllLearnerAccounts = exports.getAccountById = exports.getAllAccounts = exports.createAdminAccount = exports.createLearnerAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
 /* CREATE */
 const createLearnerAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -40,9 +40,9 @@ const createLearnerAccount = (req, res) => __awaiter(void 0, void 0, void 0, fun
     try {
         const account = yield accountsService.createLearnerAccount(learner);
         res.status(201).json({
-            "userid": account[0].userid,
-            "status": 201,
-            "statusText": "Created"
+            userid: account[0].userid,
+            status: 201,
+            statusText: "Created",
         });
     }
     catch (error) {
@@ -58,9 +58,9 @@ const createAdminAccount = (req, res) => __awaiter(void 0, void 0, void 0, funct
     try {
         const account = yield accountsService.createAdminAccount(admin);
         res.status(201).json({
-            "userid": account[0].userid,
-            "status": 201,
-            "statusText": "Created"
+            userid: account[0].userid,
+            status: 201,
+            statusText: "Created",
         });
     }
     catch (error) {
@@ -84,7 +84,7 @@ const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getAllAccounts = getAllAccounts;
 const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const account = yield accountsService.getAccountById(Number(req.params.id));
+        const account = yield accountsService.getAccountById(req.params.id);
         res.status(200).json(account);
     }
     catch (error) {
@@ -117,13 +117,27 @@ const getAllAdminAccounts = (req, res) => __awaiter(void 0, void 0, void 0, func
 });
 exports.getAllAdminAccounts = getAllAdminAccounts;
 /* UPDATE */
+const updateAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const account = req.body;
+    try {
+        const response = yield accountsService.updateAccount(account);
+        res.status(200).json({
+            status: response.status,
+            statusText: "Account Updated Successfully",
+        });
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to update account" });
+    }
+});
+exports.updateAccount = updateAccount;
 /* DELETE */
 const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield accountsService.deleteAccount(Number(req.params.id));
+        const response = yield accountsService.deleteAccount(req.params.id);
         res.status(200).json({
-            "status": response.status,
-            "statusText": response.statusText
+            status: response.status,
+            statusText: "Account deleted Successfully",
         });
     }
     catch (error) {
