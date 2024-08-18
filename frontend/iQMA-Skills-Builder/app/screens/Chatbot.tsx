@@ -167,6 +167,7 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
                     icon={!msg.isUser ? 'https://raw.githubusercontent.com/FYP-2024-IQMA/fyp2024/e00d20380b4bb7fe579fba92c177ba627066c070/iqma_logo.jpeg' : undefined}
                     borderRadius={20}  
                     showArrow={false}  
+                    chatbot={true}
                 >
                     {msg.text}
                 </ChatBubble>
