@@ -1,5 +1,6 @@
+import { User, useAuth0 } from "react-native-auth0";
 import { createContext, useEffect, useState } from "react";
-import { useAuth0, User } from "react-native-auth0";
+
 import { router } from 'expo-router';
 
 export const AuthContext = createContext<any>(null);
@@ -20,6 +21,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             fetchToken();
             console.log(user);
             router.push("IntroductionMascot");
+            // router.replace("/Home"); 
         }
     };
 
