@@ -20,8 +20,9 @@ const TopStats: React.FC = () => {
         </View>
       </View>
       <View style={[styles.statBox, styles.rightStatBox]}>
-        <CircularProgress size={40} strokeWidth={6} progress={progress} />
-        <Text style={styles.statLabel}>Section Completion</Text>
+        <CircularProgress size={38} strokeWidth={5} progress={progress} />
+        <Text style={styles.statLabelRight}>Section{"\n"}Completion</Text>
+
       </View>
     </View>
   );
@@ -33,19 +34,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 20,
-    paddingHorizontal: 10,
+    // paddingHorizontal: 5,
   },
   statBox: {
-    // flex: 1,
-    backgroundColor: '#F5F5F5',
     padding: 5,
     borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#B199FF',
     marginHorizontal: 5,
-    height: 65,
+    height: 52,
     width: 120,
   },
   leftStatBox: {
@@ -53,7 +52,8 @@ const styles = StyleSheet.create({
     alignItems: 'center', 
   },
   rightStatBox: {
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center', 
   },
   statContent: {
     flexDirection: 'row',
@@ -72,6 +72,11 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 10,
     color: '#333',
+  },
+  statLabelRight: {
+    fontSize: 10,
+    color: '#333',
+    marginLeft: 5
   },
 });
 

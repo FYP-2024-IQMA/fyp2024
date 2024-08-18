@@ -1,13 +1,34 @@
 // screens/HomeScreen.tsx
 
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import ProgressPath from '@/components/ProgressPath';
 import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import { useState } from "react";
 
+interface SectionDividerProps {
+  label: string;
+}
+
 const HomeScreen: React.FC = () => {
+
+  const SectionDivider: React.FC<SectionDividerProps> =  ({ label }) => (
+    <View style={styles.dividerContainer}>
+      <View style={styles.dividerLine} />
+      <Text style={styles.dividerText}>{label}</Text>
+      <View style={styles.dividerLine} />
+    </View>
+  );
+
+  const icons = [
+    { name: 'Trophy', color: '#FFFFFF', size: 40 },  
+    { name: 'staro', color: '#FFFFFF', size: 40 }, 
+    { name: 'key', color: '#FFFFFF', size: 40 },  
+    { name: 'book', color: '#FFFFFF', size: 40 },  
+    // { name: 'lock', color: '#FFFFFF', size: 40 },  
+  ];
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {/* Top Stats */}
@@ -15,25 +36,16 @@ const HomeScreen: React.FC = () => {
 
       {/* Section 1 */}
       <SectionCard title="SECTION 1, UNIT 1" subtitle="Foundations of Communication" />
-      <ProgressPath icons={[
-        // 'https://link-to-your-icon/start-icon.png',
-        // 'https://link-to-your-icon/next-icon.png',
-        // 'https://link-to-your-icon/next-icon.png',
-        // 'https://link-to-your-icon/owl-icon.png',
-      ]} />
-
+     
+      <View>
+        <ProgressPath icons={icons} />
+      </View>
       {/* Divider */}
-      <View style={styles.lineSeparator} />
-      <Text style={styles.sectionLabel}>Written Communication Proficiency</Text>
+      <SectionDivider label="Written Communication Proficiency" />
 
       {/* Section 2 */}
       <SectionCard title="SECTION 1, UNIT 2" subtitle="Written Communication Proficiency" />
-      <ProgressPath icons={[
-        // 'https://link-to-your-icon/next-icon.png',
-        // 'https://link-to-your-icon/next-icon.png',
-        // 'https://link-to-your-icon/next-icon.png',
-        // 'https://link-to-your-icon/next-icon.png',
-      ]} />
+  
     </ScrollView>
   );
 };
@@ -52,6 +64,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#666',
     marginBottom: 20,
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: '#CCCCCC',
+  },
+  dividerText: {
+    marginHorizontal: 10,
+    fontWeight: 'bold',
+    color: '#AAAAAA',
   },
 });
 

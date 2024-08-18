@@ -27,8 +27,8 @@ const SectionCard: React.FC<SectionCardProps> = ({ title, subtitle }) => {
 const styles = StyleSheet.create({
   sectionCard: {
     backgroundColor: '#B199FF',
-    padding: 15,
-    borderRadius: 10,
+    padding: 25,
+    borderRadius: 15,
     marginBottom: 20,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -46,7 +46,9 @@ const styles = StyleSheet.create({
   sectionButton: {
     backgroundColor: '#7654F2',
     padding: 10,
-    borderRadius: 20,
+    borderRadius: 10,
+    borderColor: '#5E43C2',
+    borderWidth: 2,
   },
 });
 
