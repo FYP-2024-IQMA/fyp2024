@@ -26,12 +26,12 @@ describe("POST /accounts/createaccount", () => {
 
     const mockAccount = [
         {
-            userId: "1",
+            userID: "1",
             firstName: "John",
             lastName: "Doe",
             email: "john.doe@example.com",
             role: "learner",
-        }
+        },
     ];
 
     it("should create an account and return 201 on success", async () => {
@@ -44,7 +44,7 @@ describe("POST /accounts/createaccount", () => {
 
         expect(response.status).toBe(201);
         expect(response.body).toEqual({
-            userid: mockAccount[0].userid,
+            userID: mockAccount[0].userID,
             status: 201,
             statusText: "Created",
         });
@@ -76,16 +76,16 @@ describe("GET /accounts/getallaccounts", () => {
     it("should return 200 and the list of accounts on success", async () => {
         const mockAccounts = [
             {
-                userId: "1",
+                userID: "1",
                 firstName: "John",
                 lastName: "Doe",
-                email: "john.doe@example.com"
+                email: "john.doe@example.com",
             },
             {
-                userId: "2",
+                userID: "2",
                 firstName: "Jane",
                 lastName: "Doe",
-                email: "jane.doe@example.com"
+                email: "jane.doe@example.com",
             },
         ];
 
@@ -117,17 +117,17 @@ describe("GET /accounts/getallaccounts", () => {
 describe("GET /accounts/getaccountbyid", () => {
 
     const mockAccounts = {
-        userId: "1",
+        userID: "1",
         firstName: "John",
         lastName: "Doe",
-        email: "john.doe@example.com"
+        email: "john.doe@example.com",
     };
 
     it("should return 200 and the account on success", async () => {
 
         accountsService.getAccountById.mockResolvedValue(mockAccounts);
 
-        const response = await request(app).get(`/accounts/getaccountbyid/${mockAccounts.userId}`);
+        const response = await request(app).get(`/accounts/getaccountbyid/${mockAccounts.userID}`);
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockAccounts);
@@ -139,7 +139,7 @@ describe("GET /accounts/getaccountbyid", () => {
 
         accountsService.getAccountById.mockRejectedValue(mockError);
 
-        const response = await request(app).get(`/accounts/getaccountbyid/${mockAccounts.userId}`);
+        const response = await request(app).get(`/accounts/getaccountbyid/${mockAccounts.userID}`);
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -153,18 +153,18 @@ describe("GET /accounts/getaccountbyid", () => {
 describe("GET /accounts/getaccountsbyrole", () => {
     const mockAccounts = [
         {
-            userId: "1",
+            userID: "1",
             firstName: "John",
             lastName: "Doe",
             email: "john.doe@example.com",
-            role: "learner"
+            role: "learner",
         },
         {
-            userId: "2",
+            userID: "2",
             firstName: "Jane",
             lastName: "Doe",
             email: "jane.doe@example.com",
-            role: "learner"
+            role: "learner",
         },
     ];
 
@@ -211,7 +211,7 @@ describe("GET /accounts/getaccountsbyrole", () => {
 describe("PATCH /accounts/updateaccount", () => {
 
     const mockAccount = {
-        userId: "1",
+        userID: "1",
         firstName: "John",
         lastName: "Doe",
         email: "john.doe@example.com",

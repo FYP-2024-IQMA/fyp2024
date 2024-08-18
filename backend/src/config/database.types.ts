@@ -12,33 +12,33 @@ export type Database = {
       accounts: {
         Row: {
           age: Database["public"]["Enums"]["age_type"]
-          datecreated: string | null
+          dateCreated: string | null
           email: string
-          firstname: string
+          firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
-          lastname: string
+          lastName: string
           role: Database["public"]["Enums"]["role"]
-          userid: string
+          userID: string
         }
         Insert: {
           age: Database["public"]["Enums"]["age_type"]
-          datecreated?: string | null
+          dateCreated?: string | null
           email: string
-          firstname: string
+          firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
-          lastname: string
+          lastName: string
           role: Database["public"]["Enums"]["role"]
-          userid: string
+          userID: string
         }
         Update: {
           age?: Database["public"]["Enums"]["age_type"]
-          datecreated?: string | null
+          dateCreated?: string | null
           email?: string
-          firstname?: string
+          firstName?: string
           gender?: Database["public"]["Enums"]["gender_type"]
-          lastname?: string
+          lastName?: string
           role?: Database["public"]["Enums"]["role"]
-          userid?: string
+          userID?: string
         }
         Relationships: []
       }
@@ -46,558 +46,555 @@ export type Database = {
         Row: {
           attitude: Database["public"]["Enums"]["attitude_towards_learning_type"]
           barriers: Database["public"]["Enums"]["barriers_to_learning_interests_type"][]
-          motivationallevel: Database["public"]["Enums"]["motivational_level_type"]
+          motivationalLevel: Database["public"]["Enums"]["motivational_level_type"]
           personality: Database["public"]["Enums"]["personality_type"]
           reasons: Database["public"]["Enums"]["reasons_for_attending_section_type"][]
-          userid: string
+          userID: string
         }
         Insert: {
           attitude: Database["public"]["Enums"]["attitude_towards_learning_type"]
           barriers: Database["public"]["Enums"]["barriers_to_learning_interests_type"][]
-          motivationallevel: Database["public"]["Enums"]["motivational_level_type"]
+          motivationalLevel: Database["public"]["Enums"]["motivational_level_type"]
           personality: Database["public"]["Enums"]["personality_type"]
           reasons: Database["public"]["Enums"]["reasons_for_attending_section_type"][]
-          userid: string
+          userID: string
         }
         Update: {
           attitude?: Database["public"]["Enums"]["attitude_towards_learning_type"]
           barriers?: Database["public"]["Enums"]["barriers_to_learning_interests_type"][]
-          motivationallevel?: Database["public"]["Enums"]["motivational_level_type"]
+          motivationalLevel?: Database["public"]["Enums"]["motivational_level_type"]
           personality?: Database["public"]["Enums"]["personality_type"]
           reasons?: Database["public"]["Enums"]["reasons_for_attending_section_type"][]
-          userid?: string
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "accountsaffective_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "accountsaffective_userID_fkey"
+            columns: ["userID"]
             isOneToOne: true
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       accountscognitive: {
         Row: {
-          educationallevel: Database["public"]["Enums"]["educational_level_type"]
-          languageabilities: Database["public"]["Enums"]["language_abilities_type"]
-          learningpreferences: Database["public"]["Enums"]["learning_preferences_type"]
-          litnumproficiency: Database["public"]["Enums"]["literacy_numeracy_proficiency_type"]
-          priorknowledge: Database["public"]["Enums"]["prior_knowledge_skills_type"]
-          userid: string
+          educationalLevel: Database["public"]["Enums"]["educational_level_type"]
+          languageAbilities: Database["public"]["Enums"]["language_abilities_type"]
+          learningPreferences: Database["public"]["Enums"]["learning_preferences_type"]
+          litNumProficiency: Database["public"]["Enums"]["literacy_numeracy_proficiency_type"]
+          priorKnowledge: Database["public"]["Enums"]["prior_knowledge_skills_type"]
+          userID: string
         }
         Insert: {
-          educationallevel: Database["public"]["Enums"]["educational_level_type"]
-          languageabilities: Database["public"]["Enums"]["language_abilities_type"]
-          learningpreferences: Database["public"]["Enums"]["learning_preferences_type"]
-          litnumproficiency: Database["public"]["Enums"]["literacy_numeracy_proficiency_type"]
-          priorknowledge: Database["public"]["Enums"]["prior_knowledge_skills_type"]
-          userid: string
+          educationalLevel: Database["public"]["Enums"]["educational_level_type"]
+          languageAbilities: Database["public"]["Enums"]["language_abilities_type"]
+          learningPreferences: Database["public"]["Enums"]["learning_preferences_type"]
+          litNumProficiency: Database["public"]["Enums"]["literacy_numeracy_proficiency_type"]
+          priorKnowledge: Database["public"]["Enums"]["prior_knowledge_skills_type"]
+          userID: string
         }
         Update: {
-          educationallevel?: Database["public"]["Enums"]["educational_level_type"]
-          languageabilities?: Database["public"]["Enums"]["language_abilities_type"]
-          learningpreferences?: Database["public"]["Enums"]["learning_preferences_type"]
-          litnumproficiency?: Database["public"]["Enums"]["literacy_numeracy_proficiency_type"]
-          priorknowledge?: Database["public"]["Enums"]["prior_knowledge_skills_type"]
-          userid?: string
+          educationalLevel?: Database["public"]["Enums"]["educational_level_type"]
+          languageAbilities?: Database["public"]["Enums"]["language_abilities_type"]
+          learningPreferences?: Database["public"]["Enums"]["learning_preferences_type"]
+          litNumProficiency?: Database["public"]["Enums"]["literacy_numeracy_proficiency_type"]
+          priorKnowledge?: Database["public"]["Enums"]["prior_knowledge_skills_type"]
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "accountscognitive_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "accountscognitive_userID_fkey"
+            columns: ["userID"]
             isOneToOne: true
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       accountsdemographics: {
         Row: {
-          careerstage: Database["public"]["Enums"]["career_stage_type"]
-          ethnicgroup: string
-          jobcategory: Database["public"]["Enums"]["job_category_type"]
-          lifestage: Database["public"]["Enums"]["life_stage_type"]
+          careerStage: Database["public"]["Enums"]["career_stage_type"]
+          ethnicGroup: string
+          jobCategory: Database["public"]["Enums"]["job_category_type"]
+          lifeStage: Database["public"]["Enums"]["life_stage_type"]
           race: Database["public"]["Enums"]["race_type"]
-          specialneeds: Database["public"]["Enums"]["special_needs_type"]
-          userid: string
+          specialNeeds: Database["public"]["Enums"]["special_needs_type"]
+          userID: string
         }
         Insert: {
-          careerstage: Database["public"]["Enums"]["career_stage_type"]
-          ethnicgroup: string
-          jobcategory: Database["public"]["Enums"]["job_category_type"]
-          lifestage: Database["public"]["Enums"]["life_stage_type"]
+          careerStage: Database["public"]["Enums"]["career_stage_type"]
+          ethnicGroup: string
+          jobCategory: Database["public"]["Enums"]["job_category_type"]
+          lifeStage: Database["public"]["Enums"]["life_stage_type"]
           race: Database["public"]["Enums"]["race_type"]
-          specialneeds: Database["public"]["Enums"]["special_needs_type"]
-          userid: string
+          specialNeeds: Database["public"]["Enums"]["special_needs_type"]
+          userID: string
         }
         Update: {
-          careerstage?: Database["public"]["Enums"]["career_stage_type"]
-          ethnicgroup?: string
-          jobcategory?: Database["public"]["Enums"]["job_category_type"]
-          lifestage?: Database["public"]["Enums"]["life_stage_type"]
+          careerStage?: Database["public"]["Enums"]["career_stage_type"]
+          ethnicGroup?: string
+          jobCategory?: Database["public"]["Enums"]["job_category_type"]
+          lifeStage?: Database["public"]["Enums"]["life_stage_type"]
           race?: Database["public"]["Enums"]["race_type"]
-          specialneeds?: Database["public"]["Enums"]["special_needs_type"]
-          userid?: string
+          specialNeeds?: Database["public"]["Enums"]["special_needs_type"]
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "accountsdemographics_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "accountsdemographics_userID_fkey"
+            columns: ["userID"]
             isOneToOne: true
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       accountssocial: {
         Row: {
-          compliteracy: Database["public"]["Enums"]["computer_literacy_type"]
-          relationshiptopeers: Database["public"]["Enums"]["relationship_to_peers_type"]
-          socialbackground: Database["public"]["Enums"]["social_background_type"]
+          compLiteracy: Database["public"]["Enums"]["computer_literacy_type"]
+          relationshipToPeers: Database["public"]["Enums"]["relationship_to_peers_type"]
+          socialBackground: Database["public"]["Enums"]["social_background_type"]
           tendency: Database["public"]["Enums"]["tendency_to_compete_or_cooperate_type"]
-          userid: string
+          userID: string
         }
         Insert: {
-          compliteracy: Database["public"]["Enums"]["computer_literacy_type"]
-          relationshiptopeers: Database["public"]["Enums"]["relationship_to_peers_type"]
-          socialbackground: Database["public"]["Enums"]["social_background_type"]
+          compLiteracy: Database["public"]["Enums"]["computer_literacy_type"]
+          relationshipToPeers: Database["public"]["Enums"]["relationship_to_peers_type"]
+          socialBackground: Database["public"]["Enums"]["social_background_type"]
           tendency: Database["public"]["Enums"]["tendency_to_compete_or_cooperate_type"]
-          userid: string
+          userID: string
         }
         Update: {
-          compliteracy?: Database["public"]["Enums"]["computer_literacy_type"]
-          relationshiptopeers?: Database["public"]["Enums"]["relationship_to_peers_type"]
-          socialbackground?: Database["public"]["Enums"]["social_background_type"]
+          compLiteracy?: Database["public"]["Enums"]["computer_literacy_type"]
+          relationshipToPeers?: Database["public"]["Enums"]["relationship_to_peers_type"]
+          socialBackground?: Database["public"]["Enums"]["social_background_type"]
           tendency?: Database["public"]["Enums"]["tendency_to_compete_or_cooperate_type"]
-          userid?: string
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "accountssocial_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "accountssocial_userID_fkey"
+            columns: ["userID"]
             isOneToOne: true
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       certificate: {
         Row: {
-          certificateid: number
-          certificateurl: string | null
-          issuedate: string | null
+          certificateID: number
+          certificateURL: string | null
+          issueDate: string | null
           provider: string
-          sectionid: string
-          userid: string
+          sectionID: string
+          userID: string
         }
         Insert: {
-          certificateid?: number
-          certificateurl?: string | null
-          issuedate?: string | null
+          certificateID?: number
+          certificateURL?: string | null
+          issueDate?: string | null
           provider: string
-          sectionid: string
-          userid: string
+          sectionID: string
+          userID: string
         }
         Update: {
-          certificateid?: number
-          certificateurl?: string | null
-          issuedate?: string | null
+          certificateID?: number
+          certificateURL?: string | null
+          issueDate?: string | null
           provider?: string
-          sectionid?: string
-          userid?: string
+          sectionID?: string
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "certificate_sectionid_fkey"
-            columns: ["sectionid"]
+            foreignKeyName: "certificate_sectionID_fkey"
+            columns: ["sectionID"]
             isOneToOne: false
             referencedRelation: "section"
-            referencedColumns: ["sectionid"]
+            referencedColumns: ["sectionID"]
           },
           {
-            foreignKeyName: "certificate_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "certificate_userID_fkey"
+            columns: ["userID"]
             isOneToOne: false
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       chat: {
         Row: {
-          chattext: string
-          datecreated: string
-          role: Database["public"]["Enums"]["chat_role"]
-          sectionid: string
-          userid: string
+          dateCreated: string
+          queryPair: Json[] | null
+          sectionID: string
+          userID: string
         }
         Insert: {
-          chattext: string
-          datecreated?: string
-          role: Database["public"]["Enums"]["chat_role"]
-          sectionid: string
-          userid: string
+          dateCreated?: string
+          queryPair?: Json[] | null
+          sectionID: string
+          userID: string
         }
         Update: {
-          chattext?: string
-          datecreated?: string
-          role?: Database["public"]["Enums"]["chat_role"]
-          sectionid?: string
-          userid?: string
+          dateCreated?: string
+          queryPair?: Json[] | null
+          sectionID?: string
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "chat_sectionid_fkey"
-            columns: ["sectionid"]
+            foreignKeyName: "chat_sectionID_fkey"
+            columns: ["sectionID"]
             isOneToOne: false
             referencedRelation: "section"
-            referencedColumns: ["sectionid"]
+            referencedColumns: ["sectionID"]
           },
           {
-            foreignKeyName: "chat_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "chat_userID_fkey"
+            columns: ["userID"]
             isOneToOne: false
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       lesson: {
         Row: {
-          datecreated: string | null
-          lessoncheatsheet: string | null
-          lessondescription: string | null
-          lessonduration: number | null
-          lessonid: string
-          lessonkeytakeaway: string | null
-          lessonname: string
-          lessontext: string | null
-          lessonurl: string | null
-          sectionid: string
-          unitid: string
+          dateCreated: string | null
+          lessonCheatSheet: string | null
+          lessonDescription: string | null
+          lessonDuration: number | null
+          lessonID: string
+          lessonKeyTakeaway: string | null
+          lessonName: string
+          lessonText: string | null
+          lessonURL: string | null
+          sectionID: string
+          unitID: string
         }
         Insert: {
-          datecreated?: string | null
-          lessoncheatsheet?: string | null
-          lessondescription?: string | null
-          lessonduration?: number | null
-          lessonid: string
-          lessonkeytakeaway?: string | null
-          lessonname: string
-          lessontext?: string | null
-          lessonurl?: string | null
-          sectionid: string
-          unitid: string
+          dateCreated?: string | null
+          lessonCheatSheet?: string | null
+          lessonDescription?: string | null
+          lessonDuration?: number | null
+          lessonID: string
+          lessonKeyTakeaway?: string | null
+          lessonName: string
+          lessonText?: string | null
+          lessonURL?: string | null
+          sectionID: string
+          unitID: string
         }
         Update: {
-          datecreated?: string | null
-          lessoncheatsheet?: string | null
-          lessondescription?: string | null
-          lessonduration?: number | null
-          lessonid?: string
-          lessonkeytakeaway?: string | null
-          lessonname?: string
-          lessontext?: string | null
-          lessonurl?: string | null
-          sectionid?: string
-          unitid?: string
+          dateCreated?: string | null
+          lessonCheatSheet?: string | null
+          lessonDescription?: string | null
+          lessonDuration?: number | null
+          lessonID?: string
+          lessonKeyTakeaway?: string | null
+          lessonName?: string
+          lessonText?: string | null
+          lessonURL?: string | null
+          sectionID?: string
+          unitID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "lesson_sectionid_unitid_fkey"
-            columns: ["sectionid", "unitid"]
+            foreignKeyName: "lesson_sectionID_unitID_fkey"
+            columns: ["sectionID", "unitID"]
             isOneToOne: false
             referencedRelation: "unit"
-            referencedColumns: ["sectionid", "unitid"]
+            referencedColumns: ["sectionID", "unitID"]
           },
         ]
       }
       question: {
         Row: {
           answer: string | null
-          isselfreflection: boolean
+          isSelfReflection: boolean
           option1: Json | null
           option2: Json | null
           option3: Json | null
           option4: Json | null
           question: string
-          questionno: number
-          quizid: number
+          questionNo: number
+          quizID: number
         }
         Insert: {
           answer?: string | null
-          isselfreflection: boolean
+          isSelfReflection: boolean
           option1?: Json | null
           option2?: Json | null
           option3?: Json | null
           option4?: Json | null
           question: string
-          questionno: number
-          quizid: number
+          questionNo: number
+          quizID: number
         }
         Update: {
           answer?: string | null
-          isselfreflection?: boolean
+          isSelfReflection?: boolean
           option1?: Json | null
           option2?: Json | null
           option3?: Json | null
           option4?: Json | null
           question?: string
-          questionno?: number
-          quizid?: number
+          questionNo?: number
+          quizID?: number
         }
         Relationships: [
           {
-            foreignKeyName: "question_quizid_fkey"
-            columns: ["quizid"]
+            foreignKeyName: "question_quizID_fkey"
+            columns: ["quizID"]
             isOneToOne: false
             referencedRelation: "quiz"
-            referencedColumns: ["quizid"]
+            referencedColumns: ["quizID"]
           },
         ]
       }
       quiz: {
         Row: {
-          lastupdated: string | null
-          lessonid: string | null
-          quizid: number
-          quiztype: Database["public"]["Enums"]["quiz_type"]
-          sectionid: string
-          unitid: string | null
+          lastUpdated: string | null
+          lessonID: string | null
+          quizID: number
+          quizType: Database["public"]["Enums"]["quiz_type"]
+          sectionID: string
+          unitID: string | null
         }
         Insert: {
-          lastupdated?: string | null
-          lessonid?: string | null
-          quizid?: number
-          quiztype: Database["public"]["Enums"]["quiz_type"]
-          sectionid: string
-          unitid?: string | null
+          lastUpdated?: string | null
+          lessonID?: string | null
+          quizID?: number
+          quizType: Database["public"]["Enums"]["quiz_type"]
+          sectionID: string
+          unitID?: string | null
         }
         Update: {
-          lastupdated?: string | null
-          lessonid?: string | null
-          quizid?: number
-          quiztype?: Database["public"]["Enums"]["quiz_type"]
-          sectionid?: string
-          unitid?: string | null
+          lastUpdated?: string | null
+          lessonID?: string | null
+          quizID?: number
+          quizType?: Database["public"]["Enums"]["quiz_type"]
+          sectionID?: string
+          unitID?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "quiz_sectionid_fkey"
-            columns: ["sectionid"]
+            foreignKeyName: "quiz_sectionID_fkey"
+            columns: ["sectionID"]
             isOneToOne: false
             referencedRelation: "section"
-            referencedColumns: ["sectionid"]
+            referencedColumns: ["sectionID"]
           },
           {
-            foreignKeyName: "quiz_sectionid_unitid_fkey"
-            columns: ["sectionid", "unitid"]
+            foreignKeyName: "quiz_sectionID_unitID_fkey"
+            columns: ["sectionID", "unitID"]
             isOneToOne: false
             referencedRelation: "unit"
-            referencedColumns: ["sectionid", "unitid"]
+            referencedColumns: ["sectionID", "unitID"]
           },
           {
-            foreignKeyName: "quiz_sectionid_unitid_lessonid_fkey"
-            columns: ["sectionid", "unitid", "lessonid"]
+            foreignKeyName: "quiz_sectionID_unitID_lessonID_fkey"
+            columns: ["sectionID", "unitID", "lessonID"]
             isOneToOne: false
             referencedRelation: "lesson"
-            referencedColumns: ["sectionid", "unitid", "lessonid"]
+            referencedColumns: ["sectionID", "unitID", "lessonID"]
           },
         ]
       }
       response: {
         Row: {
-          questionno: number
-          quizid: number
+          questionNo: number
+          quizID: number
           response: string | null
-          userid: string
+          userID: string
         }
         Insert: {
-          questionno: number
-          quizid: number
+          questionNo: number
+          quizID: number
           response?: string | null
-          userid: string
+          userID: string
         }
         Update: {
-          questionno?: number
-          quizid?: number
+          questionNo?: number
+          quizID?: number
           response?: string | null
-          userid?: string
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "response_quizid_questionno_fkey"
-            columns: ["quizid", "questionno"]
+            foreignKeyName: "response_quizID_questionNo_fkey"
+            columns: ["quizID", "questionNo"]
             isOneToOne: false
             referencedRelation: "question"
-            referencedColumns: ["quizid", "questionno"]
+            referencedColumns: ["quizID", "questionNo"]
           },
           {
-            foreignKeyName: "response_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "response_userID_fkey"
+            columns: ["userID"]
             isOneToOne: false
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       result: {
         Row: {
-          datecreated: string | null
-          quizid: number
+          dateCreated: string | null
+          quizID: number
           score: number
-          userid: string
+          userID: string
         }
         Insert: {
-          datecreated?: string | null
-          quizid: number
+          dateCreated?: string | null
+          quizID: number
           score: number
-          userid: string
+          userID: string
         }
         Update: {
-          datecreated?: string | null
-          quizid?: number
+          dateCreated?: string | null
+          quizID?: number
           score?: number
-          userid?: string
+          userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "result_quizid_fkey"
-            columns: ["quizid"]
+            foreignKeyName: "result_quizID_fkey"
+            columns: ["quizID"]
             isOneToOne: false
             referencedRelation: "quiz"
-            referencedColumns: ["quizid"]
+            referencedColumns: ["quizID"]
           },
           {
-            foreignKeyName: "result_userid_fkey"
-            columns: ["userid"]
+            foreignKeyName: "result_userID_fkey"
+            columns: ["userID"]
             isOneToOne: false
             referencedRelation: "accounts"
-            referencedColumns: ["userid"]
+            referencedColumns: ["userID"]
           },
         ]
       }
       section: {
         Row: {
-          datecreated: string | null
-          finalassessmentintro: string | null
-          finalscenario: string | null
-          introductionurl: string | null
-          sectiondescription: string | null
-          sectionid: string
-          sectionname: string
-          skillsfutureccs: string
+          dateCreated: string | null
+          finalAssessmentIntro: string | null
+          finalScenario: string | null
+          introductionURL: string | null
+          sectionDescription: string | null
+          sectionID: string
+          sectionName: string
+          skillsFutureCCS: string
         }
         Insert: {
-          datecreated?: string | null
-          finalassessmentintro?: string | null
-          finalscenario?: string | null
-          introductionurl?: string | null
-          sectiondescription?: string | null
-          sectionid: string
-          sectionname: string
-          skillsfutureccs: string
+          dateCreated?: string | null
+          finalAssessmentIntro?: string | null
+          finalScenario?: string | null
+          introductionURL?: string | null
+          sectionDescription?: string | null
+          sectionID: string
+          sectionName: string
+          skillsFutureCCS: string
         }
         Update: {
-          datecreated?: string | null
-          finalassessmentintro?: string | null
-          finalscenario?: string | null
-          introductionurl?: string | null
-          sectiondescription?: string | null
-          sectionid?: string
-          sectionname?: string
-          skillsfutureccs?: string
+          dateCreated?: string | null
+          finalAssessmentIntro?: string | null
+          finalScenario?: string | null
+          introductionURL?: string | null
+          sectionDescription?: string | null
+          sectionID?: string
+          sectionName?: string
+          skillsFutureCCS?: string
         }
         Relationships: [
           {
-            foreignKeyName: "section_skillsfutureccs_fkey"
-            columns: ["skillsfutureccs"]
+            foreignKeyName: "section_skillsFutureCCS_fkey"
+            columns: ["skillsFutureCCS"]
             isOneToOne: false
             referencedRelation: "skillsfuturemapping"
-            referencedColumns: ["skillsfutureccs"]
+            referencedColumns: ["skillsFutureCCS"]
           },
         ]
       }
       sectionsequence: {
         Row: {
           age: Database["public"]["Enums"]["age_type"]
-          sectionid: string
-          sequenceno: number
+          sectionID: string
+          sequenceNo: number
         }
         Insert: {
           age: Database["public"]["Enums"]["age_type"]
-          sectionid: string
-          sequenceno: number
+          sectionID: string
+          sequenceNo: number
         }
         Update: {
           age?: Database["public"]["Enums"]["age_type"]
-          sectionid?: string
-          sequenceno?: number
+          sectionID?: string
+          sequenceNo?: number
         }
         Relationships: [
           {
-            foreignKeyName: "sectionsequence_sectionid_fkey"
-            columns: ["sectionid"]
+            foreignKeyName: "sectionsequence_sectionID_fkey"
+            columns: ["sectionID"]
             isOneToOne: false
             referencedRelation: "section"
-            referencedColumns: ["sectionid"]
+            referencedColumns: ["sectionID"]
           },
         ]
       }
       skillsfuturemapping: {
         Row: {
           cluster: string
-          skillsfutureccs: string
+          skillsFutureCCS: string
         }
         Insert: {
           cluster: string
-          skillsfutureccs: string
+          skillsFutureCCS: string
         }
         Update: {
           cluster?: string
-          skillsfutureccs?: string
+          skillsFutureCCS?: string
         }
         Relationships: []
       }
       unit: {
         Row: {
-          assessmentintro: string | null
-          datecreated: string | null
-          realitycheck: string | null
+          assessmentIntro: string | null
+          dateCreated: string | null
+          realityCheck: string | null
           scenario: string | null
-          sectionid: string
-          unitdescription: string | null
-          unitid: string
-          unitname: string
+          sectionID: string
+          unitDescription: string | null
+          unitID: string
+          unitName: string
         }
         Insert: {
-          assessmentintro?: string | null
-          datecreated?: string | null
-          realitycheck?: string | null
+          assessmentIntro?: string | null
+          dateCreated?: string | null
+          realityCheck?: string | null
           scenario?: string | null
-          sectionid: string
-          unitdescription?: string | null
-          unitid: string
-          unitname: string
+          sectionID: string
+          unitDescription?: string | null
+          unitID: string
+          unitName: string
         }
         Update: {
-          assessmentintro?: string | null
-          datecreated?: string | null
-          realitycheck?: string | null
+          assessmentIntro?: string | null
+          dateCreated?: string | null
+          realityCheck?: string | null
           scenario?: string | null
-          sectionid?: string
-          unitdescription?: string | null
-          unitid?: string
-          unitname?: string
+          sectionID?: string
+          unitDescription?: string | null
+          unitID?: string
+          unitName?: string
         }
         Relationships: [
           {
-            foreignKeyName: "unit_sectionid_fkey"
-            columns: ["sectionid"]
+            foreignKeyName: "unit_sectionID_fkey"
+            columns: ["sectionID"]
             isOneToOne: false
             referencedRelation: "section"
-            referencedColumns: ["sectionid"]
+            referencedColumns: ["sectionID"]
           },
         ]
       }
@@ -621,7 +618,6 @@ export type Database = {
         | "Accessibility"
         | "Interest"
       career_stage_type: "Starter" | "Builder" | "Accelerator" | "Expert"
-      chat_role: "system" | "user"
       computer_literacy_type: "Advanced" | "Intermediate" | "Basic" | "None"
       educational_level_type:
         | "High school or below"

@@ -1,7 +1,7 @@
 import { Enums } from "../config/database.types";
 
 export interface Accounts {
-    userId: string;
+    userID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -20,7 +20,7 @@ export interface Accounts {
 }
 
 export class Learner implements Accounts {
-    userId: string;
+    userID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -30,7 +30,7 @@ export class Learner implements Accounts {
     gender: Enums<"gender_type">;
 
     constructor(
-        userId: string,
+        userID: string,
         firstName: string,
         lastName: string,
         email: string,
@@ -39,7 +39,7 @@ export class Learner implements Accounts {
         age: Enums<"age_type">,
         gender: Enums<"gender_type">
     ) {
-        this.userId = userId;
+        this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -79,7 +79,7 @@ export class Learner implements Accounts {
 }
 
 export class Admin implements Accounts {
-    userId: string;
+    userID: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -89,7 +89,7 @@ export class Admin implements Accounts {
     gender: Enums<"gender_type">;
 
     constructor(
-        userId: string,
+        userID: string,
         firstName: string,
         lastName: string,
         email: string,
@@ -98,7 +98,7 @@ export class Admin implements Accounts {
         age: Enums<"age_type">,
         gender: Enums<"gender_type">
     ) {
-        this.userId = userId;
+        this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
