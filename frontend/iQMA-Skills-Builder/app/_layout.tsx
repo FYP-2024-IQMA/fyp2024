@@ -12,57 +12,12 @@ import HomeScreen from "./screens/Home";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import ProfilePage from "./screens/ProfilePage";
+import SettingPage from "./screens/Settings";
+import { Stack } from "expo-router";
 import config from "../config/auth0-configuration";
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs";
 import useColorScheme from "@/hooks/useColorScheme";
 import { useDrawerStatus } from '@react-navigation/drawer';
-
-const Tab = createBottomTabNavigator();
-
-// for bottom tabs
-const AppTabs: React.FC = () => {
-    const colorScheme = useColorScheme();
-    const tabBarOptions = {
-        activeTintColor: '#FFFFFF',
-        inactiveTintColor: '#BBBBBB',
-        style: {
-            backgroundColor: '#7654F2',
-        },
-    }
-
-    return (
-    // screen options expects an object or a function that returns an object
-    <Tab.Navigator
-    screenOptions={({ route }) => ({
-        headerTitleAlign: 'center',
-      headerStyle: { backgroundColor: '#B199FF'},  
-      tabBarActiveTintColor: tabBarOptions.activeTintColor,
-      tabBarInactiveTintColor: tabBarOptions.inactiveTintColor,
-      tabBarStyle: {
-        ...tabBarOptions.style,
-        justifyContent: 'center', 
-        alignItems: 'center',    
-        paddingHorizontal: 80,  
-    },
-    tabBarContentContainerStyle: {
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-      tabBarShowLabel: false,
-    })}>
-      <Tab.Screen name="screens/Home" component={HomeScreen} options={{ title: 'Home Page', tabBarIcon: ({ color, size }) => (
-        <Ionicons name="home" color={color} size={size} />
-      )}}/>
-      <Tab.Screen name="screens/Chatbot" component={ChatbotDrawer}  options={{ headerShown:false,  tabBarIcon: ({ color, size }) => (
-        <Ionicons name="chatbox-ellipses-outline" color={color} size={size} />
-      ), 
-      }}/>
-      <Tab.Screen name="screens/ProfilePage" component={ProfilePage} options={{ title: 'Profile', tabBarIcon: ({ color, size }) => (
-        <MaterialIcons name="manage-accounts" size={size} color={color} />
-      )}}/>
-    </Tab.Navigator>
-  );
-}
 
 // place to put ur headers, footers, and other layout components
 export default function RootLayout() {
@@ -83,14 +38,13 @@ export default function RootLayout() {
     return (
         <Auth0Provider domain={config.domain} clientId={config.clientId}>
             <AuthProvider>
-                {/* <NavigationContainer> */}
-                    {/* <Stack>
-                        <Stack.Screen name="index" />
-                    </Stack> */}
-                    <AppTabs />
-                {/* </NavigationContainer> */}
+                    <Stack>
+                        <Stack.Screen name="index" options={{ headerShown: false }} />
+                        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                    </Stack>
             </AuthProvider>
         </Auth0Provider>
+
     );
 }
 

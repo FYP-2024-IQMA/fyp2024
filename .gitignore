@@ -7,4 +7,5 @@ frontend/package-lock.json
 backend/package-lock.json
 venv
 .env
-.gguf
+android
+.idea
