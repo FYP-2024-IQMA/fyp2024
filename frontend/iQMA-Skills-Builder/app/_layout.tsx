@@ -40,7 +40,7 @@ const AppTabs: React.FC = () => {
       tabBarInactiveTintColor: tabBarOptions.inactiveTintColor,
       tabBarStyle: tabBarOptions.style,
     })}>
-      <Tab.Screen name="screens/Home" component={HomeScreen} options={{ title: 'Home Page', tabBarIcon: ({ color, size }) => (
+      <Tab.Screen name="screens/Home" component={HomeScreen} options={{ headerShown: false, tabBarIcon: ({ color, size }) => (
         <Ionicons name="home" color={color} size={size} />
       )}}/>
       <Tab.Screen name="screens/Chatbot" component={ChatbotDrawer}  options={{ headerShown:false,  tabBarIcon: ({ color, size }) => (
