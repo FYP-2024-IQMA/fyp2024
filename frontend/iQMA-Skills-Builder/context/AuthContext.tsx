@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setCurrentUser(user);
             fetchToken();
             console.log(user);
-            router.replace("/Home"); 
+            router.push("IntroductionMascot");
+            // router.replace("/Home"); 
         }
     };
 

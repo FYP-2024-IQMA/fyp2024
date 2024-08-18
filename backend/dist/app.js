@@ -5,11 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-const accountsRouter_1 = __importDefault(require("./route/accountsRouter"));
+const accountsRouter_1 = __importDefault(require("./routes/accountsRouter"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 const port = 3000;
-app.use(accountsRouter_1.default);
+app.use(express_1.default.json());
+// app.use(accountsRouter);
+app.use('/accounts', accountsRouter_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

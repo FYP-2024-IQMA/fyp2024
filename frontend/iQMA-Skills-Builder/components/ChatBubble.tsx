@@ -3,20 +3,17 @@ import React, { ReactNode } from 'react';
 
 interface ChatBubbleProps {
     children: ReactNode;
-    position: 'left' | 'right';
+    position: 'left' | 'right' | 'top';
     bubbleColor?: string; 
     textColor?: string;
     icon?: any;
     borderRadius?: number;
     showArrow?: boolean;
+    chatbot?: boolean;
 }
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", icon, borderRadius = 10, showArrow = true  }) => {
-    return (
-        <View style={[styles.bubbleWrapper, position === 'right' ? styles.alignRight : styles.alignLeft]}>
-        {icon && position === 'left' && (
-            <Image source={{ uri: icon }} style={styles.icon} />
-        )}
+export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", icon, borderRadius = 10, showArrow = true, chatbot  }) => {
+    const content = (
         <View style={[styles.container, getContainerAlignment(position)]}>
             {showArrow && (
                 <View style={[styles.arrowContainer, getArrowContainer(position)]}>
@@ -27,9 +24,22 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubb
                 <Text style={[styles.text, { color: textColor }]}>{children}</Text>
             </View>
         </View>
-    </View>
     );
+
+    if (chatbot && position === 'left') {
+        return (
+            <View style={[styles.bubbleWrapper, styles.alignLeft]}>
+                {icon && (
+                    <Image source={{ uri: icon }} style={styles.icon} />
+                )}
+                {content}
+            </View>
+        );
+    } else {
+        return content;
+    }
 };
+
 
 const getContainerAlignment = (position: string): ViewStyle => {
     switch (position) {
@@ -66,7 +76,6 @@ const styles = StyleSheet.create({
     bubbleWrapper: {
         flexDirection: 'row',
         alignItems: 'flex-start',
-        marginBottom: 20,
     },
     alignLeft: {
         justifyContent: 'flex-start',
@@ -79,9 +88,9 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     bubble: {
-        maxWidth: '85%',
+        maxWidth: '80%',
         position: 'relative',
-        backgroundColor: '#7654F2',
+        backgroundColor: "#7654F2",
         padding: 20,
         borderRadius: 10,
         shadowColor: 'black',
