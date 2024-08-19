@@ -35,6 +35,7 @@ router.get('/getaccountbyid/:id', accountsController.getAccountById);
 router.get('/getalllearneraccounts', accountsController.getAllLearnerAccounts);
 router.get('/getalladminaccounts', accountsController.getAllAdminAccounts);
 /* UPDATE */
+router.patch('/updateaccount', accountsController.updateAccount);
 /* DELETE */
 router.delete('/deleteaccount/:id', accountsController.deleteAccount);
 exports.default = router;
