@@ -16,10 +16,18 @@ export default function LearnerAssessmentDynamics() {
     const social: string[] = ['Urban', 'Suburban', 'Rural'];
     const computer: string[] = ['Advanced', 'Intermediate', 'Basic', 'None'];
 
+    const [isContinue, setIsContinue] = useState(true);
+
     console.log(selectedPeers, selectedTendency, selectedSocial, selectedComputer);
 
     const handlePress = () => {
-        router.push("LearnerAssessmentExperience")
+        if (!selectedPeers || !selectedTendency || !selectedSocial || !selectedComputer) {
+            setIsContinue(false);
+        }
+        else {
+            setIsContinue(true);
+            router.push("LearnerAssessmentExperience");
+        }
     };
 
     return (
@@ -34,7 +42,7 @@ export default function LearnerAssessmentDynamics() {
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.text, { flex: 1 }]}>Relationship {'\n'}To Peers</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedPeers ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedPeers}
                             onValueChange={(itemValue: string) => setPeers(itemValue)}
@@ -46,10 +54,16 @@ export default function LearnerAssessmentDynamics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedPeers && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Compete or {'\n'}Cooperate</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedTendency ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedTendency}
                             onValueChange={(itemValue: string) => setTendency(itemValue)}
@@ -61,10 +75,16 @@ export default function LearnerAssessmentDynamics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedTendency && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Social {'\n'}Background</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedSocial ? '#ff4c4c': '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedSocial}
                             onValueChange={(itemValue: string) => setSocial(itemValue)}
@@ -76,10 +96,16 @@ export default function LearnerAssessmentDynamics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedSocial && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Computer {'\n'}Literacy</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedComputer ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedComputer}
                             onValueChange={(itemValue: string) => setComputer(itemValue)}
@@ -91,11 +117,17 @@ export default function LearnerAssessmentDynamics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedComputer && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
             </View>
 
             <View style={{
                 alignSelf: 'center',
-                marginTop: 320
+                marginTop: 10
             }}>
                 <CustomButton label="continue" backgroundColor="white" onPressHandler={handlePress}/>
             </View>
@@ -113,5 +145,8 @@ const styles = StyleSheet.create({
     defaultOptionText: {
         color: '#5C5776',
         fontSize: 14
+    },
+    errorText: {
+        color: '#ff4c4c'
     }
 });

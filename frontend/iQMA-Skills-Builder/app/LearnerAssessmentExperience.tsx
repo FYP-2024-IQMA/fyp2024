@@ -18,6 +18,8 @@ export default function LearnerAssessmentExperience() {
     const personality: string[] = ['Extroverted', 'Introverted', 'Ambivert'];
     const reasons: string[] = ['Career advancement', 'Skill development', 'Personal interest', 'Requirement'];
 
+    const [isContinue, setIsContinue] = useState(true);
+
     const toggleBarrierCheckbox = (barrier: string) => {
         if (selectedBarriers.includes(barrier)) {
             setBarriers(selectedBarriers.filter(item => item !== barrier));
@@ -35,7 +37,13 @@ export default function LearnerAssessmentExperience() {
     };
 
     const handlePress = () => {
-        router.push("LearnerAssessmentComplete")
+        if (!selectedAttitude || !selectedMotivation || !selectedBarriers || !selectedPersonality || !selectedReasons) {
+            setIsContinue(false);
+        }
+        else {
+            setIsContinue(true);
+            router.push("LearnerAssessmentComplete");
+        }
     };
 
     console.log(selectedAttitude, selectedMotivation, selectedBarriers, selectedPersonality, selectedReasons);
@@ -52,7 +60,7 @@ export default function LearnerAssessmentExperience() {
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.text, { flex: 1 }]}>Learning {'\n'}Attitude</Text>
-                    <View style={{ flex: 2.3, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.3, borderWidth: 1, borderColor: !isContinue && !selectedAttitude ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedAttitude}
                             onValueChange={(itemValue: string) => setAttitude(itemValue)}
@@ -65,11 +73,17 @@ export default function LearnerAssessmentExperience() {
                     </View>
                 </View>
             </View>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}></View>
+                <View style={{ flex: 2.3 }}>
+                    {!selectedAttitude && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                </View>
+            </View>
 
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.text, { flex: 1 }]}>Motivational {'\n'}Level</Text>
-                    <View style={{ flex: 2.3, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.3, borderWidth: 1, borderColor: !isContinue && !selectedMotivation ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedMotivation}
                             onValueChange={(itemValue: string) => setMotivation(itemValue)}
@@ -80,6 +94,12 @@ export default function LearnerAssessmentExperience() {
                             ))}
                         </Picker>
                     </View>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}></View>
+                <View style={{ flex: 2.3 }}>
+                    {!selectedMotivation && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
                 </View>
             </View>
 
@@ -93,7 +113,7 @@ export default function LearnerAssessmentExperience() {
                                 onPress={() => toggleBarrierCheckbox(barrier)}
                                 style={styles.checkboxContainer}
                             >
-                                <View style={[styles.checkbox, selectedBarriers.includes(barrier) && styles.checkedCheckbox]}>
+                                <View style={[styles.checkbox, selectedBarriers.includes(barrier) && styles.checkedCheckbox, {borderColor: !isContinue && !selectedBarriers.length ? '#ff4c4c' : '#9CA3AF'}]}>
                                     {selectedBarriers.includes(barrier) && <Text style={styles.checkmark}>✓</Text>}
                                 </View>
                                 <Text style={styles.defaultOptionText}>{barrier}</Text>
@@ -102,11 +122,17 @@ export default function LearnerAssessmentExperience() {
                     </View>
                 </View>
             </View>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}></View>
+                <View style={{ flex: 2.3 }}>
+                    {!isContinue && !selectedBarriers.length && <Text style={[styles.errorText]}>This field is required.</Text>}
+                </View>
+            </View>
 
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.text, { flex: 1 }]}>Personality</Text>
-                    <View style={{ flex: 2.3, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.3, borderWidth: 1, borderColor: !isContinue && !selectedPersonality ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedPersonality}
                             onValueChange={(itemValue: string) => setPersonality(itemValue)}
@@ -117,6 +143,12 @@ export default function LearnerAssessmentExperience() {
                             ))}
                         </Picker>
                     </View>
+                </View>
+            </View>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}></View>
+                <View style={{ flex: 2.3 }}>
+                    {!selectedPersonality && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
                 </View>
             </View>
 
@@ -130,7 +162,7 @@ export default function LearnerAssessmentExperience() {
                                 onPress={() => toggleReasonCheckbox(reason)}
                                 style={styles.checkboxContainer}
                             >
-                                <View style={[styles.checkbox, selectedReasons.includes(reason) && styles.checkedCheckbox]}>
+                                <View style={[styles.checkbox, selectedReasons.includes(reason) && styles.checkedCheckbox, {borderColor: !isContinue && !selectedReasons.length ? '#ff4c4c' : '#9CA3AF'}]}>
                                     {selectedReasons.includes(reason) && <Text style={styles.checkmark}>✓</Text>}
                                 </View>
                                 <Text style={styles.defaultOptionText}>{reason}</Text>
@@ -139,10 +171,16 @@ export default function LearnerAssessmentExperience() {
                     </View>
                 </View>
             </View>
+            <View style={{ flexDirection: 'row' }}>
+                <View style={{ flex: 1 }}></View>
+                <View style={{ flex: 2.3 }}>
+                    {!isContinue && !selectedReasons.length && <Text style={[styles.errorText]}>This field is required.</Text>}
+                </View>
+            </View>
 
             <View style={{
                 alignSelf: 'center',
-                marginTop: 75
+                marginTop: 10
             }}>
                 <CustomButton label="continue" backgroundColor="white" onPressHandler={handlePress}/>
             </View>
@@ -170,7 +208,6 @@ const styles = StyleSheet.create({
         width: 24,
         height: 24,
         borderWidth: 1,
-        borderColor: '#9CA3AF',
         borderRadius: 4,
         justifyContent: 'center',
         alignItems: 'center',
@@ -183,4 +220,7 @@ const styles = StyleSheet.create({
     checkmark: {
         color: 'white',
     },
+    errorText: {
+        color: '#ff4c4c'
+    }
 });

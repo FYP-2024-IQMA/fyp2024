@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import { Image, View, Text, StyleSheet } from 'react-native';
+import { Image, View, Text, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { ChatBubble } from '@/components/ChatBubble';
 import { CustomButton } from "@/components/CustomButton";
@@ -17,14 +17,22 @@ export default function LearnerAssessmentCognitive() {
     const literacy: string[] = ['Advanced', 'Intermediate', 'Basic', 'None'];
     const learning: string[] = ['Visual', 'Auditory', 'Kinesthetic', 'Reading/Writing'];
 
+    const [isContinue, setIsContinue] = useState(true);
+
     console.log([selectedEducation, selectedLanguage, selectedLiteracy, selectedLearning, selectedSkill]);
 
     const handlePress = () => {
-        router.push("LearnerAssessmentDynamics")
+        if (!selectedEducation || !selectedLanguage || !selectedLiteracy || !selectedLearning || !selectedSkill) {
+            setIsContinue(false);
+        }
+        else {
+            setIsContinue(true);
+            router.push("LearnerAssessmentDynamics");
+        }
     };
 
     return (
-        <View style={{ padding: 20, backgroundColor: "#FFFFFF" }}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} style={{ padding: 20, flex: 1, backgroundColor: "#FFFFFF" }}>
             <View style={{ flexDirection: 'row' }}>
                 <Image style={{ height: 100, width: 100, marginRight: 15 }} source={require('@/assets/images/mascot.png')} />
                 <View style={{ marginTop: 5 }}>
@@ -35,7 +43,7 @@ export default function LearnerAssessmentCognitive() {
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.text, { flex: 1 }]}>Education Level</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedEducation ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedEducation}
                             onValueChange={(itemValue: string) => setEducation(itemValue)}
@@ -47,10 +55,16 @@ export default function LearnerAssessmentCognitive() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedEducation && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Language Abilities</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedLanguage ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedLanguage}
                             onValueChange={(itemValue: string) => setLanguage(itemValue)}
@@ -62,10 +76,16 @@ export default function LearnerAssessmentCognitive() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedLanguage && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Literacy & Numeracy</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedLiteracy ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedLiteracy}
                             onValueChange={(itemValue: string) => setLiteracy(itemValue)}
@@ -77,10 +97,16 @@ export default function LearnerAssessmentCognitive() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedLiteracy && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Learning{'\n'}Preferences</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedLearning ? '#ff4c4c': '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedLearning}
                             onValueChange={(itemValue: string) => setLearning(itemValue)}
@@ -92,10 +118,16 @@ export default function LearnerAssessmentCognitive() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedLearning && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Prior Knowledge & Skills</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedSkill ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedSkill}
                             onValueChange={(itemValue: string) => setSkill(itemValue)}
@@ -107,15 +139,21 @@ export default function LearnerAssessmentCognitive() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedSkill && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
             </View>
 
             <View style={{
                 alignSelf: 'center',
-                marginTop: 250
+                marginTop: 10
             }}>
                 <CustomButton label="continue" backgroundColor="white" onPressHandler={handlePress}/>
             </View>
-        </View>
+        </ScrollView>
     )
 }
 
@@ -129,5 +167,8 @@ const styles = StyleSheet.create({
     defaultOptionText: {
         color: '#5C5776',
         fontSize: 14
+    },
+    errorText: {
+        color: '#ff4c4c'
     }
 });
