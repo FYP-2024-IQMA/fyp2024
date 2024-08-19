@@ -40,7 +40,7 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     try {
         const account = yield accountsService.createAccount(accountBody);
         res.status(201).json({
-            userid: account[0].userid,
+            userID: account[0].userID,
             status: 201,
             statusText: "Created",
         });
