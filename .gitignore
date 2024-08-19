@@ -8,4 +8,4 @@ backend/package-lock.json
 venv
 .env
 android
-coverage
+.idea
