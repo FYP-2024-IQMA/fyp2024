@@ -3,6 +3,7 @@ import { LoginButton } from "@/components/LoginButton";
 import { LogoVisual } from "@/components/LogoVisual";
 import { Profile } from "@/components/Profile";
 
+// where things show up
 export default function Index() {
     return (
         <View

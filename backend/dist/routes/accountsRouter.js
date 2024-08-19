@@ -27,13 +27,11 @@ const express_1 = require("express");
 const accountsController = __importStar(require("../controllers/accountsController"));
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post('/createlearneraccount', accountsController.createLearnerAccount);
-router.post('/createadminaccount', accountsController.createAdminAccount);
+router.post("/createaccount", accountsController.createAccount);
 /* READ */
 router.get('/getallaccounts', accountsController.getAllAccounts);
 router.get('/getaccountbyid/:id', accountsController.getAccountById);
-router.get('/getalllearneraccounts', accountsController.getAllLearnerAccounts);
-router.get('/getalladminaccounts', accountsController.getAllAdminAccounts);
+router.get("/getaccountsbyrole/:role", accountsController.getAccountsByRole);
 /* UPDATE */
 router.patch('/updateaccount', accountsController.updateAccount);
 /* DELETE */

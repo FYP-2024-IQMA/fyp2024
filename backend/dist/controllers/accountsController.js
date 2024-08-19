@@ -32,45 +32,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.updateAccount = exports.getAllAdminAccounts = exports.getAllLearnerAccounts = exports.getAccountById = exports.getAllAccounts = exports.createAdminAccount = exports.createLearnerAccount = void 0;
+exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
 /* CREATE */
-const createLearnerAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const learner = req.body;
+const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const accountBody = req.body;
     try {
-        const account = yield accountsService.createLearnerAccount(learner);
+        const account = yield accountsService.createAccount(accountBody);
         res.status(201).json({
-            userid: account[0].userid,
+            userID: account[0].userID,
             status: 201,
             statusText: "Created",
         });
     }
     catch (error) {
         res.status(500).json({
-            error: "Failed to create Learner account",
+            error: `Failed to create ${accountBody.role} account`,
         });
-        console.log(error);
     }
 });
-exports.createLearnerAccount = createLearnerAccount;
-const createAdminAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const admin = req.body;
-    try {
-        const account = yield accountsService.createAdminAccount(admin);
-        res.status(201).json({
-            userid: account[0].userid,
-            status: 201,
-            statusText: "Created",
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            error: "Failed to create Admin account",
-        });
-        console.log(error);
-    }
-});
-exports.createAdminAccount = createAdminAccount;
+exports.createAccount = createAccount;
 /* READ */
 const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -92,37 +73,25 @@ const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.getAccountById = getAccountById;
-const getAllLearnerAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAccountsByRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const accounts = yield accountsService.getAllLearnerAccounts();
+        const accounts = yield accountsService.getAccountsByRole(req.params.role);
         res.status(200).json(accounts);
     }
     catch (error) {
         res.status(500).json({
-            error: "Failed to retrieve all learner accounts",
+            error: `Failed to retrieve all ${req.params.role} accounts`,
         });
     }
 });
-exports.getAllLearnerAccounts = getAllLearnerAccounts;
-const getAllAdminAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const accounts = yield accountsService.getAllAdminAccounts();
-        res.status(200).json(accounts);
-    }
-    catch (error) {
-        res.status(500).json({
-            error: "Failed to retrieve all admin accounts",
-        });
-    }
-});
-exports.getAllAdminAccounts = getAllAdminAccounts;
+exports.getAccountsByRole = getAccountsByRole;
 /* UPDATE */
 const updateAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const account = req.body;
     try {
         const response = yield accountsService.updateAccount(account);
         res.status(200).json({
-            status: response.status,
+            status: 200,
             statusText: "Account Updated Successfully",
         });
     }
@@ -135,9 +104,10 @@ exports.updateAccount = updateAccount;
 const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const response = yield accountsService.deleteAccount(req.params.id);
+        // response body will be empty
         res.status(200).json({
-            status: response.status,
-            statusText: "Account deleted Successfully",
+            status: 200,
+            statusText: "Account Deleted Successfully",
         });
     }
     catch (error) {

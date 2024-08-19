@@ -2,53 +2,24 @@ import supabase from "../config/supabaseConfig";
 import {
     Accounts,
     Admin,
-    Age,
-    Gender,
-    Learner,
-    Role,
+    Learner
 } from "../models/accountsModel";
 
 /* CREATE */
 
-export async function createLearnerAccount(learner: Learner) {
-    const { userId, firstName, lastName, email, dateCreated, age, gender } = learner;
+export async function createAccount(account: Accounts) {
+    const { userID, firstName, lastName, email, role, age, gender } = account;
 
     const { data, error } = await supabase
         .from("accounts")
         .insert({
-            userid: userId,
-            firstname: firstName,
-            lastname: lastName,
-            email: email,
-            role: Role.learner,
-            dateCreated: dateCreated,
-            age: age,
-            gender: gender,
-        })
-        .select();
-
-    if (error) {
-        console.error(error);
-        throw error;
-    } else {
-        return data;
-    }
-}
-
-export async function createAdminAccount(admin: Admin) {
-    const { userId, firstName, lastName, email, dateCreated, age, gender } = admin;
-
-    const { data, error } = await supabase
-        .from("accounts")
-        .insert({
-            userid: userId,
-            firstname: firstName,
-            lastname: lastName,
-            email: email,
-            role: Role.admin,
-            dateCreated: dateCreated,
-            age: age,
-            gender: gender,
+            userID,
+            firstName,
+            lastName,
+            email,
+            role,
+            age,
+            gender,
         })
         .select();
 
@@ -73,65 +44,47 @@ export async function getAllAccounts() {
     }
 }
 
-export async function getAccountById(userid: string): Promise<Learner> {
+export async function getAccountById(userID: string): Promise<Learner> {
     const { data, error } = await supabase
         .from("accounts")
         .select("*")
-        .eq("userid", userid)
+        .eq("userID", userID)
         .single();
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        const role: Role = data.role === "admin" ? Role.admin : Role.learner;
-        const age: Age = Age[data.age as keyof typeof Age];
-        const gender: Gender = Gender[data.gender as keyof typeof Gender];
-
         if (data.role === "admin") {
             return new Admin(
-                data.userid,
-                data.firstname,
-                data.lastname,
+                data.userID,
+                data.firstName,
+                data.lastName,
                 data.email,
-                role,
-                new Date(data.datecreated!),
-                age,
-                gender
+                data.role,
+                new Date(data.dateCreated!),
+                data.age,
+                data.gender
             );
         }
         return new Learner(
-            data.userid,
-            data.firstname,
-            data.lastname,
+            data.userID,
+            data.firstName,
+            data.lastName,
             data.email,
-            role,
-            new Date(data.datecreated!),
-            age,
-            gender
+            data.role,
+            new Date(data.dateCreated!),
+            data.age,
+            data.gender
         );
     }
 }
 
-export async function getAllLearnerAccounts() {
+export async function getAccountsByRole(role: string) {
     const { data, error } = await supabase
         .from("accounts")
         .select("*")
-        .eq("role", "learner");
-
-    if (error) {
-        console.error(error);
-        throw error;
-    } else {
-        return data;
-    }
-}
-
-export async function getAllAdminAccounts() {
-    const { data, error } = await supabase
-        .from("accounts")
-        .select("*")
-        .eq("role", "admin");
+        .eq("role", role);
 
     if (error) {
         console.error(error);
@@ -144,12 +97,12 @@ export async function getAllAdminAccounts() {
 /* UPDATE */
 
 export async function updateAccount(account: Accounts) {
-    const { userId, firstName, lastName, email } = account;
+    const { userID, firstName, lastName, email } = account;
 
     const updateFields: { [key: string]: any } = {};
 
-    if (firstName) updateFields.firstname = firstName;
-    if (lastName) updateFields.lastname = lastName;
+    if (firstName) updateFields.firstName = firstName;
+    if (lastName) updateFields.lastName = lastName;
     if (email) updateFields.email = email;
 
     if (Object.keys(updateFields).length === 0) {
@@ -159,7 +112,7 @@ export async function updateAccount(account: Accounts) {
     const { status, statusText, error } = await supabase
         .from("accounts")
         .update(updateFields)
-        .eq("userid", userId);
+        .eq("userID", userID);
 
     if (error) {
         console.error(error);
@@ -171,11 +124,11 @@ export async function updateAccount(account: Accounts) {
 
 /* DELETE */
 
-export async function deleteAccount(userid: string) {
+export async function deleteAccount(userID: string) {
     const { status, statusText, error } = await supabase
         .from("accounts")
         .delete()
-        .eq("userid", userid);
+        .eq("userID", userID);
 
     if (error) {
         console.error(error);
