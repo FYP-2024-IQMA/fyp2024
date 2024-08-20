@@ -15,19 +15,19 @@ export const createAccountAffective = async (req: Request, res: Response) => {
         });
     } catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Affective`,
         });
     }
 };
 
 /* READ */
 
-export const getAccountById = async (req: Request, res: Response) => {
+export const getAccountAffectiveById = async (req: Request, res: Response) => {
     try {
         const account = await accountsAffectiveService.getAccountAffectiveById(req.params.id);
         res.status(200).json(account);
     } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Affective" });
     }
 };
 
@@ -43,7 +43,7 @@ export const updateAccountAffective = async (req: Request, res: Response) => {
             statusText: "Account Affective Updated Successfully",
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Affective" });
     }
 };
 
@@ -58,6 +58,6 @@ export const deleteAccountAffective = async (req: Request, res: Response) => {
             statusText: "Account Affective Deleted Successfully",
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Affective" });
     }
 };

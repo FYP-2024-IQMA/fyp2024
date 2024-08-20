@@ -15,7 +15,7 @@ export const createAccountDemographics = async (req: Request, res: Response) => 
         });
     } catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Demographics`,
         });
     }
 };
@@ -27,7 +27,7 @@ export const getAccountDemographicsById = async (req: Request, res: Response) =>
         const account = await accountsDemographicsService.getAccountDemographicsById(req.params.id);
         res.status(200).json(account);
     } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Demographics" });
     }
 };
 
@@ -43,7 +43,7 @@ export const updateAccountDemographics = async (req: Request, res: Response) => 
             statusText: "Account Demographics Updated Successfully",
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Demographics" });
     }
 };
 
@@ -58,6 +58,6 @@ export const deleteAccountDemographics = async (req: Request, res: Response) => 
             statusText: "Account Demographics Deleted Successfully",
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Demographics" });
     }
 };

@@ -15,7 +15,7 @@ export const createAccountSocial = async (req: Request, res: Response) => {
         });
     } catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Social`,
         });
     }
 };
@@ -27,7 +27,7 @@ export const getAccountSocialById = async (req: Request, res: Response) => {
         const account = await accountsSocialService.getAccountSocialById(req.params.id);
         res.status(200).json(account);
     } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Social" });
     }
 };
 
@@ -43,7 +43,7 @@ export const updateAccountSocial = async (req: Request, res: Response) => {
             statusText: "Account Social Updated Successfully",
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Social" });
     }
 };
 
@@ -58,6 +58,6 @@ export const deleteAccountSocial = async (req: Request, res: Response) => {
             statusText: "Account Social Deleted Successfully",
         });
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Social" });
     }
 };

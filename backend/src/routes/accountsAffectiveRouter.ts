@@ -7,7 +7,7 @@ const router = Router();
 router.post("/createaccountaffective", accountsAffectiveController.createAccountAffective);
 
 /* READ */
-router.get('/getaccountaffectivebyid/:id', accountsAffectiveController.getAccountById);
+router.get('/getaccountaffectivebyid/:id', accountsAffectiveController.getAccountAffectiveById);
 
 /* UPDATE */
 router.patch('/updateaccountaffective', accountsAffectiveController.updateAccountAffective);
