@@ -23,7 +23,7 @@ const accountsModel_1 = require("../models/accountsModel");
 /* CREATE */
 function createAccount(account) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email, role, age, gender } = account;
+        const { userID, firstName, lastName, email, role, age, gender, has_onboarded } = account;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .insert({
@@ -34,6 +34,7 @@ function createAccount(account) {
             role,
             age,
             gender,
+            has_onboarded
         })
             .select();
         if (error) {
@@ -60,6 +61,7 @@ function getAllAccounts() {
 }
 function getAccountById(userID) {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a, _b;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .select("*")
@@ -71,9 +73,9 @@ function getAccountById(userID) {
         }
         else {
             if (data.role === "admin") {
-                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender);
+                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_a = data.has_onboarded) !== null && _a !== void 0 ? _a : false);
             }
-            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender);
+            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_b = data.has_onboarded) !== null && _b !== void 0 ? _b : false);
         }
     });
 }
@@ -95,7 +97,7 @@ function getAccountsByRole(role) {
 /* UPDATE */
 function updateAccount(account) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email } = account;
+        const { userID, firstName, lastName, email, has_onboarded } = account;
         const updateFields = {};
         if (firstName)
             updateFields.firstName = firstName;
@@ -103,6 +105,8 @@ function updateAccount(account) {
             updateFields.lastName = lastName;
         if (email)
             updateFields.email = email;
+        if (has_onboarded)
+            updateFields.has_onboarded = has_onboarded;
         if (Object.keys(updateFields).length === 0) {
             throw new Error("No fields to update");
         }

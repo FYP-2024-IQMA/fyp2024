@@ -16,6 +16,7 @@ export type Database = {
           email: string
           firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
+          has_onboarded: boolean | null
           lastName: string
           role: Database["public"]["Enums"]["role"]
           userID: string
@@ -26,6 +27,7 @@ export type Database = {
           email: string
           firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
+          has_onboarded?: boolean | null
           lastName: string
           role: Database["public"]["Enums"]["role"]
           userID: string
@@ -36,6 +38,7 @@ export type Database = {
           email?: string
           firstName?: string
           gender?: Database["public"]["Enums"]["gender_type"]
+          has_onboarded?: boolean | null
           lastName?: string
           role?: Database["public"]["Enums"]["role"]
           userID?: string
