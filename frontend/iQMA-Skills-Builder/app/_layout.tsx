@@ -43,7 +43,13 @@ export default function RootLayout() {
                     headerTitle: '',
                     headerTitleAlign: 'center'
                 }}>
-                    <Stack.Screen name="index" />
+                    {/* <Stack.Screen name="index" /> */}
+                    <Stack.Screen 
+                        name="CreateProfile"
+                        options={{
+                            headerShown: false,
+                          }}
+                    />
                     <Stack.Screen 
                         name="LearnerAssessmentDemographics" 
                         options={{ headerTitle: () => <Header progress={0.25} /> }}

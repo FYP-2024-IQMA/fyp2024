@@ -2,6 +2,7 @@ import { Text, View, Image } from "react-native";
 import { LoginButton } from "@/components/LoginButton";
 import { LogoVisual } from "@/components/LogoVisual";
 import { Profile } from "@/components/Profile";
+import { LogoutButton } from "@/components/LogoutButton";
 
 // where things show up
 export default function Index() {
@@ -17,6 +18,7 @@ export default function Index() {
           <LogoVisual></LogoVisual>
             <LoginButton></LoginButton>
             <Profile></Profile>
+            <LogoutButton></LogoutButton>
             
         </View>
     );
