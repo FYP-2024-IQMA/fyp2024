@@ -16,7 +16,7 @@ export const createQuiz = async (req: Request, res: Response) => {
         });
     } catch (error) {
         res.status(500).json({
-            error: `Failed to create ${QuizBody.role} Quiz`,
+            error: `Failed to create ${QuizBody.unitID} Quiz for ${QuizBody.quizType}`,
         });
     }
 };
@@ -32,22 +32,34 @@ export const getAllQuizzes = async (req: Request, res: Response) => {
     }
 };
 
-export const getQuizById = async (req: Request, res: Response) => {
+export const getQuizzesBySectionId = async (req: Request, res: Response) => {
     try {
-        const Quiz = await QuizService.getQuizByUserId(req.params.id);
+        const Quiz = await QuizService.getQuizzesBySectionId(req.params.id);
         res.status(200).json(Quiz);
     } catch (error) {
         res.status(500).json({ error: "Failed to retrieve Quiz" });
     }
 };
 
-export const getNumberOfCompletedQuizzes = async (req: Request, res: Response) => {
+export const getNumberOfQuizzesPerUnit = async (req: Request, res: Response) => {
     try {
-        const Quizs = await QuizService.getNumberOfCompletedQuizzes(req.params.userID);
-        res.status(200).json(Quizs);
+        const Quizzes = await QuizService.getNumberOfQuizzesPerUnit(req.params.id);
+        res.status(200).json(Quizzes);
     } catch (error) {
         res.status(500).json({
-            error: `Failed to retrieve number of ${req.params.userID}'s completed quizzes`,
+            error: `Failed to retrieve number of quizzes for ${req.params.id}`,
+        });
+    }
+};
+
+
+export const getNumberOfCompletedQuizzes = async (req: Request, res: Response) => {
+    try {
+        const Quizzes = await QuizService.getNumberOfCompletedQuizzes(req.params.unitid, req.params.userid);
+        res.status(200).json(Quizzes);
+    } catch (error) {
+        res.status(500).json({
+            error: `Failed to retrieve number of ${req.params.userid}'s completed quizzes`,
         });
     }
 };

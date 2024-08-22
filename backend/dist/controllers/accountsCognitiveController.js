@@ -47,7 +47,7 @@ const createAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Cognitive`,
         });
     }
 });
@@ -74,7 +74,7 @@ const updateAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Cognitive" });
     }
 });
 exports.updateAccountCognitive = updateAccountCognitive;
@@ -89,7 +89,7 @@ const deleteAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Cognitive" });
     }
 });
 exports.deleteAccountCognitive = deleteAccountCognitive;

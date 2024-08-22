@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccountAffective = exports.updateAccountAffective = exports.getAccountById = exports.createAccountAffective = void 0;
+exports.deleteAccountAffective = exports.updateAccountAffective = exports.getAccountAffectiveById = exports.createAccountAffective = void 0;
 const accountsAffectiveService = __importStar(require("../services/accountsAffectiveService"));
 /* CREATE */
 const createAccountAffective = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -47,22 +47,22 @@ const createAccountAffective = (req, res) => __awaiter(void 0, void 0, void 0, f
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Affective`,
         });
     }
 });
 exports.createAccountAffective = createAccountAffective;
 /* READ */
-const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAccountAffectiveById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const account = yield accountsAffectiveService.getAccountAffectiveById(req.params.id);
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Affective" });
     }
 });
-exports.getAccountById = getAccountById;
+exports.getAccountAffectiveById = getAccountAffectiveById;
 /* UPDATE */
 const updateAccountAffective = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const account = req.body;
@@ -74,7 +74,7 @@ const updateAccountAffective = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Affective" });
     }
 });
 exports.updateAccountAffective = updateAccountAffective;
@@ -89,7 +89,7 @@ const deleteAccountAffective = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Affective" });
     }
 });
 exports.deleteAccountAffective = deleteAccountAffective;

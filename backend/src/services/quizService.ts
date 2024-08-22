@@ -27,10 +27,9 @@ export async function createQuiz(Quiz: Quiz) {
 
 /* READ */
 
+// get all quizzes
 export async function getAllQuizzes() {
-    const { data, error } = await supabase
-    .from("quiz")
-    .select("*");
+    const { data, error } = await supabase.from("quiz").select("*");
 
     if (error) {
         console.error(error);
@@ -40,49 +39,77 @@ export async function getAllQuizzes() {
     }
 }
 
-
-export async function getQuizByUserId(userID: string) {
+// get all quizzes by sectionID
+export async function getQuizzesBySectionId(sectionID: string) {
     const { data, error } = await supabase
         .from("quiz")
         .select("*")
-        .eq("userID", userID)
-        .single();
+        .eq("sectionID", sectionID)
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        if (data.unitID == null) {
-            console.error("Unit ID is null");
-            return null;
-        }
-        else if (data.lessonID == null) {
-            console.error("Lesson ID is null");
-            return null;
-        }
-        return new Quiz(
-            data.quizID,
-            data.sectionID,
-            data.unitID,
-            data.lessonID,
-            data.quizType,
-            data.lastUpdated ? new Date(data.lastUpdated) : new Date(),
-        );
+        return data;
     }
 }
 
-export async function getNumberOfCompletedQuizzes(userID: string) {
-    const { data, error } = await supabase
+// get number of quizzes per unit
+export async function getNumberOfQuizzesPerUnit(unitID: string) {
+    const { count, error } = await supabase
         .from("quiz")
-        .select("quizID")
-        .eq("userID", userID);
+        .select("quizID", { count: "exact" })
+        .eq("unitID", unitID);
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return data.length;
+        return count;
     }
+}
+
+
+// get number of completed quizzes by user: for circular progress on homepage
+export async function getNumberOfCompletedQuizzes(unitID: string, userID: string) {
+    
+    try{
+    const { data, error } = await supabase
+        .from("quiz")
+        .select("quizID")
+        .eq("unitID", unitID);
+
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+
+    // if no quizzes found under the unit, return 0
+    if(!data || data.length === 0) {
+        return 0;
+    }
+
+    const quizIDs = data.map((quiz) => quiz.quizID);
+
+    //get number completed by users
+    const {count, error: resultError} = await supabase
+    .from("result")
+    .select("quizID", {count: "exact"})
+    .in("quizID", quizIDs)
+    .eq("userID", userID);
+
+    if (resultError){
+        console.error(resultError);
+        throw resultError;
+    }
+
+    return count;
+
+} catch (error) {
+    console.error("Error in getNumberofCompletedQuizzes",error);
+    throw error;
+
+}
 }
 
 
@@ -119,11 +146,11 @@ export async function updateQuiz(Quiz: Quiz) {
 
 /* DELETE */
 
-// export async function deleteQuiz(userID: string) {
+// export async function deleteQuiz(sectionID: string) {
 //     const { status, statusText, error } = await supabase
 //         .from("quiz")
 //         .delete()
-//         .eq("userID", userID);
+//         .eq("sectionID", sectionID);
 
 //     if (error) {
 //         console.error(error);
@@ -132,3 +159,4 @@ export async function updateQuiz(Quiz: Quiz) {
 //         return { status, statusText };
 //     }
 // }
+

@@ -32,64 +32,72 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccountDemographics = exports.updateAccountDemographics = exports.getAccountDemographicsById = exports.createAccountDemographics = void 0;
-const accountsDemographicsService = __importStar(require("../services/accountsDemographicsService"));
+exports.updateResult = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
+const ResultService = __importStar(require("../services/resultService"));
 /* CREATE */
-const createAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const accountBody = req.body;
+const createResult = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const ResultBody = req.body;
     try {
-        const account = yield accountsDemographicsService.createAccountDemographics(accountBody);
+        const Result = yield ResultService.createResult(ResultBody);
         res.status(201).json({
-            userID: account[0].userID,
+            userID: Result[0].userID,
             status: 201,
             statusText: "Created",
         });
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create Account Demographics`,
+            error: `Failed to create ${ResultBody.role} Result`,
         });
     }
 });
-exports.createAccountDemographics = createAccountDemographics;
+exports.createResult = createResult;
 /* READ */
-const getAccountDemographicsById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllResults = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const account = yield accountsDemographicsService.getAccountDemographicsById(req.params.id);
-        res.status(200).json(account);
+        const Results = yield ResultService.getAllResults();
+        res.status(200).json(Results);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Demographics" });
+        res.status(500).json({ error: "Failed to retrieve Results" });
     }
 });
-exports.getAccountDemographicsById = getAccountDemographicsById;
+exports.getAllResults = getAllResults;
+const getResultByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const Result = yield ResultService.getResultByUserId(req.params.id);
+        res.status(200).json(Result);
+    }
+    catch (error) {
+        res.status(500).json({ error: "Failed to retrieve Result" });
+    }
+});
+exports.getResultByUserId = getResultByUserId;
 /* UPDATE */
-const updateAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const account = req.body;
+const updateResult = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const Result = req.body;
     try {
-        const response = yield accountsDemographicsService.updateAccountCognitive(account);
+        const response = yield ResultService.updateResult(Result);
         res.status(200).json({
             status: 200,
-            statusText: "Account Demographics Updated Successfully",
+            statusText: "Result Updated Successfully",
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update Account Demographics" });
+        res.status(500).json({ error: "Failed to update Result" });
     }
 });
-exports.updateAccountDemographics = updateAccountDemographics;
+exports.updateResult = updateResult;
 /* DELETE */
-const deleteAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const response = yield accountsDemographicsService.deleteAccountDemographics(req.params.id);
-        // response body will be empty
-        res.status(200).json({
-            status: 200,
-            statusText: "Account Demographics Deleted Successfully",
-        });
-    }
-    catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Demographics" });
-    }
-});
-exports.deleteAccountDemographics = deleteAccountDemographics;
+// export const deleteResult = async (req: Request, res: Response) => {
+//     try {
+//         const response = await ResultService.deleteResult(req.params.id);
+//         // response body will be empty
+//         res.status(200).json({
+//             status: 200,
+//             statusText: "Result Deleted Successfully",
+//         });
+//     } catch (error) {
+//         res.status(500).json({ error: "Failed to delete Result" });
+//     }
+// };

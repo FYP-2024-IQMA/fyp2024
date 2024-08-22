@@ -32,23 +32,12 @@ export const getAllResults = async (req: Request, res: Response) => {
     }
 };
 
-export const getResultById = async (req: Request, res: Response) => {
+export const getResultByUserId = async (req: Request, res: Response) => {
     try {
-        const Result = await ResultService.getResultById(req.params.id);
+        const Result = await ResultService.getResultByUserId(req.params.id);
         res.status(200).json(Result);
     } catch (error) {
         res.status(500).json({ error: "Failed to retrieve Result" });
-    }
-};
-
-export const getNumberOfCompletedQuizzes = async (req: Request, res: Response) => {
-    try {
-        const Results = await ResultService.getNumberOfCompletedQuizzes(req.params.userID);
-        res.status(200).json(Results);
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve number of ${req.params.userID}'s completed quizzes`,
-        });
     }
 };
 

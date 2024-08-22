@@ -23,17 +23,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const accountsController = __importStar(require("../controllers/accountsController"));
+const resultController = __importStar(require("../controllers/resultController"));
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post("/createaccount", accountsController.createAccount);
+router.post("/createresult", resultController.createResult);
 /* READ */
-router.get('/getallaccounts', accountsController.getAllAccounts);
-router.get('/getaccountbyid/:id', accountsController.getAccountById);
-router.get("/getaccountsbyrole/:role", accountsController.getAccountsByRole);
+router.get('/getallresults', resultController.getAllResults);
+router.get('/getresultbyid/:id', resultController.getResultByUserId);
 /* UPDATE */
-router.patch('/updateaccount', accountsController.updateAccount);
+router.patch('/updateresult', resultController.updateResult);
 /* DELETE */
-router.delete('/deleteaccount/:id', accountsController.deleteAccount);
+// router.delete('/deleteresult/:id', resultController.deleteresult);
 exports.default = router;

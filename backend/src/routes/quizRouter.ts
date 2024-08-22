@@ -9,8 +9,9 @@ router.post("/createquiz", QuizController.createQuiz);
 
 /* READ */
 router.get('/getallquizzes', QuizController.getAllQuizzes);
-router.get('/getquizbyid/:id', QuizController.getQuizById);
-router.get("/getquizsbyrole/:role", QuizController.getNumberOfCompletedQuizzes);
+router.get('/getquizzesbysectionid/:id', QuizController.getQuizzesBySectionId);
+router.get("/getnumberofquizzesperunit/:id", QuizController.getNumberOfQuizzesPerUnit);
+router.get("/getnumberofcompletedquizzes/:userid/:unitid", QuizController.getNumberOfCompletedQuizzes);
 
 /* UPDATE */
 router.patch('/updatequiz', QuizController.updateQuiz);

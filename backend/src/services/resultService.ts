@@ -41,7 +41,7 @@ export async function getAllResults() {
 }
 
 
-export async function getResultById(userID: string): Promise<Result> {
+export async function getResultByUserId(userID: string): Promise<Result> {
     const { data, error } = await supabase
         .from("result")
         .select("*")
