@@ -34,49 +34,7 @@ export default function CreateProfile() {
     };
     const gender: string[] = ["Male", "Female", "Other"];
 
-    const handlePress = async () => {
-        console.log(selectedAge + selectedGender);
-        console.log("TOKEN" + currentUser.sub);
-        console.log(process.env.EXPO_PUBLIC_LOCALHOST_URL);
 
-        const body = {
-            userID: currentUser.sub,
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            role: "learner",
-            age: selectedAge,
-            gender: selectedGender,
-            has_onboarded: "true",
-        };
-
-        if (
-            !firstName ||
-            !lastName ||
-            !email ||
-            !selectedAge ||
-            !selectedGender
-        ) {
-            setIsContinue(false);
-        } else {
-            setIsContinue(true);
-            try {
-                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/createaccount`;
-
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body),
-                });
-
-                const data = await response.json();
-
-                console.log("Created user account:", data);
-            } catch (error) {
-                console.log("Error creating user account:", error);
-            }
-        }
-    };
 
     return (
         <View
@@ -264,7 +222,7 @@ export default function CreateProfile() {
                 </View>
             )}
 
-            <Pressable style={styles.button} onPress={handlePress}>
+            <Pressable style={styles.button}>
                 <Text style={styles.buttonText}>CREATE ACCOUNT</Text>
             </Pressable>
         </View>
