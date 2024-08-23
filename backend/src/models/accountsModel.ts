@@ -9,7 +9,7 @@ export interface Accounts {
     dateCreated: Date;
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
-    has_onboarded: boolean;
+    hasOnboarded: boolean;
 
     getFirstName(): string;
     getLastName(): string;
@@ -30,7 +30,7 @@ export class Learner implements Accounts {
     dateCreated: Date;
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
-    has_onboarded: boolean;
+    hasOnboarded: boolean;
 
     constructor(
         userID: string,
@@ -41,7 +41,7 @@ export class Learner implements Accounts {
         dateCreated: Date,
         age: Enums<"age_type">,
         gender: Enums<"gender_type">,
-        has_onboarded: boolean
+        hasOnboarded: boolean
 
     ) {
         this.userID = userID;
@@ -52,7 +52,7 @@ export class Learner implements Accounts {
         this.dateCreated = dateCreated;
         this.age = age;
         this.gender = gender;
-        this.has_onboarded = has_onboarded;
+        this.hasOnboarded = hasOnboarded;
     }
 
     getFirstName(): string {
@@ -84,7 +84,7 @@ export class Learner implements Accounts {
     }
 
     getHasOnboarded(): boolean {
-        return this.has_onboarded;
+        return this.hasOnboarded;
     }
 }
 
@@ -97,7 +97,7 @@ export class Admin implements Accounts {
     dateCreated: Date;
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
-    has_onboarded: boolean;
+    hasOnboarded: boolean;
 
     constructor(
         userID: string,
@@ -108,7 +108,7 @@ export class Admin implements Accounts {
         dateCreated: Date,
         age: Enums<"age_type">,
         gender: Enums<"gender_type">,
-        has_onboarded: boolean
+        hasOnboarded: boolean
     ) {
         this.userID = userID;
         this.firstName = firstName;
@@ -118,7 +118,7 @@ export class Admin implements Accounts {
         this.dateCreated = dateCreated;
         this.age = age;
         this.gender = gender;
-        this.has_onboarded = has_onboarded;
+        this.hasOnboarded = hasOnboarded;
     }
 
     getFirstName(): string {
@@ -150,6 +150,6 @@ export class Admin implements Accounts {
     }
 
     getHasOnboarded(): boolean {
-        return this.has_onboarded;
+        return this.hasOnboarded;
     }
 }

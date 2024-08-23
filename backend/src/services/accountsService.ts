@@ -8,7 +8,7 @@ import {
 /* CREATE */
 
 export async function createAccount(account: Accounts) {
-    const { userID, firstName, lastName, email, role, age, gender, has_onboarded } = account;
+    const { userID, firstName, lastName, email, role, age, gender, hasOnboarded } = account;
 
     const { data, error } = await supabase
         .from("accounts")
@@ -20,7 +20,7 @@ export async function createAccount(account: Accounts) {
             role,
             age,
             gender,
-            has_onboarded
+            hasOnboarded
         })
         .select();
 
@@ -45,7 +45,7 @@ export async function getAllAccounts() {
     }
 }
 
-export async function getAccountById(userID: string): Promise<Learner> {
+export async function getAccountById(userID: string): Promise<Accounts> {
     const { data, error } = await supabase
         .from("accounts")
         .select("*")
@@ -66,7 +66,7 @@ export async function getAccountById(userID: string): Promise<Learner> {
                 new Date(data.dateCreated!),
                 data.age,
                 data.gender,
-                data.has_onboarded ?? false
+                data.hasOnboarded ?? false
             );
         }
         return new Learner(
@@ -78,7 +78,7 @@ export async function getAccountById(userID: string): Promise<Learner> {
             new Date(data.dateCreated!),
             data.age,
             data.gender,
-            data.has_onboarded ?? false
+            data.hasOnboarded ?? false
         );
     }
 }
@@ -100,14 +100,14 @@ export async function getAccountsByRole(role: string) {
 /* UPDATE */
 
 export async function updateAccount(account: Accounts) {
-    const { userID, firstName, lastName, email, has_onboarded } = account;
+    const { userID, firstName, lastName, email, hasOnboarded } = account;
 
     const updateFields: { [key: string]: any } = {};
 
     if (firstName) updateFields.firstName = firstName;
     if (lastName) updateFields.lastName = lastName;
     if (email) updateFields.email = email;
-    if (has_onboarded) updateFields.has_onboarded = has_onboarded;
+    if (hasOnboarded) updateFields.hasOnboarded = hasOnboarded;
 
     if (Object.keys(updateFields).length === 0) {
         throw new Error("No fields to update");
