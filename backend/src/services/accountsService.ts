@@ -66,7 +66,7 @@ export async function getAccountById(userID: string): Promise<Accounts> {
                 new Date(data.dateCreated!),
                 data.age,
                 data.gender,
-                data.hasOnboarded ?? false
+                data.hasOnboarded
             );
         }
         return new Learner(
@@ -78,7 +78,7 @@ export async function getAccountById(userID: string): Promise<Accounts> {
             new Date(data.dateCreated!),
             data.age,
             data.gender,
-            data.hasOnboarded ?? false
+            data.hasOnboarded
         );
     }
 }
