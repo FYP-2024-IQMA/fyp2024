@@ -12,29 +12,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAccount = createAccount;
-exports.getAllAccounts = getAllAccounts;
-exports.getAccountById = getAccountById;
-exports.getAccountsByRole = getAccountsByRole;
-exports.updateAccount = updateAccount;
-exports.deleteAccount = deleteAccount;
+exports.createAccountSocial = createAccountSocial;
+exports.getAccountSocialById = getAccountSocialById;
+exports.updateAccountSocial = updateAccountSocial;
+exports.deleteAccountSocial = deleteAccountSocial;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
-const accountsModel_1 = require("../models/accountsModel");
+const accountsSocialModel_1 = require("../models/accountsSocialModel");
 /* CREATE */
-function createAccount(account) {
+function createAccountSocial(accountSocial) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email, role, age, gender, hasOnboarded } = account;
+        const { userID, compLiteracy, relationshipToPeers, socialBackground, tendency } = accountSocial;
         const { data, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountssocial")
             .insert({
             userID,
-            firstName,
-            lastName,
-            email,
-            role,
-            age,
-            gender,
-            hasOnboarded
+            compLiteracy,
+            relationshipToPeers,
+            socialBackground,
+            tendency,
         })
             .select();
         if (error) {
@@ -47,23 +42,10 @@ function createAccount(account) {
     });
 }
 /* READ */
-function getAllAccounts() {
+function getAccountSocialById(userID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default.from("accounts").select("*");
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-        else {
-            return data;
-        }
-    });
-}
-function getAccountById(userID) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
         const { data, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountssocial")
             .select("*")
             .eq("userID", userID)
             .single();
@@ -72,46 +54,28 @@ function getAccountById(userID) {
             throw error;
         }
         else {
-            if (data.role === "admin") {
-                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_a = data.hasOnboarded) !== null && _a !== void 0 ? _a : false);
-            }
-            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_b = data.hasOnboarded) !== null && _b !== void 0 ? _b : false);
-        }
-    });
-}
-function getAccountsByRole(role) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default
-            .from("accounts")
-            .select("*")
-            .eq("role", role);
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-        else {
-            return data;
+            return new accountsSocialModel_1.AccountsSocial(data.userID, data.compLiteracy, data.relationshipToPeers, data.socialBackground, data.tendency);
         }
     });
 }
 /* UPDATE */
-function updateAccount(account) {
+function updateAccountSocial(accountSocial) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email, hasOnboarded } = account;
+        const { userID, compLiteracy, relationshipToPeers, socialBackground, tendency } = accountSocial;
         const updateFields = {};
-        if (firstName)
-            updateFields.firstName = firstName;
-        if (lastName)
-            updateFields.lastName = lastName;
-        if (email)
-            updateFields.email = email;
-        if (hasOnboarded)
-            updateFields.hasOnboarded = hasOnboarded;
+        if (compLiteracy)
+            updateFields.compLiteracy = compLiteracy;
+        if (relationshipToPeers)
+            updateFields.relationshipToPeers = relationshipToPeers;
+        if (socialBackground)
+            updateFields.socialBackground = socialBackground;
+        if (tendency)
+            updateFields.tendency = tendency;
         if (Object.keys(updateFields).length === 0) {
             throw new Error("No fields to update");
         }
         const { status, statusText, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountssocial")
             .update(updateFields)
             .eq("userID", userID);
         if (error) {
@@ -124,10 +88,10 @@ function updateAccount(account) {
     });
 }
 /* DELETE */
-function deleteAccount(userID) {
+function deleteAccountSocial(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { status, statusText, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountssocial")
             .delete()
             .eq("userID", userID);
         if (error) {

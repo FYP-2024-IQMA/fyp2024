@@ -9,3 +9,6 @@ venv
 .env
 android
 .idea
+
+# testing
+backend/coverage

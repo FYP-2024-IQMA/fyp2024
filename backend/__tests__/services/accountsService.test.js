@@ -18,7 +18,6 @@ afterEach(() => {
 });
 
 describe("createAccount", () => {
-
     const mockData = [
         {
             userID: "1",
@@ -28,6 +27,7 @@ describe("createAccount", () => {
             role: "learner",
             age: "Millennials (25-40)",
             gender: "Female",
+            hasOnboarded: "false",
         },
     ];
 
@@ -37,8 +37,9 @@ describe("createAccount", () => {
     }));
 
     it("create & returns learner account", async () => {
-
-        const mockSelect = jest.fn().mockResolvedValue({ data: expectedResult, error: null });
+        const mockSelect = jest
+            .fn()
+            .mockResolvedValue({ data: expectedResult, error: null });
         const mockInsert = jest.fn().mockReturnValue({ select: mockSelect });
         supabase.from.mockReturnValue({ insert: mockInsert });
 
@@ -50,11 +51,12 @@ describe("createAccount", () => {
     });
 
     it("create & returns admin account", async () => {
-
         mockData[0].role = "admin";
         expectedResult[0].role = "admin";
 
-        const mockSelect = jest.fn().mockResolvedValue({ data: expectedResult, error: null });
+        const mockSelect = jest
+            .fn()
+            .mockResolvedValue({ data: expectedResult, error: null });
         const mockInsert = jest.fn().mockReturnValue({ select: mockSelect });
         supabase.from.mockReturnValue({ insert: mockInsert });
 
@@ -68,15 +70,21 @@ describe("createAccount", () => {
     it("handles error correctly and logs it to console.error", async () => {
         const errorMessage = "Failed to fetch all accounts";
 
-        const mockSelect = jest.fn().mockResolvedValue({ data: expectedResult, error: new Error(errorMessage) });
+        const mockSelect = jest
+            .fn()
+            .mockResolvedValue({
+                data: expectedResult,
+                error: new Error(errorMessage),
+            });
         const mockInsert = jest.fn().mockReturnValue({ select: mockSelect });
         supabase.from.mockReturnValue({ insert: mockInsert });
 
-        await expect(accountsService.createAccount(mockData[0])).rejects.toThrow(errorMessage);
+        await expect(
+            accountsService.createAccount(mockData[0])
+        ).rejects.toThrow(errorMessage);
         expect(consoleErrorSpy).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
-
 
 describe("getAllAccounts", () => {
     const expectedResult = [
@@ -89,11 +97,14 @@ describe("getAllAccounts", () => {
             age: "Millennials (25-40)",
             gender: "Female",
             dateCreated: "2024-07-13T16:11:18.442052+00:00",
+            hasOnboarded: "false",
         },
     ];
 
     it("calls supabase.from with 'accounts'", async () => {
-        const mockSelect = jest.fn().mockResolvedValue({ data: expectedResult, error: null });
+        const mockSelect = jest
+            .fn()
+            .mockResolvedValue({ data: expectedResult, error: null });
 
         supabase.from.mockReturnValue({ select: mockSelect });
 
@@ -102,7 +113,9 @@ describe("getAllAccounts", () => {
     });
 
     it("returns all accounts", async () => {
-        const mockSelect = jest.fn().mockResolvedValue({ data: expectedResult, error: null });
+        const mockSelect = jest
+            .fn()
+            .mockResolvedValue({ data: expectedResult, error: null });
 
         supabase.from.mockReturnValue({ select: mockSelect });
 
@@ -113,18 +126,20 @@ describe("getAllAccounts", () => {
     it("handles error correctly and logs it to console.error", async () => {
         const errorMessage = "Failed to fetch all accounts";
 
-        const mockSelect = jest.fn().mockResolvedValue({ data: null, error: new Error(errorMessage) });
+        const mockSelect = jest
+            .fn()
+            .mockResolvedValue({ data: null, error: new Error(errorMessage) });
 
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        await expect(accountsService.getAllAccounts()).rejects.toThrow(errorMessage);
+        await expect(accountsService.getAllAccounts()).rejects.toThrow(
+            errorMessage
+        );
         expect(consoleErrorSpy).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
 
-
 describe("getAccountById", () => {
-    
     const mockData = {
         userID: "123",
         firstName: "Jane",
@@ -134,6 +149,7 @@ describe("getAccountById", () => {
         age: "Millennials (25-40)",
         gender: "Female",
         dateCreated: "2024-07-23T13:48:04.443245+00:00",
+        hasOnboarded: "false",
     };
 
     const expectedResult = {
@@ -142,8 +158,9 @@ describe("getAccountById", () => {
     };
 
     it("should return a Learner object when the user is a learner", async () => {
-
-        const mockSingle = jest.fn().mockResolvedValue({ data: mockData, error: null });
+        const mockSingle = jest
+            .fn()
+            .mockResolvedValue({ data: mockData, error: null });
         const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
@@ -155,11 +172,12 @@ describe("getAccountById", () => {
     });
 
     it("should return an Admin object when the user is an admin", async () => {
-        
         mockData.role = "admin";
         expectedResult.role = "admin";
 
-        const mockSingle = jest.fn().mockResolvedValue({ data: mockData, error: null });
+        const mockSingle = jest
+            .fn()
+            .mockResolvedValue({ data: mockData, error: null });
         const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
@@ -173,16 +191,22 @@ describe("getAccountById", () => {
     it("should throw an error when there is an error from supabase", async () => {
         const errorMessage = "Failed to fetch account";
 
-        const mockSingle = jest.fn().mockResolvedValue({ data: mockData, error: new Error(errorMessage) });
+        const mockSingle = jest
+            .fn()
+            .mockResolvedValue({
+                data: mockData,
+                error: new Error(errorMessage),
+            });
         const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        await expect(accountsService.getAccountById("789")).rejects.toThrow(errorMessage);
+        await expect(accountsService.getAccountById("789")).rejects.toThrow(
+            errorMessage
+        );
         expect(consoleErrorSpy).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
-
 
 describe("getAccountsByRole", () => {
     const mockData = [
@@ -195,6 +219,7 @@ describe("getAccountsByRole", () => {
             dateCreated: "2023-01-01T00:00:00.000Z",
             age: "twenty",
             gender: "male",
+            hasOnboarded: "false"
         },
         {
             userID: "456",
@@ -205,6 +230,7 @@ describe("getAccountsByRole", () => {
             dateCreated: "2023-02-01T00:00:00.000Z",
             age: "thirty",
             gender: "female",
+            hasOnboarded: "false"
         },
     ];
 
@@ -244,26 +270,31 @@ describe("getAccountsByRole", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        await expect(accountsService.getAccountsByRole("admin")).rejects.toThrow(errorMessage);
+        await expect(
+            accountsService.getAccountsByRole("admin")
+        ).rejects.toThrow(errorMessage);
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
 
-
 describe("updateAccount", () => {
-
     const mockAccount = {
         userID: "123",
         firstName: "John",
         lastName: "Doe",
-        email: "john.doe@example.com"
+        email: "john.doe@example.com",
     };
 
     it("should update the account successfully when valid fields are provided", async () => {
-
-        const mockEq = jest.fn().mockResolvedValue({ status: 204, statusText: "No Content", error: null });
+        const mockEq = jest
+            .fn()
+            .mockResolvedValue({
+                status: 204,
+                statusText: "No Content",
+                error: null,
+            });
         const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
-        
+
         supabase.from.mockReturnValue({ update: mockUpdate });
 
         const result = await accountsService.updateAccount(mockAccount);
@@ -279,37 +310,49 @@ describe("updateAccount", () => {
     });
 
     it("should throw an error when no fields are provided to update", async () => {
-        
         const mockAccount = {
-            userID: "123"
+            userID: "123",
         };
 
-        await expect(accountsService.updateAccount(mockAccount)).rejects.toThrow("No fields to update");
+        await expect(
+            accountsService.updateAccount(mockAccount)
+        ).rejects.toThrow("No fields to update");
     });
 
     it("should throw an error and log the error when there is a database error", async () => {
         const errorMessage = "Database error";
 
-        const mockEq = jest.fn().mockResolvedValue({ status: null, statusText: null, error: new Error(errorMessage) });
+        const mockEq = jest
+            .fn()
+            .mockResolvedValue({
+                status: null,
+                statusText: null,
+                error: new Error(errorMessage),
+            });
         const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
-        
+
         supabase.from.mockReturnValue({ update: mockUpdate });
 
-        await expect(accountsService.updateAccount(mockAccount)).rejects.toThrow(errorMessage);
+        await expect(
+            accountsService.updateAccount(mockAccount)
+        ).rejects.toThrow(errorMessage);
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
 
-
 describe("deleteAccount", () => {
-
-    const userID = "123"
+    const userID = "123";
 
     it("should delete the account successfully", async () => {
-
-        const mockEq = jest.fn().mockResolvedValue({ status: 204, statusText: "No Content", error: null });
+        const mockEq = jest
+            .fn()
+            .mockResolvedValue({
+                status: 204,
+                statusText: "No Content",
+                error: null,
+            });
         const mockDelete = jest.fn().mockReturnValue({ eq: mockEq });
-        
+
         supabase.from.mockReturnValue({ delete: mockDelete });
 
         const result = await accountsService.deleteAccount(userID);
@@ -322,12 +365,20 @@ describe("deleteAccount", () => {
     it("should throw an error and log the error when there is a database error", async () => {
         const errorMessage = "Database error";
 
-        const mockEq = jest.fn().mockResolvedValue({ status: null, statusText: null, error: new Error(errorMessage) });
+        const mockEq = jest
+            .fn()
+            .mockResolvedValue({
+                status: null,
+                statusText: null,
+                error: new Error(errorMessage),
+            });
         const mockDelete = jest.fn().mockReturnValue({ eq: mockEq });
-        
+
         supabase.from.mockReturnValue({ delete: mockDelete });
 
-        await expect(accountsService.deleteAccount(userID)).rejects.toThrow(errorMessage);
+        await expect(accountsService.deleteAccount(userID)).rejects.toThrow(
+            errorMessage
+        );
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
