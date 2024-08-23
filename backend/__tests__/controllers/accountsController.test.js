@@ -21,9 +21,7 @@ const app = express();
 app.use(express.json());
 app.use("/accounts", accountsRouter);
 
-
 describe("POST /accounts/createaccount", () => {
-
     const mockAccount = [
         {
             userID: "1",
@@ -31,11 +29,13 @@ describe("POST /accounts/createaccount", () => {
             lastName: "Doe",
             email: "john.doe@example.com",
             role: "learner",
+            age: "Millennials (25-40)",
+            gender: "Male",
+            hasOnboarded: "false",
         },
     ];
 
     it("should create an account and return 201 on success", async () => {
-
         accountsService.createAccount.mockResolvedValue(mockAccount);
 
         const response = await request(app)
@@ -53,7 +53,6 @@ describe("POST /accounts/createaccount", () => {
     });
 
     it("should return 500 and an error message on failure", async () => {
-
         const mockError = new Error("Database error");
 
         accountsService.createAccount.mockRejectedValue(mockError);
@@ -71,7 +70,6 @@ describe("POST /accounts/createaccount", () => {
     });
 });
 
-
 describe("GET /accounts/getallaccounts", () => {
     it("should return 200 and the list of accounts on success", async () => {
         const mockAccounts = [
@@ -80,12 +78,20 @@ describe("GET /accounts/getallaccounts", () => {
                 firstName: "John",
                 lastName: "Doe",
                 email: "john.doe@example.com",
+                role: "learner",
+                age: "Millennials (25-40)",
+                gender: "Male",
+                hasOnboarded: "false",
             },
             {
                 userID: "2",
                 firstName: "Jane",
                 lastName: "Doe",
                 email: "jane.doe@example.com",
+                role: "learner",
+                age: "Millennials (25-40)",
+                gender: "Female",
+                hasOnboarded: "true",
             },
         ];
 
@@ -113,21 +119,24 @@ describe("GET /accounts/getallaccounts", () => {
     });
 });
 
-
 describe("GET /accounts/getaccountbyid", () => {
-
     const mockAccounts = {
         userID: "1",
         firstName: "John",
         lastName: "Doe",
         email: "john.doe@example.com",
+        role: "learner",
+        age: "Millennials (25-40)",
+        gender: "Male",
+        hasOnboarded: "false"
     };
 
     it("should return 200 and the account on success", async () => {
-
         accountsService.getAccountById.mockResolvedValue(mockAccounts);
 
-        const response = await request(app).get(`/accounts/getaccountbyid/${mockAccounts.userID}`);
+        const response = await request(app).get(
+            `/accounts/getaccountbyid/${mockAccounts.userID}`
+        );
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockAccounts);
@@ -139,7 +148,9 @@ describe("GET /accounts/getaccountbyid", () => {
 
         accountsService.getAccountById.mockRejectedValue(mockError);
 
-        const response = await request(app).get(`/accounts/getaccountbyid/${mockAccounts.userID}`);
+        const response = await request(app).get(
+            `/accounts/getaccountbyid/${mockAccounts.userID}`
+        );
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -149,7 +160,6 @@ describe("GET /accounts/getaccountbyid", () => {
     });
 });
 
-
 describe("GET /accounts/getaccountsbyrole", () => {
     const mockAccounts = [
         {
@@ -158,6 +168,9 @@ describe("GET /accounts/getaccountsbyrole", () => {
             lastName: "Doe",
             email: "john.doe@example.com",
             role: "learner",
+            age: "Millennials (25-40)",
+            gender: "Male",
+            hasOnboarded: "false",
         },
         {
             userID: "2",
@@ -165,13 +178,18 @@ describe("GET /accounts/getaccountsbyrole", () => {
             lastName: "Doe",
             email: "jane.doe@example.com",
             role: "learner",
+            age: "Millennials (25-40)",
+            gender: "Female",
+            hasOnboarded: "true",
         },
     ];
 
     it("should return 200 and the list of learner accounts on success", async () => {
         accountsService.getAccountsByRole.mockResolvedValue(mockAccounts);
 
-        const response = await request(app).get("/accounts/getaccountsbyrole/learner");
+        const response = await request(app).get(
+            "/accounts/getaccountsbyrole/learner"
+        );
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockAccounts);
@@ -179,13 +197,14 @@ describe("GET /accounts/getaccountsbyrole", () => {
     });
 
     it("should return 200 and the list of admin accounts on success", async () => {
-
         mockAccounts[0].role = "admin";
         mockAccounts[1].role = "admin";
 
         accountsService.getAccountsByRole.mockResolvedValue(mockAccounts);
 
-        const response = await request(app).get("/accounts/getaccountsbyrole/admin");
+        const response = await request(app).get(
+            "/accounts/getaccountsbyrole/admin"
+        );
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockAccounts);
@@ -197,7 +216,9 @@ describe("GET /accounts/getaccountsbyrole", () => {
 
         accountsService.getAccountsByRole.mockRejectedValue(mockError);
 
-        const response = await request(app).get("/accounts/getaccountsbyrole/admin");
+        const response = await request(app).get(
+            "/accounts/getaccountsbyrole/admin"
+        );
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -207,14 +228,16 @@ describe("GET /accounts/getaccountsbyrole", () => {
     });
 });
 
-
 describe("PATCH /accounts/updateaccount", () => {
-
     const mockAccount = {
         userID: "1",
         firstName: "John",
         lastName: "Doe",
         email: "john.doe@example.com",
+        role: "learner",
+        age: "Millennials (25-40)",
+        gender: "Male",
+        hasOnboarded: "false",
     };
 
     it("should update an account and return 204 on success", async () => {
@@ -222,7 +245,9 @@ describe("PATCH /accounts/updateaccount", () => {
 
         accountsService.updateAccount.mockResolvedValue(mockResponse);
 
-        const response = await request(app).patch("/accounts/updateaccount").send(mockAccount);
+        const response = await request(app)
+            .patch("/accounts/updateaccount")
+            .send(mockAccount);
 
         expect(response.status).toBe(200);
         expect(response.body.statusText).toBe("Account Updated Successfully");
@@ -231,7 +256,6 @@ describe("PATCH /accounts/updateaccount", () => {
     });
 
     it("should return 500 and an error message on failure", async () => {
-
         const mockError = new Error("Database error");
 
         accountsService.updateAccount.mockRejectedValue(mockError);
@@ -249,18 +273,17 @@ describe("PATCH /accounts/updateaccount", () => {
     });
 });
 
-
 describe("DELETE /accounts/deleteaccount/:id", () => {
-
     const mockId = "1";
 
     it("should delete an account and return 200 on success", async () => {
-        
         const mockResponse = { status: 204, statusText: "OK" };
 
         accountsService.deleteAccount.mockResolvedValue(mockResponse);
 
-        const response = await request(app).delete(`/accounts/deleteaccount/${mockId}`);
+        const response = await request(app).delete(
+            `/accounts/deleteaccount/${mockId}`
+        );
 
         expect(response.status).toBe(200);
         expect(response.body.statusText).toBe("Account Deleted Successfully");
@@ -273,7 +296,9 @@ describe("DELETE /accounts/deleteaccount/:id", () => {
 
         accountsService.deleteAccount.mockRejectedValue(mockError);
 
-        const response = await request(app).delete(`/accounts/deleteaccount/${mockId}`);
+        const response = await request(app).delete(
+            `/accounts/deleteaccount/${mockId}`
+        );
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
@@ -283,5 +308,3 @@ describe("DELETE /accounts/deleteaccount/:id", () => {
         expect(accountsService.deleteAccount).toHaveBeenCalledWith(mockId);
     });
 });
-
-
