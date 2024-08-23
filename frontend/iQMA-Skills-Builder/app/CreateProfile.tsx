@@ -237,7 +237,7 @@ export default function CreateProfile() {
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 25,
+        fontSize: 22,
         fontWeight: "bold",
         marginTop: 30
     },
