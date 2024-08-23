@@ -45,7 +45,7 @@ export default function CreateProfile() {
                 backgroundColor: "#FFFFFF",
                 // backgroundColor: "#ff4500",
                 padding: 20,
-                gap: 20,
+                gap: 20
             }}
         >
             {/* <LoginButton></LoginButton> */}
@@ -225,14 +225,21 @@ export default function CreateProfile() {
             <Pressable style={styles.button}>
                 <Text style={styles.buttonText}>CREATE ACCOUNT</Text>
             </Pressable>
+
+            <Text style={styles.termsAndCondition}>By signing in to IQMA, you agree to our <Text style={{fontWeight:"bold"}}>Terms</Text> and <Text style={{fontWeight:"bold"}}>Privacy Policy</Text>.</Text>
+
+            <Text style={styles.termsAndCondition}>This site is protected by reCAPTCHA Enterprise and the Google <Text style={{fontWeight:"bold"}}>Privacy Policy</Text> and <Text style={{fontWeight:"bold"}}>Terms of Service</Text> apply.</Text>
+
+
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: "bold",
+        marginTop: 30
     },
     button: {
         borderRadius: 10,
@@ -254,4 +261,8 @@ const styles = StyleSheet.create({
     errorText: {
         color: "#ff4c4c",
     },
+    termsAndCondition: {
+        textAlign: "center",
+        color: "#AFAFAF"
+    }
 });
