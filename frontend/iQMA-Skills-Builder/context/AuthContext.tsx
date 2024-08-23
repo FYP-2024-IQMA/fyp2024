@@ -1,7 +1,7 @@
 import { User, useAuth0 } from "react-native-auth0";
 import { createContext, useEffect, useState } from "react";
 
-import { router } from 'expo-router';
+import { router } from "expo-router";
 
 export const AuthContext = createContext<any>(null);
 
@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     useEffect(() => {
         watchUserSession();
+        // checkFirstLogin();
     }, [user]);
 
     // Watch for changes in User Session
@@ -20,9 +21,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setCurrentUser(user);
             fetchToken();
             console.log(user);
-            router.push("CreateProfile");
+            // router.push("CreateProfile");
             // router.push("IntroductionMascot");
-            // router.replace("/Home"); 
+            // router.replace("/Home");
+            checkFirstLogin();
         }
     };
 
@@ -56,6 +58,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setToken(null);
         } catch (e) {
             console.log(e);
+        }
+    };
+
+    // Check First Time Login
+    const checkFirstLogin = async () => {
+        try {
+            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getaccountbyid/${user?.sub}`;
+
+            const response = await fetch(url);
+
+            const data = await response.json();
+
+            console.log(response.status);
+
+            if (response.status === 500) {
+                console.log("First Time:", data);
+
+                router.push("CreateProfile");
+            } else if (response.status === 200) {
+                console.log("Not first time:", data);
+                if (data.hasOnboarded) {
+                    router.push("Home");
+                } else {
+                    router.push("IntroductionMascot");
+                }
+            }
+        } catch (error) {
+            console.log("Error:", error);
         }
     };
 

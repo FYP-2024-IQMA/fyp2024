@@ -61,7 +61,6 @@ function getAllAccounts() {
 }
 function getAccountById(userID) {
     return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .select("*")
@@ -73,9 +72,9 @@ function getAccountById(userID) {
         }
         else {
             if (data.role === "admin") {
-                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_a = data.hasOnboarded) !== null && _a !== void 0 ? _a : false);
+                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, data.hasOnboarded);
             }
-            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_b = data.hasOnboarded) !== null && _b !== void 0 ? _b : false);
+            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, data.hasOnboarded);
         }
     });
 }

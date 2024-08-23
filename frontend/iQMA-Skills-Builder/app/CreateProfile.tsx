@@ -15,6 +15,7 @@ import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { AuthContext } from "@/context/AuthContext";
 import { useContext } from "react";
+import { router } from "expo-router";
 
 export default function CreateProfile() {
     const [firstName, setFirstName] = useState<string>("");
@@ -33,6 +34,53 @@ export default function CreateProfile() {
         "55 - 75 years old": "Baby Boomers (55-75)",
     };
     const gender: string[] = ["Male", "Female", "Other"];
+
+    const handlePress = async () => {
+        console.log(selectedAge + selectedGender);
+        console.log("TOKEN" + currentUser.sub);
+        console.log(process.env.EXPO_PUBLIC_LOCALHOST_URL);
+
+        const body = {
+            userID: currentUser.sub,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            role: "learner",
+            age: selectedAge,
+            gender: selectedGender,
+            has_onboarded: "true",
+        };
+
+        if (
+            !firstName ||
+            !lastName ||
+            !email ||
+            !selectedAge ||
+            !selectedGender
+        ) {
+            setIsContinue(false);
+        } else {
+            setIsContinue(true);
+            try {
+                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/createaccount`;
+
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(body),
+                });
+
+                const data = await response.json();
+
+                console.log("Created user account:", data);
+
+                router.push("/IntroductionMascot");
+
+            } catch (error) {
+                console.log("Error creating user account:", error);
+            }
+        }
+    };
 
     return (
         <View
@@ -220,7 +268,7 @@ export default function CreateProfile() {
                 </View>
             )}
 
-            <Pressable style={styles.button}>
+            <Pressable style={styles.button} onPress={handlePress}>
                 <Text style={styles.buttonText}>CREATE ACCOUNT</Text>
             </Pressable>
 
@@ -271,7 +319,7 @@ const styles = StyleSheet.create({
         color: "#ff4c4c",
     },
     termsAndConditionView: {
-        padding: 10
+        padding: 10,
     },
     termsAndCondition: {
         textAlign: "center",
@@ -280,6 +328,6 @@ const styles = StyleSheet.create({
     termsAndConditionTwo: {
         textAlign: "center",
         color: "#AFAFAF",
-        marginTop: 20
+        marginTop: 20,
     },
 });
