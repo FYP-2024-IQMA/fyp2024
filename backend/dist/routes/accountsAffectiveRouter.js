@@ -29,7 +29,7 @@ const router = (0, express_1.Router)();
 /* CREATE */
 router.post("/createaccountaffective", accountsAffectiveController.createAccountAffective);
 /* READ */
-router.get('/getaccountaffectivebyid/:id', accountsAffectiveController.getAccountById);
+router.get('/getaccountaffectivebyid/:id', accountsAffectiveController.getAccountAffectiveById);
 /* UPDATE */
 router.patch('/updateaccountaffective', accountsAffectiveController.updateAccountAffective);
 /* DELETE */

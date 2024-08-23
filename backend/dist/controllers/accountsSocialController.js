@@ -47,7 +47,7 @@ const createAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Social`,
         });
     }
 });
@@ -59,7 +59,7 @@ const getAccountSocialById = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Social" });
     }
 });
 exports.getAccountSocialById = getAccountSocialById;
@@ -74,7 +74,7 @@ const updateAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Social" });
     }
 });
 exports.updateAccountSocial = updateAccountSocial;
@@ -89,7 +89,7 @@ const deleteAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Social" });
     }
 });
 exports.deleteAccountSocial = deleteAccountSocial;
