@@ -16,6 +16,7 @@ export type Database = {
           email: string
           firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
+          has_onboarded: boolean | null
           lastName: string
           role: Database["public"]["Enums"]["role"]
           userID: string
@@ -26,6 +27,7 @@ export type Database = {
           email: string
           firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
+          has_onboarded?: boolean | null
           lastName: string
           role: Database["public"]["Enums"]["role"]
           userID: string
@@ -36,6 +38,7 @@ export type Database = {
           email?: string
           firstName?: string
           gender?: Database["public"]["Enums"]["gender_type"]
+          has_onboarded?: boolean | null
           lastName?: string
           role?: Database["public"]["Enums"]["role"]
           userID?: string
@@ -443,19 +446,16 @@ export type Database = {
         Row: {
           dateCreated: string | null
           quizID: number
-          score: number
           userID: string
         }
         Insert: {
           dateCreated?: string | null
           quizID: number
-          score: number
           userID: string
         }
         Update: {
           dateCreated?: string | null
           quizID?: number
-          score?: number
           userID?: string
         }
         Relationships: [
@@ -484,7 +484,6 @@ export type Database = {
           sectionDescription: string | null
           sectionID: string
           sectionName: string
-          skillsFutureCCS: string
         }
         Insert: {
           dateCreated?: string | null
@@ -494,7 +493,6 @@ export type Database = {
           sectionDescription?: string | null
           sectionID: string
           sectionName: string
-          skillsFutureCCS: string
         }
         Update: {
           dateCreated?: string | null
@@ -504,12 +502,11 @@ export type Database = {
           sectionDescription?: string | null
           sectionID?: string
           sectionName?: string
-          skillsFutureCCS?: string
         }
         Relationships: [
           {
-            foreignKeyName: "section_skillsFutureCCS_fkey"
-            columns: ["skillsFutureCCS"]
+            foreignKeyName: "section_sectionName_fkey"
+            columns: ["sectionName"]
             isOneToOne: false
             referencedRelation: "skillsfuturemapping"
             referencedColumns: ["skillsFutureCCS"]
