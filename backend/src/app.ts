@@ -7,6 +7,7 @@ import cors from 'cors';
 import express from 'express';
 import quizRouter from './routes/quizRouter';
 import resultRouter from './routes/resultRouter';
+import unitRouter from './routes/unitRouter';
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use('/accountsdemographics', accountsDemographicsRouter);
 app.use('/accountssocial', accountsSocialRouter);
 app.use('/quiz', quizRouter);
 app.use('/result', resultRouter);
+app.use('/unit', unitRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
