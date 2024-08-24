@@ -62,7 +62,7 @@ if __name__ == "__main__":
 
     # if .gguf doesn't exist, download it from the Hugging Face Hub
     if not gguf_path:
-        os.chdir("../src/models")
+        os.chdir("../models")
         download_gguf(repo_id, filename, '.')
     
     create_model()
