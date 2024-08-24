@@ -9,6 +9,7 @@ export interface Accounts {
     dateCreated: Date;
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
+    hasOnboarded: boolean;
 
     getFirstName(): string;
     getLastName(): string;
@@ -17,6 +18,7 @@ export interface Accounts {
     getDateCreated(): Date;
     getAge(): Enums<"age_type">;
     getGender(): Enums<"gender_type">;
+    getHasOnboarded(): boolean;
 }
 
 export class Learner implements Accounts {
@@ -28,6 +30,7 @@ export class Learner implements Accounts {
     dateCreated: Date;
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
+    hasOnboarded: boolean;
 
     constructor(
         userID: string,
@@ -37,7 +40,9 @@ export class Learner implements Accounts {
         role: Enums<"role">,
         dateCreated: Date,
         age: Enums<"age_type">,
-        gender: Enums<"gender_type">
+        gender: Enums<"gender_type">,
+        hasOnboarded: boolean
+
     ) {
         this.userID = userID;
         this.firstName = firstName;
@@ -47,6 +52,7 @@ export class Learner implements Accounts {
         this.dateCreated = dateCreated;
         this.age = age;
         this.gender = gender;
+        this.hasOnboarded = hasOnboarded;
     }
 
     getFirstName(): string {
@@ -75,6 +81,10 @@ export class Learner implements Accounts {
 
     getGender(): Enums<"gender_type"> {
         return this.gender;
+    }
+
+    getHasOnboarded(): boolean {
+        return this.hasOnboarded;
     }
 }
 
@@ -87,6 +97,7 @@ export class Admin implements Accounts {
     dateCreated: Date;
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
+    hasOnboarded: boolean;
 
     constructor(
         userID: string,
@@ -96,7 +107,8 @@ export class Admin implements Accounts {
         role: Enums<"role">,
         dateCreated: Date,
         age: Enums<"age_type">,
-        gender: Enums<"gender_type">
+        gender: Enums<"gender_type">,
+        hasOnboarded: boolean
     ) {
         this.userID = userID;
         this.firstName = firstName;
@@ -106,6 +118,7 @@ export class Admin implements Accounts {
         this.dateCreated = dateCreated;
         this.age = age;
         this.gender = gender;
+        this.hasOnboarded = hasOnboarded;
     }
 
     getFirstName(): string {
@@ -134,5 +147,9 @@ export class Admin implements Accounts {
 
     getGender(): Enums<"gender_type"> {
         return this.gender;
+    }
+
+    getHasOnboarded(): boolean {
+        return this.hasOnboarded;
     }
 }
