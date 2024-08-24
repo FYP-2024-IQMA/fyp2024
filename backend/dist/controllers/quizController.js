@@ -32,31 +32,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateQuiz = exports.getNumberOfCompletedQuizzes = exports.getNumberOfQuizzesPerUnit = exports.getQuizzesBySectionId = exports.getAllQuizzes = exports.createQuiz = void 0;
-const QuizService = __importStar(require("../services/quizService"));
-/* CREATE */
-const createQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const QuizBody = req.body;
-    try {
-        const Quiz = yield QuizService.createQuiz(QuizBody);
-        res.status(201).json({
-            quizID: Quiz[0].quizID,
-            status: 201,
-            statusText: "Created",
-        });
-    }
-    catch (error) {
-        res.status(500).json({
-            error: `Failed to create ${QuizBody.unitID} Quiz for ${QuizBody.quizType}`,
-        });
-    }
-});
-exports.createQuiz = createQuiz;
+exports.getQuizzesBySectionId = exports.getAllQuizzes = void 0;
+const quizService = __importStar(require("../services/quizService"));
 /* READ */
 const getAllQuizzes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Quizzes = yield QuizService.getAllQuizzes();
-        res.status(200).json(Quizzes);
+        const quizzes = yield quizService.getAllQuizzes();
+        res.status(200).json(quizzes);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to retrieve Quizzes" });
@@ -65,63 +47,11 @@ const getAllQuizzes = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getAllQuizzes = getAllQuizzes;
 const getQuizzesBySectionId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Quiz = yield QuizService.getQuizzesBySectionId(req.params.id);
-        res.status(200).json(Quiz);
+        const quiz = yield quizService.getQuizzesBySectionId(req.params.id);
+        res.status(200).json(quiz);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to retrieve Quiz" });
     }
 });
 exports.getQuizzesBySectionId = getQuizzesBySectionId;
-const getNumberOfQuizzesPerUnit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const Quizzes = yield QuizService.getNumberOfQuizzesPerUnit(req.params.id);
-        res.status(200).json(Quizzes);
-    }
-    catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve number of quizzes for ${req.params.id}`,
-        });
-    }
-});
-exports.getNumberOfQuizzesPerUnit = getNumberOfQuizzesPerUnit;
-const getNumberOfCompletedQuizzes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const Quizzes = yield QuizService.getNumberOfCompletedQuizzes(req.params.unitid, req.params.userid);
-        res.status(200).json(Quizzes);
-    }
-    catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve number of ${req.params.userid}'s completed quizzes`,
-        });
-    }
-});
-exports.getNumberOfCompletedQuizzes = getNumberOfCompletedQuizzes;
-/* UPDATE */
-const updateQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Quiz = req.body;
-    try {
-        const response = yield QuizService.updateQuiz(Quiz);
-        res.status(200).json({
-            status: 200,
-            statusText: "Quiz Updated Successfully",
-        });
-    }
-    catch (error) {
-        res.status(500).json({ error: "Failed to update Quiz" });
-    }
-});
-exports.updateQuiz = updateQuiz;
-/* DELETE */
-// export const deleteQuiz = async (req: Request, res: Response) => {
-//     try {
-//         const response = await QuizService.deleteQuiz(req.params.id);
-//         // response body will be empty
-//         res.status(200).json({
-//             status: 200,
-//             statusText: "Quiz Deleted Successfully",
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: "Failed to delete Quiz" });
-//     }
-// };

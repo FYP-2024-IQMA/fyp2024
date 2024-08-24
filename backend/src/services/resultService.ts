@@ -6,13 +6,12 @@ import supabase from "../config/supabaseConfig";
 /* CREATE */
 
 export async function createResult(Result: Result) {
-    const { userID, quizID, score, dateCreated } = Result;
+    const { userID, quizID } = Result;
 
     const { data, error } = await supabase
         .from("result")
         .insert({
-            quizID, 
-            score, 
+            quizID,
             userID, 
         })
         .select();
@@ -55,68 +54,51 @@ export async function getResultByUserId(userID: string): Promise<Result> {
         return new Result(
             data.userID,
             data.quizID,
-            data.score,
-            data.dateCreated ? new Date(data.dateCreated) : new Date(),
+            new Date(data.dateCreated!),
         );
     }
 }
 
-export async function getNumberOfCompletedQuizzes(userID: string) {
-    const { data, error } = await supabase
+/*
+Get the User Progress: 
+- no. of completed sections quiz 
+- no. of completed units quiz per section
+- no. of completed lessons & unit quiz per unit
+*/
+
+export async function getUserProgress(userID: string, sectionID?: string, unitID?: string): Promise<number> {
+    let query = supabase
         .from("result")
-        .select("quizID")
+        .select("quizID, quiz!inner(quizID)", { count: "exact" })
         .eq("userID", userID);
+    
+    // solely for circular progress
+    // if unitID is provided, get number of completed lessons & unit for that unit
+    if (unitID) {
+        query = query
+            .eq("quiz.sectionID", sectionID!)
+            .eq("quiz.unitID", unitID)
+            .neq("quiz.quizType", "section");
+    } else {
+        // for home page stone progress - whether to be lit up or not
+        // if sectionID is provided, get number of completed units for that section
+        if (sectionID) {
+            query = query
+                .eq("quiz.quizType", "unit")
+                .eq("quiz.sectionID", sectionID);
+        } else {
+            // for header section
+            // if sectionID is not provided, get number of completed sections
+            query = query.eq("quiz.quizType", "section");
+        }
+    }
+
+    const { count, error } = await query;
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return data.length;
+        return count!;
     }
 }
-
-
-/* UPDATE */
-
-export async function updateResult(Result: Result) {
-    const { userID, quizID, score, dateCreated } = Result;
-
-    const updateFields: { [key: string]: any } = {};
-
-    if (userID) updateFields.userID = userID
-    if (quizID) updateFields.quizID = quizID;
-    if (dateCreated) updateFields.dateCreated = dateCreated;
-    if (score) updateFields.score = score;
-
-    if (Object.keys(updateFields).length === 0) {
-        throw new Error("No fields to update");
-    }
-
-    const { status, statusText, error } = await supabase
-        .from("result")
-        .update(updateFields)
-        .eq("userID", userID);
-
-    if (error) {
-        console.error(error);
-        throw error;
-    } else {
-        return { status, statusText };
-    }
-}
-
-/* DELETE */
-
-// export async function deleteResult(userID: string) {
-//     const { status, statusText, error } = await supabase
-//         .from("result")
-//         .delete()
-//         .eq("userID", userID);
-
-//     if (error) {
-//         console.error(error);
-//         throw error;
-//     } else {
-//         return { status, statusText };
-//     }
-// }

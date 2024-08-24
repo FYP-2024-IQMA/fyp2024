@@ -32,22 +32,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateResult = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
-const ResultService = __importStar(require("../services/resultService"));
+exports.getCircularProgress = exports.getUserProgress = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
+const resultService = __importStar(require("../services/resultService"));
+const lessonService = __importStar(require("../services/lessonService"));
 /* CREATE */
 const createResult = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const ResultBody = req.body;
+    const resultBody = req.body;
     try {
-        const Result = yield ResultService.createResult(ResultBody);
+        const result = yield resultService.createResult(resultBody);
         res.status(201).json({
-            userID: Result[0].userID,
+            userID: result[0].userID,
             status: 201,
             statusText: "Created",
         });
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create ${ResultBody.role} Result`,
+            error: `Failed to create ${resultBody.userID} Result`,
         });
     }
 });
@@ -55,8 +56,8 @@ exports.createResult = createResult;
 /* READ */
 const getAllResults = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Results = yield ResultService.getAllResults();
-        res.status(200).json(Results);
+        const results = yield resultService.getAllResults();
+        res.status(200).json(results);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to retrieve Results" });
@@ -65,39 +66,38 @@ const getAllResults = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getAllResults = getAllResults;
 const getResultByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const Result = yield ResultService.getResultByUserId(req.params.id);
-        res.status(200).json(Result);
+        const result = yield resultService.getResultByUserId(req.params.userid);
+        res.status(200).json(result);
     }
     catch (error) {
         res.status(500).json({ error: "Failed to retrieve Result" });
     }
 });
 exports.getResultByUserId = getResultByUserId;
-/* UPDATE */
-const updateResult = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const Result = req.body;
+const getUserProgress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield ResultService.updateResult(Result);
-        res.status(200).json({
-            status: 200,
-            statusText: "Result Updated Successfully",
-        });
+        const userProgress = yield resultService.getUserProgress(req.params.userid, req.params.sectionid);
+        res.status(200).json(userProgress);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update Result" });
+        res.status(500).json({
+            error: `Failed to retrieve ${req.params.userid}'s progress`,
+        });
     }
 });
-exports.updateResult = updateResult;
-/* DELETE */
-// export const deleteResult = async (req: Request, res: Response) => {
-//     try {
-//         const response = await ResultService.deleteResult(req.params.id);
-//         // response body will be empty
-//         res.status(200).json({
-//             status: 200,
-//             statusText: "Result Deleted Successfully",
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: "Failed to delete Result" });
-//     }
-// };
+exports.getUserProgress = getUserProgress;
+const getCircularProgress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userid, sectionid, unitid } = req.params;
+    try {
+        const userProgress = yield resultService.getUserProgress(userid, sectionid, unitid);
+        const totalLessons = yield lessonService.getNoOfLessonPerUnit(sectionid, unitid);
+        // totalLessons + 1 to account for unit assessment
+        res.status(200).json(userProgress / (totalLessons + 1));
+    }
+    catch (error) {
+        res.status(500).json({
+            error: `Failed to retrieve ${req.params.userid}'s progress`,
+        });
+    }
+});
+exports.getCircularProgress = getCircularProgress;

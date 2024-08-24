@@ -15,19 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createResult = createResult;
 exports.getAllResults = getAllResults;
 exports.getResultByUserId = getResultByUserId;
-exports.getNumberOfCompletedQuizzes = getNumberOfCompletedQuizzes;
-exports.updateResult = updateResult;
+exports.getUserProgress = getUserProgress;
 const resultModel_1 = require("../models/resultModel");
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 /* CREATE */
 function createResult(Result) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, quizID, score, dateCreated } = Result;
+        const { userID, quizID } = Result;
         const { data, error } = yield supabaseConfig_1.default
             .from("result")
             .insert({
             quizID,
-            score,
             userID,
         })
             .select();
@@ -67,64 +65,51 @@ function getResultByUserId(userID) {
             throw error;
         }
         else {
-            return new resultModel_1.Result(data.userID, data.quizID, data.score, data.dateCreated ? new Date(data.dateCreated) : new Date());
+            return new resultModel_1.Result(data.userID, data.quizID, new Date(data.dateCreated));
         }
     });
 }
-function getNumberOfCompletedQuizzes(userID) {
+/*
+Get the User Progress:
+- no. of completed sections quiz
+- no. of completed units quiz per section
+- no. of completed lessons & unit quiz per unit
+*/
+function getUserProgress(userID, sectionID, unitID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default
+        let query = supabaseConfig_1.default
             .from("result")
-            .select("quizID")
+            .select("quizID, quiz!inner(quizID)", { count: "exact" })
             .eq("userID", userID);
+        // solely for circular progress
+        // if unitID is provided, get number of completed lessons & unit for that unit
+        if (unitID) {
+            query = query
+                .eq("quiz.sectionID", sectionID)
+                .eq("quiz.unitID", unitID)
+                .neq("quiz.quizType", "section");
+        }
+        else {
+            // for home page stone progress - whether to be lit up or not
+            // if sectionID is provided, get number of completed units for that section
+            if (sectionID) {
+                query = query
+                    .eq("quiz.quizType", "unit")
+                    .eq("quiz.sectionID", sectionID);
+            }
+            else {
+                // for header section
+                // if sectionID is not provided, get number of completed sections
+                query = query.eq("quiz.quizType", "section");
+            }
+        }
+        const { count, error } = yield query;
         if (error) {
             console.error(error);
             throw error;
         }
         else {
-            return data.length;
+            return count;
         }
     });
 }
-/* UPDATE */
-function updateResult(Result) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { userID, quizID, score, dateCreated } = Result;
-        const updateFields = {};
-        if (userID)
-            updateFields.userID = userID;
-        if (quizID)
-            updateFields.quizID = quizID;
-        if (dateCreated)
-            updateFields.dateCreated = dateCreated;
-        if (score)
-            updateFields.score = score;
-        if (Object.keys(updateFields).length === 0) {
-            throw new Error("No fields to update");
-        }
-        const { status, statusText, error } = yield supabaseConfig_1.default
-            .from("result")
-            .update(updateFields)
-            .eq("userID", userID);
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-        else {
-            return { status, statusText };
-        }
-    });
-}
-/* DELETE */
-// export async function deleteResult(userID: string) {
-//     const { status, statusText, error } = await supabase
-//         .from("result")
-//         .delete()
-//         .eq("userID", userID);
-//     if (error) {
-//         console.error(error);
-//         throw error;
-//     } else {
-//         return { status, statusText };
-//     }
-// }

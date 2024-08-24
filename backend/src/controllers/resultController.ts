@@ -1,22 +1,22 @@
-import * as ResultService from "../services/resultService";
-
+import * as resultService from "../services/resultService";
+import * as lessonService from "../services/lessonService";
 import { Request, Response } from "express";
 
 /* CREATE */
 
 export const createResult = async (req: Request, res: Response) => {
-    const ResultBody = req.body;
+    const resultBody = req.body;
 
     try {
-        const Result = await ResultService.createResult(ResultBody);
+        const result = await resultService.createResult(resultBody);
         res.status(201).json({
-            userID: Result[0].userID,
+            userID: result[0].userID,
             status: 201,
             statusText: "Created",
         });
     } catch (error) {
         res.status(500).json({
-            error: `Failed to create ${ResultBody.role} Result`,
+            error: `Failed to create ${resultBody.userID} Result`,
         });
     }
 };
@@ -25,8 +25,8 @@ export const createResult = async (req: Request, res: Response) => {
 
 export const getAllResults = async (req: Request, res: Response) => {
     try {
-        const Results = await ResultService.getAllResults();
-        res.status(200).json(Results);
+        const results = await resultService.getAllResults();
+        res.status(200).json(results);
     } catch (error) {
         res.status(500).json({ error: "Failed to retrieve Results" });
     }
@@ -34,41 +34,45 @@ export const getAllResults = async (req: Request, res: Response) => {
 
 export const getResultByUserId = async (req: Request, res: Response) => {
     try {
-        const Result = await ResultService.getResultByUserId(req.params.id);
-        res.status(200).json(Result);
+        const result = await resultService.getResultByUserId(req.params.userid);
+        res.status(200).json(result);
     } catch (error) {
         res.status(500).json({ error: "Failed to retrieve Result" });
     }
 };
 
-
-/* UPDATE */
-
-export const updateResult = async (req: Request, res: Response) => {
-    const Result = req.body;
-
+export const getUserProgress = async (req: Request, res: Response) => {
     try {
-        const response = await ResultService.updateResult(Result);
-        res.status(200).json({
-            status: 200,
-            statusText: "Result Updated Successfully",
-        });
+        const userProgress = await resultService.getUserProgress(
+            req.params.userid,
+            req.params.sectionid
+        );
+        res.status(200).json(userProgress);
     } catch (error) {
-        res.status(500).json({ error: "Failed to update Result" });
+        res.status(500).json({
+            error: `Failed to retrieve ${req.params.userid}'s progress`,
+        });
     }
 };
 
-/* DELETE */
+export const getCircularProgress = async (req: Request, res: Response) => {
 
-// export const deleteResult = async (req: Request, res: Response) => {
-//     try {
-//         const response = await ResultService.deleteResult(req.params.id);
-//         // response body will be empty
-//         res.status(200).json({
-//             status: 200,
-//             statusText: "Result Deleted Successfully",
-//         });
-//     } catch (error) {
-//         res.status(500).json({ error: "Failed to delete Result" });
-//     }
-// };
+    const { userid, sectionid, unitid } = req.params;
+
+    try {
+        const userProgress = await resultService.getUserProgress(
+            userid,
+            sectionid,
+            unitid
+        );
+
+        const totalLessons = await lessonService.getNoOfLessonPerUnit(sectionid, unitid);
+
+        // totalLessons + 1 to account for unit assessment
+        res.status(200).json(userProgress/ (totalLessons + 1));
+    } catch (error) {
+        res.status(500).json({
+            error: `Failed to retrieve ${req.params.userid}'s progress`,
+        });
+    }
+};   

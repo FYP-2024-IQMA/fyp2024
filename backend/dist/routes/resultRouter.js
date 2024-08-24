@@ -30,9 +30,7 @@ const router = (0, express_1.Router)();
 router.post("/createresult", resultController.createResult);
 /* READ */
 router.get('/getallresults', resultController.getAllResults);
-router.get('/getresultbyid/:id', resultController.getResultByUserId);
-/* UPDATE */
-router.patch('/updateresult', resultController.updateResult);
-/* DELETE */
-// router.delete('/deleteresult/:id', resultController.deleteresult);
+router.get("/getresultbyid/:userid", resultController.getResultByUserId);
+router.get("/getuserprogress/:userid/:sectionid?", resultController.getUserProgress);
+router.get("/getcircularprogress/:userid/:sectionid/:unitid", resultController.getCircularProgress);
 exports.default = router;

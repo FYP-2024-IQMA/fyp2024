@@ -2,7 +2,7 @@ import supabase from "../config/supabaseConfig";
 
 /* READ */
 
-export async function getNoOfLessonPerUnit(sectionID: string, unitID: string) {
+export async function getNoOfLessonPerUnit(sectionID: string, unitID: string): Promise<number> {
     const { count, error } = await supabase
         .from("lesson")
         .select("*", { count: "exact" })
@@ -13,6 +13,6 @@ export async function getNoOfLessonPerUnit(sectionID: string, unitID: string) {
         console.error(error);
         throw error;
     } else {
-        return count;
+        return count!;
     }
 }

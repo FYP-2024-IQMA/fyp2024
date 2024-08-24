@@ -12,6 +12,7 @@ const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
 const quizRouter_1 = __importDefault(require("./routes/quizRouter"));
 const resultRouter_1 = __importDefault(require("./routes/resultRouter"));
+const unitRouter_1 = __importDefault(require("./routes/unitRouter"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 const port = 3000;
@@ -24,6 +25,7 @@ app.use('/accountsdemographics', accountsDemographicsRouter_1.default);
 app.use('/accountssocial', accountsSocialRouter_1.default);
 app.use('/quiz', quizRouter_1.default);
 app.use('/result', resultRouter_1.default);
+app.use('/unit', unitRouter_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

@@ -23,18 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const QuizController = __importStar(require("../controllers/quizController"));
+const quizController = __importStar(require("../controllers/quizController"));
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-/* CREATE */
-router.post("/createquiz", QuizController.createQuiz);
 /* READ */
-router.get('/getallquizzes', QuizController.getAllQuizzes);
-router.get('/getquizzesbysectionid/:id', QuizController.getQuizzesBySectionId);
-router.get("/getnumberofquizzesperunit/:id", QuizController.getNumberOfQuizzesPerUnit);
-router.get("/getnumberofcompletedquizzes/:userid/:unitid", QuizController.getNumberOfCompletedQuizzes);
-/* UPDATE */
-router.patch('/updatequiz', QuizController.updateQuiz);
-/* DELETE */
-// router.delete('/deleteQuiz/:id', QuizController.deleteQuiz);
+router.get('/getallquizzes', quizController.getAllQuizzes);
+router.get('/getquizzesbysectionid/:id', quizController.getQuizzesBySectionId);
 exports.default = router;
