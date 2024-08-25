@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
 from typing import List, Optional
 
-from chatgpt import ChatGPT
+from src.chatbot.chatgpt import ChatGPT
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ class Prompt:
     content: str
     history: Optional[List] = None
 
-@app.post("/")
+@app.get("/")
 async def root():
     """
     Root endpoint for the FastAPI application.
@@ -43,3 +43,4 @@ async def generate_text(prompt: Prompt):
     except Exception as e:
         logger.error("Error in '/generate' endpoint: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
+    
