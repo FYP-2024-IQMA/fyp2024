@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
@@ -36,17 +37,20 @@ export default function LearnerAssessmentExperience() {
         }
     };
 
-    const handlePress = () => {
+    const handlePress = async () => {
         if (!selectedAttitude || !selectedMotivation || !selectedBarriers || !selectedPersonality || !selectedReasons) {
             setIsContinue(false);
         }
         else {
             setIsContinue(true);
+            const attitude = await AsyncStorage.setItem('attitude', selectedAttitude);
+            const motivationalLevel = await AsyncStorage.setItem('motivationalLevel', selectedMotivation);
+            const barriers = await AsyncStorage.setItem('barriers', JSON.stringify(selectedBarriers));
+            const personality = await AsyncStorage.setItem('personality', selectedPersonality);
+            const reasons = await AsyncStorage.setItem('reasons', JSON.stringify(selectedReasons));
             router.push("LearnerAssessmentComplete");
         }
     };
-
-    console.log(selectedAttitude, selectedMotivation, selectedBarriers, selectedPersonality, selectedReasons);
 
     return (
         <View style={{ padding: 20, flex: 1, backgroundColor: "#FFFFFF" }}>

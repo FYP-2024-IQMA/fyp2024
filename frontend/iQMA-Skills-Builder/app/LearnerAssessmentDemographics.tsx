@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { Image, View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
@@ -6,8 +7,6 @@ import { ChatBubble } from '@/components/ChatBubble';
 import { CustomButton } from "@/components/CustomButton";
 
 export default function LearnerAssessmentDemographics() {
-    const [selectedAge, setAge] = useState<string>('');
-    const [selectedGender, setGender] = useState<string>('');
     const [selectedRace, setRace] = useState<string>('');
     const [ethnic, setEthnic] = useState<string>('');
     const [selectedJob, setJob] = useState<string>('');
@@ -16,27 +15,24 @@ export default function LearnerAssessmentDemographics() {
     const [selectedNeed, setNeed] = useState<string>('');
     const [isContinue, setIsContinue] = useState(true);
 
-    const age: { [key: string]: string } = {
-        '18 - 24 years old': 'GenZ',
-        '25 - 40 years old': 'Millennials',
-        '40 - 55 years old': 'GenX',
-        '55 - 75 years old': 'BabyBoomers'
-    };
-    const gender: string[] = ['Male', 'Female', 'Other'];
     const race: string[] = ['Caucasian', 'African American', 'Asian', 'Hispanic/Latino', 'Other'];
     const job: string[] = ['Entry-level', 'Mid-level', 'Senior-level', 'Executive'];
     const life: string[] = ['Early career', 'Mid-career', 'Late career', 'Retirement'];
     const career: string[] = ['Starter', 'Builder', 'Accelerator', 'Expert'];
     const need: string[] = ['None', 'Physical', 'Mental', 'Other'];
 
-    console.log([selectedAge, selectedGender, selectedRace, ethnic, selectedJob, selectedLife, selectedCareer]);
-
-    const handlePress = () => {
-        if (!selectedAge || !selectedGender || !selectedRace || !ethnic || !selectedJob || !selectedLife || !selectedCareer) {
+    const handlePress = async () => {
+        if (!selectedRace || !ethnic || !selectedJob || !selectedLife || !selectedCareer || !selectedNeed) {
             setIsContinue(false);
         }
         else {
             setIsContinue(true);
+            const race = await AsyncStorage.setItem('race', selectedRace);
+            const ethnicGroup = await AsyncStorage.setItem('ethnicGroup', ethnic);
+            const jobCategory = await AsyncStorage.setItem('jobCategory', selectedJob);
+            const lifeStage = await AsyncStorage.setItem('lifeStage', selectedLife);
+            const careerStage = await AsyncStorage.setItem('careerStage', selectedCareer);
+            const specialNeeds = await AsyncStorage.setItem('specialNeeds', selectedNeed);
             router.push("LearnerAssessmentCognitive");
         }
     };
@@ -52,48 +48,6 @@ export default function LearnerAssessmentDemographics() {
 
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Text style={[styles.text, { flex: 1 }]}>Age</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedAge ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
-                        <Picker
-                            selectedValue={selectedAge}
-                            onValueChange={(itemValue: string) => setAge(itemValue)}
-                        >
-                            <Picker.Item style={styles.defaultOptionText} label="Select Age" value="" enabled={false} />
-                            {Object.keys(age).map((key) => (
-                                <Picker.Item style={{fontSize: 14}} key={key} label={key} value={age[key]} />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
-                        {!selectedAge && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
-                    </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
-                    <Text style={[styles.text, { flex: 1 }]}>Gender</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedGender ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
-                        <Picker
-                            selectedValue={selectedGender}
-                            onValueChange={(itemValue: string) => setGender(itemValue)}
-                        >
-                            <Picker.Item style={styles.defaultOptionText} label="Select Gender" value="" enabled={false} />
-                            {gender.map((value) => (
-                                <Picker.Item style={{fontSize: 14}} key={value} label={value} value={value} />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
-                <View style={{ flexDirection: 'row' }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
-                        {!selectedGender && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
-                    </View>
-                </View>
-
-                <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Race</Text>
                     <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedRace ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
