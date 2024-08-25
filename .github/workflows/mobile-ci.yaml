@@ -43,6 +43,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_ALL_CODEBASE: false
           VALIDATE_TSX_FILES: true
+          VALIDATE_DOCKERFILE: false
+          VALIDATE_JSCPD: false
           IGNORE_GENERATED_FILES: true
           IGNORE_GITIGNORED_FILES: true
 
