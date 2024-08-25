@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - 'SCRUM*'
     paths:
       - "frontend/**"
   pull_request:
