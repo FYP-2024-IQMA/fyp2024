@@ -1,11 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import accountsRouter from './routes/accountsRouter';
-import chatRouter from './routes/chatRouter';
 import accountsAffectiveRouter from './routes/accountsAffectiveRouter';
 import accountsCognitiveRouter from './routes/accountsCognitiveRouter';
 import accountsDemographicsRouter from './routes/accountsDemographicsRouter';
 import accountsSocialRouter from './routes/accountsSocialRouter';
+import chatRouter from "./routes/chatRouter";
 
 const app = express();
 app.use(cors());
