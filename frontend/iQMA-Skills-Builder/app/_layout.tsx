@@ -4,9 +4,9 @@ import * as Progress from 'react-native-progress';
 
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { Auth0Provider, useAuth0 } from "react-native-auth0";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthContext, AuthProvider } from "@/context/AuthContext";
 import ChatbotDrawer from "../components/ChatbotDrawer";
 import HomeScreen from "./screens/Home";
 import { Ionicons } from '@expo/vector-icons';
@@ -36,6 +36,7 @@ export default function RootLayout() {
             </View>
           );
     }
+
     return (
         <Auth0Provider domain={config.domain} clientId={config.clientId}>
             <AuthProvider>
@@ -83,3 +84,4 @@ const Header = ({ progress } : { progress: number }) => (
         />
     </View>
 );
+

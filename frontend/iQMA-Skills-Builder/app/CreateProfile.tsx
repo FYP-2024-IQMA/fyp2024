@@ -6,6 +6,7 @@ import {
     Button,
     StyleSheet,
     Pressable,
+    ActivityIndicator,
 } from "react-native";
 import { LoginButton } from "@/components/LoginButton";
 import { LogoVisual } from "@/components/LogoVisual";
@@ -25,7 +26,15 @@ export default function CreateProfile() {
     const [selectedGender, setGender] = useState<string>("");
     const [isContinue, setIsContinue] = useState(true);
 
-    const { currentUser } = useContext(AuthContext);
+    const { currentUser, isLoading } = useContext(AuthContext);
+
+    if (isLoading || !currentUser) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#8A2BE2" />
+            </View>
+        );
+    }
 
     const age: { [key: string]: string } = {
         "18 - 24 years old": "Generation Z (18-24)",
@@ -74,7 +83,7 @@ export default function CreateProfile() {
 
                 console.log("Created user account:", data);
 
-                router.push("/IntroductionMascot");
+                router.replace("/IntroductionMascot");
 
             } catch (error) {
                 console.log("Error creating user account:", error);

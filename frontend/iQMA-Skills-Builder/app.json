@@ -5,10 +5,10 @@
     "scheme": "com.iqma.iqmaskillsbuilder",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/iqma_icon.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/iqma_splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/iqma-adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.iqma.iqmaskillsbuilder"
@@ -36,7 +36,8 @@
         {
           "domain": "dev-doimvjsv85uforrd.us.auth0.com"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
