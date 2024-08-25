@@ -5,6 +5,7 @@ import accountsAffectiveRouter from './routes/accountsAffectiveRouter';
 import accountsCognitiveRouter from './routes/accountsCognitiveRouter';
 import accountsDemographicsRouter from './routes/accountsDemographicsRouter';
 import accountsSocialRouter from './routes/accountsSocialRouter';
+import chatRouter from "./routes/chatRouter";
 
 const app = express();
 app.use(cors());
@@ -12,12 +13,12 @@ const port = 3000;
 
 app.use(express.json());
 
-// app.use(accountsRouter);
 app.use('/accounts', accountsRouter);
 app.use('/accountsaffective', accountsAffectiveRouter);
 app.use('/accountscognitive', accountsCognitiveRouter);
 app.use('/accountsdemographics', accountsDemographicsRouter);
 app.use('/accountssocial', accountsSocialRouter);
+app.use("/chat", chatRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
