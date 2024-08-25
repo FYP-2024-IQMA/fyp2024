@@ -32,13 +32,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
-const accountsService = __importStar(require("../services/accountsService"));
+exports.deleteAccountDemographics = exports.updateAccountDemographics = exports.getAccountDemographicsById = exports.createAccountDemographics = void 0;
+const accountsDemographicsService = __importStar(require("../services/accountsDemographicsService"));
 /* CREATE */
-const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
     try {
-        const account = yield accountsService.createAccount(accountBody);
+        const account = yield accountsDemographicsService.createAccountDemographics(accountBody);
         res.status(201).json({
             userID: account[0].userID,
             status: 201,
@@ -47,71 +47,49 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Demographics`,
         });
     }
 });
-exports.createAccount = createAccount;
+exports.createAccountDemographics = createAccountDemographics;
 /* READ */
-const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAccountDemographicsById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const accounts = yield accountsService.getAllAccounts();
-        res.status(200).json(accounts);
-    }
-    catch (error) {
-        res.status(500).json({ error: "Failed to retrieve accounts" });
-    }
-});
-exports.getAllAccounts = getAllAccounts;
-const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const account = yield accountsService.getAccountById(req.params.id);
+        const account = yield accountsDemographicsService.getAccountDemographicsById(req.params.id);
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Demographics" });
     }
 });
-exports.getAccountById = getAccountById;
-const getAccountsByRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const accounts = yield accountsService.getAccountsByRole(req.params.role);
-        res.status(200).json(accounts);
-    }
-    catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve all ${req.params.role} accounts`,
-        });
-    }
-});
-exports.getAccountsByRole = getAccountsByRole;
+exports.getAccountDemographicsById = getAccountDemographicsById;
 /* UPDATE */
-const updateAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const account = req.body;
     try {
-        const response = yield accountsService.updateAccount(account);
+        const response = yield accountsDemographicsService.updateAccountCognitive(account);
         res.status(200).json({
             status: 200,
-            statusText: "Account Updated Successfully",
+            statusText: "Account Demographics Updated Successfully",
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Demographics" });
     }
 });
-exports.updateAccount = updateAccount;
+exports.updateAccountDemographics = updateAccountDemographics;
 /* DELETE */
-const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield accountsService.deleteAccount(req.params.id);
+        const response = yield accountsDemographicsService.deleteAccountDemographics(req.params.id);
         // response body will be empty
         res.status(200).json({
             status: 200,
-            statusText: "Account Deleted Successfully",
+            statusText: "Account Demographics Deleted Successfully",
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Demographics" });
     }
 });
-exports.deleteAccount = deleteAccount;
+exports.deleteAccountDemographics = deleteAccountDemographics;

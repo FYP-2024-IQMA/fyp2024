@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { router } from 'expo-router';
-import { Image, View, Text, TextInput, StyleSheet } from 'react-native';
+import { Image, View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { ChatBubble } from '@/components/ChatBubble';
 import { CustomButton } from "@/components/CustomButton";
@@ -14,6 +14,7 @@ export default function LearnerAssessmentDemographics() {
     const [selectedLife, setLife] = useState<string>('');
     const [selectedCareer, setCareer] = useState<string>('');
     const [selectedNeed, setNeed] = useState<string>('');
+    const [isContinue, setIsContinue] = useState(true);
 
     const age: { [key: string]: string } = {
         '18 - 24 years old': 'GenZ',
@@ -31,11 +32,17 @@ export default function LearnerAssessmentDemographics() {
     console.log([selectedAge, selectedGender, selectedRace, ethnic, selectedJob, selectedLife, selectedCareer]);
 
     const handlePress = () => {
-        router.push("LearnerAssessmentCognitive")
+        if (!selectedAge || !selectedGender || !selectedRace || !ethnic || !selectedJob || !selectedLife || !selectedCareer) {
+            setIsContinue(false);
+        }
+        else {
+            setIsContinue(true);
+            router.push("LearnerAssessmentCognitive");
+        }
     };
 
     return (
-        <View style={{ padding: 20, flex: 1, backgroundColor: "#FFFFFF" }}>
+        <ScrollView contentContainerStyle={{flexGrow: 1}} style={{ padding: 20, flex: 1, backgroundColor: "#FFFFFF" }}>
             <View style={{ flexDirection: 'row' }}>
                 <Image style={{ height: 100, width: 100, marginRight: 15 }} source={require('@/assets/images/mascot.png')} />
                 <View style={{ marginTop: 5 }}>
@@ -46,7 +53,7 @@ export default function LearnerAssessmentDemographics() {
             <View style={{ marginTop: 20 }}>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <Text style={[styles.text, { flex: 1 }]}>Age</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedAge ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedAge}
                             onValueChange={(itemValue: string) => setAge(itemValue)}
@@ -58,10 +65,16 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedAge && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Gender</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedGender ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedGender}
                             onValueChange={(itemValue: string) => setGender(itemValue)}
@@ -73,10 +86,16 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedGender && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Race</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedRace ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedRace}
                             onValueChange={(itemValue: string) => setRace(itemValue)}
@@ -88,6 +107,12 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedRace && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Ethnic{'\n'}Group</Text>
@@ -95,7 +120,7 @@ export default function LearnerAssessmentDemographics() {
                         style={{ 
                             flex: 2.3, 
                             borderWidth: 1,
-                            borderColor: '#9CA3AF',
+                            borderColor: !isContinue && !ethnic ? '#ff4c4c' : '#9CA3AF',
                             borderRadius: 10,
                             padding: 10,
                             textAlignVertical: 'top' 
@@ -107,10 +132,16 @@ export default function LearnerAssessmentDemographics() {
                         placeholder="Specify ethnic groups relevant to your region or organization"
                     />
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!ethnic && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Job{'\n'}Category</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedJob ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedJob}
                             onValueChange={(itemValue: string) => setJob(itemValue)}
@@ -122,10 +153,16 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedJob && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Life{'\n'}Stage</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedLife ? "#ff4c4c" : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedLife}
                             onValueChange={(itemValue: string) => setLife(itemValue)}
@@ -137,10 +174,16 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedLife && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Career{'\n'}Stage</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedCareer ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedCareer}
                             onValueChange={(itemValue: string) => setCareer(itemValue)}
@@ -152,10 +195,16 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedCareer && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
 
                 <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 12 }}>
                     <Text style={[styles.text, { flex: 1 }]}>Special{'\n'}Needs</Text>
-                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: '#9CA3AF', borderRadius: 10 }}>
+                    <View style={{ flex: 2.5, borderWidth: 1, borderColor: !isContinue && !selectedNeed ? '#ff4c4c' : '#9CA3AF', borderRadius: 10 }}>
                         <Picker
                             selectedValue={selectedNeed}
                             onValueChange={(itemValue: string) => setNeed(itemValue)}
@@ -167,15 +216,21 @@ export default function LearnerAssessmentDemographics() {
                         </Picker>
                     </View>
                 </View>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 1 }}></View>
+                    <View style={{ flex: 2.5 }}>
+                        {!selectedNeed && !isContinue && <Text style={[styles.errorText]}>This field is required.</Text>}
+                    </View>
+                </View>
             </View>
 
             <View style={{
                 alignSelf: 'center',
-                marginTop: 15
+                marginTop: 10
             }}>
                 <CustomButton label="continue" backgroundColor="white" onPressHandler={handlePress}/>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -189,5 +244,8 @@ const styles = StyleSheet.create({
     defaultOptionText: {
         color: '#5C5776',
         fontSize: 14
+    },
+    errorText: {
+        color: '#ff4c4c'
     }
 });

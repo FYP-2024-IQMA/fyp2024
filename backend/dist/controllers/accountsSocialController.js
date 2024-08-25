@@ -32,13 +32,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
-const accountsService = __importStar(require("../services/accountsService"));
+exports.deleteAccountSocial = exports.updateAccountSocial = exports.getAccountSocialById = exports.createAccountSocial = void 0;
+const accountsSocialService = __importStar(require("../services/accountsSocialService"));
 /* CREATE */
-const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const createAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
     try {
-        const account = yield accountsService.createAccount(accountBody);
+        const account = yield accountsSocialService.createAccountSocial(accountBody);
         res.status(201).json({
             userID: account[0].userID,
             status: 201,
@@ -47,71 +47,49 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
+            error: `Failed to create Account Social`,
         });
     }
 });
-exports.createAccount = createAccount;
+exports.createAccountSocial = createAccountSocial;
 /* READ */
-const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getAccountSocialById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const accounts = yield accountsService.getAllAccounts();
-        res.status(200).json(accounts);
-    }
-    catch (error) {
-        res.status(500).json({ error: "Failed to retrieve accounts" });
-    }
-});
-exports.getAllAccounts = getAllAccounts;
-const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const account = yield accountsService.getAccountById(req.params.id);
+        const account = yield accountsSocialService.getAccountSocialById(req.params.id);
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        res.status(500).json({ error: "Failed to retrieve Account Social" });
     }
 });
-exports.getAccountById = getAccountById;
-const getAccountsByRole = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const accounts = yield accountsService.getAccountsByRole(req.params.role);
-        res.status(200).json(accounts);
-    }
-    catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve all ${req.params.role} accounts`,
-        });
-    }
-});
-exports.getAccountsByRole = getAccountsByRole;
+exports.getAccountSocialById = getAccountSocialById;
 /* UPDATE */
-const updateAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const updateAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const account = req.body;
     try {
-        const response = yield accountsService.updateAccount(account);
+        const response = yield accountsSocialService.updateAccountSocial(account);
         res.status(200).json({
             status: 200,
-            statusText: "Account Updated Successfully",
+            statusText: "Account Social Updated Successfully",
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        res.status(500).json({ error: "Failed to update Account Social" });
     }
 });
-exports.updateAccount = updateAccount;
+exports.updateAccountSocial = updateAccountSocial;
 /* DELETE */
-const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const response = yield accountsService.deleteAccount(req.params.id);
+        const response = yield accountsSocialService.deleteAccountSocial(req.params.id);
         // response body will be empty
         res.status(200).json({
             status: 200,
-            statusText: "Account Deleted Successfully",
+            statusText: "Account Social Deleted Successfully",
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        res.status(500).json({ error: "Failed to delete Account Social" });
     }
 });
-exports.deleteAccount = deleteAccount;
+exports.deleteAccountSocial = deleteAccountSocial;

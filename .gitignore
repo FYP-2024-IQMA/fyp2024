@@ -10,3 +10,6 @@ venv
 android
 .idea
 .gguf
+
+# testing
+backend/coverage

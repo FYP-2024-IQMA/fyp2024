@@ -12,29 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createAccount = createAccount;
-exports.getAllAccounts = getAllAccounts;
-exports.getAccountById = getAccountById;
-exports.getAccountsByRole = getAccountsByRole;
-exports.updateAccount = updateAccount;
-exports.deleteAccount = deleteAccount;
+exports.createAccountCognitive = createAccountCognitive;
+exports.getAccountCognitiveById = getAccountCognitiveById;
+exports.updateAccountCognitive = updateAccountCognitive;
+exports.deleteAccountCognitive = deleteAccountCognitive;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
-const accountsModel_1 = require("../models/accountsModel");
+const accountsCognitiveModel_1 = require("../models/accountsCognitiveModel");
 /* CREATE */
-function createAccount(account) {
+function createAccountCognitive(accountCognitive) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email, role, age, gender, hasOnboarded } = account;
+        const { userID, educationalLevel, languageAbilities, learningPreferences, litNumProficiency, priorKnowledge } = accountCognitive;
         const { data, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountscognitive")
             .insert({
             userID,
-            firstName,
-            lastName,
-            email,
-            role,
-            age,
-            gender,
-            hasOnboarded
+            educationalLevel,
+            languageAbilities,
+            learningPreferences,
+            litNumProficiency,
+            priorKnowledge
         })
             .select();
         if (error) {
@@ -47,23 +43,10 @@ function createAccount(account) {
     });
 }
 /* READ */
-function getAllAccounts() {
+function getAccountCognitiveById(userID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default.from("accounts").select("*");
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-        else {
-            return data;
-        }
-    });
-}
-function getAccountById(userID) {
-    return __awaiter(this, void 0, void 0, function* () {
-        var _a, _b;
         const { data, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountscognitive")
             .select("*")
             .eq("userID", userID)
             .single();
@@ -72,46 +55,30 @@ function getAccountById(userID) {
             throw error;
         }
         else {
-            if (data.role === "admin") {
-                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_a = data.hasOnboarded) !== null && _a !== void 0 ? _a : false);
-            }
-            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, (_b = data.hasOnboarded) !== null && _b !== void 0 ? _b : false);
-        }
-    });
-}
-function getAccountsByRole(role) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default
-            .from("accounts")
-            .select("*")
-            .eq("role", role);
-        if (error) {
-            console.error(error);
-            throw error;
-        }
-        else {
-            return data;
+            return new accountsCognitiveModel_1.AccountsCognitive(data.userID, data.educationalLevel, data.languageAbilities, data.learningPreferences, data.litNumProficiency, data.priorKnowledge);
         }
     });
 }
 /* UPDATE */
-function updateAccount(account) {
+function updateAccountCognitive(accountCognitive) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email, hasOnboarded } = account;
+        const { userID, educationalLevel, languageAbilities, learningPreferences, litNumProficiency, priorKnowledge } = accountCognitive;
         const updateFields = {};
-        if (firstName)
-            updateFields.firstName = firstName;
-        if (lastName)
-            updateFields.lastName = lastName;
-        if (email)
-            updateFields.email = email;
-        if (hasOnboarded)
-            updateFields.hasOnboarded = hasOnboarded;
+        if (educationalLevel)
+            updateFields.educationalLevel = educationalLevel;
+        if (languageAbilities)
+            updateFields.languageAbilities = languageAbilities;
+        if (learningPreferences)
+            updateFields.learningPreferences = learningPreferences;
+        if (litNumProficiency)
+            updateFields.litNumProficiency = litNumProficiency;
+        if (priorKnowledge)
+            updateFields.priorKnowledge = priorKnowledge;
         if (Object.keys(updateFields).length === 0) {
             throw new Error("No fields to update");
         }
         const { status, statusText, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountscognitive")
             .update(updateFields)
             .eq("userID", userID);
         if (error) {
@@ -124,10 +91,10 @@ function updateAccount(account) {
     });
 }
 /* DELETE */
-function deleteAccount(userID) {
+function deleteAccountCognitive(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { status, statusText, error } = yield supabaseConfig_1.default
-            .from("accounts")
+            .from("accountscognitive")
             .delete()
             .eq("userID", userID);
         if (error) {

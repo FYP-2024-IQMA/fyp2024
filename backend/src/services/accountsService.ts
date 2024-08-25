@@ -2,27 +2,25 @@ import supabase from "../config/supabaseConfig";
 import {
     Accounts,
     Admin,
-    Age,
-    Gender,
-    Learner,
-    Role,
+    Learner
 } from "../models/accountsModel";
 
 /* CREATE */
 
 export async function createAccount(account: Accounts) {
-    const { userId, firstName, lastName, email, role, age, gender } = account;
+    const { userID, firstName, lastName, email, role, age, gender, hasOnboarded } = account;
 
     const { data, error } = await supabase
         .from("accounts")
         .insert({
-            userid: userId,
-            firstname: firstName,
-            lastname: lastName,
-            email: email,
-            role: role,
-            age: age,
-            gender: gender,
+            userID,
+            firstName,
+            lastName,
+            email,
+            role,
+            age,
+            gender,
+            hasOnboarded
         })
         .select();
 
@@ -47,11 +45,11 @@ export async function getAllAccounts() {
     }
 }
 
-export async function getAccountById(userid: string): Promise<Learner> {
+export async function getAccountById(userID: string): Promise<Accounts> {
     const { data, error } = await supabase
         .from("accounts")
         .select("*")
-        .eq("userid", userid)
+        .eq("userID", userID)
         .single();
 
     if (error) {
@@ -60,25 +58,27 @@ export async function getAccountById(userid: string): Promise<Learner> {
     } else {
         if (data.role === "admin") {
             return new Admin(
-                data.userid,
-                data.firstname,
-                data.lastname,
+                data.userID,
+                data.firstName,
+                data.lastName,
                 data.email,
-                data.role as Role,
-                new Date(data.datecreated!),
-                data.age as Age,
-                data.gender as Gender
+                data.role,
+                new Date(data.dateCreated!),
+                data.age,
+                data.gender,
+                data.hasOnboarded
             );
         }
         return new Learner(
-            data.userid,
-            data.firstname,
-            data.lastname,
+            data.userID,
+            data.firstName,
+            data.lastName,
             data.email,
-            data.role as Role,
-            new Date(data.datecreated!),
-            data.age as Age,
-            data.gender as Gender
+            data.role,
+            new Date(data.dateCreated!),
+            data.age,
+            data.gender,
+            data.hasOnboarded
         );
     }
 }
@@ -100,13 +100,14 @@ export async function getAccountsByRole(role: string) {
 /* UPDATE */
 
 export async function updateAccount(account: Accounts) {
-    const { userId, firstName, lastName, email } = account;
+    const { userID, firstName, lastName, email, hasOnboarded } = account;
 
     const updateFields: { [key: string]: any } = {};
 
-    if (firstName) updateFields.firstname = firstName;
-    if (lastName) updateFields.lastname = lastName;
+    if (firstName) updateFields.firstName = firstName;
+    if (lastName) updateFields.lastName = lastName;
     if (email) updateFields.email = email;
+    if (hasOnboarded) updateFields.hasOnboarded = hasOnboarded;
 
     if (Object.keys(updateFields).length === 0) {
         throw new Error("No fields to update");
@@ -115,7 +116,7 @@ export async function updateAccount(account: Accounts) {
     const { status, statusText, error } = await supabase
         .from("accounts")
         .update(updateFields)
-        .eq("userid", userId);
+        .eq("userID", userID);
 
     if (error) {
         console.error(error);
@@ -127,11 +128,11 @@ export async function updateAccount(account: Accounts) {
 
 /* DELETE */
 
-export async function deleteAccount(userid: string) {
+export async function deleteAccount(userID: string) {
     const { status, statusText, error } = await supabase
         .from("accounts")
         .delete()
-        .eq("userid", userid);
+        .eq("userID", userID);
 
     if (error) {
         console.error(error);
