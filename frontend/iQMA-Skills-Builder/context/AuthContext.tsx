@@ -64,6 +64,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             await clearSession();
             setCurrentUser(null);
             setToken(null);
+            router.replace("/"); // For redirect if page is not Index
         } catch (e) {
             console.log(e);
         }

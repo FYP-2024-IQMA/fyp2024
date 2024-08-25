@@ -19,14 +19,17 @@ import { useContext } from "react";
 import { router } from "expo-router";
 
 export default function CreateProfile() {
+
+    const { currentUser, isLoading } = useContext(AuthContext);
+
+
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
+    const [email, setEmail] = useState<string>(currentUser.email || "");
     const [selectedAge, setAge] = useState<string>("");
     const [selectedGender, setGender] = useState<string>("");
     const [isContinue, setIsContinue] = useState(true);
 
-    const { currentUser, isLoading } = useContext(AuthContext);
 
     if (isLoading || !currentUser) {
         return (

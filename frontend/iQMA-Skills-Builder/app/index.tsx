@@ -22,9 +22,9 @@ export default function Index() {
         >
           <LogoVisual></LogoVisual>
             <LoginButton></LoginButton>
-            <Profile></Profile>
-            <LogoutButton></LogoutButton>
             
+            {/* For Testing & Debugging */}
+            <Profile></Profile> 
         </View>
     );
 }
