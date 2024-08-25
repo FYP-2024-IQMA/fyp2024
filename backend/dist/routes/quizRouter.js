@@ -23,17 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const accountsController = __importStar(require("../controllers/accountsController"));
+const quizController = __importStar(require("../controllers/quizController"));
 const express_1 = require("express");
 const router = (0, express_1.Router)();
-/* CREATE */
-router.post("/createaccount", accountsController.createAccount);
 /* READ */
-router.get('/getallaccounts', accountsController.getAllAccounts);
-router.get('/getaccountbyid/:id', accountsController.getAccountById);
-router.get("/getaccountsbyrole/:role", accountsController.getAccountsByRole);
-/* UPDATE */
-router.patch('/updateaccount', accountsController.updateAccount);
-/* DELETE */
-router.delete('/deleteaccount/:id', accountsController.deleteAccount);
+router.get('/getallquizzes', quizController.getAllQuizzes);
+router.get('/getquizzesbysectionid/:id', quizController.getQuizzesBySectionId);
 exports.default = router;
