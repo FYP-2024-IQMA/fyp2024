@@ -62,12 +62,8 @@ if __name__ == "__main__":
 
     # if .gguf doesn't exist, download it from the Hugging Face Hub
     if gguf_path:
-        print(gguf_path)
-        # Change the current working directory
-        os.chdir('gguf_path')
-
-        # Verify that the directory has been changed
-        print("Directory After Change:", os.getcwd())
+        print(f"Found the .gguf file at: {gguf_path}")
+        os.chdir("../models")
     else:
         os.chdir("../models")
         download_gguf(repo_id, filename, '.')
