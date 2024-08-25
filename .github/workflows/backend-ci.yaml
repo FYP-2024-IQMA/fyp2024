@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Checkout Repository in Virtual Machine
         uses: actions/checkout@v2
-      - name: Install Dependecies
+      - name: Install Dependencies
         working-directory: backend
         run: |
           npm install
