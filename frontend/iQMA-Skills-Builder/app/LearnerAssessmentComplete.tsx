@@ -54,10 +54,10 @@ export default function LearnerAssessmentComplete() {
 
         try {
             const [demographicsResponse, cognitiveResponse, dynamicsResponse, experienceResponse] = await Promise.all([
-                await axios.post(`http://${process.env.NETWORK_IP}:3000/accountsdemographics/createaccountdemographics`, demographics),
-                await axios.post(`http://${process.env.NETWORK_IP}:3000/accountscognitive/createaccountcognitive`, cognitive),
-                await axios.post(`http://${process.env.NETWORK_IP}:3000/accountssocial/createaccountsocial`, dynamics),
-                await axios.post(`http://${process.env.NETWORK_IP}:3000/accountsaffective/createaccountaffective`, experience)
+                await axios.post(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accountsdemographics/createaccountdemographics`, demographics),
+                await axios.post(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accountscognitive/createaccountcognitive`, cognitive),
+                await axios.post(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accountssocial/createaccountsocial`, dynamics),
+                await axios.post(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accountsaffective/createaccountaffective`, experience)
             ]);
 
             console.log("Account Demographics created successfully: ", demographicsResponse.data);
