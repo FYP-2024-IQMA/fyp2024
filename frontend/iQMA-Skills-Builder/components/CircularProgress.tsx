@@ -1,17 +1,23 @@
 // components/CircularProgress.tsx
 
-import { StyleSheet, Text, View } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import { StyleSheet, Text, View } from "react-native";
+import Svg, { Circle } from "react-native-svg";
 
-import React from 'react';
+import React from "react";
 
 interface CircularProgressProps {
   size: number;
   strokeWidth: number;
   progress: number;
+  children?: React.ReactNode;
+  style?: any;
 }
 
-const CircularProgress: React.FC<CircularProgressProps> = ({ size, strokeWidth, progress }) => {
+const CircularProgress: React.FC<CircularProgressProps> = ({
+  size,
+  strokeWidth,
+  progress,
+}) => {
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
@@ -50,13 +56,13 @@ const CircularProgress: React.FC<CircularProgressProps> = ({ size, strokeWidth, 
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   progressText: {
-    position: 'absolute',
+    position: "absolute",
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
 });
 
