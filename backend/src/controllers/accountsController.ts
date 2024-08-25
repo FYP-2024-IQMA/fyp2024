@@ -9,7 +9,7 @@ export const createAccount = async (req: Request, res: Response) => {
     try {
         const account = await accountsService.createAccount(accountBody);
         res.status(201).json({
-            userid: account[0].userid,
+            userID: account[0].userID,
             status: 201,
             statusText: "Created",
         });

@@ -8,6 +8,18 @@ services:
     - "3000:3000"
     networks:
     - app-network
+  chatbot:
+    build:
+      dockerfile: Dockerfile
+      context: ./backend/src/chatbot
+    ports:
+    - "8080:8080"
+    networks:
+    - app-network
+    env_file:
+    - ./backend/src/chatbot/.env
+
+  
 
   db:
     image: postgres
@@ -25,7 +37,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8082:8082
     networks:
     - app-network
   redis:

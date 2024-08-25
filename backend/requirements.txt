@@ -1,7 +1,0 @@
-fastapi
-openai
-pydantic
-pytest
-python-dotenv
-requests
-typing

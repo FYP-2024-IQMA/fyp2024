@@ -1,4 +1,4 @@
-
+android
 backend/node_modules
 frontend/node_modules
 backend/.env
@@ -7,6 +7,9 @@ frontend/package-lock.json
 backend/package-lock.json
 venv
 .env
-android
-coverage
 __pycache__
+.idea
+.gguf
+
+# testing
+backend/coverage
