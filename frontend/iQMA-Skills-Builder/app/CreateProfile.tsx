@@ -19,9 +19,7 @@ import { useContext } from "react";
 import { router } from "expo-router";
 
 export default function CreateProfile() {
-
     const { currentUser, isLoading } = useContext(AuthContext);
-
 
     const [firstName, setFirstName] = useState<string>("");
     const [lastName, setLastName] = useState<string>("");
@@ -29,15 +27,27 @@ export default function CreateProfile() {
     const [selectedAge, setAge] = useState<string>("");
     const [selectedGender, setGender] = useState<string>("");
     const [isContinue, setIsContinue] = useState(true);
-
+    const [isValidEmail, setIsValidEmail] = useState(true);
 
     if (isLoading || !currentUser) {
         return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View
+                style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}
+            >
                 <ActivityIndicator size="large" color="#8A2BE2" />
             </View>
         );
     }
+
+    const validateEmail = (email: string) => {
+        // Regular expression for validating email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setIsValidEmail(emailRegex.test(email));
+    };
 
     const age: { [key: string]: string } = {
         "18 - 24 years old": "Generation Z (18-24)",
@@ -68,8 +78,10 @@ export default function CreateProfile() {
             !lastName ||
             !email ||
             !selectedAge ||
-            !selectedGender
+            !selectedGender ||
+            !isValidEmail
         ) {
+            validateEmail(email);
             setIsContinue(false);
         } else {
             setIsContinue(true);
@@ -87,7 +99,6 @@ export default function CreateProfile() {
                 console.log("Created user account:", data);
 
                 router.replace("/IntroductionMascot");
-
             } catch (error) {
                 console.log("Error creating user account:", error);
             }
@@ -126,8 +137,8 @@ export default function CreateProfile() {
 
             {!firstName && !isContinue && (
                 <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
+                    <View></View>
+                    <View>
                         <Text style={[styles.errorText]}>
                             This field is required.
                         </Text>
@@ -152,8 +163,8 @@ export default function CreateProfile() {
 
             {!lastName && !isContinue && (
                 <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
+                    <View></View>
+                    <View>
                         <Text style={[styles.errorText]}>
                             This field is required.
                         </Text>
@@ -178,10 +189,21 @@ export default function CreateProfile() {
 
             {!email && !isContinue && (
                 <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
+                    <View></View>
+                    <View>
                         <Text style={[styles.errorText]}>
                             This field is required.
+                        </Text>
+                    </View>
+                </View>
+            )}
+
+            {email && !isValidEmail && (
+                <View style={{ flexDirection: "row" }}>
+                    <View></View>
+                    <View>
+                        <Text style={[styles.errorText]}>
+                            Email is invalid.
                         </Text>
                     </View>
                 </View>
@@ -221,8 +243,8 @@ export default function CreateProfile() {
 
             {!selectedAge && !isContinue && (
                 <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
+                    <View></View>
+                    <View>
                         <Text style={[styles.errorText]}>
                             This field is required.
                         </Text>
@@ -271,8 +293,8 @@ export default function CreateProfile() {
 
             {!selectedGender && !isContinue && (
                 <View style={{ flexDirection: "row" }}>
-                    <View style={{ flex: 1 }}></View>
-                    <View style={{ flex: 2.5 }}>
+                    <View></View>
+                    <View>
                         <Text style={[styles.errorText]}>
                             This field is required.
                         </Text>
