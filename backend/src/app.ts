@@ -8,6 +8,7 @@ import express from 'express';
 import quizRouter from './routes/quizRouter';
 import resultRouter from './routes/resultRouter';
 import unitRouter from './routes/unitRouter';
+import chatRouter from "./routes/chatRouter";
 
 const app = express();
 app.use(cors());
@@ -15,7 +16,6 @@ const port = 3000;
 
 app.use(express.json());
 
-// app.use(accountsRouter);
 app.use('/accounts', accountsRouter);
 app.use('/accountsaffective', accountsAffectiveRouter);
 app.use('/accountscognitive', accountsCognitiveRouter);
@@ -24,6 +24,7 @@ app.use('/accountssocial', accountsSocialRouter);
 app.use('/quiz', quizRouter);
 app.use('/result', resultRouter);
 app.use('/unit', unitRouter);
+app.use("/chat", chatRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
