@@ -24,9 +24,12 @@ export const createChats = async (req: Request, res: Response) => {
 /* READ */
 
 export const getChatHistory = async (req: Request, res: Response) => {
-    const chatsBody = req.body;
+    const userSection = {
+        userID: req.params.userid,
+        sectionID: req.params.sectionid,
+    };
     try {
-        const chats = await chatService.getChatHistory(chatsBody);
+        const chats = await chatService.getChatHistory(userSection);
         res.status(200).json(chats);
     } catch (error) {
         res.status(500).json({ error: "Failed to retrieve chat history" });
@@ -36,13 +39,16 @@ export const getChatHistory = async (req: Request, res: Response) => {
 /* DELETE */
 
 export const deleteChat = async (req: Request, res: Response) => {
-    const chatsBody = req.body;
+    const userSection = {
+        userID: req.params.userid,
+        sectionID: req.params.sectionid,
+    };
     try {
-        const chat = await chatService.deleteChat(chatsBody);
+        const chat = await chatService.deleteChat(userSection);
         res.status(200).json({
             status: 200,
-            userID: chatsBody.userID,
-            sectionID: chatsBody.sectionID,
+            userID: req.params.userid,
+            sectionID: req.params.sectionid,
             statusText: "Chat History Deleted Successfully",
         });
     } catch (error) {
