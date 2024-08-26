@@ -20,11 +20,10 @@ export default function Index() {
                 backgroundColor: '#C3B1FF'
             }}
         >
-          <LogoVisual></LogoVisual>
+            <LogoVisual></LogoVisual>
             <LoginButton></LoginButton>
-            
             {/* For Testing & Debugging */}
-            <Profile></Profile> 
+            {/* <Profile></Profile>  */}
         </View>
     );
 }
