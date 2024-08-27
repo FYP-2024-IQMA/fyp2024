@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { useState } from 'react';
 import { router } from 'expo-router';
 import { Image, View, Text, StyleSheet } from 'react-native';
@@ -18,14 +19,16 @@ export default function LearnerAssessmentDynamics() {
 
     const [isContinue, setIsContinue] = useState(true);
 
-    console.log(selectedPeers, selectedTendency, selectedSocial, selectedComputer);
-
-    const handlePress = () => {
+    const handlePress = async () => {
         if (!selectedPeers || !selectedTendency || !selectedSocial || !selectedComputer) {
             setIsContinue(false);
         }
         else {
             setIsContinue(true);
+            const relationshipToPeers = await AsyncStorage.setItem('relationshipToPeers', selectedPeers);
+            const tendency = await AsyncStorage.setItem('tendency', selectedTendency);    
+            const socialBackground = await AsyncStorage.setItem('socialBackground', selectedSocial);      
+            const compLiteracy = await AsyncStorage.setItem('compLiteracy', selectedComputer);
             router.push("LearnerAssessmentExperience");
         }
     };

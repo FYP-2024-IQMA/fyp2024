@@ -1,4 +1,4 @@
-
+android
 backend/node_modules
 frontend/node_modules
 backend/.env
@@ -9,6 +9,7 @@ venv
 .env
 android
 .idea
+.gguf
 
 # testing
 backend/coverage

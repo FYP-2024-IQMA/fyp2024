@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - "SCRUM*"
     paths:
       - "frontend/**"
   pull_request:
@@ -17,17 +18,61 @@ jobs:
 
     steps:
       - name: Checkout Repository in Virtual Machine
-        uses: actions/checkout@v2
-      - name: Install Dependecies
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
         working-directory: frontend/iQMA-Skills-Builder
         run: |
           npm install
+
       - name: Run Tests
         working-directory: frontend/iQMA-Skills-Builder
         run: |
           npm test
 
-      
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Super-Linter
+        uses: super-linter/super-linter@v7.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_ALL_CODEBASE: false
+          VALIDATE_TSX_FILES: true
+          VALIDATE_CHECKOV: false
+          VALIDATE_DOCKERFILE: false
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_TERRAFORM: false
+          VALIDATE_JSCPD: false
+          VALIDATE_TERRAFORM_FMT: false
+          VALIDATE_TERRAFORM_TERRASCAN: false
+          VALIDATE_TERRAFORM_TFLINT: false
+          VALIDATE_ARM: false
+          VALIDATE_KUBERNETES_KUBECONFORM: false
+          IGNORE_GENERATED_FILES: true
+          IGNORE_GITIGNORED_FILES: true
 
-  
-      
+  # frontend-lint:
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: false
+  #   timeout-minutes: 5
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: ${{ env.NODE_VERSION }}
+
+  #     - name: Install frontend dependencies
+  #       working-directory: frontend/iQMA-Skills-Builder
+  #       run: npm ci
+
+  #     - name: Lint frontend code
+  #       working-directory: frontend/iQMA-Skills-Builder
+  #       run: npm run lint
