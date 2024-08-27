@@ -3,41 +3,50 @@ import React, { ReactNode } from 'react';
 
 interface ChatBubbleProps {
     children: ReactNode;
-    position: 'left' | 'right' | 'top';
-    bubbleColor?: string; 
+    position: "left" | "right" | "top";
+    bubbleColor?: string;
     textColor?: string;
-    icon?: any;
+    isUser?: boolean;
     borderRadius?: number;
     showArrow?: boolean;
     chatbot?: boolean;
 }
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", icon, borderRadius = 10, showArrow = true, chatbot  }) => {
-    const content = (
+export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", isUser, borderRadius = 10, showArrow = true, chatbot  }) => {
+    return (
         <View style={[styles.container, getContainerAlignment(position)]}>
             {showArrow && (
-                <View style={[styles.arrowContainer, getArrowContainer(position)]}>
-                    <View style={[styles.arrow, { borderBottomColor: bubbleColor }]} />
+                <View
+                    style={[styles.arrowContainer, getArrowContainer(position)]}
+                >
+                    <View
+                        style={[
+                            styles.arrow,
+                            { borderBottomColor: bubbleColor },
+                        ]}
+                    />
                 </View>
             )}
-            <View style={[styles.bubble, { backgroundColor: bubbleColor, borderRadius }]}>
-                <Text style={[styles.text, { color: textColor }]}>{children}</Text>
+            <View style={[styles.bubbleWrapper, styles.alignLeft]}>
+                {!isUser && (
+                    <Image
+                        source={require("@/assets/images/iqma_logo.png")}
+                        style={styles.icon}
+                    />
+                )}
+                <View
+                    style={[
+                        styles.bubble,
+                        { backgroundColor: bubbleColor, borderRadius },
+                    ]}
+                >
+                    <Text style={[styles.text, { color: textColor }]}>
+                        {children}
+                    </Text>
+                </View>
             </View>
         </View>
     );
-
-    if (chatbot && position === 'left') {
-        return (
-            <View style={[styles.bubbleWrapper, styles.alignLeft]}>
-                {icon && (
-                    <Image source={{ uri: icon }} style={styles.icon} />
-                )}
-                {content}
-            </View>
-        );
-    } else {
-        return content;
-    }
 };
 
 
@@ -75,7 +84,7 @@ const getArrowContainer = (position: string) => {
 const styles = StyleSheet.create({
     bubbleWrapper: {
         flexDirection: 'row',
-        alignItems: 'flex-start',
+        // marginBottom: 20,
     },
     alignLeft: {
         justifyContent: 'flex-start',
@@ -101,7 +110,6 @@ const styles = StyleSheet.create({
     },
     text: {
         color: "white",
-        textAlign: 'center',
         lineHeight: 20,
     },
     arrowContainer: {
