@@ -7,7 +7,7 @@ import { LogoutButton } from "@/components/LogoutButton";
 import { Profile } from "@/components/Profile";
 import { useContext } from "react";
 
-// where things show upp
+// where things show up
 export default function Index() {
   const { currentUser, isLoading } = useContext(AuthContext);
 

@@ -6,12 +6,12 @@ on:
       - develop
       - "SCRUM*"
     paths:
-      - "frontend/"
+      - "frontend/**"
   pull_request:
     branches:
       - develop
     paths:
-      - "frontend/"
+      - "frontend/**"
 jobs:
   build:
     runs-on: ubuntu-latest
