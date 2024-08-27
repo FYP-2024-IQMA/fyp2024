@@ -1,10 +1,17 @@
 // app/Chatbot.tsx
 
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    Alert,
+} from 'react-native';
 
-import { Feather } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
+import {Feather} from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {DrawerScreenProps} from '@react-navigation/drawer';
@@ -98,7 +105,9 @@ const loadChatHistory = async (chatId: string) => {
 // Clear chat history
 const clearChatHistory = async (chatId: string) => {
     try {
-        await AsyncStorage.removeItem(chatId).then(() => console.log('Chat history for chatId: "', chatId, '", cleared'));
+        await AsyncStorage.removeItem(chatId).then(() =>
+            console.log('Chat history for chatId: "', chatId, '", cleared')
+        );
     } catch (error) {
         console.error('Error while clearing chat history:', error);
     }
@@ -144,31 +153,45 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
     // Alert Function for deleting chat history
     const deleteAlert = () => {
         Alert.alert(
-            "Clearing Chat History",
-            "Are you sure you want to clear the chat history?",
+            'Clearing Chat History',
+            'Are you sure you want to clear the chat history?',
             [
                 {
-                    text: "Cancel",
-                    onPress: () => console.log("Delete chat history cancelled."),
-                    style: "cancel"
+                    text: 'Cancel',
+                    onPress: () =>
+                        console.log('Delete chat history cancelled.'),
+                    style: 'cancel',
                 },
-                { text: "Yes", onPress: async () => {
-                    try {
-                        await clearChatHistory(chatId);
-                        const loadHistory = async () => {
-                            const history = await loadChatHistory(chatId);
-                            setMessages(history.map((message: { role: string, content: string }) => ({
-                                text: message.content,
-                                isUser: message.role === 'user',
-                            })));
-                        };
-                        loadHistory();
-                    } catch (error) {
-                        console.error('Error while clearing chat history:', error);
-                    }
-                }}
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        try {
+                            await clearChatHistory(chatId);
+                            const loadHistory = async () => {
+                                const history = await loadChatHistory(chatId);
+                                setMessages(
+                                    history.map(
+                                        (message: {
+                                            role: string;
+                                            content: string;
+                                        }) => ({
+                                            text: message.content,
+                                            isUser: message.role === 'user',
+                                        })
+                                    )
+                                );
+                            };
+                            loadHistory();
+                        } catch (error) {
+                            console.error(
+                                'Error while clearing chat history:',
+                                error
+                            );
+                        }
+                    },
+                },
             ],
-            { cancelable: true }
+            {cancelable: true}
         );
     };
 
@@ -235,12 +258,14 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
                         <AntDesign name="delete" size={24} color="#000000" />
                     </View>
                 </TouchableOpacity>
-                <TextInput style={styles.input} 
-                value={message} 
-                onChangeText={setMessage} 
-                placeholder="Type your messsage..."
-                onSubmitEditing={handleSend}
-                keyboardType="email-address"/> 
+                <TextInput
+                    style={styles.input}
+                    value={message}
+                    onChangeText={setMessage}
+                    placeholder="Type your messsage..."
+                    onSubmitEditing={handleSend}
+                    keyboardType="email-address"
+                />
                 <TouchableOpacity onPress={handleSend} style={styles.button}>
                     <View style={styles.sendButtonCircle}>
                         <Feather name="send" size={24} color="#000000" />

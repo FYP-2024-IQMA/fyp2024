@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react';
 import {router} from 'expo-router';
 import {Image, View, Text, StyleSheet, ScrollView} from 'react-native';
@@ -30,15 +31,7 @@ export default function LearnerAssessmentCognitive() {
 
     const [isContinue, setIsContinue] = useState(true);
 
-    console.log([
-        selectedEducation,
-        selectedLanguage,
-        selectedLiteracy,
-        selectedLearning,
-        selectedSkill,
-    ]);
-
-    const handlePress = () => {
+    const handlePress = async () => {
         if (
             !selectedEducation ||
             !selectedLanguage ||
@@ -49,6 +42,26 @@ export default function LearnerAssessmentCognitive() {
             setIsContinue(false);
         } else {
             setIsContinue(true);
+            const educationalLevel = await AsyncStorage.setItem(
+                'educationalLevel',
+                selectedEducation
+            );
+            const languageAbilities = await AsyncStorage.setItem(
+                'languageAbilities',
+                selectedLanguage
+            );
+            const litNumProficiency = await AsyncStorage.setItem(
+                'litNumProficiency',
+                selectedLiteracy
+            );
+            const learningPreferences = await AsyncStorage.setItem(
+                'learningPreferences',
+                selectedLearning
+            );
+            const priorKnowledge = await AsyncStorage.setItem(
+                'priorKnowledge',
+                selectedSkill
+            );
             router.push('LearnerAssessmentDynamics');
         }
     };

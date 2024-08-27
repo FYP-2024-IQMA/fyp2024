@@ -1,12 +1,18 @@
-import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
-import { StyleSheet, Text, View , Alert } from "react-native";
+import {
+    DrawerContentComponentProps,
+    DrawerContentScrollView,
+    DrawerItem,
+    DrawerItemList,
+    createDrawerNavigator,
+} from '@react-navigation/drawer';
+import {StyleSheet, Text, View, Alert} from 'react-native';
 
 import ChatbotScreen from '../app/screens/Chatbot';
 import CustomLabel from './CustomLabel';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
+import {useEffect} from 'react';
+import {useNavigation} from '@react-navigation/native';
 
 // defines the drawer routes and params
 type ChatDrawerParamList = {
@@ -34,12 +40,12 @@ const deleteAlert = async () => {
             {
                 text: 'Cancel',
                 onPress: () => console.log('Delete all chats cancelled.'),
-                style: 'cancel'
+                style: 'cancel',
             },
-            { text: 'OK', onPress: async () => await clearAllChats() }
+            {text: 'OK', onPress: async () => await clearAllChats()},
         ]
     );
-}
+};
 
 // to ensure receives correct props for rendering drawer content
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
@@ -52,12 +58,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             <View style={styles.bottomDrawerSection}>
                 <DrawerItem
                     label="Clear All Chats"
-                    onPress={ async () => {
+                    onPress={async () => {
                         deleteAlert();
-                        
+
                         props.navigation.reset({
-                            index: 0, 
-                            routes: [{ name: 'Section 1: Communication'}]
+                            index: 0,
+                            routes: [{name: 'Section 1: Communication'}],
                         });
                     }}
                     style={styles.closeDrawer}

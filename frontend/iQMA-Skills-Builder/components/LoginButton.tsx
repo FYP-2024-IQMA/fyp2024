@@ -3,12 +3,12 @@ import {
     Dimensions,
     Pressable,
     StyleSheet,
-    View,
     Text,
+    View,
 } from 'react-native';
+
 import {AuthContext} from '@/context/AuthContext';
 import {useContext} from 'react';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 const screenWidth = Dimensions.get('window').width;
 export const LoginButton = () => {

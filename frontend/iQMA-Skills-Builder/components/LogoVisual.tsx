@@ -1,5 +1,5 @@
+import {Animated, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useRef} from 'react';
-import {View, Image, Text, StyleSheet, Animated} from 'react-native';
 
 export const LogoVisual = () => {
     const scaleValue = useRef(new Animated.Value(0.8)).current; // Initial scale set to 0.5 (half the size)
