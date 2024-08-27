@@ -1,9 +1,10 @@
-import {Text, View, Image} from 'react-native';
+import {Image, Text, View} from 'react-native';
+
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
 import {Profile} from '@/components/Profile';
 
-// where things show up
+// where things show up, test Index
 export default function Index() {
     return (
         <View

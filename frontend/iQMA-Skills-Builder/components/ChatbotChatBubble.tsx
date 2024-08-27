@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 
 import React from 'react';
 
@@ -7,10 +7,17 @@ type ChatBubbleProps = {
     isUser: boolean;
 };
 
-const ChatBubble: React.FC<ChatBubbleProps> = ({ text, isUser }) => {
+const ChatBubble: React.FC<ChatBubbleProps> = ({text, isUser}) => {
     return (
-        <View style={[styles.bubble, isUser ? styles.userBubble : styles.botBubble]}>
-            <Text style={isUser ? styles.userText : styles.botText}>{text}</Text>
+        <View
+            style={[
+                styles.bubble,
+                isUser ? styles.userBubble : styles.botBubble,
+            ]}
+        >
+            <Text style={isUser ? styles.userText : styles.botText}>
+                {text}
+            </Text>
         </View>
     );
 };
@@ -30,17 +37,15 @@ const styles = StyleSheet.create({
     botBubble: {
         alignSelf: 'flex-start',
         backgroundColor: '#D3CCE3',
-
     },
     botText: {
         color: '#000',
         lineHeight: 25,
-
     },
     userText: {
         color: '#FFFFFF',
         lineHeight: 25,
-    }
+    },
 });
 
 export default ChatBubble;
