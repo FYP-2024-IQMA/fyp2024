@@ -60,10 +60,18 @@ export default function LearnerAssessmentComplete() {
                 await axios.post(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accountsaffective/createaccountaffective`, experience)
             ]);
 
+            const account = 
+            {
+                "userID": userID,
+                "hasOnboarded": true
+            };
+            const accountResponse = await axios.patch(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/updateaccount`, account);
+
             console.log("Account Demographics created successfully: ", demographicsResponse.data);
             console.log("Account Cognitive created successfully: ", cognitiveResponse.data);
             console.log("Account Social created successfully: ", dynamicsResponse.data);
             console.log("Account Affective created successfully: ", experienceResponse.data);
+            console.log("Account has been updated", accountResponse);
 
             router.push("Home");
         } catch (e) {
