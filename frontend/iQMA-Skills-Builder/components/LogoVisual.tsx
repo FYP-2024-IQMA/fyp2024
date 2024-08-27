@@ -1,4 +1,4 @@
-import { Animated, StyleSheet, Text, View } from "react-native";
+import { Animated, StyleSheet, Text } from "react-native";
 import React, { useEffect, useRef } from "react";
 
 export const LogoVisual = () => {
