@@ -2,23 +2,14 @@ import 'react-native-gesture-handler';
 
 import * as Progress from 'react-native-progress';
 
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
-import {Auth0Provider, useAuth0} from 'react-native-auth0';
-import {useContext, useEffect, useState} from 'react';
+import {ActivityIndicator, View} from 'react-native';
+import {useEffect, useState} from 'react';
 
-import {AuthContext, AuthProvider} from '@/context/AuthContext';
-import ChatbotDrawer from '../components/ChatbotDrawer';
-import HomeScreen from './screens/Home';
-import {Ionicons} from '@expo/vector-icons';
-import {MaterialIcons} from '@expo/vector-icons';
-import ProfilePage from './screens/ProfilePage';
+import {Auth0Provider} from 'react-native-auth0';
+import {AuthProvider} from '@/context/AuthContext';
 import React from 'react';
-import SettingPage from './screens/Settings';
 import {Stack} from 'expo-router';
 import config from '../config/auth0-configuration';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import useColorScheme from '@/hooks/useColorScheme';
-import {useDrawerStatus} from '@react-navigation/drawer';
 
 // place to put ur headers, footers, and other layout components
 export default function RootLayout() {
