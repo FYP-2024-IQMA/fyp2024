@@ -86,7 +86,8 @@ export default function CreateProfile() {
         } else {
             setIsContinue(true);
             try {
-                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/createaccount`;
+                // const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/createaccount`;
+                const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/createaccount`
 
                 const response = await fetch(url, {
                     method: 'POST',

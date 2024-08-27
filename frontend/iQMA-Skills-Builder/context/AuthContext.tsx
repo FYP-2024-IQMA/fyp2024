@@ -74,14 +74,15 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     // Check First Time Login
     const checkFirstLogin = async () => {
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getaccountbyid/${user?.sub}`;
+            // const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getaccountbyid/${user?.sub}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/getaccountbyid/${user?.sub}`
 
             const response = await fetch(url);
 
             const data = await response.json();
 
-            console.log(data);
-            console.log(response.status);
+            console.log("DATA" + data);
+            console.log("TEST" + response.status);
 
             if (
                 response.status === 500 &&
