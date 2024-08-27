@@ -1,17 +1,12 @@
-import {
-    DrawerContentComponentProps,
-    DrawerContentScrollView,
-    DrawerItem,
-    DrawerItemList,
-    createDrawerNavigator,
-} from '@react-navigation/drawer';
-import {StyleSheet, Text, View} from 'react-native';
+import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
+import { StyleSheet, Text, View , Alert } from "react-native";
 
 import ChatbotScreen from '../app/screens/Chatbot';
 import CustomLabel from './CustomLabel';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {useEffect} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 // defines the drawer routes and params
 type ChatDrawerParamList = {
@@ -24,6 +19,28 @@ type ChatDrawerParamList = {
 // to know about the route
 const Drawer = createDrawerNavigator<ChatDrawerParamList>();
 
+// function to clear all chat history
+const clearAllChats = async () => {
+    await AsyncStorage.clear();
+    console.log('All chats cleared');
+};
+
+// function for delete alert message
+const deleteAlert = async () => {
+    Alert.alert(
+        'Delete All Chats',
+        'Are you sure you want to delete all chats?',
+        [
+            {
+                text: 'Cancel',
+                onPress: () => console.log('Delete all chats cancelled.'),
+                style: 'cancel'
+            },
+            { text: 'OK', onPress: async () => await clearAllChats() }
+        ]
+    );
+}
+
 // to ensure receives correct props for rendering drawer content
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     return (
@@ -35,7 +52,14 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             <View style={styles.bottomDrawerSection}>
                 <DrawerItem
                     label="Clear All Chats"
-                    onPress={() => props.navigation.closeDrawer()}
+                    onPress={ async () => {
+                        deleteAlert();
+                        
+                        props.navigation.reset({
+                            index: 0, 
+                            routes: [{ name: 'Section 1: Communication'}]
+                        });
+                    }}
                     style={styles.closeDrawer}
                 />
                 {/* <DrawerItem

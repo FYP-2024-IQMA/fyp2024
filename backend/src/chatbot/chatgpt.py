@@ -12,7 +12,7 @@ class ChatGPT(object):
     """
     Main class to interact with OpenAI. Will require API key in the environment.
     """
-    def __init__(self, num_tries=1, model="gpt-3.5-turbo", max_tokens=150, temperature=1.0):
+    def __init__(self, num_tries=1, model="gpt-4o-mini", max_tokens=150, temperature=1.0):
         """
         Initialize the ChatGPT class.
 

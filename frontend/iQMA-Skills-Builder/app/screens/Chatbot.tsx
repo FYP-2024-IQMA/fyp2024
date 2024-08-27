@@ -1,15 +1,10 @@
 // app/Chatbot.tsx
 
-import React, {useEffect, useState} from 'react';
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 
-import {AntDesign} from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {DrawerScreenProps} from '@react-navigation/drawer';
@@ -100,6 +95,15 @@ const loadChatHistory = async (chatId: string) => {
     }
 };
 
+// Clear chat history
+const clearChatHistory = async (chatId: string) => {
+    try {
+        await AsyncStorage.removeItem(chatId).then(() => console.log('Chat history for chatId: "', chatId, '", cleared'));
+    } catch (error) {
+        console.error('Error while clearing chat history:', error);
+    }
+};
+
 // Main Chat component
 const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
     const isDrawerOpen = useDrawerStatus() === 'open';
@@ -137,6 +141,37 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
         loadHistory();
     }, [chatId]);
 
+    // Alert Function for deleting chat history
+    const deleteAlert = () => {
+        Alert.alert(
+            "Clearing Chat History",
+            "Are you sure you want to clear the chat history?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Delete chat history cancelled."),
+                    style: "cancel"
+                },
+                { text: "Yes", onPress: async () => {
+                    try {
+                        await clearChatHistory(chatId);
+                        const loadHistory = async () => {
+                            const history = await loadChatHistory(chatId);
+                            setMessages(history.map((message: { role: string, content: string }) => ({
+                                text: message.content,
+                                isUser: message.role === 'user',
+                            })));
+                        };
+                        loadHistory();
+                    } catch (error) {
+                        console.error('Error while clearing chat history:', error);
+                    }
+                }}
+            ],
+            { cancelable: true }
+        );
+    };
+
     // handle user input
     const handleSend = async () => {
         const userMessage = {text: message, isUser: true};
@@ -151,8 +186,6 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
         }));
 
         const response = await getChatbotResponse('user', message, history);
-        // console.log('Message to send: ', message);
-        // console.log('Response from pressing Send: ', response);
         if (response) {
             // Add the chatbot response to the chat
             const botReply = {text: response.content, isUser: false};
@@ -166,14 +199,6 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
             });
         }
     };
-
-    // const conversation = [
-    //     { text: `Hello! How can I assist you with ${chatId}?`, isUser: false },
-    //     { text: `I need help with ${chatId}.`, isUser: true },
-    //     { text: `Sure, what do you need to know about ${chatId}?`, isUser: false },
-    //     { text: `I want to understand more about its features.`, isUser: true },
-    //     { text: `Okay, let me explain the features of ${chatId}.`, isUser: false }
-    // ];
 
     if (!chatId) {
         return (
@@ -205,17 +230,20 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
                 ))}
             </ScrollView>
             <View style={styles.inputContainer}>
-                <TextInput
-                    style={styles.input}
-                    value={message}
-                    onChangeText={setMessage}
-                    placeholder="Type your messsage..."
-                    onSubmitEditing={handleSend}
-                    keyboardType="email-address"
-                />
+                <TouchableOpacity onPress={deleteAlert} style={styles.button}>
+                    <View style={styles.deleteButtonCircle}>
+                        <AntDesign name="delete" size={24} color="#000000" />
+                    </View>
+                </TouchableOpacity>
+                <TextInput style={styles.input} 
+                value={message} 
+                onChangeText={setMessage} 
+                placeholder="Type your messsage..."
+                onSubmitEditing={handleSend}
+                keyboardType="email-address"/> 
                 <TouchableOpacity onPress={handleSend} style={styles.button}>
                     <View style={styles.sendButtonCircle}>
-                        <AntDesign name="arrowup" size={24} color="#000000" />
+                        <Feather name="send" size={24} color="#000000" />
                     </View>
                 </TouchableOpacity>
             </View>
@@ -250,6 +278,15 @@ const styles = StyleSheet.create({
     },
     button: {
         justifyContent: 'center',
+        padding: 5,
+    },
+    deleteButtonCircle: {
+        width: 40,
+        height: 40,
+        backgroundColor: '#FF6961',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     sendButtonCircle: {
         width: 40,
