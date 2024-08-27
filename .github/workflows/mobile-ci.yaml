@@ -41,8 +41,9 @@ jobs:
         uses: super-linter/super-linter@v7.0.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          # VALIDATE_ALL_CODEBASE: false
+          working-directory: frontend/
           VALIDATE_TSX_FILES: true
+          # VALIDATE_ALL_CODEBASE: false
           # VALIDATE_CHECKOV: false
           # VALIDATE_DOCKERFILE: false
           # VALIDATE_DOCKERFILE_HADOLINT: false
