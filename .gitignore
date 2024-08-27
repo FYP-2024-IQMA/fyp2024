@@ -11,5 +11,8 @@ android
 .idea
 .gguf
 
+# chatbot
+__pycache__
+
 # testing
 backend/coverage

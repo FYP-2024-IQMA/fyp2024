@@ -9,8 +9,8 @@ export const createChats = async (req: Request, res: Response) => {
     try {
         const chats = await chatService.createChats(chatsBody);
         res.status(201).json({
-            userID: chatsBody[0].userID,
-            sectionID: chatsBody[0].sectionID,
+            userID: chatsBody.userID,
+            sectionID: chatsBody.sectionID,
             status: 201,
             statusText: "Created",
         });
