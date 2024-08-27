@@ -3,6 +3,7 @@ import { createContext, useEffect, useState } from "react";
 import { router } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import * as SplashScreen from 'expo-splash-screen';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext<any>(null);
 
@@ -21,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 
     // Watch for changes in User Session
-    const watchUserSession = () => {
+    const watchUserSession = async () => {
         if (user) {
             setCurrentUser(user);
             fetchToken();
@@ -30,6 +31,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             // router.push("IntroductionMascot");
             // router.replace("/Home");
             checkFirstLogin();
+            if (user.sub){
+                await AsyncStorage.setItem('userID', user.sub);
+            }
         }
         else {
             setIsLoading(false);
