@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { View, Image, Text, StyleSheet, Animated } from "react-native";
+import React, {useEffect, useRef} from 'react';
+import {View, Image, Text, StyleSheet, Animated} from 'react-native';
 
 export const LogoVisual = () => {
     const scaleValue = useRef(new Animated.Value(0.8)).current; // Initial scale set to 0.5 (half the size)
@@ -13,9 +13,11 @@ export const LogoVisual = () => {
     }, []);
 
     return (
-        <Animated.View style={[styles.container,{ transform: [{ scale: scaleValue }] }]}>
+        <Animated.View
+            style={[styles.container, {transform: [{scale: scaleValue}]}]}
+        >
             <Animated.Image
-                source={require("../assets/images/iqma_logo.png")}
+                source={require('../assets/images/iqma_logo.png')}
                 style={[styles.logo]} // Apply scale transform
             />
             <Text style={styles.text}>Leadership Skills For A New Self</Text>
@@ -27,7 +29,7 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 60
+        marginBottom: 60,
     },
     logo: {
         width: 160,

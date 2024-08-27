@@ -1,10 +1,10 @@
-import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
-import React, { ReactNode } from 'react';
+import {Image, StyleSheet, Text, View, ViewStyle} from 'react-native';
+import React, {ReactNode} from 'react';
 
 interface ChatBubbleProps {
     children: ReactNode;
     position: 'left' | 'right' | 'top';
-    bubbleColor?: string; 
+    bubbleColor?: string;
     textColor?: string;
     icon?: any;
     borderRadius?: number;
@@ -12,16 +12,36 @@ interface ChatBubbleProps {
     chatbot?: boolean;
 }
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", icon, borderRadius = 10, showArrow = true, chatbot  }) => {
+export const ChatBubble: React.FC<ChatBubbleProps> = ({
+    children,
+    position,
+    bubbleColor = '#7654F2',
+    textColor = 'white',
+    icon,
+    borderRadius = 10,
+    showArrow = true,
+    chatbot,
+}) => {
     const content = (
         <View style={[styles.container, getContainerAlignment(position)]}>
             {showArrow && (
-                <View style={[styles.arrowContainer, getArrowContainer(position)]}>
-                    <View style={[styles.arrow, { borderBottomColor: bubbleColor }]} />
+                <View
+                    style={[styles.arrowContainer, getArrowContainer(position)]}
+                >
+                    <View
+                        style={[styles.arrow, {borderBottomColor: bubbleColor}]}
+                    />
                 </View>
             )}
-            <View style={[styles.bubble, { backgroundColor: bubbleColor, borderRadius }]}>
-                <Text style={[styles.text, { color: textColor }]}>{children}</Text>
+            <View
+                style={[
+                    styles.bubble,
+                    {backgroundColor: bubbleColor, borderRadius},
+                ]}
+            >
+                <Text style={[styles.text, {color: textColor}]}>
+                    {children}
+                </Text>
             </View>
         </View>
     );
@@ -29,9 +49,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubb
     if (chatbot && position === 'left') {
         return (
             <View style={[styles.bubbleWrapper, styles.alignLeft]}>
-                {icon && (
-                    <Image source={{ uri: icon }} style={styles.icon} />
-                )}
+                {icon && <Image source={{uri: icon}} style={styles.icon} />}
                 {content}
             </View>
         );
@@ -40,34 +58,33 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubb
     }
 };
 
-
 const getContainerAlignment = (position: string): ViewStyle => {
     switch (position) {
         case 'right':
-            return { alignItems: 'flex-end' };
+            return {alignItems: 'flex-end'};
         default:
-            return { alignItems: 'flex-start' };
+            return {alignItems: 'flex-start'};
     }
 };
 
 const getArrowContainer = (position: string) => {
     switch (position) {
         case 'left':
-            return { 
+            return {
                 left: -5,
                 bottom: 40,
-                transform: [{ rotate: '270deg' }]
+                transform: [{rotate: '270deg'}],
             };
         case 'right':
             return {
                 right: -5,
                 top: 20,
-                transform: [{ rotate: '90deg' }]
+                transform: [{rotate: '90deg'}],
             };
         default:
-            return { 
-                top: -5, 
-                left: 20 
+            return {
+                top: -5,
+                left: 20,
             };
     }
 };
@@ -90,17 +107,17 @@ const styles = StyleSheet.create({
     bubble: {
         maxWidth: '80%',
         position: 'relative',
-        backgroundColor: "#7654F2",
+        backgroundColor: '#7654F2',
         padding: 20,
         borderRadius: 10,
         shadowColor: 'black',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: {width: 0, height: 4},
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 5,
     },
     text: {
-        color: "white",
+        color: 'white',
         textAlign: 'center',
         lineHeight: 20,
     },
