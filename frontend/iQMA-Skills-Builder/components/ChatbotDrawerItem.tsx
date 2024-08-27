@@ -8,7 +8,6 @@
 //     isActive: boolean;
 // };
 
-
 // const CustomDrawerItem: React.FC<CustomDrawerItemProps> = ({label, onPress, isActive}) => {
 //     return (
 //         <TouchableOpacity onPress={onPress} style={[styles.item, isActive && styles.activeItem]}>

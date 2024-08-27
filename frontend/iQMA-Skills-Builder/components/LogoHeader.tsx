@@ -10,7 +10,6 @@
 //     );
 //   }
 
-
 //   const styles = StyleSheet.create({
 //     container: {
 //         flexDirection: 'row',
@@ -25,7 +24,7 @@
 //     },
 //     title: {
 //         fontSize: 18,
-//         color: '#fff', 
+//         color: '#fff',
 //     },
 // });
 
