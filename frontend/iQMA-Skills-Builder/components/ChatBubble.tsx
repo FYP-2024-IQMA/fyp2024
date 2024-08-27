@@ -1,14 +1,19 @@
-import React, { ReactNode } from 'react';
-import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import React, {ReactNode} from 'react';
+import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 
 interface ChatBubbleProps {
     children: ReactNode;
     position: 'left' | 'right';
-    bubbleColor?: string; 
+    bubbleColor?: string;
     textColor?: string;
 }
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white" }) => {
+export const ChatBubble: React.FC<ChatBubbleProps> = ({
+    children,
+    position,
+    bubbleColor = '#7654F2',
+    textColor = 'white',
+}) => {
     return (
         <View style={[styles.container, getContainerAlignment(position)]}>
             <View style={[styles.arrowContainer, getArrowContainer(position)]}>
@@ -24,30 +29,30 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubb
 const getContainerAlignment = (position: string): ViewStyle => {
     switch (position) {
         case 'right':
-            return { alignItems: 'flex-end' };
+            return {alignItems: 'flex-end'};
         default:
-            return { alignItems: 'flex-start' };
+            return {alignItems: 'flex-start'};
     }
 };
 
 const getArrowContainer = (position: string) => {
     switch (position) {
         case 'left':
-            return { 
+            return {
                 left: -5,
                 bottom: 40,
-                transform: [{ rotate: '270deg' }]
+                transform: [{rotate: '270deg'}],
             };
         case 'right':
             return {
                 right: -5,
                 top: 20,
-                transform: [{ rotate: '90deg' }]
+                transform: [{rotate: '90deg'}],
             };
         default:
-            return { 
-                top: -5, 
-                left: 20 
+            return {
+                top: -5,
+                left: 20,
             };
     }
 };
@@ -64,13 +69,13 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 10,
         shadowColor: 'black',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: {width: 0, height: 4},
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 5,
     },
     text: {
-        color: "white",
+        color: 'white',
         textAlign: 'center',
         lineHeight: 20,
     },

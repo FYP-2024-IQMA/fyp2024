@@ -1,57 +1,74 @@
 // app/Chatbot.tsx
 
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 
-import { AntDesign } from '@expo/vector-icons';
+import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ChatBubble } from "@/components/ChatBubble";
-import { DrawerScreenProps } from "@react-navigation/drawer";
-import { TextInput } from "react-native-gesture-handler";
+import {ChatBubble} from '@/components/ChatBubble';
+import {DrawerScreenProps} from '@react-navigation/drawer';
+import {TextInput} from 'react-native-gesture-handler';
 
 type DrawerParamList = {
-    'Section 1: Communication': { chatId: string };
-    'Creative Thinking': { chatId: string };
-    'Problem Solving': { chatId: string };
+    'Section 1: Communication': {chatId: string};
+    'Creative Thinking': {chatId: string};
+    'Problem Solving': {chatId: string};
 };
 
 // ensurees chatbot screen receives correct props
 // use drawerscreenprops to type the props of chatbot screen
-type ChatbotScreenProps = DrawerScreenProps<DrawerParamList, 'Section 1: Communication' | 'Creative Thinking' | 'Problem Solving' >;
-
+type ChatbotScreenProps = DrawerScreenProps<
+    DrawerParamList,
+    'Section 1: Communication' | 'Creative Thinking' | 'Problem Solving'
+>;
 
 // Getting response from chatbot
-const getChatbotResponse = async (role: string, 
+const getChatbotResponse = async (
+    role: string,
     message: string,
-    history?: Array<{role: string, content: string}>) => {
+    history?: Array<{role: string; content: string}>
+) => {
     try {
         const response = await fetch(`http://10.0.2.2:8000/generate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ 
-                role: role, 
+            body: JSON.stringify({
+                role: role,
                 content: message,
-                ...(history && { history }),
+                ...(history && {history}),
             }),
         });
         const data = await response.json();
         return data;
-        } catch (error) {
-            console.error('Error while getting chatbot response:', error);
-        }
-    };
+    } catch (error) {
+        console.error('Error while getting chatbot response:', error);
+    }
+};
 
 // Save chat history
-const saveChatHistory = async (chatId: string, newMessage: { role: string, content: string}) => {
+const saveChatHistory = async (
+    chatId: string,
+    newMessage: {role: string; content: string}
+) => {
     try {
         // retrieve existing chat history if it exists
         const existingChatHistory = await AsyncStorage.getItem(chatId);
-        let chatHistory = existingChatHistory ? JSON.parse(existingChatHistory) : [{
-            'role' : `assistant`, 
-            'content' : `Hello! How can I assist you with ${chatId}?`
-        }];
+        let chatHistory = existingChatHistory
+            ? JSON.parse(existingChatHistory)
+            : [
+                  {
+                      role: `assistant`,
+                      content: `Hello! How can I assist you with ${chatId}?`,
+                  },
+              ];
         // append to chat history
         chatHistory.push(newMessage);
         // save chat history to async storage
@@ -66,42 +83,48 @@ const saveChatHistory = async (chatId: string, newMessage: { role: string, conte
 const loadChatHistory = async (chatId: string) => {
     try {
         const chatHistory = await AsyncStorage.getItem(chatId);
-        return chatHistory ? JSON.parse(chatHistory) : [{
-            'role' : `assistant`, 
-            'content' : `Hello! How can I assist you with ${chatId}?`
-        }];
+        return chatHistory
+            ? JSON.parse(chatHistory)
+            : [
+                  {
+                      role: `assistant`,
+                      content: `Hello! How can I assist you with ${chatId}?`,
+                  },
+              ];
     } catch (error) {
         console.error('Error while loading chat history:', error);
     }
 };
 
 // Main Chat component
-const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
+const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route}) => {
     const {chatId} = route.params;
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([
-        {text: `Hello! How can I assist you with ${chatId}?`, isUser: false},
-    ])
+    const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
+        [{text: `Hello! How can I assist you with ${chatId}?`, isUser: false}]
+    );
 
     // Load chat history
     useEffect(() => {
         const loadHistory = async () => {
             const history = await loadChatHistory(chatId);
-            setMessages(history.map((message: { role: string, content: string }) => ({
-                text: message.content,
-                isUser: message.role === 'user',
-            })));
+            setMessages(
+                history.map((message: {role: string; content: string}) => ({
+                    text: message.content,
+                    isUser: message.role === 'user',
+                }))
+            );
         };
         loadHistory();
     }, [chatId]);
 
     // handle user input
     const handleSend = async () => {
-        const userMessage = { text: message, isUser: true };
+        const userMessage = {text: message, isUser: true};
         const newMessages = [...messages, userMessage];
         setMessages(newMessages);
         setMessage('');
-        
+
         // get past messages
         const history = newMessages.map((msg) => ({
             role: msg.isUser ? 'user' : 'assistant',
@@ -113,15 +136,18 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
         // console.log('Response from pressing Send: ', response);
         if (response) {
             // Add the chatbot response to the chat
-            const botReply = { text: response.content, isUser: false };
+            const botReply = {text: response.content, isUser: false};
             const updatedMessages = [...newMessages, botReply];
             setMessages(updatedMessages);
             // Save the chat history
-            saveChatHistory(chatId, { role: 'user', content: message });
-            saveChatHistory(chatId, { role: 'assistant', content: response.content });
-          }
+            saveChatHistory(chatId, {role: 'user', content: message});
+            saveChatHistory(chatId, {
+                role: 'assistant',
+                content: response.content,
+            });
+        }
     };
-    
+
     // const conversation = [
     //     { text: `Hello! How can I assist you with ${chatId}?`, isUser: false },
     //     { text: `I need help with ${chatId}.`, isUser: true },
@@ -132,26 +158,33 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
 
     if (!chatId) {
         return (
-          <View style={styles.container}>
-            <Text>No chat selected</Text>
-          </View>
+            <View style={styles.container}>
+                <Text>No chat selected</Text>
+            </View>
         );
-      }
-      return (
+    }
+    return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.chatContainer}>
-                {messages.map((msg,index) => (
+                {messages.map((msg, index) => (
                     // <ChatBubble key={index} text={msg.text} isUser={msg.isUser} />
-                    <ChatBubble key={index} position={msg.isUser ? 'right' : 'left'}>{msg.text}</ChatBubble>
+                    <ChatBubble
+                        key={index}
+                        position={msg.isUser ? 'right' : 'left'}
+                    >
+                        {msg.text}
+                    </ChatBubble>
                 ))}
             </ScrollView>
             <View style={styles.inputContainer}>
-                <TextInput style={styles.input} 
-                value={message} 
-                onChangeText={setMessage} 
-                placeholder="Type your messsage..."
-                onSubmitEditing={handleSend}
-                keyboardType="email-address"/> 
+                <TextInput
+                    style={styles.input}
+                    value={message}
+                    onChangeText={setMessage}
+                    placeholder="Type your messsage..."
+                    onSubmitEditing={handleSend}
+                    keyboardType="email-address"
+                />
                 <TouchableOpacity onPress={handleSend} style={styles.button}>
                     {/* <AntDesign name="upcircle" size={24} color="#7654F2" /> */}
                     <AntDesign name="arrowup" size={24} color="#7654F2" />
@@ -160,11 +193,9 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
             </View>
         </View>
     );
+};
 
-}
-
-
-  const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#F5F5F5',
@@ -172,7 +203,7 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
     chatContainer: {
         padding: 10,
     },
-    inputContainer:{
+    inputContainer: {
         flexDirection: 'row',
         padding: 10,
         backgroundColor: '#FFFFFF',
@@ -188,6 +219,6 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route }) => {
     },
     button: {
         justifyContent: 'center',
-    }
+    },
 });
 export default ChatbotScreen;

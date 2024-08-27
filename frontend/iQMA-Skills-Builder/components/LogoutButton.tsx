@@ -1,9 +1,9 @@
-import { Button } from "react-native";
-import { AuthContext } from "@/context/AuthContext";
-import { useContext } from "react";
+import {Button} from 'react-native';
+import {AuthContext} from '@/context/AuthContext';
+import {useContext} from 'react';
 
 export const LogoutButton = () => {
-    const { logOut, currentUser } = useContext(AuthContext);
+    const {logOut, currentUser} = useContext(AuthContext);
 
     return (
         <>
