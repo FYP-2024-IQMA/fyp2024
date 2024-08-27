@@ -8,9 +8,7 @@
 
 // Describe block groups related tests together
 describe('Sample Test Suite', () => {
-  
     it('should pass this dummy test', () => {
-      expect(1 + 1).toBe(2);
+        expect(1 + 1).toBe(2);
     });
-  
-  });
+});

@@ -43,5 +43,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_TSX: true
           VALIDATE_TYPESCRIPT_ES: true
-          IGNORE_GENERATED_FILES: true
-          IGNORE_GITIGNORED_FILES: true

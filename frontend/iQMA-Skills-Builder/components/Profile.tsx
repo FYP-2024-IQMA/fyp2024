@@ -1,9 +1,9 @@
-import { Text } from "react-native";
-import { AuthContext } from "@/context/AuthContext";
-import { useContext } from "react";
+import {Text} from 'react-native';
+import {AuthContext} from '@/context/AuthContext';
+import {useContext} from 'react';
 
 export const Profile = () => {
-    const { currentUser } = useContext(AuthContext);
+    const {currentUser} = useContext(AuthContext);
 
     return (
         <>
