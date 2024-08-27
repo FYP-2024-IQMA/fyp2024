@@ -47,9 +47,9 @@ export default function LearnerAssessmentComplete() {
             "userID": userID,
             "attitude": await AsyncStorage.getItem('attitude'),
             "motivationalLevel": await AsyncStorage.getItem('motivationalLevel'),
-            "barriers": barrierArr !== null ? JSON.parse(barrierArr) : '',
+            "barriers": JSON.parse(barrierArr!),
             "personality": await AsyncStorage.getItem('personality'),
-            "reasons": reasonArr !== null ? JSON.parse(reasonArr) : ''
+            "reasons": JSON.parse(reasonArr!)
         }
 
         try {
