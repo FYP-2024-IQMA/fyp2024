@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Admin = exports.Learner = void 0;
 class Learner {
-    constructor(userId, firstName, lastName, email, role, dateCreated, age, gender) {
-        this.userId = userId;
+    constructor(userID, firstName, lastName, email, role, dateCreated, age, gender, hasOnboarded) {
+        this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -11,6 +11,7 @@ class Learner {
         this.dateCreated = dateCreated;
         this.age = age;
         this.gender = gender;
+        this.hasOnboarded = hasOnboarded;
     }
     getFirstName() {
         return this.firstName;
@@ -32,12 +33,15 @@ class Learner {
     }
     getGender() {
         return this.gender;
+    }
+    getHasOnboarded() {
+        return this.hasOnboarded;
     }
 }
 exports.Learner = Learner;
 class Admin {
-    constructor(userId, firstName, lastName, email, role, dateCreated, age, gender) {
-        this.userId = userId;
+    constructor(userID, firstName, lastName, email, role, dateCreated, age, gender, hasOnboarded) {
+        this.userID = userID;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -45,6 +49,7 @@ class Admin {
         this.dateCreated = dateCreated;
         this.age = age;
         this.gender = gender;
+        this.hasOnboarded = hasOnboarded;
     }
     getFirstName() {
         return this.firstName;
@@ -66,6 +71,9 @@ class Admin {
     }
     getGender() {
         return this.gender;
+    }
+    getHasOnboarded() {
+        return this.hasOnboarded;
     }
 }
 exports.Admin = Admin;

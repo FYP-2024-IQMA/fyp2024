@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - "SCRUM*"
     paths:
       - "frontend/**"
   pull_request:
@@ -17,17 +18,28 @@ jobs:
 
     steps:
       - name: Checkout Repository in Virtual Machine
-        uses: actions/checkout@v2
-      - name: Install Dependecies
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
         working-directory: frontend/iQMA-Skills-Builder
         run: |
           npm install
+
       - name: Run Tests
         working-directory: frontend/iQMA-Skills-Builder
         run: |
           npm test
 
-      
-
-  
-      
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Super-Linter
+        uses: super-linter/super-linter@v7.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_TSX: true
+          VALIDATE_TYPESCRIPT_ES: true

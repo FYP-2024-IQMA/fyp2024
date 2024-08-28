@@ -1,4 +1,4 @@
-
+android
 backend/node_modules
 frontend/node_modules
 backend/.env
@@ -8,4 +8,8 @@ backend/package-lock.json
 venv
 .env
 android
-coverage
+.idea
+.gguf
+
+# testing
+backend/coverage

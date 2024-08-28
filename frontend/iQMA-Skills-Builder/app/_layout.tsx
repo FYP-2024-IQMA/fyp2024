@@ -1,6 +1,6 @@
-// import './gesture-handler';
-
 import 'react-native-gesture-handler';
+
+import * as Progress from 'react-native-progress';
 
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import {Auth0Provider, useAuth0} from 'react-native-auth0';
@@ -12,6 +12,7 @@ import HomeScreen from './screens/Home';
 import {Ionicons} from '@expo/vector-icons';
 import {MaterialIcons} from '@expo/vector-icons';
 import ProfilePage from './screens/ProfilePage';
+import { Stack } from "expo-router";
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
@@ -104,16 +105,55 @@ export default function RootLayout() {
             </View>
         );
     }
+
     return (
         <Auth0Provider domain={config.domain} clientId={config.clientId}>
             <AuthProvider>
-                {/* <NavigationContainer> */}
-                {/* <Stack>
-                        <Stack.Screen name="index" />
-                    </Stack> */}
-                <AppTabs />
-                {/* </NavigationContainer> */}
+                <Stack
+                    screenOptions={{
+                        headerTitle: '',
+                        headerTitleAlign: 'center',
+                    }}
+                >
+                    {/* <Stack.Screen name="index" /> */}
+                    <Stack.Screen
+                        name="CreateProfile"
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="LearnerAssessmentDemographics"
+                        options={{
+                            headerTitle: () => <Header progress={0.25} />,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="LearnerAssessmentCognitive"
+                        options={{headerTitle: () => <Header progress={0.5} />}}
+                    />
+                    <Stack.Screen
+                        name="LearnerAssessmentDynamics"
+                        options={{
+                            headerTitle: () => <Header progress={0.75} />,
+                        }}
+                    />
+                    <Stack.Screen
+                        name="LearnerAssessmentExperience"
+                        options={{headerTitle: () => <Header progress={1} />}}
+                    />
+                    <Stack.Screen
+                        name="(tabs)"
+                        options={{headerShown: false}}
+                    />
+                </Stack>
             </AuthProvider>
         </Auth0Provider>
     );
 }
+
+const Header = ({progress}: {progress: number}) => (
+    <View>
+        <Progress.Bar progress={progress} width={300} color={'#7654F2'} />
+    </View>
+);
