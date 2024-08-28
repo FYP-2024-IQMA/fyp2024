@@ -15,7 +15,7 @@ export default function LearnerAssessmentCognitive() {
 
     const education: string[] = [
         'High school or below',
-        'College',
+        'Some college',
         "Bachelor's degree",
         "Master's degree",
         'Doctoral degree',
