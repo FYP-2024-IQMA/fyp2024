@@ -123,9 +123,11 @@ export default function CreateProfile() {
             <TextInput
                 style={{
                     borderWidth: 1,
-                    borderColor: '#E5E5E5',
+                    // borderColor: '#E5E5E5',
+                    borderColor:
+                        !isContinue && !firstName ? '#ff4c4c' : '#E5E5E5',
                     backgroundColor: '#F7F7F7',
-                    borderRadius: 15,
+                    borderRadius: 10,
                     padding: 10,
                     width: '100%',
                 }}
@@ -149,9 +151,11 @@ export default function CreateProfile() {
             <TextInput
                 style={{
                     borderWidth: 1,
-                    borderColor: '#E5E5E5',
+                    // borderColor: '#E5E5E5',
+                    borderColor:
+                        !isContinue && !lastName ? '#ff4c4c' : '#E5E5E5',
                     backgroundColor: '#F7F7F7',
-                    borderRadius: 15,
+                    borderRadius: 10,
                     padding: 10,
                     width: '100%',
                 }}
@@ -175,9 +179,10 @@ export default function CreateProfile() {
             <TextInput
                 style={{
                     borderWidth: 1,
-                    borderColor: '#E5E5E5',
+                    // borderColor: '#E5E5E5',
+                    borderColor: !isContinue && !email ? '#ff4c4c' : '#E5E5E5',
                     backgroundColor: '#F7F7F7',
-                    borderRadius: 15,
+                    borderRadius: 10,
                     padding: 10,
                     width: '100%',
                 }}
@@ -215,7 +220,9 @@ export default function CreateProfile() {
                         flex: 2.5,
                         borderWidth: 1,
                         borderRadius: 10,
-                        borderColor: '#E5E5E5',
+                        // borderColor: '#E5E5E5',
+                        borderColor:
+                            !isContinue && !selectedAge ? '#ff4c4c' : '#E5E5E5',
                         backgroundColor: '#F7F7F7',
                     }}
                 >
@@ -263,7 +270,11 @@ export default function CreateProfile() {
                         flex: 2.5,
                         borderWidth: 1,
                         borderRadius: 10,
-                        borderColor: '#E5E5E5',
+                        // borderColor: '#E5E5E5',
+                        borderColor:
+                            !isContinue && !selectedGender
+                                ? '#ff4c4c'
+                                : '#E5E5E5',
                         backgroundColor: '#F7F7F7',
                     }}
                 >
