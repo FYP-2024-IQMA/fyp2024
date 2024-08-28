@@ -1,61 +1,76 @@
 // app/Chatbot.tsx
 
-import React, { useEffect, useState, useContext } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import React, {useEffect, useState, useContext} from 'react';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+    Alert,
+} from 'react-native';
 
 import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ChatBubble } from "@/components/ChatBubble";
-import { DrawerScreenProps } from "@react-navigation/drawer";
-import { TextInput } from "react-native-gesture-handler";
-import { useDrawerStatus } from '@react-navigation/drawer';
-import { useNavigation } from "@react-navigation/native";
+import {ChatBubble} from '@/components/ChatBubble';
+import {DrawerScreenProps} from '@react-navigation/drawer';
+import {TextInput} from 'react-native-gesture-handler';
+import {useDrawerStatus} from '@react-navigation/drawer';
+import {useNavigation} from '@react-navigation/native';
 import {Feather} from '@expo/vector-icons';
-import { AuthContext } from "@/context/AuthContext";
-import { ChatDrawerParamList } from "@/components/ChatbotDrawer";
+import {AuthContext} from '@/context/AuthContext';
+import {ChatDrawerParamList} from '@/components/ChatbotDrawer';
 
-const sectionMapping: { [key: string]: string } = {
-    'SEC0001': "Section 1: Communication",
-    'SEC0002': "Section 2: Decision Making",
-    'SEC0003': "Section 3: Developing People",
+const sectionMapping: {[key: string]: string} = {
+    SEC0001: 'Section 1: Communication',
+    SEC0002: 'Section 2: Decision Making',
+    SEC0003: 'Section 3: Developing People',
 };
 
 // ensurees chatbot screen receives correct props
 // use drawerscreenprops to type the props of chatbot screen
 // type ChatbotScreenProps = DrawerScreenProps<DrawerParamList, 'Section 1: Communication' | 'Section 2: Decision Making' | 'Section 3: Developing People' >;
 
-type ChatbotScreenProps = DrawerScreenProps<ChatDrawerParamList, keyof ChatDrawerParamList>;
-
+type ChatbotScreenProps = DrawerScreenProps<
+    ChatDrawerParamList,
+    keyof ChatDrawerParamList
+>;
 
 // Getting response from chatbot
 const getChatbotResponse = async (
     role: string,
     message: string,
-    history?: Array<{role: string, content: string}>) => {
-        try {
-            const response = await fetch(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`, {
+    history?: Array<{role: string; content: string}>
+) => {
+    try {
+        const response = await fetch(
+            `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`,
+            {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ 
-                    role: role, 
+                body: JSON.stringify({
+                    role: role,
                     content: message,
-                    ...(history && { history }),
+                    ...(history && {history}),
                 }),
-            });
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error while getting chatbot response:', error);
-        }
+            }
+        );
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error while getting chatbot response:', error);
+    }
 };
 
-
 // Save chat history
-const saveChatHistory = async (userId: string, sectionId: string, queryPair: { role: string, content: string}[] ) => {
+const saveChatHistory = async (
+    userId: string,
+    sectionId: string,
+    queryPair: {role: string; content: string}[]
+) => {
     try {
-
         const body = {
             userID: userId,
             sectionID: sectionId,
@@ -74,8 +89,7 @@ const saveChatHistory = async (userId: string, sectionId: string, queryPair: { r
 
         const data = await response.json();
 
-        console.log("Status: ", data.status);
-
+        console.log('Status: ', data.status);
     } catch (error) {
         console.error('Error while saving chat history:', error);
     }
@@ -83,10 +97,9 @@ const saveChatHistory = async (userId: string, sectionId: string, queryPair: { r
 
 // Load chat history
 const loadChatHistory = async (userId: string, sectionId: string) => {
-    console.log("LOAD CHAT HISTORY");
+    console.log('LOAD CHAT HISTORY');
 
     try {
-
         const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/chat/getchathistory/${userId}/${sectionId}`;
 
         const response = await fetch(url);
@@ -94,10 +107,10 @@ const loadChatHistory = async (userId: string, sectionId: string) => {
         const chatHistory = await response.json();
 
         const formattedChatHistory = chatHistory.flatMap(
-            (item: { queryPair: { role: string; content: string }[] }) =>
+            (item: {queryPair: {role: string; content: string}[]}) =>
                 item.queryPair.map((message) => ({
                     text: message.content,
-                    isUser: message.role === "user",
+                    isUser: message.role === 'user',
                 }))
         );
 
@@ -128,17 +141,18 @@ const clearChatHistory = async (chatId: string) => {
 };
 
 // Main Chat component
-const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route, navigation }) => {
-
-    const { currentUser, isLoading } = useContext(AuthContext);
+const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
+    const {currentUser, isLoading} = useContext(AuthContext);
 
     const isDrawerOpen = useDrawerStatus() === 'open';
     // const navigation = useNavigation();
 
-    const { sectionID } = route.params;
+    const {sectionID} = route.params;
 
     const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState<{ text: string; isUser: boolean }[]>([]);
+    const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
+        []
+    );
 
     useEffect(() => {
         navigation.getParent()?.setOptions({
@@ -173,18 +187,27 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route, navigation }) => {
                         console.log('Delete chat history cancelled.'),
                     style: 'cancel',
                 },
-                { text: "Yes", onPress: async () => {
-                    try {
-                        await clearChatHistory(sectionID);
-                        const loadHistory = async () => {
-                            const history = await loadChatHistory(currentUser.sub, sectionID);
-                            setMessages(history!);
-                        };
-                        loadHistory();
-                    } catch (error) {
-                        console.error('Error while clearing chat history:', error);
-                    }
-                }}
+                {
+                    text: 'Yes',
+                    onPress: async () => {
+                        try {
+                            await clearChatHistory(sectionID);
+                            const loadHistory = async () => {
+                                const history = await loadChatHistory(
+                                    currentUser.sub,
+                                    sectionID
+                                );
+                                setMessages(history!);
+                            };
+                            loadHistory();
+                        } catch (error) {
+                            console.error(
+                                'Error while clearing chat history:',
+                                error
+                            );
+                        }
+                    },
+                },
             ],
             {cancelable: true}
         );
@@ -212,13 +235,12 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route, navigation }) => {
             // Save the chat history
 
             const queryPair = [
-                { role: "user", content: message },
-                { role: "assistant", content: response.content }
+                {role: 'user', content: message},
+                {role: 'assistant', content: response.content},
             ];
 
             saveChatHistory(currentUser.sub, sectionID, queryPair);
-
-          }
+        }
     };
 
     if (!sectionID) {
@@ -228,23 +250,23 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({ route, navigation }) => {
             </View>
         );
     }
-      return (
+    return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.chatContainer}>
-            {messages.map((msg, index) => (
-                <ChatBubble
-                    key={index}
-                    position={msg.isUser ? 'right' : 'left'}
-                    bubbleColor={msg.isUser ? "#B199FF" : "#D1D5DB"}
-                    textColor={msg.isUser ? "#000000" : "#000000"}
-                    isUser={msg.isUser}
-                    borderRadius={20}  
-                    showArrow={false}  
-                    chatbot={true}
-                >
-                    {msg.text}
-                </ChatBubble>
-            ))}
+                {messages.map((msg, index) => (
+                    <ChatBubble
+                        key={index}
+                        position={msg.isUser ? 'right' : 'left'}
+                        bubbleColor={msg.isUser ? '#B199FF' : '#D1D5DB'}
+                        textColor={msg.isUser ? '#000000' : '#000000'}
+                        isUser={msg.isUser}
+                        borderRadius={20}
+                        showArrow={false}
+                        chatbot={true}
+                    >
+                        {msg.text}
+                    </ChatBubble>
+                ))}
             </ScrollView>
             <View style={styles.inputContainer}>
                 <TouchableOpacity onPress={deleteAlert} style={styles.button}>

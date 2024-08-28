@@ -12,7 +12,7 @@ import HomeScreen from './screens/Home';
 import {Ionicons} from '@expo/vector-icons';
 import {MaterialIcons} from '@expo/vector-icons';
 import ProfilePage from './screens/ProfilePage';
-import { Stack } from "expo-router";
+import {Stack} from 'expo-router';
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
@@ -117,7 +117,7 @@ export default function RootLayout() {
                 >
                     {/* <Stack.Screen name="index" /> */}
 
-                     <Stack.Screen
+                    <Stack.Screen
                         name="index"
                         options={{
                             headerShown: false,

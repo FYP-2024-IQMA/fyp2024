@@ -12,7 +12,16 @@ interface ChatBubbleProps {
     chatbot?: boolean;
 }
 
-export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubbleColor = "#7654F2", textColor = "white", isUser, borderRadius = 10, showArrow = true, chatbot  }) => {
+export const ChatBubble: React.FC<ChatBubbleProps> = ({
+    children,
+    position,
+    bubbleColor = '#7654F2',
+    textColor = 'white',
+    isUser,
+    borderRadius = 10,
+    showArrow = true,
+    chatbot,
+}) => {
     return (
         <View style={[styles.container, getContainerAlignment(position)]}>
             {showArrow && (
@@ -20,27 +29,24 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ children, position, bubb
                     style={[styles.arrowContainer, getArrowContainer(position)]}
                 >
                     <View
-                        style={[
-                            styles.arrow,
-                            { borderBottomColor: bubbleColor },
-                        ]}
+                        style={[styles.arrow, {borderBottomColor: bubbleColor}]}
                     />
                 </View>
             )}
             <View style={[styles.bubbleWrapper, styles.alignLeft]}>
                 {!isUser && (
                     <Image
-                        source={require("@/assets/images/iqma_logo.png")}
+                        source={require('@/assets/images/iqma_logo.png')}
                         style={styles.icon}
                     />
                 )}
                 <View
                     style={[
                         styles.bubble,
-                        { backgroundColor: bubbleColor, borderRadius },
+                        {backgroundColor: bubbleColor, borderRadius},
                     ]}
                 >
-                    <Text style={[styles.text, { color: textColor }]}>
+                    <Text style={[styles.text, {color: textColor}]}>
                         {children}
                     </Text>
                 </View>
@@ -108,7 +114,7 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     text: {
-        color: "white",
+        color: 'white',
         lineHeight: 20,
     },
     arrowContainer: {

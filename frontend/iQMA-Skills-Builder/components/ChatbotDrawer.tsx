@@ -11,9 +11,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatbotScreen from '../app/screens/Chatbot';
 import CustomLabel from './CustomLabel';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { useEffect, useContext, useState } from "react";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import { AuthContext } from "@/context/AuthContext";
+import {useEffect, useContext, useState} from 'react';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {AuthContext} from '@/context/AuthContext';
 
 type SectionData = {
     sectionID: string;
@@ -22,21 +22,21 @@ type SectionData = {
 
 const sectionData: SectionData[] = [
     {
-        sectionID: "SEC0001",
-        sectionName: "Section 1: Communication",
+        sectionID: 'SEC0001',
+        sectionName: 'Section 1: Communication',
     },
     {
-        sectionID: "SEC0002",
-        sectionName: "Section 2: Decision Making",
+        sectionID: 'SEC0002',
+        sectionName: 'Section 2: Decision Making',
     },
     {
-        sectionID: "SEC0003",
-        sectionName: "Section 3: Developing People",
+        sectionID: 'SEC0003',
+        sectionName: 'Section 3: Developing People',
     },
 ];
 
 export type ChatDrawerParamList = {
-    [K in (typeof sectionData)[number]["sectionName"]]: { sectionID: string };
+    [K in (typeof sectionData)[number]['sectionName']]: {sectionID: string};
 };
 
 // to know about the route
@@ -79,8 +79,8 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                         deleteAlert();
 
                         props.navigation.reset({
-                            index: 0, 
-                            routes: [{ name: sectionData[0].sectionName }],
+                            index: 0,
+                            routes: [{name: sectionData[0].sectionName}],
                         });
                     }}
                     style={styles.closeDrawer}
@@ -102,8 +102,8 @@ const handleClearChats = async () => {
 };
 
 // to open left tab for chat bot
-const ChatbotDrawer: React.FC<any> = ({ navigation }) => {
-    const { currentUser, isLoading } = useContext(AuthContext);
+const ChatbotDrawer: React.FC<any> = ({navigation}) => {
+    const {currentUser, isLoading} = useContext(AuthContext);
     // const [sectionID, setSectionID] = useState<string | null>(null); // Initialize with null
     const [Id, setId] = useState<number | null>(null); // Initialize with null
     const [isFetching, setIsFetching] = useState<boolean>(true); // Add a loading state
@@ -124,7 +124,7 @@ const ChatbotDrawer: React.FC<any> = ({ navigation }) => {
             } catch (error) {
                 console.error(
                     // "Failed to save sectionID to AsyncStorage",
-                    "Failed to retrieve Id",
+                    'Failed to retrieve Id',
                     error
                 );
             } finally {
@@ -166,7 +166,7 @@ const ChatbotDrawer: React.FC<any> = ({ navigation }) => {
                 .filter((section) => {
                     // Extract the numeric part of the sectionID
                     const sectionNumber = parseInt(
-                        section.sectionID.replace("SEC", "")
+                        section.sectionID.replace('SEC', '')
                     );
                     return sectionNumber === Id!; // (Currently, only need ID =) (For future: Render only sections with ID less than or equal to `Id`)
                 })
@@ -179,14 +179,14 @@ const ChatbotDrawer: React.FC<any> = ({ navigation }) => {
                             sectionID: section.sectionID,
                         }}
                         options={{
-                            drawerIcon: ({ color, size }) => (
+                            drawerIcon: ({color, size}) => (
                                 <Ionicons
                                     name="chatbox-ellipses-sharp"
                                     size={20}
                                     color={color}
                                 />
                             ),
-                            drawerLabel: ({ color }) => (
+                            drawerLabel: ({color}) => (
                                 <CustomLabel
                                     label={section.sectionName}
                                     color={color}
