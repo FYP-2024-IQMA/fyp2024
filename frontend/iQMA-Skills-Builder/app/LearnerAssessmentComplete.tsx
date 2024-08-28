@@ -123,8 +123,8 @@ export default function LearnerAssessmentComplete() {
                 style={{marginBottom: 20}}
                 source={require('@/assets/images/mascot.png')}
             ></Image>
-            <ChatBubble position="top">
-                Let’s have fun {'\n'}while learning!
+            <ChatBubble isUser={true} position="top">
+                Let's have fun {'\n'}while learning!
             </ChatBubble>
             <View
                 style={{

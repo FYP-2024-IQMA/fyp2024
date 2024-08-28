@@ -21,7 +21,7 @@ export default function IntroductionSegment() {
                 style={{marginBottom: 20}}
                 source={require('@/assets/images/mascot.png')}
             ></Image>
-            <ChatBubble position="top">
+            <ChatBubble isUser={true} position="top">
                 Help me understand you better with just{'\n'}
                 <Text style={{fontWeight: 'bold'}}>4 quick segments</Text>!
             </ChatBubble>
