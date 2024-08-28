@@ -77,7 +77,7 @@ export default function LearnerAssessmentCognitive() {
                     source={require('@/assets/images/mascot.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble isUser={true} position="left">
                         What cognitive abilities do you possess?
                     </ChatBubble>
                 </View>
