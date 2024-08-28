@@ -12,5 +12,8 @@ android
 .gguf
 infrastructure/.terraform
 
+# chatbot
+__pycache__
+
 # testing
 backend/coverage
