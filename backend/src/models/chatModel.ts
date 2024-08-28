@@ -12,13 +12,13 @@ export class Chat {
     userID: string;
     sectionID: string;
     queryPair: QueryPair[];
-    dateCreated: string;
+    dateCreated?: string; // added ? to show it's optional
 
     constructor(
         userID: string,
         sectionID: string,
         queryPair: QueryPair[],
-        dateCreated: string
+        dateCreated?: string 
     ) {
         this.userID = userID;
         this.sectionID = sectionID;
@@ -31,6 +31,6 @@ export class Chat {
     }
 
     getDateCreated(): Date {
-        return new Date(this.dateCreated);
+        return new Date(this.dateCreated!);
     }
 }

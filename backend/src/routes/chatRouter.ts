@@ -7,9 +7,9 @@ const router = Router();
 router.post("/createchathistory", chatController.createChats);
 
 /* READ */
-router.get("/getchathistory", chatController.getChatHistory);
+router.get("/getchathistory/:userid/:sectionid", chatController.getChatHistory);
 
 /* DELETE */
-router.delete("/deletechathistory", chatController.deleteChat);
+router.delete("/deletechathistory/:userid/:sectionid", chatController.deleteChat);
 
 export default router;

@@ -6,7 +6,7 @@ import os
 import sys
 from fastapi.testclient import TestClient
 
-from src.app import app
+from src.chatbot.app import app
 
 # setting directory as backend/src
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
@@ -20,24 +20,24 @@ client = TestClient(app)
 def test_generate_text_no_history():
     # Test without history
     response = client.post("/generate", json={"role": "user", 
-                                              "prompt": "Reply with '42'. Do not add any other text. Stop generating after you have replied with '42'."
+                                              "content": "Reply with '42'. Do not add any other text. Stop generating after you have replied with '42'."
                                               })
     logger.info(f"Response: {response.json()}")
-    assert response.status_code == 200
-    assert "42" in response.json()["response"]
+    assert response.status_code == 200, "Generate endpoint is faulty."
+    assert "42" in response.json()["content"], "ChatGPT is not generating the correct response."
 
 def test_generate_text_with_history():
     # Test with history
     response = client.post("/generate", json={"role": "assistant", 
-                                              "prompt": "Hello, how can I help you today?", 
+                                              "content": "Hello, how can I help you today?", 
                                               "history": [{
                                                   "role": "user", 
                                                   "content": "Reply with '42'. Do not add any other text. Stop generating after you have replied with '42'."
                                                   }]
                                             })
     logger.info(f"Response: {response.json()}")
-    assert response.status_code == 200
-    assert "42" in response.json()["response"]
+    assert response.status_code == 200, "Generate endpoint is faulty."
+    assert "42" in response.json()["content"], "ChatGPT is not generating the correct response."
 
 def test_generate_text_invalid_role():
     # Test with missing role
@@ -50,3 +50,11 @@ def test_generate_text_invalid_prompt():
     response = client.post("/generate", json={"role": "user"})
     logger.info(f"Response: {response.json()}")
     assert response.status_code == 422
+
+def test_langchain_endpoint():
+    response = client.post("/langchain", json={"role": "user", 
+                                              "content": "Reply with '42'. Do not add any other text. Stop generating after you have replied with '42'."
+                                              })
+    logger.info(f"Response: {response.json()}")
+    assert response.status_code == 200, "Langchain endpoint is faulty."
+    assert "42" in response.json()["content"], "ChatGPT is not generating the correct response."

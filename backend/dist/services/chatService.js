@@ -48,17 +48,15 @@ function validateQueryPair(queryPair) {
         (typeof queryPair.content === "string" || queryPair.content === null));
 }
 /* CREATE */
-function createChats(chats) {
+function createChats(chat) {
     return __awaiter(this, void 0, void 0, function* () {
-        for (const chat of chats) {
-            for (const text of chat.queryPair) {
-                if (!validateQueryPair(text)) {
-                    console.error(`Invalid QueryPair object: ${JSON.stringify(text)}`);
-                    throw new Error(`Invalid QueryPair object: ${JSON.stringify(text)}`);
-                }
+        for (const text of chat.queryPair) {
+            if (!validateQueryPair(text)) {
+                console.error(`Invalid QueryPair object: ${JSON.stringify(text)}`);
+                throw new Error(`Invalid QueryPair object: ${JSON.stringify(text)}`);
             }
         }
-        const formattedChats = chats.map((chat) => (Object.assign(Object.assign({}, chat), { queryPair: chat.queryPair })));
+        const formattedChats = Object.assign(Object.assign({}, chat), { queryPair: chat.queryPair });
         const { data, error } = yield supabaseConfig_1.default
             .from("chat")
             .insert(formattedChats)
