@@ -1,10 +1,16 @@
-import { DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList, createDrawerNavigator } from "@react-navigation/drawer";
-import { StyleSheet, Text, View , Alert } from "react-native";
+import {Alert, StyleSheet, Text, View} from 'react-native';
+import {
+    DrawerContentComponentProps,
+    DrawerContentScrollView,
+    DrawerItem,
+    DrawerItemList,
+    createDrawerNavigator,
+} from '@react-navigation/drawer';
 
-import ChatbotScreen from "../app/screens/Chatbot";
-import CustomLabel from "./CustomLabel";
-import Ionicons from '@expo/vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ChatbotScreen from '../app/screens/Chatbot';
+import CustomLabel from './CustomLabel';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect, useContext, useState } from "react";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { AuthContext } from "@/context/AuthContext";
@@ -51,12 +57,12 @@ const deleteAlert = async () => {
             {
                 text: 'Cancel',
                 onPress: () => console.log('Delete all chats cancelled.'),
-                style: 'cancel'
+                style: 'cancel',
             },
-            { text: 'OK', onPress: async () => await clearAllChats() }
+            {text: 'OK', onPress: async () => await clearAllChats()},
         ]
     );
-}
+};
 
 // to ensure receives correct props for rendering drawer content
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
@@ -69,9 +75,9 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             <View style={styles.bottomDrawerSection}>
                 <DrawerItem
                     label="Clear All Chats"
-                    onPress={ async () => {
+                    onPress={async () => {
                         deleteAlert();
-                        
+
                         props.navigation.reset({
                             index: 0, 
                             routes: [{ name: sectionData[0].sectionName }],
@@ -87,7 +93,7 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
             </View>
         </DrawerContentScrollView>
     );
-}
+};
 
 const handleClearChats = async () => {
     // Implement clear chats functionality here
@@ -137,14 +143,14 @@ const ChatbotDrawer: React.FC<any> = ({ navigation }) => {
     return (
         <Drawer.Navigator
             screenOptions={{
-                drawerActiveTintColor: "#ffffff",
-                drawerInactiveTintColor: "#000000",
-                drawerActiveBackgroundColor: "#C3B1FF",
+                drawerActiveTintColor: '#ffffff',
+                drawerInactiveTintColor: '#000000',
+                drawerActiveBackgroundColor: '#C3B1FF',
                 drawerLabelStyle: styles.labelItem,
-                headerTintColor: "#ffffff",
-                headerStyle: { backgroundColor: "#B199FF" },
-                headerTitleAlign: "center",
-                headerTitleStyle: { fontSize: 18, fontWeight: "bold" },
+                headerTintColor: '#ffffff',
+                headerStyle: {backgroundColor: '#B199FF'},
+                headerTitleAlign: 'center',
+                headerTitleStyle: {fontSize: 18, fontWeight: 'bold'},
                 drawerItemStyle: {
                     paddingLeft: 0,
                     marginTop: 10,
@@ -215,14 +221,13 @@ const ChatbotDrawer: React.FC<any> = ({ navigation }) => {
             /> */}
         </Drawer.Navigator>
     );
-}
+};
 
 const styles = StyleSheet.create({
     labelItem: {
         padding: 50,
         width: '100%',
         textAlign: 'left',
-        
     },
     closeDrawer: {
         // backgroundColor: '#8A2BE2',
@@ -231,7 +236,7 @@ const styles = StyleSheet.create({
     },
     bottomDrawerSection: {
         marginTop: 200,
-      },
+    },
     drawerHeader: {
         padding: 16,
         borderBottomWidth: 0.2,

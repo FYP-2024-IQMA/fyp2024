@@ -10,6 +10,7 @@ venv
 android
 .idea
 .gguf
+infrastructure/.terraform
 
 # chatbot
 __pycache__
