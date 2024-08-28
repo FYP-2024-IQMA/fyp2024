@@ -1,20 +1,20 @@
 // app/Chatbot.tsx
 
-import React, {useEffect, useState} from 'react';
 import {
+    Alert,
     ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
-    Alert,
 } from 'react-native';
+import React, {useEffect, useState} from 'react';
 
-import {Feather} from '@expo/vector-icons';
 import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {DrawerScreenProps} from '@react-navigation/drawer';
+import {Feather} from '@expo/vector-icons';
 import {TextInput} from 'react-native-gesture-handler';
 import {useDrawerStatus} from '@react-navigation/drawer';
 import {useNavigation} from '@react-navigation/native';

@@ -26,10 +26,10 @@ const HomeScreen: React.FC = () => {
     );
 
     const icons = [
-        {name: 'Trophy', color: '#FFFFFF', size: 40},
-        {name: 'staro', color: '#FFFFFF', size: 40},
-        {name: 'key', color: '#FFFFFF', size: 40},
-        {name: 'book', color: '#FFFFFF', size: 40},
+        {name: 'Trophy', color: '#FFFFFF', size: 40, status: "completed"},
+        {name: 'staro', color: '#FFFFFF', size: 40, status: "in-progress"},
+        {name: 'key', color: '#FFFFFF', size: 40, status: "not-started"},
+        {name: 'book', color: '#FFFFFF', size: 40, status: "not-started"},
         // { name: 'lock', color: '#FFFFFF', size: 40 },
     ];
 

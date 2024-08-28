@@ -1,3 +1,4 @@
+import {Alert, StyleSheet, Text, View} from 'react-native';
 import {
     DrawerContentComponentProps,
     DrawerContentScrollView,
@@ -5,12 +6,11 @@ import {
     DrawerItemList,
     createDrawerNavigator,
 } from '@react-navigation/drawer';
-import {StyleSheet, Text, View, Alert} from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import ChatbotScreen from '../app/screens/Chatbot';
 import CustomLabel from './CustomLabel';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 
