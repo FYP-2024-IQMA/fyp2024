@@ -38,6 +38,35 @@ resource "aws_route_table" "main_route_table" {
 
  
 }
+
+resource "aws_route_table" "private_route_table_1"{
+  vpc_id = aws_vpc.prod_vpc.id
+  route{
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat-1.id
+  }
+}
+
+resource "aws_route_table_association" "private_1" {
+  subnet_id      = aws_subnet.private_subnet_1.id
+  route_table_id = aws_route_table.private_route_table_1.id
+}
+
+
+resource "aws_route_table" "private_route_table_2"{
+  vpc_id = aws_vpc.prod_vpc.id
+  route{
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat-2.id
+  }
+}
+
+
+resource "aws_route_table_association" "private_2" {
+  subnet_id      = aws_subnet.private_subnet_2.id
+  route_table_id = aws_route_table.private_route_table_2.id
+}
+
 // I will create four subnets,two public subnets and two private subnets for failover
 // First subnet would be 10.0.0.0/18
 // Second subnet would be 10.0.64.0/18
@@ -66,6 +95,46 @@ resource "aws_subnet" "public_subnet_two" {
 
   
 }
+resource "aws_nat_gateway" "nat-1" {
+  allocation_id = aws_eip.nat-1.id
+  subnet_id     = aws_subnet.public_subnet_one.id
+
+  tags = {
+    Name = "nat-gateway-1"
+  }
+
+  depends_on = [aws_internet_gateway.gw]
+}
+resource "aws_nat_gateway" "nat-2" {
+  allocation_id = aws_eip.nat-2.id
+  subnet_id     = aws_subnet.public_subnet_two.id
+
+  tags = {
+    Name = "nat-gateway-2"
+  }
+
+  depends_on = [aws_internet_gateway.gw]
+}
+
+resource "aws_subnet" "private_subnet_1" {
+  vpc_id                  = aws_vpc.prod_vpc.id
+  cidr_block              = "10.0.128.0/18"
+  availability_zone       = "ap-southeast-1a"  # Adjust to your preferred AZ
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "Private Subnet 1"
+  }
+}
+
+resource "aws_subnet" "private_subnet_2" {
+  vpc_id                  = aws_vpc.prod_vpc.id
+  cidr_block              = "10.0.192.0/18"
+  availability_zone       = "ap-southeast-1b"  # Adjust to your preferred AZ
+  map_public_ip_on_launch = false
+  tags = {
+    Name = "Private Subnet 2"
+  }
+}
 
 // Route table association
 resource "aws_route_table_association" "public_subnet_1_association" {
@@ -77,89 +146,254 @@ resource "aws_route_table_association" "public_subnet_2_association" {
   route_table_id = aws_route_table.main_route_table.id
 }
 
-resource "aws_security_group" "allow_tls" {
-  name        = "allow_tls"
-  description = "Allow TLS inbound traffic and all outbound traffic"
+// this is the first 
+
+resource "aws_eip" "nat-1" {
+  # domain ="vpc"
+  tags = {
+    Name = "nat-eip-1"
+  }
+}
+
+resource "aws_eip" "nat-2" {
+  # domain = "vpc"
+  tags = {
+    Name = "nat-eip-2"
+  }
+}
+
+resource "aws_security_group" "jump_host_sg" {
+  name        = "jump-host-sg"
+  description = "Security group for the jump host"
+  vpc_id = aws_vpc.prod_vpc.id
+
+  
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_vpc_security_group_ingress_rule" "jumphost_allow_ssh" {
+  security_group_id = aws_security_group.jump_host_sg.id
+  ip_protocol = "tcp"
+  from_port = 22
+  to_port = 22
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+
+resource "aws_vpc_security_group_ingress_rule" "jumphost_allow_all" {
+  security_group_id = aws_security_group.jump_host_sg.id
+  ip_protocol = -1
+  cidr_ipv4 = "0.0.0.0/0"
+
+  
+}
+
+# Create the Jump Host EC2 Instance
+resource "aws_instance" "jump_host" {
+  ami           = "ami-060e277c0d4cce553"  # Replace with the AMI ID you want to use
+  instance_type = "t2.micro"               # Adjust the instance type as needed
+  key_name      = "jumphost-key"        # Replace with your existing key pair name
+  subnet_id     = aws_subnet.public_subnet_one.id       # Replace with your public subnet ID
+
+  vpc_security_group_ids = [aws_security_group.jump_host_sg.id]
+  associate_public_ip_address = true
+
+  tags = {
+    Name = "JumpHost"
+  }
+
+  # Optionally, add user_data script if needed
+  
+}
+
+resource "aws_security_group" "app_instance_sg" {
+  vpc_id = aws_vpc.prod_vpc.id
+  name = "Application SSH Security Group"
+
+ 
+
+  
+}
+
+resource "aws_vpc_security_group_ingress_rule" "app_allow_ssh" {
+  security_group_id = aws_security_group.app_instance_sg.id
+  ip_protocol = "tcp"
+  from_port = 22
+  to_port = 22
+  referenced_security_group_id =aws_security_group.jump_host_sg.id
+}
+
+resource "aws_vpc_security_group_ingress_rule" "app_allow_backend" {
+  security_group_id = aws_security_group.app_instance_sg.id
+  ip_protocol = "tcp"
+  from_port = 3000
+  to_port = 3000
+  referenced_security_group_id =aws_security_group.lb_sg.id
+}
+
+resource "aws_vpc_security_group_egress_rule" "app_allow_outbound" {
+  security_group_id = aws_security_group.app_instance_sg.id
+  ip_protocol = -1
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+
+
+resource "aws_instance" "app_instance_1" {
+  ami           = "ami-060e277c0d4cce553"  # Replace with the AMI ID you want to use
+  instance_type = "t2.micro"
+  key_name      = "server1-key"                # Replace with your existing key pair name
+  subnet_id     = aws_subnet.private_subnet_1.id
+  private_ip = "10.0.188.247"
+
+  vpc_security_group_ids = [aws_security_group.app_instance_sg.id]
+
+  tags = {
+    Name = "Application 1 in Subnet 1"
+  }
+}
+
+resource "aws_instance" "app_instance_2" {
+  ami           = "ami-060e277c0d4cce553"  # Replace with the AMI ID you want to use
+  instance_type = "t2.micro"
+  key_name      = "server2-key"                # Replace with your existing key pair name
+  subnet_id     = aws_subnet.private_subnet_2.id
+  private_ip = "10.0.237.165"
+
+  vpc_security_group_ids = [aws_security_group.app_instance_sg.id]
+
+  tags = {
+    Name = "Application 2 in Subnet 2"
+  }
+}
+
+
+
+# Output the public IP of the jump host
+
+
+resource "aws_security_group" "lb_sg" {
+  name        = "lb-sg"
+  description = "Security group for the load balancer"
   vpc_id      = aws_vpc.prod_vpc.id
 
-  tags = {
-    Name = "allow_tls"
-  }
-}
-
-resource "aws_vpc_security_group_ingress_rule" "allow_tls_ipv4" {
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 443
-  ip_protocol       = "tcp"
-  to_port           = 443
-}
-resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4" {
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 22
-  ip_protocol       = "tcp"
-  to_port           = 22
-}
-resource "aws_vpc_security_group_ingress_rule" "allow_http_ipv4" {
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 80
-  ip_protocol       = "tcp"
-  to_port           = 80
-}
-
-
-
-
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
-  security_group_id = aws_security_group.allow_tls.id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # semantically equivalent to all ports
-}
-
-
-resource "aws_network_interface" "web_network_interface" {
-  subnet_id   = aws_subnet.public_subnet_one.id
-  private_ips = ["10.0.0.4"]
-  security_groups = [aws_security_group.allow_tls.id]
-
-  tags = {
-    Name = "primary_network_interface"
-  }
-}
-
-resource "aws_eip" "public_ip" {
-
-  network_interface         = aws_network_interface.web_network_interface.id
-  associate_with_private_ip = "10.0.0.4"
-  depends_on = [aws_internet_gateway.gw] 
-}
-
-
-resource "aws_instance" "web" {
-  ami           = "ami-060e277c0d4cce553"
-  instance_type = "t2.micro"
   
-  key_name = "main-key"
-  network_interface {
-    network_interface_id = aws_network_interface.web_network_interface.id
-    device_index         = 0
+
+  tags = {
+    Name = "Load Balancer "
   }
-  user_data = <<EOF
-#!/bin/bash
+}
 
-sudo apt-get update
-sudo apt-get install ca-certificates curl
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+resource "aws_vpc_security_group_ingress_rule" "lb_allow_http" {
+  security_group_id = aws_security_group.lb_sg.id
+  ip_protocol = "tcp"
+  from_port = 80
+  to_port = 80
+  cidr_ipv4 = "0.0.0.0/0"
+}
 
-# Add the repository to Apt sources:
-echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update
+resource "aws_vpc_security_group_ingress_rule" "lb_allow_https" {
+  security_group_id = aws_security_group.lb_sg.id
+  ip_protocol = "tcp"
+  from_port = 443
+  to_port = 443
+  cidr_ipv4 = "0.0.0.0/0"
+}
 
-sudo apt-get install -y docker-ce docker-ce-cli containerd
+resource "aws_vpc_security_group_egress_rule" "lb_allow_outbound" {
+  security_group_id = aws_security_group.lb_sg.id
+  ip_protocol = -1
+  cidr_ipv4 = "0.0.0.0/0"
+}
+
+resource "aws_lb" "app_lb" {
+
+  name = "appLoadBalancer"
+  internal = false
+  load_balancer_type = "application"
+  // Set the 
+  security_groups = [aws_security_group.lb_sg.id]
+  subnets = [aws_subnet.public_subnet_one.id,aws_subnet.public_subnet_two.id]
+  enable_cross_zone_load_balancing = true
+  
+}
+
+resource "aws_lb_listener" "app_lb_listener" {
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = "80"  
+  protocol          = "HTTP" 
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+
+
+resource "aws_lb_target_group" "app_tg" {
+  name        = "app-target-group"
+  port        = 3000
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.prod_vpc.id
+  target_type = "instance"
+
+  health_check {
+    path                = "/"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    matcher             = "404"
+  }
+
+  tags = {
+    Name = "Application Target Group"
+  }
+}
+
+
+resource "aws_lb_target_group_attachment" "app_instance_1" {
+  target_group_arn = aws_lb_target_group.app_tg.arn
+  target_id        = aws_instance.app_instance_1.id
+  port             = 3000
+}
+
+resource "aws_lb_target_group_attachment" "app_instance_2" {
+  target_group_arn = aws_lb_target_group.app_tg.arn
+  target_id        = aws_instance.app_instance_2.id
+  port             = 3000
+}
+
+
+
+
+
+
+output "jump_host_public_ip" {
+  value = aws_instance.jump_host.public_ip
+}
+
+output "loadbalancer_public_ip"{
+  value = aws_lb.app_lb.dns_name
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
