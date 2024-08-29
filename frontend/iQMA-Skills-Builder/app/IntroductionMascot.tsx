@@ -1,7 +1,8 @@
-import {router} from 'expo-router';
 import {Image, View} from 'react-native';
+
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {router} from 'expo-router';
 
 export default function LearnerAssessment() {
     const handlePress = () => {
@@ -21,7 +22,9 @@ export default function LearnerAssessment() {
                 style={{marginBottom: 20}}
                 source={require('@/assets/images/mascot.png')}
             ></Image>
-            <ChatBubble position="top">Hi there! I'm Dao!</ChatBubble>
+            <ChatBubble isUser={true} position="top">
+                Hi there! I'm Dao!
+            </ChatBubble>
             <View
                 style={{
                     position: 'absolute',

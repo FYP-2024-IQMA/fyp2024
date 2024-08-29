@@ -1,9 +1,11 @@
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import {router} from 'expo-router';
-import {Image, View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {Picker} from '@react-native-picker/picker';
+import {router} from 'expo-router';
 
 export default function LearnerAssessmentExperience() {
     const [selectedAttitude, setAttitude] = useState<string>('');
@@ -46,7 +48,7 @@ export default function LearnerAssessmentExperience() {
         }
     };
 
-    const handlePress = () => {
+    const handlePress = async () => {
         if (
             !selectedAttitude ||
             !selectedMotivation ||
@@ -57,17 +59,29 @@ export default function LearnerAssessmentExperience() {
             setIsContinue(false);
         } else {
             setIsContinue(true);
+            const attitude = await AsyncStorage.setItem(
+                'attitude',
+                selectedAttitude
+            );
+            const motivationalLevel = await AsyncStorage.setItem(
+                'motivationalLevel',
+                selectedMotivation
+            );
+            const barriers = await AsyncStorage.setItem(
+                'barriers',
+                JSON.stringify(selectedBarriers)
+            );
+            const personality = await AsyncStorage.setItem(
+                'personality',
+                selectedPersonality
+            );
+            const reasons = await AsyncStorage.setItem(
+                'reasons',
+                JSON.stringify(selectedReasons)
+            );
             router.push('LearnerAssessmentComplete');
         }
     };
-
-    console.log(
-        selectedAttitude,
-        selectedMotivation,
-        selectedBarriers,
-        selectedPersonality,
-        selectedReasons
-    );
 
     return (
         <View style={{padding: 20, flex: 1, backgroundColor: '#FFFFFF'}}>
@@ -77,7 +91,7 @@ export default function LearnerAssessmentExperience() {
                     source={require('@/assets/images/mascot.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble isUser={true} position="left">
                         What are some factors that affect your learning
                         experience?
                     </ChatBubble>

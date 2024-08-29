@@ -1,9 +1,11 @@
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {router} from 'expo-router';
-import {Image, View, Text, StyleSheet, ScrollView} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {Picker} from '@react-native-picker/picker';
+import {router} from 'expo-router';
 
 export default function LearnerAssessmentCognitive() {
     const [selectedEducation, setEducation] = useState<string>('');
@@ -14,7 +16,7 @@ export default function LearnerAssessmentCognitive() {
 
     const education: string[] = [
         'High school or below',
-        'College',
+        'Some college',
         "Bachelor's degree",
         "Master's degree",
         'Doctoral degree',
@@ -30,15 +32,7 @@ export default function LearnerAssessmentCognitive() {
 
     const [isContinue, setIsContinue] = useState(true);
 
-    console.log([
-        selectedEducation,
-        selectedLanguage,
-        selectedLiteracy,
-        selectedLearning,
-        selectedSkill,
-    ]);
-
-    const handlePress = () => {
+    const handlePress = async () => {
         if (
             !selectedEducation ||
             !selectedLanguage ||
@@ -49,6 +43,26 @@ export default function LearnerAssessmentCognitive() {
             setIsContinue(false);
         } else {
             setIsContinue(true);
+            const educationalLevel = await AsyncStorage.setItem(
+                'educationalLevel',
+                selectedEducation
+            );
+            const languageAbilities = await AsyncStorage.setItem(
+                'languageAbilities',
+                selectedLanguage
+            );
+            const litNumProficiency = await AsyncStorage.setItem(
+                'litNumProficiency',
+                selectedLiteracy
+            );
+            const learningPreferences = await AsyncStorage.setItem(
+                'learningPreferences',
+                selectedLearning
+            );
+            const priorKnowledge = await AsyncStorage.setItem(
+                'priorKnowledge',
+                selectedSkill
+            );
             router.push('LearnerAssessmentDynamics');
         }
     };
@@ -64,7 +78,7 @@ export default function LearnerAssessmentCognitive() {
                     source={require('@/assets/images/mascot.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble isUser={true} position="left">
                         What cognitive abilities do you possess?
                     </ChatBubble>
                 </View>

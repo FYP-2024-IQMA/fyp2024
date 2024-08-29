@@ -1,11 +1,16 @@
-import {Image, Text, View} from 'react-native';
+import {ActivityIndicator, Image, Text, View} from 'react-native';
 
+import {AuthContext} from '@/context/AuthContext';
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
+import {LogoutButton} from '@/components/LogoutButton';
 import {Profile} from '@/components/Profile';
+import {useContext} from 'react';
 
 // where things show upp
 export default function Index() {
+    const {currentUser, isLoading} = useContext(AuthContext);
+
     return (
         <View
             style={{
@@ -17,7 +22,8 @@ export default function Index() {
         >
             <LogoVisual></LogoVisual>
             <LoginButton></LoginButton>
-            <Profile></Profile>
+            {/* For Testing & Debugging */}
+            {/* <Profile></Profile>  */}
         </View>
     );
 }

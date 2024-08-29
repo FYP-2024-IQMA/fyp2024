@@ -1,9 +1,11 @@
+import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {router} from 'expo-router';
-import {Image, View, Text, StyleSheet} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {Picker} from '@react-native-picker/picker';
+import {router} from 'expo-router';
 
 export default function LearnerAssessmentDynamics() {
     const [selectedPeers, setPeers] = useState<string>('');
@@ -28,14 +30,7 @@ export default function LearnerAssessmentDynamics() {
 
     const [isContinue, setIsContinue] = useState(true);
 
-    console.log(
-        selectedPeers,
-        selectedTendency,
-        selectedSocial,
-        selectedComputer
-    );
-
-    const handlePress = () => {
+    const handlePress = async () => {
         if (
             !selectedPeers ||
             !selectedTendency ||
@@ -45,6 +40,22 @@ export default function LearnerAssessmentDynamics() {
             setIsContinue(false);
         } else {
             setIsContinue(true);
+            const relationshipToPeers = await AsyncStorage.setItem(
+                'relationshipToPeers',
+                selectedPeers
+            );
+            const tendency = await AsyncStorage.setItem(
+                'tendency',
+                selectedTendency
+            );
+            const socialBackground = await AsyncStorage.setItem(
+                'socialBackground',
+                selectedSocial
+            );
+            const compLiteracy = await AsyncStorage.setItem(
+                'compLiteracy',
+                selectedComputer
+            );
             router.push('LearnerAssessmentExperience');
         }
     };
@@ -57,7 +68,7 @@ export default function LearnerAssessmentDynamics() {
                     source={require('@/assets/images/mascot.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble isUser={true} position="left">
                         How would you describe your social dynamics?
                     </ChatBubble>
                 </View>
