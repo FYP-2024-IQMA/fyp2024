@@ -19,24 +19,20 @@ function validateQueryPair(queryPair: any): queryPair is chatModel.QueryPair {
 
 /* CREATE */
 
-export async function createChats(chats: chatModel.Chat[]) {
-
-    for (const chat of chats) {
-        for (const text of chat.queryPair) {
-            if (!validateQueryPair(text)) {
-                console.error(`Invalid QueryPair object: ${JSON.stringify(text)}`);
-                throw new Error(
-                    `Invalid QueryPair object: ${JSON.stringify(text)}`
-                );
-            }
+export async function createChats(chat: chatModel.Chat) {
+    for (const text of chat.queryPair) {
+        if (!validateQueryPair(text)) {
+            console.error(`Invalid QueryPair object: ${JSON.stringify(text)}`);
+            throw new Error(
+                `Invalid QueryPair object: ${JSON.stringify(text)}`
+            );
         }
     }
 
-    const formattedChats = chats.map((chat) => ({
+    const formattedChats = {
         ...chat,
         queryPair: chat.queryPair as unknown as Json[], // Convert QueryPair[] to Json[]
-        // dateCreated: new Date(chat.dateCreated).toISOString()
-    }));
+    };
 
     const { data, error } = await supabase
         .from("chat")
