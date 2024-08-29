@@ -17,7 +17,7 @@ jobs:
 
     steps:
       - name: Checkout Repository in Virtual Machine
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Install Dependencies
         working-directory: backend
         run: |
