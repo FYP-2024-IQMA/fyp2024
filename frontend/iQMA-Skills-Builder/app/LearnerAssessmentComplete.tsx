@@ -1,9 +1,10 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import {router} from 'expo-router';
 import {Image, ProgressBarAndroid, View} from 'react-native';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import axios from 'axios';
+import {router} from 'expo-router';
 
 export default function LearnerAssessmentComplete() {
     const handlePress = async () => {
@@ -120,11 +121,11 @@ export default function LearnerAssessmentComplete() {
             }}
         >
             <Image
-                style={{marginBottom: 20}}
-                source={require('@/assets/images/mascot.png')}
+                style={{marginBottom: 5}}
+                source={require('@/assets/images/happyjump.png')}
             ></Image>
-            <ChatBubble isUser={true} position="top">
-                Let's have fun {'\n'}while learning!
+            <ChatBubble position="top">
+                Let’s have fun {'\n'}while learning!
             </ChatBubble>
             <View
                 style={{

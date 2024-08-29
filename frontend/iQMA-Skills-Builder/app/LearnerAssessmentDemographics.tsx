@@ -1,17 +1,18 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useState} from 'react';
-import {router} from 'expo-router';
 import {
     Image,
-    View,
+    ScrollView,
+    StyleSheet,
     Text,
     TextInput,
-    StyleSheet,
-    ScrollView,
+    View,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+import React, {useState} from 'react';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {Picker} from '@react-native-picker/picker';
+import {router} from 'expo-router';
 
 export default function LearnerAssessmentDemographics() {
     const [selectedRace, setRace] = useState<string>('');
@@ -88,11 +89,16 @@ export default function LearnerAssessmentDemographics() {
         >
             <View style={{flexDirection: 'row'}}>
                 <Image
-                    style={{height: 100, width: 100, marginRight: 15}}
-                    source={require('@/assets/images/mascot.png')}
+                    style={{
+                        height: 150,
+                        width: 50,
+                        marginRight: 40,
+                        marginLeft: 20,
+                    }}
+                    source={require('@/assets/images/handsinpocket.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble isUser={true} position="left">
+                    <ChatBubble position="left">
                         What are your demographics?
                     </ChatBubble>
                 </View>

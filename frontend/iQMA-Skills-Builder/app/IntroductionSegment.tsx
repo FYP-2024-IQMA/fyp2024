@@ -1,7 +1,8 @@
-import {router} from 'expo-router';
-import {Image, View, Text} from 'react-native';
+import {Image, Text, View} from 'react-native';
+
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {router} from 'expo-router';
 
 export default function IntroductionSegment() {
     const handlePress = () => {
@@ -19,9 +20,9 @@ export default function IntroductionSegment() {
         >
             <Image
                 style={{marginBottom: 20}}
-                source={require('@/assets/images/mascot.png')}
+                source={require('@/assets/images/handsinpocket2.png')}
             ></Image>
-            <ChatBubble isUser={true} position="top">
+            <ChatBubble position="top">
                 Help me understand you better with just{'\n'}
                 <Text style={{fontWeight: 'bold'}}>4 quick segments</Text>!
             </ChatBubble>

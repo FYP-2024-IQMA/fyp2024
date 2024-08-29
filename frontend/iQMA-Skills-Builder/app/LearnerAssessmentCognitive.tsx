@@ -1,10 +1,11 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useState} from 'react';
-import {router} from 'expo-router';
-import {Image, View, Text, StyleSheet, ScrollView} from 'react-native';
-import {Picker} from '@react-native-picker/picker';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
+import {Picker} from '@react-native-picker/picker';
+import {router} from 'expo-router';
 
 export default function LearnerAssessmentCognitive() {
     const [selectedEducation, setEducation] = useState<string>('');
@@ -73,11 +74,16 @@ export default function LearnerAssessmentCognitive() {
         >
             <View style={{flexDirection: 'row'}}>
                 <Image
-                    style={{height: 100, width: 100, marginRight: 15}}
-                    source={require('@/assets/images/mascot.png')}
+                    style={{
+                        height: 150,
+                        width: 50,
+                        marginRight: 40,
+                        marginLeft: 20,
+                    }}
+                    source={require('@/assets/images/handsinpocket.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble isUser={true} position="left">
+                    <ChatBubble position="left">
                         What cognitive abilities do you possess?
                     </ChatBubble>
                 </View>
