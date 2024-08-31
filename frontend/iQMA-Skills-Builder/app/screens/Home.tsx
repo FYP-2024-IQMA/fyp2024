@@ -23,6 +23,7 @@ interface Icon {
     size: number;
     status: string;
 }
+
 const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
     console.log('LOAD NUMBER OF UNIT');
 
@@ -31,7 +32,6 @@ const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
         const response = await fetch(url);
 
         const unitProgress = await response.json();
-        console.log(unitProgress);
         return unitProgress;
     } catch (error) {
         console.error('Error while loading unit progress:', error);
@@ -48,9 +48,7 @@ const numberOfCompletedUnitsPerSection = async (
     try {
         const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
         const response = await fetch(url);
-
         const unitProgress = await response.json();
-        console.log(unitProgress);
         return unitProgress;
     } catch (error) {
         console.error('Error while loading completed unit:', error);
@@ -58,25 +56,11 @@ const numberOfCompletedUnitsPerSection = async (
     }
 };
 
-const loadSectionProgress = async (sectionID: string): Promise<number> => {
-    console.log('LOAD SECTION PROGRESS');
-
-    try {
-        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/quiz/getquizzesbysectionid/${sectionID}`;
-        const response = await fetch(url);
-
-        const sectionProgress = await response.json();
-        console.log(sectionProgress);
-        return sectionProgress;
-    } catch (error) {
-        console.error('Error while loading section progress:', error);
-        return 0;
-    }
-};
-
 const HomeScreen: React.FC = () => {
     const [icons, setIcons] = useState<Icon[]>([]);
     const [circularProgress, setCircularProgress] = useState<number>(0);
+    const [sectionCircularProgress, setSectionCircularProgress] =
+        useState<number>(0);
 
     const loadUnitCircularProgress = async (
         userID: string,
@@ -88,12 +72,25 @@ const HomeScreen: React.FC = () => {
         try {
             const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
             const response = await fetch(url);
-
             const sectionProgress = await response.json();
-            console.log(sectionProgress);
             setCircularProgress(70); //change whn got more data
         } catch (error) {
             console.error('Error while loading circular progress:', error);
+        }
+    };
+
+    const loadSectionProgress = async (sectionID: string): Promise<number> => {
+        console.log('LOAD SECTION PROGRESS');
+
+        try {
+            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/quiz/getquizzesbysectionid/${sectionID}`;
+            const response = await fetch(url);
+            const sectionProgress = await response.json();
+            setSectionCircularProgress(40); //change whn got more data
+            return sectionProgress;
+        } catch (error) {
+            console.error('Error while loading section progress:', error);
+            return 0;
         }
     };
 
@@ -125,6 +122,7 @@ const HomeScreen: React.FC = () => {
             const iconsStatus = getIconStatus(totalUnits, completedUnits);
             setIcons(iconsStatus);
             loadUnitCircularProgress('USR0001', 'SEC0001', 'UNT0001');
+            loadSectionProgress('SEC0001');
         };
 
         fetchProgressData();
@@ -140,7 +138,7 @@ const HomeScreen: React.FC = () => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             {/* Top Stats */}
-            <TopStats />
+            <TopStats circularProgress={sectionCircularProgress} />
 
             {/* Section 1 */}
             <SectionCard

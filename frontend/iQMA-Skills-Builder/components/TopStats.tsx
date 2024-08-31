@@ -5,9 +5,11 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import CircularProgress from './CircularProgress';
 import React from 'react';
 
-const TopStats: React.FC = () => {
-    const progress = 70; // change this to edit the circular progress
+interface TopStatsProps {
+    circularProgress: number;
+}
 
+const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
     return (
         <View style={styles.statsContainer}>
             <View style={[styles.statBox, styles.leftStatBox]}>
@@ -26,7 +28,7 @@ const TopStats: React.FC = () => {
                 <CircularProgress
                     size={38}
                     strokeWidth={5}
-                    progress={progress}
+                    progress={circularProgress}
                 />
                 <Text style={styles.statLabelRight}>
                     Section{'\n'}Completion

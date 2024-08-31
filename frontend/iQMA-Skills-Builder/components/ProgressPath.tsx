@@ -20,7 +20,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     iconSize = 24,
     position = 'left',
     status,
-    progress,
+    progress = 0,
 }) => {
     const getColors = () => {
         switch (status) {
