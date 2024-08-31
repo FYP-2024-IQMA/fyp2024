@@ -17,6 +17,7 @@ import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
 import {useDrawerStatus} from '@react-navigation/drawer';
+import ProgressBar from '@/components/ProgressBar';
 
 const Tab = createBottomTabNavigator();
 
@@ -132,22 +133,46 @@ export default function RootLayout() {
                     <Stack.Screen
                         name="LearnerAssessmentDemographics"
                         options={{
-                            headerTitle: () => <Header progress={0.25} />,
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={0.25}
+                                    isQuestionnaire={true}
+                                />
+                            ),
                         }}
                     />
                     <Stack.Screen
                         name="LearnerAssessmentCognitive"
-                        options={{headerTitle: () => <Header progress={0.5} />}}
+                        options={{
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={0.5}
+                                    isQuestionnaire={true}
+                                />
+                            ),
+                        }}
                     />
                     <Stack.Screen
                         name="LearnerAssessmentDynamics"
                         options={{
-                            headerTitle: () => <Header progress={0.75} />,
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={0.75}
+                                    isQuestionnaire={true}
+                                />
+                            ),
                         }}
                     />
                     <Stack.Screen
                         name="LearnerAssessmentExperience"
-                        options={{headerTitle: () => <Header progress={1} />}}
+                        options={{
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={1}
+                                    isQuestionnaire={true}
+                                />
+                            ),
+                        }}
                     />
                     <Stack.Screen
                         name="(tabs)"
@@ -158,9 +183,3 @@ export default function RootLayout() {
         </Auth0Provider>
     );
 }
-
-const Header = ({progress}: {progress: number}) => (
-    <View>
-        <Progress.Bar progress={progress} width={300} color={'#7654F2'} />
-    </View>
-);
