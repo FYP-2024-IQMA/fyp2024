@@ -11,6 +11,7 @@ interface ProgressItemProps {
     iconSize?: number;
     position?: 'left' | 'right';
     status: string;
+    progress?: number;
 }
 
 const ProgressItem: React.FC<ProgressItemProps> = ({
@@ -19,6 +20,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     iconSize = 24,
     position = 'left',
     status,
+    progress,
 }) => {
     const getColors = () => {
         switch (status) {
@@ -58,7 +60,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                         <CircularProgress
                             size={101}
                             strokeWidth={5}
-                            progress={60}
+                            progress={progress}
                             style={styles.circularProgress}
                         />
                     </>
@@ -99,9 +101,14 @@ interface ProgressPathProps {
         size?: number;
         status: string;
     }[];
+    circularProgress?: number;
 }
 
-const ProgressPath: React.FC<ProgressPathProps> = ({icons}) => {
+// higher level
+const ProgressPath: React.FC<ProgressPathProps> = ({
+    icons,
+    circularProgress,
+}) => {
     return (
         <View style={styles.progressContainer}>
             {icons.map((icon, index) => (
@@ -112,6 +119,7 @@ const ProgressPath: React.FC<ProgressPathProps> = ({icons}) => {
                     iconSize={icon.size}
                     position={index % 2 === 0 ? 'left' : 'right'}
                     status={icon.status}
+                    progress={circularProgress}
                 />
             ))}
         </View>

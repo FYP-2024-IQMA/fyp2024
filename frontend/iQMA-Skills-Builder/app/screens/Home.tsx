@@ -1,5 +1,6 @@
 // screens/HomeScreen.tsx
 
+import React, {useEffect, useState} from 'react';
 import {
     ScrollView,
     StyleSheet,
@@ -16,7 +17,118 @@ interface SectionDividerProps {
     label: string;
 }
 
+interface Icon {
+    name: string;
+    color: string;
+    size: number;
+    status: string;
+}
+const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
+    console.log('LOAD NUMBER OF UNIT');
+
+    try {
+        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/unit/gettotalunit/${sectionID}`;
+        const response = await fetch(url);
+
+        const unitProgress = await response.json();
+        console.log(unitProgress);
+        return unitProgress;
+    } catch (error) {
+        console.error('Error while loading unit progress:', error);
+        return 0;
+    }
+};
+
+const numberOfCompletedUnitsPerSection = async (
+    userID: string,
+    sectionID: string
+): Promise<number> => {
+    console.log('LOAD COMPLETED UNIT');
+
+    try {
+        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
+        const response = await fetch(url);
+
+        const unitProgress = await response.json();
+        console.log(unitProgress);
+        return unitProgress;
+    } catch (error) {
+        console.error('Error while loading completed unit:', error);
+        return 0;
+    }
+};
+
+const loadSectionProgress = async (sectionID: string): Promise<number> => {
+    console.log('LOAD SECTION PROGRESS');
+
+    try {
+        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/quiz/getquizzesbysectionid/${sectionID}`;
+        const response = await fetch(url);
+
+        const sectionProgress = await response.json();
+        console.log(sectionProgress);
+        return sectionProgress;
+    } catch (error) {
+        console.error('Error while loading section progress:', error);
+        return 0;
+    }
+};
+
 const HomeScreen: React.FC = () => {
+    const [icons, setIcons] = useState<Icon[]>([]);
+    const [circularProgress, setCircularProgress] = useState<number>(0);
+
+    const loadUnitCircularProgress = async (
+        userID: string,
+        sectionID: string,
+        unitID: string
+    ) => {
+        console.log('LOAD UNIT CIRCULAR PROGRESS');
+
+        try {
+            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
+            const response = await fetch(url);
+
+            const sectionProgress = await response.json();
+            console.log(sectionProgress);
+            setCircularProgress(70); //change whn got more data
+        } catch (error) {
+            console.error('Error while loading circular progress:', error);
+        }
+    };
+
+    const getIconStatus = (totalUnits: number, completedUnits: number) => {
+        const iconTypes = ['Trophy', 'staro', 'key', 'book'];
+        return Array.from({length: totalUnits}, (_, index) => {
+            let status, icon;
+            if (index < completedUnits) {
+                status = 'completed';
+                icon = iconTypes[index % iconTypes.length];
+            } else if (index === completedUnits) {
+                status = 'in-progress';
+                icon = iconTypes[index % iconTypes.length];
+            } else {
+                status = 'not-started';
+                icon = iconTypes[index % iconTypes.length];
+            }
+            return {name: icon, color: '#FFFFFF', size: 40, status};
+        });
+    };
+
+    useEffect(() => {
+        const fetchProgressData = async () => {
+            const totalUnits = await numberOfUnitsPerSection('SEC0001');
+            const completedUnits = await numberOfCompletedUnitsPerSection(
+                'USR0001',
+                'SEC0001'
+            );
+            const iconsStatus = getIconStatus(totalUnits, completedUnits);
+            setIcons(iconsStatus);
+            loadUnitCircularProgress('USR0001', 'SEC0001', 'UNT0001');
+        };
+
+        fetchProgressData();
+    }, []);
     const SectionDivider: React.FC<SectionDividerProps> = ({label}) => (
         <View style={styles.dividerContainer}>
             <View style={styles.dividerLine} />
@@ -24,14 +136,6 @@ const HomeScreen: React.FC = () => {
             <View style={styles.dividerLine} />
         </View>
     );
-
-    const icons = [
-        {name: 'Trophy', color: '#FFFFFF', size: 40, status: 'completed'},
-        {name: 'staro', color: '#FFFFFF', size: 40, status: 'in-progress'},
-        {name: 'key', color: '#FFFFFF', size: 40, status: 'not-started'},
-        {name: 'book', color: '#FFFFFF', size: 40, status: 'not-started'},
-        // { name: 'lock', color: '#FFFFFF', size: 40 },
-    ];
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -45,7 +149,10 @@ const HomeScreen: React.FC = () => {
             />
 
             <View>
-                <ProgressPath icons={icons} />
+                <ProgressPath
+                    icons={icons}
+                    circularProgress={circularProgress}
+                />
             </View>
             {/* Divider */}
             <SectionDivider label="Written Communication Proficiency" />
