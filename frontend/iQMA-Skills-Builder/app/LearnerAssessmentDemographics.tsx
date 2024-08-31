@@ -98,7 +98,7 @@ export default function LearnerAssessmentDemographics() {
                     source={require('@/assets/images/handsinpocket.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble position="left" isUser={true}>
                         What are your demographics?
                     </ChatBubble>
                 </View>

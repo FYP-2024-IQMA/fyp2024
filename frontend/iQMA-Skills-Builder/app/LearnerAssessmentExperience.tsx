@@ -96,7 +96,7 @@ export default function LearnerAssessmentExperience() {
                     source={require('@/assets/images/handsinpocket.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble position="left" isUser={true}>
                         What are some factors that affect your learning
                         experience?
                     </ChatBubble>

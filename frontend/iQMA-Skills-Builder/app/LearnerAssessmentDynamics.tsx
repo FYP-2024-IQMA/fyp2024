@@ -73,7 +73,7 @@ export default function LearnerAssessmentDynamics() {
                     source={require('@/assets/images/handsinpocket.png')}
                 />
                 <View style={{marginTop: 5}}>
-                    <ChatBubble position="left">
+                    <ChatBubble position="left" isUser={true}>
                         How would you describe your social dynamics?
                     </ChatBubble>
                 </View>
