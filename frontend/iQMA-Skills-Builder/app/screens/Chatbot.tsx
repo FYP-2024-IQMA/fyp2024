@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 
 import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';

@@ -22,7 +22,9 @@ export default function LearnerAssessment() {
                 style={{marginBottom: 20}}
                 source={require('@/assets/images/handsinpocket2.png')}
             ></Image>
-            <ChatBubble position="top">Hi there! I'm Dao!</ChatBubble>
+            <ChatBubble position="top" isUser={true}>
+                Hi there! I'm Dao!
+            </ChatBubble>
             <View
                 style={{
                     position: 'absolute',

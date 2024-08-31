@@ -124,8 +124,8 @@ export default function LearnerAssessmentComplete() {
                 style={{marginBottom: 5}}
                 source={require('@/assets/images/happyjump.png')}
             ></Image>
-            <ChatBubble position="top">
-                Let’s have fun {'\n'}while learning!
+            <ChatBubble position="top" isUser={true}>
+                Let's have fun {'\n'}while learning!
             </ChatBubble>
             <View
                 style={{
