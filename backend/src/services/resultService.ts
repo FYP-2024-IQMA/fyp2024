@@ -8,19 +8,18 @@ import supabase from "../config/supabaseConfig";
 export async function createResult(Result: Result) {
     const { userID, quizID } = Result;
 
-    const { data, error } = await supabase
+    const { error } = await supabase
         .from("result")
         .insert({
             quizID,
-            userID, 
-        })
-        .select();
+            userID,
+        });
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return data;
+        return userID;
     }
 }
 
@@ -40,22 +39,17 @@ export async function getAllResults() {
 }
 
 
-export async function getResultByUserId(userID: string): Promise<Result> {
+export async function getResultByUserId(userID: string) {
     const { data, error } = await supabase
         .from("result")
-        .select("*")
-        .eq("userID", userID)
-        .single();
+        .select("quizID, dateCreated")
+        .eq("userID", userID);
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return new Result(
-            data.userID,
-            data.quizID,
-            new Date(data.dateCreated!),
-        );
+        return data;
     }
 }
 

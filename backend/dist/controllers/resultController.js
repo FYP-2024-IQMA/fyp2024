@@ -41,7 +41,7 @@ const createResult = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     try {
         const result = yield resultService.createResult(resultBody);
         res.status(201).json({
-            userID: result[0].userID,
+            userID: result,
             status: 201,
             statusText: "Created",
         });
