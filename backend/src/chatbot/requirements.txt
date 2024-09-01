@@ -1,8 +1,12 @@
 fastapi
 langchain
+langchain-chroma
 langchain-core
 langchain-community
+langchain-huggingface
 langchain-openai
+llama-index
+llama-parse
 openai
 pydantic
 pytest
