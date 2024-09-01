@@ -1,13 +1,7 @@
 // screens/HomeScreen.tsx
 
 import React, {useEffect, useState} from 'react';
-import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import ProgressPath from '@/components/ProgressPath';
 import SectionCard from '@/components/SectionCard';
@@ -72,21 +66,24 @@ const HomeScreen: React.FC = () => {
         try {
             const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
             const response = await fetch(url);
-            const sectionProgress = await response.json();
-            setCircularProgress(70); //change whn got more data
+            const circularProgress = await response.json();
+            setCircularProgress(circularProgress);
         } catch (error) {
             console.error('Error while loading circular progress:', error);
         }
     };
 
-    const loadSectionProgress = async (sectionID: string): Promise<number> => {
+    const loadSectionProgress = async (
+        userID: string,
+        sectionID: string
+    ): Promise<number> => {
         console.log('LOAD SECTION PROGRESS');
 
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/quiz/getquizzesbysectionid/${sectionID}`;
+            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
             const response = await fetch(url);
             const sectionProgress = await response.json();
-            setSectionCircularProgress(40); //change whn got more data
+            setSectionCircularProgress(sectionProgress);
             return sectionProgress;
         } catch (error) {
             console.error('Error while loading section progress:', error);
@@ -122,7 +119,7 @@ const HomeScreen: React.FC = () => {
             const iconsStatus = getIconStatus(totalUnits, completedUnits);
             setIcons(iconsStatus);
             loadUnitCircularProgress('USR0001', 'SEC0001', 'UNT0001');
-            loadSectionProgress('SEC0001');
+            loadSectionProgress('USR0001', 'SEC0001');
         };
 
         fetchProgressData();
