@@ -1,9 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, Touchable, View} from 'react-native';
 
 import {AntDesign} from '@expo/vector-icons';
 import CircularProgress from './CircularProgress';
 import React from 'react';
 import StartLabel from './startLabel';
+import {TouchableOpacity} from 'react-native';
 
 interface ProgressItemProps {
     iconName: any;
@@ -12,6 +13,7 @@ interface ProgressItemProps {
     position?: 'left' | 'right';
     status: string;
     progress?: number;
+    onPress?: () => void;
 }
 
 const ProgressItem: React.FC<ProgressItemProps> = ({
@@ -21,6 +23,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     position = 'left',
     status,
     progress = 0,
+    onPress,
 }) => {
     const getColors = () => {
         switch (status) {
@@ -41,7 +44,8 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     const {progressItemColor, darkerProgressItemColor} = getColors();
 
     return (
-        <View
+        <TouchableOpacity
+            onPress={onPress}
             style={[
                 styles.itemContainer,
                 position === 'left'
@@ -90,7 +94,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                     />
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -120,6 +124,7 @@ const ProgressPath: React.FC<ProgressPathProps> = ({
                     position={index % 2 === 0 ? 'left' : 'right'}
                     status={icon.status}
                     progress={circularProgress}
+                    onPress={() => console.log('Pressed')}
                 />
             ))}
         </View>
