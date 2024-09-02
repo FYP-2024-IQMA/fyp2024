@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StyleSheet, Text, Image, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, Image, View } from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, { useLayoutEffect, useState, useEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import { QuizCard } from '@/components/QuizCard';
@@ -82,7 +82,7 @@ export default function VideoQuiz() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             <SectionCard
                 title="SECTION 1, UNIT 1"
                 subtitle="Foundations of Communication"
@@ -101,20 +101,20 @@ export default function VideoQuiz() {
                     style={{
                         fontSize: 14,
                         color: '#4143A3',
-                        marginBottom: 20
+                        marginBottom: 10
                     }}
                 >
                     Choose the most appropriate option for each question. 
                 </Text>
                 <View style={{alignItems: 'center'}}>
                     <Image
-                        style={{marginBottom: 20}}
+                        style={{marginBottom: 10}}
                         source={require('@/assets/images/deepinthought.png')}
                     />
                 </View>
                 <QuizCard questionData={questions[currentQnsIdx]} onNextQuestion={handleNextQuestion} />
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
