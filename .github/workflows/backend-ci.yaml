@@ -29,13 +29,10 @@ jobs:
 
   security:
     runs-on: ubuntu-latest
-    needs: build
     steps:
-      - name: Checkout Repository in Virtual Machine
-        uses: actions/checkout@master
-      - name : Checkout correct folder
-        run : cd backend/src
-      - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    - name: Run Snyk to check Docker image for vulnerabilities
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        image: backend/Dockerfile
