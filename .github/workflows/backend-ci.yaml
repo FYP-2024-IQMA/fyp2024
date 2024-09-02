@@ -32,7 +32,7 @@ jobs:
     needs: build
     steps:
       - name: Checkout Repository in Virtual Machine
-        uses: actions/checkout@v4
+        uses: actions/checkout@master
       - name : Checkout correct folder
         run : cd backend/src
       - name: Run Snyk to check for vulnerabilities
