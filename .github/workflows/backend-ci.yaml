@@ -34,7 +34,7 @@ jobs:
       - name: Checkout Repository in Virtual Machine
         uses: actions/checkout@v4
       - name : Checkout correct folder
-        run : cd backend
+        run : cd backend/src
       - name: Run Snyk to check for vulnerabilities
         uses: snyk/actions/node@master
         env:
