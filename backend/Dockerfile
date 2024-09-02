@@ -1,4 +1,4 @@
-# Node base image
+# Node base 
 FROM node:18
 
 WORKDIR /usr/src/app
