@@ -30,9 +30,16 @@ jobs:
   security:
     runs-on: ubuntu-latest
     steps:
+    - name: Checkout Repository in Virtual Machine
+      uses: actions/checkout@v4
+    - name: Build Docker Image
+      working-directory: backend
+      run: |
+        docker build -t backend:latest .
     - name: Run Snyk to check Docker image for vulnerabilities
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
-        image: backend/Dockerfile
+        image: backend:latest
+    
