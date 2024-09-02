@@ -36,6 +36,6 @@ jobs:
       - name : Checkout correct folder
         run : cd backend
       - name: Run Snyk to check for vulnerabilities
-        uses: snyk/actions/node@v4
+        uses: snyk/actions/node@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
