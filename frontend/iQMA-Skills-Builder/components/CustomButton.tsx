@@ -9,7 +9,10 @@ export const CustomButton = ({
     backgroundColor = '#7654F2',
     borderColor = '#7654F2',
     onPressHandler = () => {},
+    capitalise = true,
 }) => {
+    const textStyle = capitalise ? 'uppercase' : 'capitalize';
+
     return (
         <View>
             <Pressable
@@ -25,7 +28,7 @@ export const CustomButton = ({
                 onPress={onPressHandler}
             >
                 <View>
-                    <Text style={[styles.buttonText, {color: labelColor}]}>
+                    <Text style={[styles.buttonText, {color: labelColor, textTransform: textStyle}]}>
                         {label}
                     </Text>
                 </View>
@@ -48,7 +51,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
     },
     buttonText: {
-        textTransform: 'uppercase',
         fontWeight: 'bold',
     },
     shadow: {
