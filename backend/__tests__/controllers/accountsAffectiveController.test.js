@@ -4,6 +4,7 @@ const accountsAffectiveService = require("../../dist/services/accountsAffectiveS
 const accountsAffectiveRouter = require("../../dist/routes/accountsAffectiveRouter").default;
 const supabase = require("../../dist/config/supabaseConfig");
 
+jest.mock("../../dist/services/accountsAffectiveService");
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
 }));

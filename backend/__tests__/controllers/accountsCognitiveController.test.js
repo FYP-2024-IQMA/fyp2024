@@ -5,6 +5,7 @@ const accountsCognitiveService = require("../../dist/services/accountsCognitiveS
 const accountsCognitiveRouter = require("../../dist/routes/accountsCognitiveRouter").default;
 const supabase = require("../../dist/config/supabaseConfig");
 
+jest.mock("../../dist/services/accountsCognitiveService");
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
 }));

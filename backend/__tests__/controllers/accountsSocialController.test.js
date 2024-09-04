@@ -5,6 +5,7 @@ const accountsSocialService = require("../../dist/services/accountsSocialService
 const accountsSocialRouter = require("../../dist/routes/accountsSocialRouter").default;
 const supabase = require("../../dist/config/supabaseConfig");
 
+jest.mock("../../dist/services/accountsSocialService");
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
 }));
