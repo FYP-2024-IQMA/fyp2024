@@ -16,25 +16,23 @@ exports.createResult = createResult;
 exports.getAllResults = getAllResults;
 exports.getResultByUserId = getResultByUserId;
 exports.getUserProgress = getUserProgress;
-const resultModel_1 = require("../models/resultModel");
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 /* CREATE */
 function createResult(Result) {
     return __awaiter(this, void 0, void 0, function* () {
         const { userID, quizID } = Result;
-        const { data, error } = yield supabaseConfig_1.default
+        const { error } = yield supabaseConfig_1.default
             .from("result")
             .insert({
             quizID,
             userID,
-        })
-            .select();
+        });
         if (error) {
             console.error(error);
             throw error;
         }
         else {
-            return data;
+            return userID;
         }
     });
 }
@@ -57,15 +55,14 @@ function getResultByUserId(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data, error } = yield supabaseConfig_1.default
             .from("result")
-            .select("*")
-            .eq("userID", userID)
-            .single();
+            .select("quizID, dateCreated")
+            .eq("userID", userID);
         if (error) {
             console.error(error);
             throw error;
         }
         else {
-            return new resultModel_1.Result(data.userID, data.quizID, new Date(data.dateCreated));
+            return data;
         }
     });
 }

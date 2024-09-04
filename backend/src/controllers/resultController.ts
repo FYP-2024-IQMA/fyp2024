@@ -10,7 +10,7 @@ export const createResult = async (req: Request, res: Response) => {
     try {
         const result = await resultService.createResult(resultBody);
         res.status(201).json({
-            userID: result[0].userID,
+            userID: result,
             status: 201,
             statusText: "Created",
         });

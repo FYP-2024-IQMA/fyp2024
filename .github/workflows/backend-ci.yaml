@@ -11,10 +11,10 @@ on:
       - develop
     paths:
       - "backend/**"
+
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository in Virtual Machine
         uses: actions/checkout@v4
@@ -26,3 +26,37 @@ jobs:
         working-directory: backend
         run: |
           npm test
+      - name: Build Backend Docker Image
+        working-directory: backend
+        run: |
+          docker build -t backend:latest .
+      - name: Build Chatbot Docker Image
+        working-directory: backend/src/chatbot
+        run: |
+          docker build -t chatbot:latest .
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository in Virtual Machine
+        uses: actions/checkout@v4
+      - name: Build Backend Docker Image
+        working-directory: backend
+        run: |
+          docker build -t backend:latest .
+      - name: Build Chatbot Docker Image
+        working-directory: backend/src/chatbot
+        run: |
+          docker build -t chatbot:latest .
+      - name: Run Snyk to check Backend Docker image for vulnerabilities
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: backend:latest
+      - name: Run Snyk to check Chatbot Docker image for vulnerabilities
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: chatbot:latest
