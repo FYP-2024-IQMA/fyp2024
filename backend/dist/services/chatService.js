@@ -57,16 +57,15 @@ function createChats(chat) {
             }
         }
         const formattedChats = Object.assign(Object.assign({}, chat), { queryPair: chat.queryPair });
-        const { data, error } = yield supabaseConfig_1.default
+        const { error } = yield supabaseConfig_1.default
             .from("chat")
-            .insert(formattedChats)
-            .select();
+            .insert(formattedChats);
         if (error) {
             console.error(error);
             throw error;
         }
         else {
-            return data;
+            return chat.userID;
         }
     });
 }
