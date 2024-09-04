@@ -3,6 +3,7 @@ const express = require("express");
 const accountsDemographicsController = require("../../dist/controllers/accountsDemographicsController");
 const accountsDemographicsService = require("../../dist/services/accountsDemographicsService");
 const accountsDemographicsRouter = require("../../dist/routes/accountsDemographicsRouter").default;
+const supabase = require("../../dist/config/supabaseConfig");
 
 jest.mock("../../dist/services/accountsDemographicsService");
 
