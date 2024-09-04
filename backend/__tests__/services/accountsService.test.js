@@ -10,7 +10,7 @@ let consoleErrorSpy;
 
 beforeEach(() => {
     jest.resetAllMocks();
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => { });
 });
 
 afterEach(() => {
@@ -46,7 +46,6 @@ describe("createAccount", () => {
         const accounts = await accountsService.createAccount(mockData[0]);
 
         expect(mockInsert).toHaveBeenCalledWith(mockData[0]);
-
         expect(accounts).toEqual(expectedResult);
     });
 
@@ -63,7 +62,6 @@ describe("createAccount", () => {
         const accounts = await accountsService.createAccount(mockData[0]);
 
         expect(mockInsert).toHaveBeenCalledWith(mockData[0]);
-
         expect(accounts).toEqual(expectedResult);
     });
 
