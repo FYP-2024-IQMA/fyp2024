@@ -22,10 +22,14 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const unitController = __importStar(require("../controllers/unitController"));
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 /* READ */
-router.get("/gettotalunit/:sectionID", unitController.getNoOfUnitPerSection);
+router.get("/gettotalunit/:sectionID", authMiddleware_1.default, unitController.getNoOfUnitPerSection);
 exports.default = router;

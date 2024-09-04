@@ -59,8 +59,6 @@ export default function CreateProfile() {
 
     const handlePress = async () => {
         console.log(selectedAge + selectedGender);
-        console.log('TOKEN' + currentUser.sub);
-        console.log(process.env.EXPO_PUBLIC_LOCALHOST_URL);
 
         const body = {
             userID: currentUser.sub,
@@ -86,7 +84,7 @@ export default function CreateProfile() {
         } else {
             setIsContinue(true);
             try {
-                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/createaccount`;
+                const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/createaccount`;
 
                 const response = await fetch(url, {
                     method: 'POST',

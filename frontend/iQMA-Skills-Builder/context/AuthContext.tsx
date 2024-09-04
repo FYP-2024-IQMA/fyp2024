@@ -23,12 +23,12 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const watchUserSession = async () => {
         if (user) {
             setCurrentUser(user);
-            fetchToken();
+            await fetchToken();
             console.log(user);
             // router.push("CreateProfile");
             // router.push("IntroductionMascot");
             // router.replace("/Home");
-            checkFirstLogin();
+            await checkFirstLogin();
             if (user.sub) {
                 await AsyncStorage.setItem('userID', user.sub);
             }
@@ -45,32 +45,21 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 console.log(credentials);
                 console.log(credentials.idToken);
                 setToken(credentials.idToken);
-                
-                
-    
-    
-                    const response =await fetch(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/setToken`, {
+
+                const response = await fetch(
+                    `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/setToken`,
+                    {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${credentials.idToken}`, // Include the token in the Authorization header
+                            Authorization: `Bearer ${credentials.idToken}`, // Include the token in the Authorization header
                         },
-                       
-                    });
+                    }
+                );
 
-        
-                    console.log(response.status);
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getallaccounts`;
-
-            
-
-            
-
-
-            
+                console.log(response.status);
+                const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/getallaccounts`;
             }
-
-            
         } catch (e) {
             console.log('Error fetching token:', e);
         }
@@ -80,12 +69,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const logIn = async () => {
         try {
             await authorize();
-
-           
-
-            
-
-
         } catch (e) {
             console.log(e);
         }
@@ -106,7 +89,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     // Check First Time Login
     const checkFirstLogin = async () => {
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getaccountbyid/${user?.sub}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/getaccountbyid/${user?.sub}`;
 
             const response = await fetch(url);
 
