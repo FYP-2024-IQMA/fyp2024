@@ -48,6 +48,9 @@ function getLesson(sectionID, unitID, lessonID) {
             throw error;
         }
         else {
+            const takeaway = data[0].lessonKeyTakeaway;
+            takeaway === null || takeaway === void 0 ? void 0 : takeaway.split(/\r?\n/);
+            data[0].lessonKeyTakeaway = takeaway;
             const text = data[0].lessonCheatSheet;
             console.log(text);
             // when there is 2 headers in the text

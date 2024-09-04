@@ -38,8 +38,11 @@ export async function getLesson(
 		console.error(error);
 		throw error;
 	} else {
+		let takeaway = data[0].lessonKeyTakeaway;
+		let formattedTakeaway: string[] | null = takeaway
+			? takeaway.split(/\r?\n/)
+			: null;
 		const text = data[0].lessonCheatSheet;
-		console.log(text);
 
 		// when there is 2 headers in the text
 		const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
@@ -60,6 +63,7 @@ export async function getLesson(
 
 			return {
 				...data[0],
+				lessonKeyTakeaway: formattedTakeaway,
 				lessonCheatSheet: result,
 			};
 		}
@@ -84,6 +88,7 @@ export async function getLesson(
 
 			return {
 				...data[0],
+				lessonKeyTakeaway: formattedTakeaway,
 				lessonCheatSheet: result,
 			};
 		}
@@ -93,6 +98,7 @@ export async function getLesson(
 		console.log(sentences);
 		return {
 			...data[0],
+			lessonKeyTakeaway: formattedTakeaway,
 			lessonCheatSheet: sentences,
 		};
 
