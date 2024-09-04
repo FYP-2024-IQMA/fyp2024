@@ -3,16 +3,21 @@ const express = require("express");
 const lessonController = require("../../dist/controllers/lessonController");
 const lessonService = require("../../dist/services/lessonService");
 const lessonRouter = require("../../dist/routes/lessonRouter").default;
+const supabase = require("../../dist/config/supabaseConfig");
+
+jest.mock("../../dist/config/supabaseConfig", () => ({
+    from: jest.fn(),
+}));
 
 jest.mock("../../dist/services/lessonService");
-
-const app = express();
-app.use(express.json());
-app.use("/lessons", lessonRouter);
 
 beforeEach(() => {
     jest.resetAllMocks();
 });
+
+const app = express();
+app.use(express.json());
+app.use("/lessons", lessonRouter);
 
 describe("GET /lessons/getnumberoflessons/:sectionID/:unitID", () => {
     it("should return the number of lessons in a unit", async () => {
