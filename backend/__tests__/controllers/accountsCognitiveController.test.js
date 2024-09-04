@@ -3,6 +3,7 @@ const express = require("express");
 const accountsCognitiveController = require("../../dist/controllers/accountsCognitiveController");
 const accountsCognitiveService = require("../../dist/services/accountsCognitiveService");
 const accountsCognitiveRouter = require("../../dist/routes/accountsCognitiveRouter").default;
+const supabase = require("../../dist/config/supabaseConfig");
 
 jest.mock("../../dist/services/accountsCognitiveService");
 

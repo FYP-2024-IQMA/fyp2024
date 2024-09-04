@@ -2,6 +2,7 @@ const request = require("supertest");
 const express = require("express");
 const accountsAffectiveService = require("../../dist/services/accountsAffectiveService");
 const accountsAffectiveRouter = require("../../dist/routes/accountsAffectiveRouter").default;
+const supabase = require("../../dist/config/supabaseConfig");
 
 jest.mock("../../dist/services/accountsAffectiveService");
 
