@@ -32,9 +32,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSectionDetails = void 0;
+exports.getSectionDetails = exports.getAllSections = void 0;
 const sectionService = __importStar(require("../services/sectionService"));
 /* READ */
+const getAllSections = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const sectionDetails = yield sectionService.getAllSections();
+        console.log(sectionDetails);
+        res.status(200).json(sectionDetails);
+    }
+    catch (error) {
+        res.status(500).json({
+            error: `Failed to retrieve section details`,
+        });
+    }
+});
+exports.getAllSections = getAllSections;
 const getSectionDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sectionDetails = yield sectionService.getSectionDetails(req.params.sectionID);
@@ -43,7 +56,7 @@ const getSectionDetails = (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
     catch (error) {
         res.status(500).json({
-            error: `Failed to retrieve section details of ${req.params.sectionID}`,
+            error: `Failed to retrieve section details`,
         });
     }
 });

@@ -30,12 +30,20 @@ describe("GET /section/sectiondetails/:sectionID", () => {
     };
 
     it("should return 200 and the section details on success", async () => {
-        sectionService.getSectionDetails.mockResolvedValue(mockSection);
+
+        const expectedResults = {
+            ...mockSection,
+            introductionURL: 'pU4fCakueEE',
+        }
+        sectionService.getSectionDetails.mockResolvedValue({
+            ...mockSection,
+            introductionURL: 'pU4fCakueEE',
+        });
 
         const response = await request(app).get("/section/sectiondetails/SEC0001");
 
         expect(response.status).toBe(200);
-        expect(response.body).toEqual(mockSection);
+        expect(response.body).toEqual(expectedResults);
         expect(sectionService.getSectionDetails).toHaveBeenCalledTimes(1);
         expect(sectionService.getSectionDetails).toHaveBeenCalledWith("SEC0001");
     });
@@ -49,7 +57,7 @@ describe("GET /section/sectiondetails/:sectionID", () => {
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
-            error: "Failed to retrieve section details of SEC0001",
+            error: "Failed to retrieve section details",
         });
         expect(sectionService.getSectionDetails).toHaveBeenCalledTimes(1);
         expect(sectionService.getSectionDetails).toHaveBeenCalledWith("SEC0001");
@@ -62,7 +70,7 @@ describe("GET /section/sectiondetails", () => {
             sectionID: 'SEC0001',
             sectionName: 'Communication',
             sectionDescription: null,
-            introductionURL: 'pU4fCakueEE',
+            introductionURL: 'https://youtube.com/shorts/pU4fCakueEE?si=AbLsf_OkPRZ-TLWq',
             finalAssessmentIntro: "Welcome to the Grand Presentation Showdown...",
             finalScenario: "You are part of a team participating in a high-stakes competition...",
             dateCreated: '2024-08-18T14:59:01.549137+00:00'
@@ -71,7 +79,7 @@ describe("GET /section/sectiondetails", () => {
             sectionID: 'SEC0002',
             sectionName: 'Team Collaboration',
             sectionDescription: 'Learn how to work effectively in teams.',
-            introductionURL: 'abc12345xyz',
+            introductionURL: 'https://youtube.com/shorts/abc12345xyz?si=AbLsf_OkPRZ-TLWq',
             finalAssessmentIntro: "This is your team collaboration challenge...",
             finalScenario: "Your team must create a project plan under a tight deadline...",
             dateCreated: '2024-08-20T14:59:01.549137+00:00'
@@ -79,12 +87,33 @@ describe("GET /section/sectiondetails", () => {
     ];
 
     it("should return 200 and a list of all sections with formatted URLs on success", async () => {
-        sectionService.getAllSections.mockResolvedValue(mockSections);
 
-        const response = await request(app).get("/section/allsections");
+        const expectedSections = [
+            {
+                ...mockSections[0],
+                introductionURL: 'pU4fCakueEE',
+            },
+            {
+                ...mockSections[1],
+                introductionURL: 'abc12345xyz',
+            }
+        ];
+
+        sectionService.getAllSections.mockResolvedValue([
+            {
+                ...mockSections[0],
+                introductionURL: 'pU4fCakueEE',
+            },
+            {
+                ...mockSections[1],
+                introductionURL: 'abc12345xyz',
+            }
+        ]);
+
+        const response = await request(app).get("/section/sectiondetails");
 
         expect(response.status).toBe(200);
-        expect(response.body).toEqual(mockSections);
+        expect(response.body).toEqual(expectedSections);
         expect(sectionService.getAllSections).toHaveBeenCalledTimes(1);
     });
 
@@ -97,7 +126,7 @@ describe("GET /section/sectiondetails", () => {
 
         expect(response.status).toBe(500);
         expect(response.body).toEqual({
-            error: "Failed to retrieve sections",
+            error: "Failed to retrieve section details",
         });
         expect(sectionService.getAllSections).toHaveBeenCalledTimes(1);
     });

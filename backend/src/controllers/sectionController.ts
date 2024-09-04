@@ -10,7 +10,7 @@ export const getAllSections = async (req: Request, res: Response) => {
 		res.status(200).json(sectionDetails);
 	} catch (error) {
 		res.status(500).json({
-			error: `Failed to retrieve section details of ${req.params.sectionID}`,
+			error: `Failed to retrieve section details`,
 		});
 	}
 };
@@ -24,7 +24,7 @@ export const getSectionDetails = async (req: Request, res: Response) => {
 		res.status(200).json(sectionDetails);
 	} catch (error) {
 		res.status(500).json({
-			error: `Failed to retrieve section details of ${req.params.sectionID}`,
+			error: `Failed to retrieve section details`,
 		});
 	}
 };

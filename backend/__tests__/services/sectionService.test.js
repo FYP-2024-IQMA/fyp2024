@@ -27,6 +27,11 @@ describe("getSectionDetails", () => {
         dateCreated: '2024-08-18T14:59:01.549137+00:00'
     };
 
+    const expectedResults = {
+        ...mockSection,
+        introductionURL: 'pU4fCakueEE',
+    }
+
     it("should return section details on success", async () => {
         const mockSingle = jest
             .fn()
@@ -37,7 +42,7 @@ describe("getSectionDetails", () => {
 
         const result = await sectionService.getSectionDetails('SEC0001');
 
-        expect(result).toEqual(mockSection);
+        expect(result).toEqual(expectedResults);
         expect(supabase.from).toHaveBeenCalledWith("section");
         expect(mockSelect).toHaveBeenCalledWith("*");
         expect(mockEq).toHaveBeenCalledWith("sectionID", 'SEC0001');
@@ -70,7 +75,7 @@ describe("getAllSections", () => {
             sectionID: 'SEC0001',
             sectionName: 'Communication',
             sectionDescription: null,
-            introductionURL: 'pU4fCakueEE',
+            introductionURL: 'https://youtube.com/shorts/pU4fCakueEE?si=AbLsf_OkPRZ-TLWq',
             finalAssessmentIntro: "Welcome to the Grand Presentation Showdown...",
             finalScenario: "You are part of a team participating in a high-stakes competition...",
             dateCreated: '2024-08-18T14:59:01.549137+00:00'
@@ -79,14 +84,26 @@ describe("getAllSections", () => {
             sectionID: 'SEC0002',
             sectionName: 'Team Collaboration',
             sectionDescription: 'Learn how to work effectively in teams.',
-            introductionURL: 'abc12345xyz',
+            introductionURL: 'https://youtube.com/shorts/abc12345xyz?si=AbLsf_OkPRZ-TLWq',
             finalAssessmentIntro: "This is your team collaboration challenge...",
             finalScenario: "Your team must create a project plan under a tight deadline...",
             dateCreated: '2024-08-20T14:59:01.549137+00:00'
         }
     ];
 
+
     it("should return all sections with formatted URLs on success", async () => {
+        const expectedSections = [
+            {
+                ...mockSections[0],
+                introductionURL: 'pU4fCakueEE',
+            },
+            {
+                ...mockSections[1],
+                introductionURL: 'abc12345xyz',
+            }
+        ];
+
         const mockSelect = jest
             .fn()
             .mockResolvedValue({ data: mockSections, error: null });
@@ -94,7 +111,7 @@ describe("getAllSections", () => {
 
         const result = await sectionService.getAllSections();
 
-        expect(result).toEqual(mockSections);
+        expect(result).toEqual(expectedSections);
         expect(supabase.from).toHaveBeenCalledWith("section");
         expect(mockSelect).toHaveBeenCalledWith("*");
     });

@@ -27,5 +27,6 @@ const sectionController = __importStar(require("../controllers/sectionController
 const express_1 = require("express");
 const router = (0, express_1.Router)();
 /* READ */
+router.get("/sectiondetails", sectionController.getAllSections);
 router.get("/sectiondetails/:sectionID", sectionController.getSectionDetails);
 exports.default = router;
