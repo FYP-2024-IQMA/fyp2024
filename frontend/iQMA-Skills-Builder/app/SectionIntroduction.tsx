@@ -20,7 +20,7 @@ export default function SectionIntroduction() {
     }, [navigation]);
 
     const handlePress = () => {
-        router.push('Lesson');
+        router.push('UnitIntroduction');
     };
 
     const [videoId, setVideoId] = useState<string>('pU4fCakueEE');
@@ -40,6 +40,8 @@ export default function SectionIntroduction() {
 
     return (
         <View style={styles.container}>
+
+            <View>
             <SectionCard
                 title="SECTION 1, UNIT 1"
                 subtitle="Foundations of Communication"
@@ -57,7 +59,7 @@ export default function SectionIntroduction() {
             </Text>
             {videoId ? (
                 <YoutubePlayer
-                    height={500}
+                    height={300}
                     play={playing}
                     onChangeState={onStateChange}
                     videoId={videoId} // YouTube video ID
@@ -67,6 +69,8 @@ export default function SectionIntroduction() {
                     Loading Video...
                 </Text>
             )}
+            </View>
+
             <View
                 style={{
                     alignSelf: 'center',
@@ -88,5 +92,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+        justifyContent: 'space-between',
     },
 });
