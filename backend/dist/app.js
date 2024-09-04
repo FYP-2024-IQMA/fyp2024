@@ -8,12 +8,14 @@ const accountsCognitiveRouter_1 = __importDefault(require("./routes/accountsCogn
 const accountsDemographicsRouter_1 = __importDefault(require("./routes/accountsDemographicsRouter"));
 const accountsRouter_1 = __importDefault(require("./routes/accountsRouter"));
 const accountsSocialRouter_1 = __importDefault(require("./routes/accountsSocialRouter"));
+const chatRouter_1 = __importDefault(require("./routes/chatRouter"));
 const cors_1 = __importDefault(require("cors"));
 const express_1 = __importDefault(require("express"));
+const questionRouter_1 = __importDefault(require("./routes/questionRouter"));
 const quizRouter_1 = __importDefault(require("./routes/quizRouter"));
 const resultRouter_1 = __importDefault(require("./routes/resultRouter"));
+const sectionRouter_1 = __importDefault(require("./routes/sectionRouter"));
 const unitRouter_1 = __importDefault(require("./routes/unitRouter"));
-const chatRouter_1 = __importDefault(require("./routes/chatRouter"));
 const questionRouter_1 = __importDefault(require("./routes/questionRouter"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -28,7 +30,8 @@ app.use('/quiz', quizRouter_1.default);
 app.use('/quiz', questionRouter_1.default);
 app.use('/result', resultRouter_1.default);
 app.use('/unit', unitRouter_1.default);
-app.use("/chat", chatRouter_1.default);
+app.use('/chat', chatRouter_1.default);
+app.use('/section', sectionRouter_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
