@@ -13,8 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNoOfLessonPerUnit = getNoOfLessonPerUnit;
+exports.getLesson = getLesson;
+exports.getAllLessons = getAllLessons;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 /* READ */
+// get all lessons in the specific unit
 function getNoOfLessonPerUnit(sectionID, unitID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { count, error } = yield supabaseConfig_1.default
@@ -28,6 +31,75 @@ function getNoOfLessonPerUnit(sectionID, unitID) {
         }
         else {
             return count;
+        }
+    });
+}
+// get a specific lesson
+function getLesson(sectionID, unitID, lessonID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { data, error } = yield supabaseConfig_1.default
+            .from("lesson")
+            .select("*")
+            .eq("sectionID", sectionID)
+            .eq("unitID", unitID)
+            .eq("lessonID", lessonID);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        else {
+            const text = data[0].lessonCheatSheet;
+            console.log(text);
+            // when there is 2 headers in the text
+            const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
+            const headers = text ? text.match(regex) : null;
+            if (headers != null) {
+                const sections = text ? text.split(regex) : null;
+                sections === null || sections === void 0 ? void 0 : sections.shift();
+                const result = headers.reduce((acc, header, index) => {
+                    if (sections != null) {
+                        acc[header.trim()] = sections[index].trim();
+                    }
+                    return acc;
+                }, {});
+                return Object.assign(Object.assign({}, data[0]), { lessonCheatSheet: result });
+            }
+            //when there is no emoji in the headers
+            const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
+            const headers2 = text ? text.match(regex2) : null;
+            console.log(headers2);
+            if (headers2 != null) {
+                const sections = text === null || text === void 0 ? void 0 : text.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
+                sections === null || sections === void 0 ? void 0 : sections.shift();
+                const result = headers2.reduce((acc, header, index) => {
+                    if (sections != null) {
+                        acc[header.trim()] = sections[index].trim();
+                    }
+                    return acc;
+                }, {});
+                return Object.assign(Object.assign({}, data[0]), { lessonCheatSheet: result });
+            }
+            //when there is no headers
+            const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
+            console.log(sentences);
+            return Object.assign(Object.assign({}, data[0]), { lessonCheatSheet: sentences });
+            return data;
+        }
+    });
+}
+function getAllLessons(sectionID, unitID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { data, error } = yield supabaseConfig_1.default
+            .from("lesson")
+            .select("*")
+            .eq("sectionID", sectionID)
+            .eq("unitID", unitID);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        else {
+            return data;
         }
     });
 }
