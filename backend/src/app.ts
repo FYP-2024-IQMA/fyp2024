@@ -9,6 +9,7 @@ import quizRouter from './routes/quizRouter';
 import resultRouter from './routes/resultRouter';
 import unitRouter from './routes/unitRouter';
 import chatRouter from "./routes/chatRouter";
+import questionRouter from './routes/questionRouter';
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.use('/accountscognitive', accountsCognitiveRouter);
 app.use('/accountsdemographics', accountsDemographicsRouter);
 app.use('/accountssocial', accountsSocialRouter);
 app.use('/quiz', quizRouter);
+app.use('/quiz', questionRouter);
 app.use('/result', resultRouter);
 app.use('/unit', unitRouter);
 app.use("/chat", chatRouter);
