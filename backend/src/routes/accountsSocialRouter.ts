@@ -1,18 +1,18 @@
 import { Router } from 'express';
 import * as accountsSocialController from '../controllers/accountsSocialController';
-
+import verifyToken from '../middleware/authMiddleware';
 const router = Router();
 
 /* CREATE */
-router.post("/createaccountsocial", accountsSocialController.createAccountSocial);
+router.post("/createaccountsocial", verifyToken,accountsSocialController.createAccountSocial);
 
 /* READ */
-router.get('/getaccountsocialbyid/:id', accountsSocialController.getAccountSocialById);
+router.get('/getaccountsocialbyid/:id',verifyToken, accountsSocialController.getAccountSocialById);
 
 /* UPDATE */
-router.patch('/updateaccountsocial', accountsSocialController.updateAccountSocial);
+router.patch('/updateaccountsocial', verifyToken,accountsSocialController.updateAccountSocial);
 
 /* DELETE */
-router.delete('/deleteaccountsocial/:id', accountsSocialController.deleteAccountSocial);
+router.delete('/deleteaccountsocial/:id',verifyToken, accountsSocialController.deleteAccountSocial);
 
 export default router;

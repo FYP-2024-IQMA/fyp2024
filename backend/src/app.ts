@@ -9,9 +9,12 @@ import quizRouter from './routes/quizRouter';
 import resultRouter from './routes/resultRouter';
 import unitRouter from './routes/unitRouter';
 import chatRouter from "./routes/chatRouter";
+import cookieParser from 'cookie-parser';
 
 const app = express();
 app.use(cors());
+app.use(cookieParser());
+
 const port = 3000;
 
 app.use(express.json());
