@@ -34,16 +34,15 @@ export async function createChats(chat: chatModel.Chat) {
         queryPair: chat.queryPair as unknown as Json[], // Convert QueryPair[] to Json[]
     };
 
-    const { data, error } = await supabase
+    const { error } = await supabase
         .from("chat")
-        .insert(formattedChats)
-        .select();
+        .insert(formattedChats);
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return data;
+        return chat.userID;
     }
 }
 
