@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as accountsService from "../services/accountsService";
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
 
 /* CREATE */
 
@@ -13,10 +15,11 @@ export const createAccount = async (req: Request, res: Response) => {
             status: 201,
             statusText: "Created",
         });
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -26,8 +29,13 @@ export const getAllAccounts = async (req: Request, res: Response) => {
     try {
         const accounts = await accountsService.getAllAccounts();
         res.status(200).json(accounts);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve accounts" });
+    } catch (error: any) {
+
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
+
     }
 };
 
@@ -35,8 +43,13 @@ export const getAccountById = async (req: Request, res: Response) => {
     try {
         const account = await accountsService.getAccountById(req.params.id);
         res.status(200).json(account);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+    } catch (error: any) {
+
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
+
     }
 };
 
@@ -44,10 +57,12 @@ export const getAccountsByRole = async (req: Request, res: Response) => {
     try {
         const accounts = await accountsService.getAccountsByRole(req.params.role);
         res.status(200).json(accounts);
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve all ${req.params.role} accounts`,
-        });
+    } catch (error: any) {
+
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -63,8 +78,13 @@ export const updateAccount = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Updated Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+    } catch (error: any) {
+
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
+
     }
 };
 
@@ -78,7 +98,11 @@ export const deleteAccount = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Deleted Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+    } catch (error: any) {
+
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };

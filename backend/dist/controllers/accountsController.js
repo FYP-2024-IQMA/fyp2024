@@ -31,9 +31,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
+const errorMappings_1 = require("../errors/errorMappings");
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
@@ -69,7 +74,14 @@ const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve account" });
+        // const errorResponse = errorMapping[error.code];
+        // if(errorResponse){
+        //     res.status(errorResponse.status).json({ error: error.details });
+        // }
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json({ errorResponse });
+        }
     }
 });
 exports.getAccountById = getAccountById;
@@ -79,9 +91,10 @@ const getAccountsByRole = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(200).json(accounts);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve all ${req.params.role} accounts`,
-        });
+        const errorResponse = errorMappings_1.errorMapping[error.code];
+        if (errorResponse) {
+            res.status(errorResponse.status).json({ error: error.details });
+        }
     }
 });
 exports.getAccountsByRole = getAccountsByRole;
@@ -96,7 +109,13 @@ const updateAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update account" });
+        const errorResponse = errorMappings_1.errorMapping[error];
+        if (errorResponse) {
+            res.status(errorResponse.status).json({ error: error.details });
+        }
+        else {
+            res.status(500).json({ error: error.details });
+        }
     }
 });
 exports.updateAccount = updateAccount;
@@ -111,7 +130,10 @@ const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete account" });
+        const errorResponse = errorMappings_1.errorMapping[error.code];
+        if (errorResponse) {
+            res.status(errorResponse.status).json({ error: error.details });
+        }
     }
 });
 exports.deleteAccount = deleteAccount;
