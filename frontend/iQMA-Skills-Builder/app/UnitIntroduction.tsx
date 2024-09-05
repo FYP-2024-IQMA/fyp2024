@@ -20,27 +20,27 @@ const getUnitDetails = async (sectionID: string, unitID: string) => {
     }
 };
 
-const formatSectionUnit = (sectionID: string, unitID: string): string => {
+const formatSection = (sectionID: string): string => {
 
     const sectionNumber = sectionID.replace(/\D/g, '').replace(/^0+/, '');
+
+    return sectionNumber;
+};
+
+const formatUnit = (unitID: string): string => {
+
     const unitNumber = unitID.replace(/\D/g, '').replace(/^0+/, '');
   
-    return `Section ${sectionNumber}, Unit ${unitNumber}`;
-  };
+    return unitNumber;
+};
 
 // where things show up
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
     const { sectionID, unitID } = useLocalSearchParams();
-
-    // const [unitName, setUnitName] = useState<string>(
-    //     '🎉 Get ready to dive into the exciting world of communication!'
-    // );
-    // const [unitDescription, setUnitDescription] = useState<string>(
-    //     "📚 Let's decode the mysteries of verbal and non-verbal signals, uncover the secrets of various communication styles, and embark on a journey through behavioral insights concepts to unlock the power of effective communication! 🚀 "
-    // );
-
+    const [sectionNumber, setSectionNumber] = useState<string>("");
+    const [unitNumber, setUnitNumber] = useState<string>("");
     const [unitName, setUnitName] = useState<string>("");
     const [unitDescription, setUnitDescription] = useState<string>("");
     const [unitSubDescription, setUnitSubDescription] = useState<string>("");
@@ -69,6 +69,8 @@ export default function SectionIntroduction() {
                 }
             })();
         }
+        setSectionNumber(formatSection(sectionID as string));
+        setUnitNumber(formatUnit(unitID as string));
     }, [sectionID, unitID]);
 
     const handlePress = () => {
@@ -79,7 +81,8 @@ export default function SectionIntroduction() {
         <View style={styles.container}>
             <View>
                 <SectionCard
-                    title={formatSectionUnit(sectionID as string, unitID as string)}
+                    // title={formatSectionUnit(sectionID as string, unitID as string)}
+                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
                 />
                 <Text
@@ -91,7 +94,7 @@ export default function SectionIntroduction() {
                         marginHorizontal: 10,
                     }}
                 >
-                    Unit 1: Introduction
+                    Unit {unitNumber}: Introduction
                 </Text>
 
                 <OverviewCard text={unitDescription}></OverviewCard>
