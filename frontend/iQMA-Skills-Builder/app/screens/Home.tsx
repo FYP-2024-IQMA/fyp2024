@@ -23,7 +23,7 @@ interface Icon {
 
 const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
     try {
-        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/unit/gettotalunit/${sectionID}`;
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/gettotalunit/${sectionID}`;
         const response = await fetch(url);
         const unitProgress = await response.json();
         return unitProgress;
@@ -39,7 +39,7 @@ const numberOfCompletedUnitsPerSection = async (
     sectionID: string
 ): Promise<number> => {
     try {
-        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${userID}/${sectionID}`;
         const response = await fetch(url);
         const unitProgress = await response.json();
         return unitProgress;
@@ -65,7 +65,7 @@ const HomeScreen: React.FC = () => {
         // console.log(userID, sectionID, unitID);
 
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
+            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
             const response = await fetch(url);
             const circularProgress = await response.json();
             setCircularProgress(circularProgress * 100);
@@ -76,7 +76,7 @@ const HomeScreen: React.FC = () => {
 
     const getCurrentSection = async (): Promise<number> => {
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${currentUser.sub}`;
+            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${currentUser.sub}`;
             const response = await fetch(url);
             const completedSection = await response.json();
             return completedSection + 1;
