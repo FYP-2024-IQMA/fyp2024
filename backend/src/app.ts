@@ -10,6 +10,7 @@ import lessonRouter from "./routes/lessonRouter";
 import questionRouter from "./routes/questionRouter";
 import quizRouter from "./routes/quizRouter";
 import resultRouter from "./routes/resultRouter";
+import sectionRouter from "./routes/sectionRouter";
 import unitRouter from "./routes/unitRouter";
 
 const app = express();
@@ -29,6 +30,7 @@ app.use("/result", resultRouter);
 app.use("/unit", unitRouter);
 app.use("/chat", chatRouter);
 app.use("/lesson", lessonRouter);
+app.use("/section", sectionRouter);
 
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);

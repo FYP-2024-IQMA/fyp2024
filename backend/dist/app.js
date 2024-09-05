@@ -15,6 +15,7 @@ const lessonRouter_1 = __importDefault(require("./routes/lessonRouter"));
 const questionRouter_1 = __importDefault(require("./routes/questionRouter"));
 const quizRouter_1 = __importDefault(require("./routes/quizRouter"));
 const resultRouter_1 = __importDefault(require("./routes/resultRouter"));
+const sectionRouter_1 = __importDefault(require("./routes/sectionRouter"));
 const unitRouter_1 = __importDefault(require("./routes/unitRouter"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -31,6 +32,7 @@ app.use("/result", resultRouter_1.default);
 app.use("/unit", unitRouter_1.default);
 app.use("/chat", chatRouter_1.default);
 app.use("/lesson", lessonRouter_1.default);
+app.use('/section', sectionRouter_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

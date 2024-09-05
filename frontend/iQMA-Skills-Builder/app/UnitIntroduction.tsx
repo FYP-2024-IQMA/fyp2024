@@ -1,15 +1,23 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
 import React, {useState, useLayoutEffect} from 'react';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
-import ProgressBar from '@/components/ProgressBar';
+import {router} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
+import ProgressBar from '@/components/ProgressBar';
 import {OverviewCard} from '@/components/OverviewCard';
 
 // where things show up
-export default function Lesson() {
+export default function SectionIntroduction() {
     const navigation = useNavigation();
+
+    const [unitName, setUnitName] = useState<string>(
+        '🎉 Get ready to dive into the exciting world of communication!'
+    );
+    const [unitDescription, setUnitDescription] = useState<string>(
+        "📚 Let's decode the mysteries of verbal and non-verbal signals, uncover the secrets of various communication styles, and embark on a journey through behavioral insights concepts to unlock the power of effective communication! 🚀 "
+    );
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -20,28 +28,7 @@ export default function Lesson() {
     }, [navigation]);
 
     const handlePress = () => {
-        // router.push('Lesson');
-    };
-
-    const [lessonName, setLessonName] = useState<string>(
-        'Lesson 1a: Understanding Verbal and Non-Verbal Signals'
-    );
-    const [videoId, setVideoId] = useState<string>('4_5dayHDdBk');
-    const [playing, setPlaying] = useState<boolean>(false);
-    const [lessonDescription, setLessonDescription] = useState<string>(
-        "🎤👀 Communication isn't just about what we say; it's also about how we say it!\n\n ✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. \n\nLearn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
-    );
-
-    const onStateChange = (state: string) => {
-        if (state === 'ended') {
-            setPlaying(false);
-        }
-        if (state === 'playing') {
-            setPlaying(true);
-        }
-        if (state === 'paused') {
-            setPlaying(false);
-        }
+        router.push('Lesson');
     };
 
     return (
@@ -60,24 +47,20 @@ export default function Lesson() {
                         marginHorizontal: 10,
                     }}
                 >
-                    {lessonName}
+                    Unit 1: Introduction
                 </Text>
 
-                <OverviewCard text={lessonDescription}></OverviewCard>
+                <OverviewCard text={unitName}></OverviewCard>
+                <OverviewCard text={unitDescription}></OverviewCard>
 
-                {videoId ? (
-                    <YoutubePlayer
-                        height={300}
-                        play={playing}
-                        onChangeState={onStateChange}
-                        videoId={videoId} // YouTube video ID
-                    />
-                ) : (
-                    <Text style={{marginBottom: 30, textAlign: 'center'}}>
-                        Loading Video...
-                    </Text>
-                )}
+                <View style={{width: "100%", flexDirection: 'row-reverse'}}>
+                    <Image
+                        style={{}}
+                        source={require('@/assets/images/neutral.png')}
+                    ></Image>
+                </View>
             </View>
+
             <View
                 style={{
                     alignSelf: 'center',
