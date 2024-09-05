@@ -43,6 +43,7 @@ export default function SectionIntroduction() {
 
     const [unitName, setUnitName] = useState<string>("");
     const [unitDescription, setUnitDescription] = useState<string>("");
+    const [unitSubDescription, setUnitSubDescription] = useState<string>("");
 
 
     useLayoutEffect(() => {
@@ -58,11 +59,13 @@ export default function SectionIntroduction() {
             (async () => {
                 const unitDetails = await getUnitDetails(sectionID as string, unitID as string);
 
-                // console.log(unitDetails[0]["unitName"])
+                // console.log(unitDetails[0]["unitDescription"])
+                const splitDescription = unitDetails[0]["unitDescription"].split('\n');
 
-                if (unitDetails) {
+                if (splitDescription) {
                     setUnitName(unitDetails[0]["unitName"]);
-                    setUnitDescription(unitDetails[0]["unitDescription"]);
+                    setUnitDescription(splitDescription[0]);
+                    setUnitSubDescription(splitDescription[1]);          
                 }
             })();
         }
@@ -91,8 +94,8 @@ export default function SectionIntroduction() {
                     Unit 1: Introduction
                 </Text>
 
-                {/* <OverviewCard text={unitName}></OverviewCard> */}
                 <OverviewCard text={unitDescription}></OverviewCard>
+                <OverviewCard text={unitSubDescription}></OverviewCard>
 
                 <View style={{width: "100%", flexDirection: 'row-reverse'}}>
                     <Image
