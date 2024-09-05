@@ -1,18 +1,20 @@
 import { Router } from 'express';
 import * as accountsAffectiveController from '../controllers/accountsAffectiveController';
+import verifyToken from '../middleware/authMiddleware';
+
 
 const router = Router();
 
 /* CREATE */
-router.post("/createaccountaffective", accountsAffectiveController.createAccountAffective);
+router.post("/createaccountaffective", verifyToken,accountsAffectiveController.createAccountAffective);
 
 /* READ */
-router.get('/getaccountaffectivebyid/:id', accountsAffectiveController.getAccountAffectiveById);
+router.get('/getaccountaffectivebyid/:id',verifyToken, accountsAffectiveController.getAccountAffectiveById);
 
 /* UPDATE */
-router.patch('/updateaccountaffective', accountsAffectiveController.updateAccountAffective);
+router.patch('/updateaccountaffective', verifyToken,accountsAffectiveController.updateAccountAffective);
 
 /* DELETE */
-router.delete('/deleteaccountaffective/:id', accountsAffectiveController.deleteAccountAffective);
+router.delete('/deleteaccountaffective/:id', verifyToken,accountsAffectiveController.deleteAccountAffective);
 
 export default router;

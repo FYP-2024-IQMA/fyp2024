@@ -34,10 +34,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
+exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.logout = exports.getJwtToken = exports.createAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
-const errorMappings_1 = require("../errors/errorMappings");
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -51,20 +53,47 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to create ${accountBody.role} account`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.createAccount = createAccount;
+const getJwtToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract the token from the Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+    const token = authHeader.split(' ')[1]; // Get the token part after 'Bearer '
+    console.log('Received Token:', token);
+    // Set the token as an HTTP-only cookie
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Ensure the cookie is sent over HTTPS
+        sameSite: 'strict', // Helps mitigate CSRF attacks
+    });
+    res.json({ message: 'Token Obtained Successfully' });
+});
+exports.getJwtToken = getJwtToken;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.clearCookie('authToken');
+    res.json({ message: 'Logged out successfully!' });
+});
+exports.logout = logout;
 /* READ */
 const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const accounts = yield accountsService.getAllAccounts();
+        console.log(" Iam here ");
         res.status(200).json(accounts);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve accounts" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAllAccounts = getAllAccounts;
@@ -74,13 +103,9 @@ const getAccountById = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(200).json(account);
     }
     catch (error) {
-        // const errorResponse = errorMapping[error.code];
-        // if(errorResponse){
-        //     res.status(errorResponse.status).json({ error: error.details });
-        // }
         const errorResponse = (0, errorHandling_1.default)(error);
         if (errorResponse) {
-            res.status(errorResponse.status).json({ errorResponse });
+            res.status(errorResponse.status).json(errorResponse);
         }
     }
 });
@@ -91,9 +116,9 @@ const getAccountsByRole = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(200).json(accounts);
     }
     catch (error) {
-        const errorResponse = errorMappings_1.errorMapping[error.code];
+        const errorResponse = (0, errorHandling_1.default)(error);
         if (errorResponse) {
-            res.status(errorResponse.status).json({ error: error.details });
+            res.status(errorResponse.status).json(errorResponse);
         }
     }
 });
@@ -109,12 +134,9 @@ const updateAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        const errorResponse = errorMappings_1.errorMapping[error];
+        const errorResponse = (0, errorHandling_1.default)(error);
         if (errorResponse) {
-            res.status(errorResponse.status).json({ error: error.details });
-        }
-        else {
-            res.status(500).json({ error: error.details });
+            res.status(errorResponse.status).json(errorResponse);
         }
     }
 });
@@ -130,9 +152,9 @@ const deleteAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         });
     }
     catch (error) {
-        const errorResponse = errorMappings_1.errorMapping[error.code];
+        const errorResponse = (0, errorHandling_1.default)(error);
         if (errorResponse) {
-            res.status(errorResponse.status).json({ error: error.details });
+            res.status(errorResponse.status).json(errorResponse);
         }
     }
 });

@@ -31,10 +31,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCircularProgress = exports.getUserProgress = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
 const resultService = __importStar(require("../services/resultService"));
 const lessonService = __importStar(require("../services/lessonService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createResult = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const resultBody = req.body;
@@ -47,9 +51,10 @@ const createResult = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         });
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to create ${resultBody.userID} Result`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.createResult = createResult;
@@ -60,7 +65,10 @@ const getAllResults = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(200).json(results);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Results" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAllResults = getAllResults;
@@ -70,7 +78,10 @@ const getResultByUserId = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(200).json(result);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Result" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getResultByUserId = getResultByUserId;
@@ -80,9 +91,10 @@ const getUserProgress = (req, res) => __awaiter(void 0, void 0, void 0, function
         res.status(200).json(userProgress);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve ${req.params.userid}'s progress`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getUserProgress = getUserProgress;
@@ -95,9 +107,10 @@ const getCircularProgress = (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(200).json(userProgress / (totalLessons + 1));
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve ${req.params.userid}'s progress`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getCircularProgress = getCircularProgress;

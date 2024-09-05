@@ -26,14 +26,7 @@ jobs:
         working-directory: backend
         run: |
           npm test
-      - name: Build Backend Docker Image
-        working-directory: backend
-        run: |
-          docker build -t backend:latest .
-      - name: Build Chatbot Docker Image
-        working-directory: backend/src/chatbot
-        run: |
-          docker build -t chatbot:latest .
+   
 
   security:
     runs-on: ubuntu-latest

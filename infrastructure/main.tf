@@ -243,6 +243,17 @@ resource "aws_vpc_security_group_egress_rule" "app_allow_outbound" {
   cidr_ipv4 = "0.0.0.0/0"
 }
 
+data "aws_eip" "jump_host_eip" {
+
+  public_ip ="52.221.10.28"
+  
+}
+
+resource "aws_eip_association" "jump_host_eip" {
+  instance_id   = aws_instance.jump_host.id
+  allocation_id = data.aws_eip.jump_host_eip.id
+}
+
 
 
 resource "aws_instance" "app_instance_1" {
@@ -324,14 +335,32 @@ resource "aws_lb" "app_lb" {
   
 }
 
-resource "aws_lb_listener" "app_lb_listener" {
+resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.app_lb.arn
-  port              = "80"  
-  protocol          = "HTTP" 
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = "arn:aws:acm:ap-southeast-1:554303516766:certificate/44078c9c-9908-4628-9982-eaadd3a904b5"
 
   default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.app_lb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      protocol = "HTTPS"
+      port     = "443"
+      status_code = "HTTP_301"
+    }
   }
 }
 

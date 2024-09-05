@@ -5,6 +5,7 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
 import ProgressBar from '@/components/ProgressBar';
 import {useNavigation} from '@react-navigation/native';
+import {OverviewCard} from '@/components/OverviewCard';
 
 // where things show up
 export default function Lesson() {
@@ -27,6 +28,9 @@ export default function Lesson() {
     );
     const [videoId, setVideoId] = useState<string>('4_5dayHDdBk');
     const [playing, setPlaying] = useState<boolean>(false);
+    const [lessonDescription, setLessonDescription] = useState<string>(
+        "🎤👀 Communication isn't just about what we say; it's also about how we say it!\n\n ✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. \n\nLearn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
+    );
 
     const onStateChange = (state: string) => {
         if (state === 'ended') {
@@ -42,33 +46,38 @@ export default function Lesson() {
 
     return (
         <View style={styles.container}>
-            <SectionCard
-                title="SECTION 1, UNIT 1"
-                subtitle="Foundations of Communication"
-            />
-            <Text
-                style={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: '#4143A3',
-                    marginBottom: 20,
-                    marginHorizontal: 10,
-                }}
-            >
-                {lessonName}
-            </Text>
-            {videoId ? (
-                <YoutubePlayer
-                    height={500}
-                    play={playing}
-                    onChangeState={onStateChange}
-                    videoId={videoId} // YouTube video ID
+            <View>
+                <SectionCard
+                    title="SECTION 1, UNIT 1"
+                    subtitle="Foundations of Communication"
                 />
-            ) : (
-                <Text style={{marginBottom: 30, textAlign: 'center'}}>
-                    Loading Video...
+                <Text
+                    style={{
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        color: '#4143A3',
+                        marginBottom: 20,
+                        marginHorizontal: 10,
+                    }}
+                >
+                    {lessonName}
                 </Text>
-            )}
+
+                <OverviewCard text={lessonDescription}></OverviewCard>
+
+                {videoId ? (
+                    <YoutubePlayer
+                        height={300}
+                        play={playing}
+                        onChangeState={onStateChange}
+                        videoId={videoId} // YouTube video ID
+                    />
+                ) : (
+                    <Text style={{marginBottom: 30, textAlign: 'center'}}>
+                        Loading Video...
+                    </Text>
+                )}
+            </View>
             <View
                 style={{
                     alignSelf: 'center',
@@ -90,5 +99,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+        justifyContent: 'space-between',
     },
 });
