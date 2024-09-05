@@ -3,6 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import ProgressPath from '@/components/ProgressPath';
 import SectionCard from '@/components/SectionCard';
@@ -131,9 +132,16 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         const fetchProgressData = async () => {
             const currentSection = await getCurrentSection();
+            await AsyncStorage.setItem(
+                'currentSection',
+                currentSection.toString()
+            );
+
             const sectionID = `SEC${currentSection
                 .toString()
                 .padStart(4, '0')}`;
+            await AsyncStorage.setItem('sectionID', sectionID);
+
             const totalUnits = await numberOfUnitsPerSection(`${sectionID}`);
             const completedUnits = await numberOfCompletedUnitsPerSection(
                 `${currentUser.sub}`,
@@ -143,6 +151,7 @@ const HomeScreen: React.FC = () => {
             // unit to light up
             const lightedUnit = completedUnits + 1;
             const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
+            await AsyncStorage.setItem('unitID', unitID);
 
             const iconsStatus = getIconStatus(totalUnits, completedUnits);
             setIcons(iconsStatus);
