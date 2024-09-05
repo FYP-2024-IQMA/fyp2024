@@ -206,6 +206,7 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         backgroundColor: '#F5F5F5',
+        marginTop: 10
     },
     lineSeparator: {
         height: 1,

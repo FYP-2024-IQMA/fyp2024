@@ -22,15 +22,19 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const resultController = __importStar(require("../controllers/resultController"));
 const express_1 = require("express");
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post("/createresult", resultController.createResult);
+router.post("/createresult", authMiddleware_1.default, resultController.createResult);
 /* READ */
-router.get('/getallresults', resultController.getAllResults);
-router.get("/getresultbyid/:userid", resultController.getResultByUserId);
-router.get("/getuserprogress/:userid/:sectionid?", resultController.getUserProgress);
-router.get("/getcircularprogress/:userid/:sectionid/:unitid", resultController.getCircularProgress);
+router.get('/getallresults', authMiddleware_1.default, resultController.getAllResults);
+router.get("/getresultbyid/:userid", authMiddleware_1.default, resultController.getResultByUserId);
+router.get("/getuserprogress/:userid/:sectionid?", authMiddleware_1.default, resultController.getUserProgress);
+router.get("/getcircularprogress/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getCircularProgress);
 exports.default = router;

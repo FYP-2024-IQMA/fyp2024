@@ -22,16 +22,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const accountsDemographicsController = __importStar(require("../controllers/accountsDemographicsController"));
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post("/createaccountdemographics", accountsDemographicsController.createAccountDemographics);
+router.post("/createaccountdemographics", authMiddleware_1.default, accountsDemographicsController.createAccountDemographics);
 /* READ */
-router.get('/getaccountdemographicsbyid/:id', accountsDemographicsController.getAccountDemographicsById);
+router.get('/getaccountdemographicsbyid/:id', authMiddleware_1.default, accountsDemographicsController.getAccountDemographicsById);
 /* UPDATE */
-router.patch('/updateaccountdemographics', accountsDemographicsController.updateAccountDemographics);
+router.patch('/updateaccountdemographics', authMiddleware_1.default, accountsDemographicsController.updateAccountDemographics);
 /* DELETE */
-router.delete('/deleteaccountdemographics/:id', accountsDemographicsController.deleteAccountDemographics);
+router.delete('/deleteaccountdemographics/:id', authMiddleware_1.default, accountsDemographicsController.deleteAccountDemographics);
 exports.default = router;
