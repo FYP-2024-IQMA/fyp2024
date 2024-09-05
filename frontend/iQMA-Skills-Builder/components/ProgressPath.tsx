@@ -1,9 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, Touchable, View} from 'react-native';
 
 import {AntDesign} from '@expo/vector-icons';
 import CircularProgress from './CircularProgress';
 import React from 'react';
 import StartLabel from './startLabel';
+import {TouchableOpacity} from 'react-native';
 
 interface ProgressItemProps {
     iconName: any;
@@ -11,6 +12,8 @@ interface ProgressItemProps {
     iconSize?: number;
     position?: 'left' | 'right';
     status: string;
+    progress?: number;
+    onPress?: () => void;
 }
 
 const ProgressItem: React.FC<ProgressItemProps> = ({
@@ -19,6 +22,8 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     iconSize = 24,
     position = 'left',
     status,
+    progress = 0,
+    onPress,
 }) => {
     const getColors = () => {
         switch (status) {
@@ -39,7 +44,8 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     const {progressItemColor, darkerProgressItemColor} = getColors();
 
     return (
-        <View
+        <TouchableOpacity
+            onPress={onPress}
             style={[
                 styles.itemContainer,
                 position === 'left'
@@ -58,7 +64,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                         <CircularProgress
                             size={101}
                             strokeWidth={5}
-                            progress={60}
+                            progress={progress}
                             style={styles.circularProgress}
                         />
                     </>
@@ -88,7 +94,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                     />
                 </View>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 };
 
@@ -99,9 +105,14 @@ interface ProgressPathProps {
         size?: number;
         status: string;
     }[];
+    circularProgress?: number;
 }
 
-const ProgressPath: React.FC<ProgressPathProps> = ({icons}) => {
+// higher level
+const ProgressPath: React.FC<ProgressPathProps> = ({
+    icons,
+    circularProgress,
+}) => {
     return (
         <View style={styles.progressContainer}>
             {icons.map((icon, index) => (
@@ -112,6 +123,8 @@ const ProgressPath: React.FC<ProgressPathProps> = ({icons}) => {
                     iconSize={icon.size}
                     position={index % 2 === 0 ? 'left' : 'right'}
                     status={icon.status}
+                    progress={circularProgress}
+                    onPress={() => console.log('Pressed')}
                 />
             ))}
         </View>
