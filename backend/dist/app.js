@@ -32,7 +32,7 @@ app.use("/result", resultRouter_1.default);
 app.use("/unit", unitRouter_1.default);
 app.use("/chat", chatRouter_1.default);
 app.use("/lesson", lessonRouter_1.default);
-app.use('/section', sectionRouter_1.default);
+app.use("/section", sectionRouter_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

@@ -117,6 +117,73 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 		console.error(error);
 		throw error;
 	} else {
-		return data;
+		// Format each lesson in the array
+		const formattedLessons = data.map((lesson: any) => {
+			let takeaway = lesson.lessonKeyTakeaway;
+			let formattedTakeaway: string[] | null = takeaway
+				? takeaway.split(/\r?\n/)
+				: null;
+			const text = lesson.lessonCheatSheet;
+
+			// when there are headers with emojis
+			const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
+			const headers = text ? text.match(regex) : null;
+
+			if (headers != null) {
+				const sections = text ? text.split(regex) : null;
+				sections?.shift();
+				const result = headers.reduce(
+					(acc: Record<string, string>, header: string, index: number) => {
+						if (sections != null) {
+							acc[header.trim()] = sections[index].trim();
+						}
+						return acc;
+					},
+					{}
+				);
+
+				return {
+					...lesson,
+					lessonKeyTakeaway: formattedTakeaway,
+					lessonCheatSheet: result,
+				};
+			}
+
+			// when there are no emojis in the headers
+			const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
+			const headers2 = text ? text.match(regex2) : null;
+
+			if (headers2 != null) {
+				const sections = text?.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
+				sections?.shift();
+
+				const result = headers2.reduce(
+					(acc: Record<string, string>, header: string, index: number) => {
+						if (sections != null) {
+							acc[header.trim()] = sections[index].trim();
+						}
+						return acc;
+					},
+					{}
+				);
+
+				return {
+					...lesson,
+					lessonKeyTakeaway: formattedTakeaway,
+					lessonCheatSheet: result,
+				};
+			}
+
+			// when there are no headers
+			const sentences = text?.split(/\r?\n/);
+
+			return {
+				...lesson,
+				lessonKeyTakeaway: formattedTakeaway,
+				lessonCheatSheet: sentences,
+			};
+		});
+
+		return formattedLessons;
 	}
 }

@@ -48,11 +48,11 @@ function getLesson(sectionID, unitID, lessonID) {
             throw error;
         }
         else {
-            const takeaway = data[0].lessonKeyTakeaway;
-            takeaway === null || takeaway === void 0 ? void 0 : takeaway.split(/\r?\n/);
-            data[0].lessonKeyTakeaway = takeaway;
+            let takeaway = data[0].lessonKeyTakeaway;
+            let formattedTakeaway = takeaway
+                ? takeaway.split(/\r?\n/)
+                : null;
             const text = data[0].lessonCheatSheet;
-            console.log(text);
             // when there is 2 headers in the text
             const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
             const headers = text ? text.match(regex) : null;
@@ -65,7 +65,7 @@ function getLesson(sectionID, unitID, lessonID) {
                     }
                     return acc;
                 }, {});
-                return Object.assign(Object.assign({}, data[0]), { lessonCheatSheet: result });
+                return Object.assign(Object.assign({}, data[0]), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
             }
             //when there is no emoji in the headers
             const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
@@ -80,12 +80,12 @@ function getLesson(sectionID, unitID, lessonID) {
                     }
                     return acc;
                 }, {});
-                return Object.assign(Object.assign({}, data[0]), { lessonCheatSheet: result });
+                return Object.assign(Object.assign({}, data[0]), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
             }
             //when there is no headers
             const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
             console.log(sentences);
-            return Object.assign(Object.assign({}, data[0]), { lessonCheatSheet: sentences });
+            return Object.assign(Object.assign({}, data[0]), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
             return data;
         }
     });
@@ -102,7 +102,46 @@ function getAllLessons(sectionID, unitID) {
             throw error;
         }
         else {
-            return data;
+            // Format each lesson in the array
+            const formattedLessons = data.map((lesson) => {
+                let takeaway = lesson.lessonKeyTakeaway;
+                let formattedTakeaway = takeaway
+                    ? takeaway.split(/\r?\n/)
+                    : null;
+                const text = lesson.lessonCheatSheet;
+                // when there are headers with emojis
+                const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
+                const headers = text ? text.match(regex) : null;
+                if (headers != null) {
+                    const sections = text ? text.split(regex) : null;
+                    sections === null || sections === void 0 ? void 0 : sections.shift();
+                    const result = headers.reduce((acc, header, index) => {
+                        if (sections != null) {
+                            acc[header.trim()] = sections[index].trim();
+                        }
+                        return acc;
+                    }, {});
+                    return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
+                }
+                // when there are no emojis in the headers
+                const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
+                const headers2 = text ? text.match(regex2) : null;
+                if (headers2 != null) {
+                    const sections = text === null || text === void 0 ? void 0 : text.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
+                    sections === null || sections === void 0 ? void 0 : sections.shift();
+                    const result = headers2.reduce((acc, header, index) => {
+                        if (sections != null) {
+                            acc[header.trim()] = sections[index].trim();
+                        }
+                        return acc;
+                    }, {});
+                    return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
+                }
+                // when there are no headers
+                const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
+                return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+            });
+            return formattedLessons;
         }
     });
 }
