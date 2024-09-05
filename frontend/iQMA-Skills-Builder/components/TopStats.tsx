@@ -26,7 +26,7 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
             </View>
             <View style={[styles.statBox, styles.rightStatBox]}>
                 <CircularProgress
-                    size={38}
+                    size={40}
                     strokeWidth={5}
                     progress={circularProgress}
                 />
