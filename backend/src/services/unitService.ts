@@ -39,8 +39,6 @@ export async function getAllUnitsBySection(sectionID: string){
 export async function getUnitDetailsBySectionandUnit(sectionUnit: SectionUnit){
 
     const { sectionID, unitID } = sectionUnit;
-    console.log(sectionID)
-    console.log(unitID)
 
     const { data, error } = await supabase
         .from("unit")
