@@ -1,36 +1,53 @@
 {
-  "expo": {
-    "name": "iQMA-Skills-Builder",
-    "slug": "iQMA-Skills-Builder",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/images/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
+    "expo": {
+        "name": "iQMA-Skills-Builder",
+        "slug": "iQMA-Skills-Builder",
+        "scheme": "com.iqma.iqmaskillsbuilder",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "./assets/images/iqma_icon.png",
+        "userInterfaceStyle": "automatic",
+        "splash": {
+            "image": "./assets/images/iqma_splash.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#ffffff"
+        },
+        "ios": {
+            "supportsTablet": true
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/images/iqma-adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "package": "com.iqma.iqmaskillsbuilder",
+            "versionCode": 10
+        },
+        "web": {
+            "bundler": "metro",
+            "output": "static",
+            "favicon": "./assets/images/favicon.png"
+        },
+        "plugins": [
+            ["expo-router"],
+            [
+                "react-native-auth0",
+                {
+                    "domain": "dev-doimvjsv85uforrd.us.auth0.com"
+                }
+            ],
+            "expo-secure-store"
+        ],
+        "experiments": {
+            "typedRoutes": true
+        },
+        "extra": {
+            "router": {
+                "origin": false
+            },
+            "eas": {
+                "projectId": "d8c9baa4-540f-4ee1-a9c5-b6f6c67e112c"
+            }
+        }
     }
-  }
 }

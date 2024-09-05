@@ -1,0 +1,24 @@
+{
+    "cli": {
+        "version": ">= 7.5.0"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal"
+        },
+        "preview": {
+            "distribution": "internal"
+        },
+        "production": {},
+        "test": {
+            "env": {
+                "EXPO_PUBLIC_LOCALHOST_URL": "10.0.2.2",
+                "EXPO_PUBLIC_BACKEND_URL": "https://iqmaapp.com"
+            }
+        }
+    },
+    "submit": {
+        "production": {}
+    }
+}

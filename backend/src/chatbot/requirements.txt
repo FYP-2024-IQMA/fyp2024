@@ -1,0 +1,13 @@
+fastapi
+langchain
+langchain-core
+langchain-community
+langchain-openai
+openai
+pydantic
+pytest
+python-dotenv
+requests
+typing
+unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
+uvicorn
