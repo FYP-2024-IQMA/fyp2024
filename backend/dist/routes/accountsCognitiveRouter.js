@@ -22,16 +22,20 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const accountsCognitiveController = __importStar(require("../controllers/accountsCognitiveController"));
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post("/createaccountcognitive", accountsCognitiveController.createAccountCognitive);
+router.post("/createaccountcognitive", authMiddleware_1.default, accountsCognitiveController.createAccountCognitive);
 /* READ */
-router.get('/getaccountcognitivebyid/:id', accountsCognitiveController.getAccountCognitiveById);
+router.get('/getaccountcognitivebyid/:id', authMiddleware_1.default, accountsCognitiveController.getAccountCognitiveById);
 /* UPDATE */
-router.patch('/updateaccountcognitive', accountsCognitiveController.updateAccountCognitive);
+router.patch('/updateaccountcognitive', authMiddleware_1.default, accountsCognitiveController.updateAccountCognitive);
 /* DELETE */
-router.delete('/deleteaccountcognitive/:id', accountsCognitiveController.deleteAccountCognitive);
+router.delete('/deleteaccountcognitive/:id', authMiddleware_1.default, accountsCognitiveController.deleteAccountCognitive);
 exports.default = router;

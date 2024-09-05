@@ -5,7 +5,6 @@ import accountsRouter from "./routes/accountsRouter";
 import accountsSocialRouter from "./routes/accountsSocialRouter";
 import chatRouter from "./routes/chatRouter";
 import cookieParser from 'cookie-parser';
-
 import cors from "cors";
 import express from "express";
 import questionRouter from './routes/questionRouter';

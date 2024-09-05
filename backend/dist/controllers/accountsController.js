@@ -31,13 +31,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.logout = exports.getJwtToken = exports.createAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 /* CREATE */
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
@@ -57,15 +53,20 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.createAccount = createAccount;
 const getJwtToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const username = req.body;
-    console.log(username);
-    const token = jsonwebtoken_1.default.sign({ username: username }, process.env.JWT_SECRET);
+    // Extract the token from the Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+    const token = authHeader.split(' ')[1]; // Get the token part after 'Bearer '
+    console.log('Received Token:', token);
+    // Set the token as an HTTP-only cookie
     res.cookie('authToken', token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production', // Ensure the cookie is sent over HTTPS
-        sameSite: 'strict' // Helps mitigate CSRF attacks
+        sameSite: 'strict', // Helps mitigate CSRF attacks
     });
-    res.json({ message: 'Token Obtained Succesfully' });
+    res.json({ message: 'Token Obtained Successfully' });
 });
 exports.getJwtToken = getJwtToken;
 const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,6 +78,7 @@ exports.logout = logout;
 const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const accounts = yield accountsService.getAllAccounts();
+        console.log(" Iam here ");
         res.status(200).json(accounts);
     }
     catch (error) {

@@ -31,13 +31,13 @@ const express_1 = require("express");
 const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post("/createaccount", accountsController.createAccount);
+router.post("/createaccount", authMiddleware_1.default, accountsController.createAccount);
 /* READ */
 router.get('/getallaccounts', authMiddleware_1.default, accountsController.getAllAccounts);
-router.get('/getaccountbyid/:id', accountsController.getAccountById);
+router.get('/getaccountbyid/:id', authMiddleware_1.default, accountsController.getAccountById);
 router.get("/getaccountsbyrole/:role", authMiddleware_1.default, accountsController.getAccountsByRole);
-router.post('/getToken', accountsController.getJwtToken);
-router.post('logout', accountsController.logout);
+router.post('/setToken', accountsController.getJwtToken);
+router.post('/logout', authMiddleware_1.default, accountsController.logout);
 /* UPDATE */
 router.patch('/updateaccount', authMiddleware_1.default, accountsController.updateAccount);
 /* DELETE */
