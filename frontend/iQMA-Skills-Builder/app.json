@@ -21,7 +21,7 @@
                 "backgroundColor": "#ffffff"
             },
             "package": "com.iqma.iqmaskillsbuilder",
-            "versionCode": 9
+            "versionCode": 10
         },
         "web": {
             "bundler": "metro",
