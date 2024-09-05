@@ -16,9 +16,15 @@ const quizRouter_1 = __importDefault(require("./routes/quizRouter"));
 const resultRouter_1 = __importDefault(require("./routes/resultRouter"));
 const sectionRouter_1 = __importDefault(require("./routes/sectionRouter"));
 const unitRouter_1 = __importDefault(require("./routes/unitRouter"));
+
+const chatRouter_1 = __importDefault(require("./routes/chatRouter"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+
 const questionRouter_1 = __importDefault(require("./routes/questionRouter"));
+
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
+app.use((0, cookie_parser_1.default)());
 const port = 3000;
 app.use(express_1.default.json());
 app.use('/accounts', accountsRouter_1.default);

@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
+exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.logout = exports.getJwtToken = exports.createAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 /* CREATE */
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
@@ -52,6 +56,23 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createAccount = createAccount;
+const getJwtToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const username = req.body;
+    console.log(username);
+    const token = jsonwebtoken_1.default.sign({ username: username }, process.env.JWT_SECRET);
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Ensure the cookie is sent over HTTPS
+        sameSite: 'strict' // Helps mitigate CSRF attacks
+    });
+    res.json({ message: 'Token Obtained Succesfully' });
+});
+exports.getJwtToken = getJwtToken;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.clearCookie('authToken');
+    res.json({ message: 'Logged out successfully!' });
+});
+exports.logout = logout;
 /* READ */
 const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
