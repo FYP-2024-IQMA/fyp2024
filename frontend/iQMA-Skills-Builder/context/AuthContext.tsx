@@ -45,32 +45,21 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 console.log(credentials);
                 console.log(credentials.idToken);
                 setToken(credentials.idToken);
-                
-                
-    
-    
-                    const response =await fetch(`http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/setToken`, {
+
+                const response = await fetch(
+                    `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/setToken`,
+                    {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${credentials.idToken}`, // Include the token in the Authorization header
+                            Authorization: `Bearer ${credentials.idToken}`, // Include the token in the Authorization header
                         },
-                       
-                    });
+                    }
+                );
 
-        
-                    console.log(response.status);
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getallaccounts`;
-
-            
-
-            
-
-
-            
+                console.log(response.status);
+                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getallaccounts`;
             }
-
-            
         } catch (e) {
             console.log('Error fetching token:', e);
         }
@@ -80,12 +69,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const logIn = async () => {
         try {
             await authorize();
-
-           
-
-            
-
-
         } catch (e) {
             console.log(e);
         }
@@ -116,8 +99,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             console.log(response.status);
 
             if (
-                response.status === 500 &&
-                data.error === 'Failed to retrieve account'
+                response.status === 406 &&
+                // data.error === 'Failed to retrieve account'
+                data.details === 'The result contains 0 rows'
             ) {
                 console.log('First Time:', data);
 
@@ -130,7 +114,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('VideoQuiz');
                     // router.replace('Lesson');
                     // router.replace("SectionIntroduction")
-
                 } else {
                     router.replace('IntroductionMascot');
                 }
