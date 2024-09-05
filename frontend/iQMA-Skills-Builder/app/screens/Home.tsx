@@ -92,13 +92,12 @@ const HomeScreen: React.FC = () => {
         sectionID: string
     ): Promise<number> => {
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
-            const response = await fetch(url);
-            const sectionProgress = await response.json();
+            const sectionProgress = await numberOfCompletedUnitsPerSection(
+                userID,
+                sectionID
+            );
 
-            const url2 = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/unit/gettotalunit/${sectionID}`;
-            const response2 = await fetch(url2);
-            const noOfUnits = await response2.json();
+            const noOfUnits = await numberOfUnitsPerSection(sectionID);
 
             setSectionCircularProgress(
                 Math.ceil((sectionProgress / noOfUnits) * 100)
