@@ -3,9 +3,11 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
+import {AuthContext} from '@/context/AuthContext';
 import ProgressPath from '@/components/ProgressPath';
 import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
+import {useContext} from 'react';
 
 interface SectionDividerProps {
     label: string;
@@ -19,12 +21,9 @@ interface Icon {
 }
 
 const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
-    console.log('LOAD NUMBER OF UNIT');
-
     try {
         const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/unit/gettotalunit/${sectionID}`;
         const response = await fetch(url);
-
         const unitProgress = await response.json();
         return unitProgress;
     } catch (error) {
@@ -33,12 +32,11 @@ const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
     }
 };
 
+// need to + 1 to find the current unit
 const numberOfCompletedUnitsPerSection = async (
     userID: string,
     sectionID: string
 ): Promise<number> => {
-    console.log('LOAD COMPLETED UNIT');
-
     try {
         const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
         const response = await fetch(url);
@@ -51,6 +49,7 @@ const numberOfCompletedUnitsPerSection = async (
 };
 
 const HomeScreen: React.FC = () => {
+    const {currentUser, isLoading} = useContext(AuthContext);
     const [icons, setIcons] = useState<Icon[]>([]);
     const [circularProgress, setCircularProgress] = useState<number>(0);
     const [sectionCircularProgress, setSectionCircularProgress] =
@@ -61,29 +60,50 @@ const HomeScreen: React.FC = () => {
         sectionID: string,
         unitID: string
     ) => {
-        console.log('LOAD UNIT CIRCULAR PROGRESS');
+        // console.log('LOAD UNIT CIRCULAR PROGRESS');
+        // console.log(userID, sectionID, unitID);
 
         try {
             const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
             const response = await fetch(url);
             const circularProgress = await response.json();
-            setCircularProgress(circularProgress);
+            setCircularProgress(circularProgress * 100);
         } catch (error) {
             console.error('Error while loading circular progress:', error);
         }
     };
 
+    const getCurrentSection = async (): Promise<number> => {
+        try {
+            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${currentUser.sub}`;
+            const response = await fetch(url);
+            const completedSection = await response.json();
+            return completedSection + 1;
+        } catch (error) {
+            console.error('Error while loading current section:', error);
+            return 0;
+        }
+    };
+
+    // number of units user did out of total units in that section
+    // will show 0 if only lessons done in unit 1, because it 0 units completed
     const loadSectionProgress = async (
         userID: string,
         sectionID: string
     ): Promise<number> => {
-        console.log('LOAD SECTION PROGRESS');
-
         try {
             const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${userID}/${sectionID}`;
             const response = await fetch(url);
             const sectionProgress = await response.json();
-            setSectionCircularProgress(sectionProgress);
+
+            const url2 = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/unit/gettotalunit/${sectionID}`;
+            const response2 = await fetch(url2);
+            const noOfUnits = await response2.json();
+
+            setSectionCircularProgress(
+                Math.ceil((sectionProgress / noOfUnits) * 100)
+            );
+
             return sectionProgress;
         } catch (error) {
             console.error('Error while loading section progress:', error);
@@ -111,15 +131,28 @@ const HomeScreen: React.FC = () => {
 
     useEffect(() => {
         const fetchProgressData = async () => {
-            const totalUnits = await numberOfUnitsPerSection('SEC0001');
+            const currentSection = await getCurrentSection();
+            const sectionID = `SEC${currentSection
+                .toString()
+                .padStart(4, '0')}`;
+            const totalUnits = await numberOfUnitsPerSection(`${sectionID}`);
             const completedUnits = await numberOfCompletedUnitsPerSection(
-                'USR0001',
-                'SEC0001'
+                `${currentUser.sub}`,
+                `${sectionID}`
             );
+
+            // unit to light up
+            const lightedUnit = completedUnits + 1;
+            const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
+
             const iconsStatus = getIconStatus(totalUnits, completedUnits);
             setIcons(iconsStatus);
-            loadUnitCircularProgress('USR0001', 'SEC0001', 'UNT0001');
-            loadSectionProgress('USR0001', 'SEC0001');
+            loadUnitCircularProgress(
+                `${currentUser.sub}`,
+                `${sectionID}`,
+                `${unitID}`
+            );
+            loadSectionProgress(`${currentUser.sub}`, `${sectionID}`);
         };
 
         fetchProgressData();
