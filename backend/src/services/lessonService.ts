@@ -1,5 +1,15 @@
 import supabase from "../config/supabaseConfig";
 
+function extractYouTubeID(url: string | null) {
+	if (url === null) {
+		return "";
+	}
+	const regex =
+		/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
+	const matches = url.match(regex);
+	return matches ? matches[1] : "";
+}
+
 /* READ */
 
 // get all lessons in the specific unit
@@ -38,6 +48,13 @@ export async function getLesson(
 		console.error(error);
 		throw error;
 	} else {
+		let formattedLessonURL =
+			extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
+
+		let description = data[0].lessonDescription;
+		let formattedDescription: string[] | null = description
+			? description.split(/\r?\n/)
+			: null;
 		let takeaway = data[0].lessonKeyTakeaway;
 		let formattedTakeaway: string[] | null = takeaway
 			? takeaway.split(/\r?\n/)
@@ -63,6 +80,8 @@ export async function getLesson(
 
 			return {
 				...data[0],
+				lessonURL: formattedLessonURL,
+				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
 				lessonCheatSheet: result,
 			};
@@ -88,6 +107,8 @@ export async function getLesson(
 
 			return {
 				...data[0],
+				lessonURL: formattedLessonURL,
+				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
 				lessonCheatSheet: result,
 			};
@@ -98,6 +119,8 @@ export async function getLesson(
 		console.log(sentences);
 		return {
 			...data[0],
+			lessonURL: formattedLessonURL,
+			lessonDescription: formattedDescription,
 			lessonKeyTakeaway: formattedTakeaway,
 			lessonCheatSheet: sentences,
 		};
@@ -117,8 +140,14 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 		console.error(error);
 		throw error;
 	} else {
-		// Format each lesson in the array
 		const formattedLessons = data.map((lesson: any) => {
+			let formattedLessonURL =
+				extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
+
+			let description = data[0].lessonDescription;
+			let formattedDescription: string[] | null = description
+				? description.split(/\r?\n/)
+				: null;
 			let takeaway = lesson.lessonKeyTakeaway;
 			let formattedTakeaway: string[] | null = takeaway
 				? takeaway.split(/\r?\n/)
@@ -144,6 +173,8 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 
 				return {
 					...lesson,
+					lessonURL: formattedLessonURL,
+					lessonDescription: formattedDescription,
 					lessonKeyTakeaway: formattedTakeaway,
 					lessonCheatSheet: result,
 				};
@@ -169,6 +200,8 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 
 				return {
 					...lesson,
+					lessonURL: formattedLessonURL,
+					lessonDescription: formattedDescription,
 					lessonKeyTakeaway: formattedTakeaway,
 					lessonCheatSheet: result,
 				};
@@ -179,11 +212,14 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 
 			return {
 				...lesson,
+				lessonURL: formattedLessonURL,
+				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
 				lessonCheatSheet: sentences,
 			};
 		});
 
 		return formattedLessons;
+		// return data;
 	}
 }

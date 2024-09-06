@@ -1,6 +1,7 @@
 import * as lessonController from "../controllers/lessonController";
 
 import { Router } from "express";
+import verifyToken from "../middleware/authMiddleware";
 
 const router = Router();
 

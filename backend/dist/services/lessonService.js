@@ -16,6 +16,11 @@ exports.getNoOfLessonPerUnit = getNoOfLessonPerUnit;
 exports.getLesson = getLesson;
 exports.getAllLessons = getAllLessons;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
+function extractYouTubeID(url) {
+    const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
+    const matches = url.match(regex);
+    return matches ? matches[1] : null;
+}
 /* READ */
 // get all lessons in the specific unit
 function getNoOfLessonPerUnit(sectionID, unitID) {
@@ -102,7 +107,6 @@ function getAllLessons(sectionID, unitID) {
             throw error;
         }
         else {
-            // Format each lesson in the array
             const formattedLessons = data.map((lesson) => {
                 let takeaway = lesson.lessonKeyTakeaway;
                 let formattedTakeaway = takeaway
@@ -142,6 +146,7 @@ function getAllLessons(sectionID, unitID) {
                 return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
             });
             return formattedLessons;
+            // return data;
         }
     });
 }
