@@ -7,14 +7,15 @@ import {router, useLocalSearchParams, useRouter} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {OverviewCard} from '@/components/OverviewCard';
-import { formatSection } from '@/helpers/formatSectionID';
-import { formatUnit } from '@/helpers/formatUnitID';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
 
 const getUnitDetails = async (sectionID: string, unitID: string) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/getallunitsbysectionandunit/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const unitDetails = await response.json();
+        // console.log(unitDetails);
         return unitDetails;
     } catch (error) {
         console.error('Error fetching unitDetails:', error);
@@ -26,13 +27,11 @@ const getUnitDetails = async (sectionID: string, unitID: string) => {
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    const { sectionID, unitID } = useLocalSearchParams();
-    const [sectionNumber, setSectionNumber] = useState<string>("");
-    const [unitNumber, setUnitNumber] = useState<string>("");
-    const [unitName, setUnitName] = useState<string>("");
-    const [unitDescription, setUnitDescription] = useState<string>("");
-    const [unitSubDescription, setUnitSubDescription] = useState<string>("");
-
+    const {sectionID, unitID} = useLocalSearchParams();
+    const [sectionNumber, setSectionNumber] = useState<string>('');
+    const [unitNumber, setUnitNumber] = useState<string>('');
+    const [unitName, setUnitName] = useState<string>('');
+    const [unitDescription, setUnitDescription] = useState<string[]>([]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -41,20 +40,17 @@ export default function SectionIntroduction() {
             ),
         });
     }, [navigation]);
-    
+
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const unitDetails = await getUnitDetails(sectionID as string, unitID as string);
+                const unitDetails = await getUnitDetails(
+                    sectionID as string,
+                    unitID as string
+                );
 
-                // console.log(unitDetails[0]["unitDescription"])
-                const splitDescription = unitDetails.unitDescription.split('\n');
-
-                if (splitDescription) {
-                    setUnitName(unitDetails.unitName);
-                    setUnitDescription(splitDescription[0]);
-                    setUnitSubDescription(splitDescription[1]);          
-                }
+                setUnitDescription(unitDetails.unitDescription);
+                setUnitName(unitDetails.unitName)
             })();
         }
         setSectionNumber(formatSection(sectionID as string));
@@ -69,7 +65,6 @@ export default function SectionIntroduction() {
         <View style={styles.container}>
             <View>
                 <SectionCard
-                    // title={formatSectionUnit(sectionID as string, unitID as string)}
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
                 />
@@ -85,10 +80,11 @@ export default function SectionIntroduction() {
                     Unit {unitNumber}: Introduction
                 </Text>
 
-                <OverviewCard text={unitDescription}></OverviewCard>
-                <OverviewCard text={unitSubDescription}></OverviewCard>
+                {unitDescription.map((description, index) => (
+                    <OverviewCard key={index} text={description} />
+                ))}
 
-                <View style={{width: "100%", flexDirection: 'row-reverse'}}>
+                <View style={{width: '100%', flexDirection: 'row-reverse'}}>
                     <Image
                         style={{}}
                         source={require('@/assets/images/neutral.png')}
