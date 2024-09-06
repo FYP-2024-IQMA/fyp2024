@@ -37,7 +37,7 @@ export async function getAllUnitsBySection(sectionID: string){
 }
 
 // get Unit Details By Section and Unit
-export async function getUnitDetailsBySectionandUnit(sectionUnit: SectionUnit){
+export async function getUnitDetailsBySectionAndUnit(sectionUnit: SectionUnit){
 
     const { sectionID, unitID } = sectionUnit;
 
