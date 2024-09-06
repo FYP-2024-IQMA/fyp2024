@@ -13,7 +13,7 @@ interface SectionCardProps {
 const SectionCard: React.FC<SectionCardProps> = ({title, subtitle}) => {
     return (
         <View style={styles.sectionCard}>
-            <View>
+            <View style={styles.textContainer}>
                 <Text style={styles.sectionCardTitle}>{title}</Text>
                 <Text style={styles.sectionCardSubtitle}>{subtitle}</Text>
             </View>
@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: '#5E43C2',
         borderWidth: 2,
+    },
+    textContainer: {
+        maxWidth: '80%',
     },
 });
 

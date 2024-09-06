@@ -20,7 +20,11 @@ export default function SectionIntroduction() {
     }, [navigation]);
 
     const handlePress = () => {
-        router.push('UnitIntroduction');
+        // router.push('UnitIntroduction');
+        router.push({
+            pathname: 'UnitIntroduction',
+            params: { sectionID: 'SEC0001', unitID: 'UNIT0001' }
+          })
     };
 
     const [videoId, setVideoId] = useState<string>('pU4fCakueEE');
