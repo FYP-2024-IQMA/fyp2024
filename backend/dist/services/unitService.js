@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNoOfUnitPerSection = getNoOfUnitPerSection;
 exports.getAllUnitsBySection = getAllUnitsBySection;
-exports.getUnitDetailsBySectionandUnit = getUnitDetailsBySectionandUnit;
+exports.getUnitDetailsBySectionAndUnit = getUnitDetailsBySectionAndUnit;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 /* READ */
 function getNoOfUnitPerSection(sectionID) {
@@ -48,14 +48,16 @@ function getAllUnitsBySection(sectionID) {
         }
     });
 }
-function getUnitDetailsBySectionandUnit(sectionUnit) {
+// get Unit Details By Section and Unit
+function getUnitDetailsBySectionAndUnit(sectionUnit) {
     return __awaiter(this, void 0, void 0, function* () {
         const { sectionID, unitID } = sectionUnit;
         const { data, error } = yield supabaseConfig_1.default
             .from("unit")
             .select("*")
             .eq("sectionID", sectionID)
-            .eq("unitID", unitID);
+            .eq("unitID", unitID)
+            .single();
         if (error) {
             console.error(error);
             throw error;

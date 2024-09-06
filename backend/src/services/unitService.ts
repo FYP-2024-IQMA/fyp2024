@@ -36,7 +36,8 @@ export async function getAllUnitsBySection(sectionID: string){
     }
 }
 
-export async function getUnitDetailsBySectionandUnit(sectionUnit: SectionUnit){
+// get Unit Details By Section and Unit
+export async function getUnitDetailsBySectionAndUnit(sectionUnit: SectionUnit){
 
     const { sectionID, unitID } = sectionUnit;
 
@@ -44,7 +45,8 @@ export async function getUnitDetailsBySectionandUnit(sectionUnit: SectionUnit){
         .from("unit")
         .select("*")
         .eq("sectionID", sectionID)
-        .eq("unitID", unitID);
+        .eq("unitID", unitID)
+        .single();
 
     if (error) {
         console.error(error);

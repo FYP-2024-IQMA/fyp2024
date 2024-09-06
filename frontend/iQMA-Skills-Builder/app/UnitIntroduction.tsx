@@ -7,6 +7,8 @@ import {router, useLocalSearchParams, useRouter} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {OverviewCard} from '@/components/OverviewCard';
+import { formatSection } from '@/helpers/formatSectionID';
+import { formatUnit } from '@/helpers/formatUnitID';
 
 const getUnitDetails = async (sectionID: string, unitID: string) => {
     try {
@@ -18,21 +20,6 @@ const getUnitDetails = async (sectionID: string, unitID: string) => {
         console.error('Error fetching unitDetails:', error);
         return;
     }
-};
-
-// for formatting Section if params is SEC****, UNIT****
-const formatSection = (sectionID: string): string => {
-
-    const sectionNumber = sectionID.replace(/\D/g, '').replace(/^0+/, '');
-
-    return sectionNumber;
-};
-
-const formatUnit = (unitID: string): string => {
-
-    const unitNumber = unitID.replace(/\D/g, '').replace(/^0+/, '');
-  
-    return unitNumber;
 };
 
 // where things show up
@@ -61,10 +48,10 @@ export default function SectionIntroduction() {
                 const unitDetails = await getUnitDetails(sectionID as string, unitID as string);
 
                 // console.log(unitDetails[0]["unitDescription"])
-                const splitDescription = unitDetails[0]["unitDescription"].split('\n');
+                const splitDescription = unitDetails.unitDescription.split('\n');
 
                 if (splitDescription) {
-                    setUnitName(unitDetails[0]["unitName"]);
+                    setUnitName(unitDetails.unitName);
                     setUnitDescription(splitDescription[0]);
                     setUnitSubDescription(splitDescription[1]);          
                 }
