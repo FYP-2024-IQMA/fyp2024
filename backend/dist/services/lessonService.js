@@ -121,8 +121,10 @@ function getAllLessons(sectionID, unitID) {
         }
         else {
             const formattedLessons = data.map((lesson) => {
-                let formattedLessonURL = extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
-                let description = data[0].lessonDescription;
+                let formattedLessonURL = extractYouTubeID(lesson.lessonURL) || lesson.lessonURL;
+                console.log(formattedLessonURL);
+                let description = lesson.lessonDescription;
+                console.log(description);
                 let formattedDescription = description
                     ? description.split(/\r?\n/)
                     : null;
@@ -149,7 +151,7 @@ function getAllLessons(sectionID, unitID) {
                     return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
                 }
                 // when there are no emojis in the headers
-                const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
+                const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
                 const headers2 = text ? text.match(regex2) : null;
                 if (headers2 != null) {
                     const sections = text === null || text === void 0 ? void 0 : text.split(/^(?:.*?)(?=\s*:\s*$)/gmu);

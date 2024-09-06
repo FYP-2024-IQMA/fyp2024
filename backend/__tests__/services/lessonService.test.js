@@ -361,13 +361,13 @@ describe("getAllLessons", () => {
             "unitID": "UNIT0001",
             "lessonID": "1b",
             "lessonName": "Lesson 1b: Recognizing and Interpreting Different Communication Styles",
-            "lessonURL": "4_5dayHDdBk",
+            "lessonURL": "li4mCDH0eUE",
             "lessonDuration": 4.45,
             "lessonText": null,
             "lessonDescription": [
-                "🎤👀 Communication isn't just about what we say; it's also about how we say it!",
-                "✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. ",
-                "Learn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
+                "🕵️‍♀️ Ever wonder why some people just \"get\" each other while others seem to be speaking different languages?",
+                "🎭 Explore the quirky world of communication styles - from the analytical thinkers to the expressive artists, and everything in between!",
+                "Unravel the mysteries of these diverse styles and learn how to adapt your communication to connect with anyone, anywhere! 🔍"
             ],
             "lessonKeyTakeaway": [
                 "Communication styles vary widely among individuals and cultures, influencing how messages are conveyed and received. Four primary communication styles include analytical, expressive, amiable, and driver.",
@@ -376,19 +376,19 @@ describe("getAllLessons", () => {
                 "Recognizing these styles enables individuals to adapt their communication approach to suit the preferences and needs of different audiences, fostering clearer understanding and stronger connections."
             ],
             "lessonCheatSheet": {
-                "Analytical Style": [
+                "Analytical Style:": [
                     "📊 Focuses on facts, logic, and precision.",
                     "📋 Prefers organized and structured communication."
                 ],
-                "Expressive Style": [
+                "Expressive Style:": [
                     "🎭 Emphasizes emotions, creativity, and storytelling.",
                     "🎤 Enjoys engaging with others and sharing personal experiences."
                 ],
-                "Amiable Style": [
+                "Amiable Style:": [
                     "🤝 Prioritizes harmony, cooperation, and relationship-building.",
                     "❤️ Values empathy and understanding in communication."
                 ],
-                "Driver Style": [
+                "Driver Style:": [
                     "🎯 Direct, assertive, and goal-oriented.",
                     "⏱️ Prefers efficiency and results-driven communication."
                 ]
@@ -400,13 +400,13 @@ describe("getAllLessons", () => {
             "unitID": "UNIT0001",
             "lessonID": "1c",
             "lessonName": "Lesson 1c: Evaluating Behavioral Insights Concepts in Communication",
-            "lessonURL": "4_5dayHDdBk",
+            "lessonURL": "CG8m8hoq-hc",
             "lessonDuration": 5.08,
             "lessonText": null,
             "lessonDescription": [
-                "🎤👀 Communication isn't just about what we say; it's also about how we say it!",
-                "✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. ",
-                "Learn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
+                "🚀 Prepare for an epic journey into the depths of human behavior!",
+                "💡 Discover the secrets behind why we do what we do, from the power of social proof to the magic of reciprocity. Armed with these insights, you'll be equipped to craft messages that captivate hearts, sway minds, and spark action!",
+                "It's time to unleash your inner communicator extraordinaire! 🧠💥"
             ],
             "lessonKeyTakeaway": [
                 "Behavioral insights concepts offer valuable insights into human behavior and decision-making processes, enhancing communication effectiveness.",
