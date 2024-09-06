@@ -68,10 +68,13 @@ export async function getLesson(
 		if (headers != null) {
 			const sections = text ? text.split(regex) : null;
 			sections?.shift();
-			const result = headers.reduce(
-				(acc: Record<string, string>, header, index) => {
+			const formattedCheatSheet = headers.reduce(
+				(acc: Record<string, string[]>, header: string, index: number) => {
 					if (sections != null) {
-						acc[header.trim()] = sections[index].trim();
+						acc[header.trim()] = sections[index]
+							.trim()
+							.split(/\r?\n/)
+							.map((sentence: string) => sentence.trim());
 					}
 					return acc;
 				},
@@ -83,40 +86,41 @@ export async function getLesson(
 				lessonURL: formattedLessonURL,
 				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
-				lessonCheatSheet: result,
+				lessonCheatSheet: formattedCheatSheet,
 			};
 		}
 
 		//when there is no emoji in the headers
-		const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
+		const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
 		const headers2 = text ? text.match(regex2) : null;
-		console.log(headers2);
 		if (headers2 != null) {
 			const sections = text?.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
 			sections?.shift();
 
-			const result = headers2.reduce(
-				(acc: Record<string, string>, header, index) => {
+			const formattedCheatSheet = headers2.reduce(
+				(acc: Record<string, string[]>, header: string, index: number) => {
 					if (sections != null) {
-						acc[header.trim()] = sections[index].trim();
+						acc[header.trim()] = sections[index]
+							.trim()
+							.split(/:?\r?\n/)
+							.map((sentence: string) => sentence.trim())
+							.filter((sentence: string) => sentence !== "");
 					}
 					return acc;
 				},
 				{}
 			);
-
 			return {
 				...data[0],
 				lessonURL: formattedLessonURL,
 				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
-				lessonCheatSheet: result,
+				lessonCheatSheet: formattedCheatSheet,
 			};
 		}
 
 		//when there is no headers
 		const sentences = text?.split(/\r?\n/);
-		console.log(sentences);
 		return {
 			...data[0],
 			lessonURL: formattedLessonURL,
@@ -161,10 +165,13 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 			if (headers != null) {
 				const sections = text ? text.split(regex) : null;
 				sections?.shift();
-				const result = headers.reduce(
-					(acc: Record<string, string>, header: string, index: number) => {
+				const formattedCheatSheet = headers.reduce(
+					(acc: Record<string, string[]>, header: string, index: number) => {
 						if (sections != null) {
-							acc[header.trim()] = sections[index].trim();
+							acc[header.trim()] = sections[index]
+								.trim()
+								.split(/\r?\n/)
+								.map((sentence: string) => sentence.trim());
 						}
 						return acc;
 					},
@@ -176,7 +183,7 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 					lessonURL: formattedLessonURL,
 					lessonDescription: formattedDescription,
 					lessonKeyTakeaway: formattedTakeaway,
-					lessonCheatSheet: result,
+					lessonCheatSheet: formattedCheatSheet,
 				};
 			}
 
@@ -188,10 +195,14 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 				const sections = text?.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
 				sections?.shift();
 
-				const result = headers2.reduce(
-					(acc: Record<string, string>, header: string, index: number) => {
+				const formattedCheatSheet = headers2.reduce(
+					(acc: Record<string, string[]>, header: string, index: number) => {
 						if (sections != null) {
-							acc[header.trim()] = sections[index].trim();
+							acc[header.trim()] = sections[index]
+								.trim()
+								.split(/:?\r?\n/)
+								.map((sentence: string) => sentence.trim())
+								.filter((sentence: string) => sentence !== "");
 						}
 						return acc;
 					},
@@ -203,7 +214,7 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 					lessonURL: formattedLessonURL,
 					lessonDescription: formattedDescription,
 					lessonKeyTakeaway: formattedTakeaway,
-					lessonCheatSheet: result,
+					lessonCheatSheet: formattedCheatSheet,
 				};
 			}
 

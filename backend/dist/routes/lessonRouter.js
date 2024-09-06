@@ -22,12 +22,16 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const lessonController = __importStar(require("../controllers/lessonController"));
 const express_1 = require("express");
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* READ */
-router.get("/getnumberoflessons/:sectionID/:unitID", lessonController.getNoOfLessonPerUnit);
-router.get("/getlesson/:sectionID/:unitID/:lessonID", lessonController.getLesson);
-router.get("/getalllessons/:sectionID/:unitID", lessonController.getAllLessons);
+router.get("/getnumberoflessons/:sectionID/:unitID", authMiddleware_1.default, lessonController.getNoOfLessonPerUnit);
+router.get("/getlesson/:sectionID/:unitID/:lessonID", authMiddleware_1.default, lessonController.getLesson);
+router.get("/getalllessons/:sectionID/:unitID", authMiddleware_1.default, lessonController.getAllLessons);
 exports.default = router;

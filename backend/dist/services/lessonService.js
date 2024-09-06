@@ -17,9 +17,12 @@ exports.getLesson = getLesson;
 exports.getAllLessons = getAllLessons;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 function extractYouTubeID(url) {
+    if (url === null) {
+        return "";
+    }
     const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
     const matches = url.match(regex);
-    return matches ? matches[1] : null;
+    return matches ? matches[1] : "";
 }
 /* READ */
 // get all lessons in the specific unit
@@ -53,6 +56,11 @@ function getLesson(sectionID, unitID, lessonID) {
             throw error;
         }
         else {
+            let formattedLessonURL = extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
+            let description = data[0].lessonDescription;
+            let formattedDescription = description
+                ? description.split(/\r?\n/)
+                : null;
             let takeaway = data[0].lessonKeyTakeaway;
             let formattedTakeaway = takeaway
                 ? takeaway.split(/\r?\n/)
@@ -64,33 +72,38 @@ function getLesson(sectionID, unitID, lessonID) {
             if (headers != null) {
                 const sections = text ? text.split(regex) : null;
                 sections === null || sections === void 0 ? void 0 : sections.shift();
-                const result = headers.reduce((acc, header, index) => {
+                const formattedCheatSheet = headers.reduce((acc, header, index) => {
                     if (sections != null) {
-                        acc[header.trim()] = sections[index].trim();
+                        acc[header.trim()] = sections[index]
+                            .trim()
+                            .split(/\r?\n/)
+                            .map((sentence) => sentence.trim());
                     }
                     return acc;
                 }, {});
-                return Object.assign(Object.assign({}, data[0]), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
+                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
             }
             //when there is no emoji in the headers
-            const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
+            const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
             const headers2 = text ? text.match(regex2) : null;
-            console.log(headers2);
             if (headers2 != null) {
                 const sections = text === null || text === void 0 ? void 0 : text.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
                 sections === null || sections === void 0 ? void 0 : sections.shift();
-                const result = headers2.reduce((acc, header, index) => {
+                const formattedCheatSheet = headers2.reduce((acc, header, index) => {
                     if (sections != null) {
-                        acc[header.trim()] = sections[index].trim();
+                        acc[header.trim()] = sections[index]
+                            .trim()
+                            .split(/:?\r?\n/)
+                            .map((sentence) => sentence.trim())
+                            .filter((sentence) => sentence !== "");
                     }
                     return acc;
                 }, {});
-                return Object.assign(Object.assign({}, data[0]), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
+                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
             }
             //when there is no headers
             const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
-            console.log(sentences);
-            return Object.assign(Object.assign({}, data[0]), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+            return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
             return data;
         }
     });
@@ -108,6 +121,11 @@ function getAllLessons(sectionID, unitID) {
         }
         else {
             const formattedLessons = data.map((lesson) => {
+                let formattedLessonURL = extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
+                let description = data[0].lessonDescription;
+                let formattedDescription = description
+                    ? description.split(/\r?\n/)
+                    : null;
                 let takeaway = lesson.lessonKeyTakeaway;
                 let formattedTakeaway = takeaway
                     ? takeaway.split(/\r?\n/)
@@ -119,13 +137,16 @@ function getAllLessons(sectionID, unitID) {
                 if (headers != null) {
                     const sections = text ? text.split(regex) : null;
                     sections === null || sections === void 0 ? void 0 : sections.shift();
-                    const result = headers.reduce((acc, header, index) => {
+                    const formattedCheatSheet = headers.reduce((acc, header, index) => {
                         if (sections != null) {
-                            acc[header.trim()] = sections[index].trim();
+                            acc[header.trim()] = sections[index]
+                                .trim()
+                                .split(/\r?\n/)
+                                .map((sentence) => sentence.trim());
                         }
                         return acc;
                     }, {});
-                    return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
+                    return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
                 }
                 // when there are no emojis in the headers
                 const regex2 = /^(.*?)(?=\s*:\s*$)/gmu;
@@ -133,17 +154,21 @@ function getAllLessons(sectionID, unitID) {
                 if (headers2 != null) {
                     const sections = text === null || text === void 0 ? void 0 : text.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
                     sections === null || sections === void 0 ? void 0 : sections.shift();
-                    const result = headers2.reduce((acc, header, index) => {
+                    const formattedCheatSheet = headers2.reduce((acc, header, index) => {
                         if (sections != null) {
-                            acc[header.trim()] = sections[index].trim();
+                            acc[header.trim()] = sections[index]
+                                .trim()
+                                .split(/:?\r?\n/)
+                                .map((sentence) => sentence.trim())
+                                .filter((sentence) => sentence !== "");
                         }
                         return acc;
                     }, {});
-                    return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: result });
+                    return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
                 }
                 // when there are no headers
                 const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
-                return Object.assign(Object.assign({}, lesson), { lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+                return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
             });
             return formattedLessons;
             // return data;

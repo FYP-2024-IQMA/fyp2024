@@ -8,12 +8,18 @@ const router = Router();
 /* READ */
 router.get(
 	"/getnumberoflessons/:sectionID/:unitID",
+	verifyToken,
 	lessonController.getNoOfLessonPerUnit
 );
 router.get(
 	"/getlesson/:sectionID/:unitID/:lessonID",
+	verifyToken,
 	lessonController.getLesson
 );
-router.get("/getalllessons/:sectionID/:unitID", lessonController.getAllLessons);
+router.get(
+	"/getalllessons/:sectionID/:unitID",
+	verifyToken,
+	lessonController.getAllLessons
+);
 
 export default router;
