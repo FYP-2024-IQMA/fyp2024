@@ -16,10 +16,11 @@ const getUnitDetails = async (sectionID: string, unitID: string) => {
         return unitDetails;
     } catch (error) {
         console.error('Error fetching unitDetails:', error);
-        return 0;
+        return;
     }
 };
 
+// for formatting Section if params is SEC****, UNIT****
 const formatSection = (sectionID: string): string => {
 
     const sectionNumber = sectionID.replace(/\D/g, '').replace(/^0+/, '');
