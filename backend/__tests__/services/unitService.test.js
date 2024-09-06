@@ -50,7 +50,7 @@ describe("getNoOfUnitPerSection", () => {
 });
 
 describe("getAllUnitsBySection", () => {
-    const expectedResult = [
+    const rawResult = [
         {
             sectionID: "SEC0001",
             unitID: "UNIT0001",
@@ -67,15 +67,41 @@ describe("getAllUnitsBySection", () => {
         },
     ];
 
+    const expectedResult = [
+        {
+            sectionID: "SEC0001",
+            unitID: "UNIT0001",
+            unitName: "Foundations of Communication",
+            unitDescription: [
+                "🎉 Get ready to dive into the exciting world of communication!",
+                "📚 Let's decode the mysteries of verbal and non-verbal signals, uncover the secrets of various communication styles, and embark on a journey through behavioral insights concepts to unlock the power of effective communication! 🚀",
+            ],
+            assessmentIntro: [
+                "🌟 Ready to level up your communication game? Dive into our ultimate cheat sheet packed with tips and tricks to decode the secret language of verbal and non-verbal signals!",
+                "📚 From mastering tone and body language to recognizing diverse communication styles and behavioral insights, this guide is your passport to engaging and effective interactions.",
+                "Whether you're looking to fine-tune your speaking style or understand others better, we've got you covered with essential insights and fun pointers. 🎯",
+            ],
+            realityCheck: [
+                "🎉 Welcome to the ultimate party mixer challenge!",
+                "🎊 Get ready to navigate diverse conversations, decode communication styles, and master the art of making meaningful connections! 🚀",
+            ],
+            scenario: [
+                "Imagine you're attending a bustling networking event filled with professionals from various industries. As you navigate through the crowd, you notice people engaged in conversations, exchanging business cards, and forming connections.",
+                "Suddenly, you spot a potential client across the room who seems disinterested in the conversation they're having. How do you approach them and effectively convey your message to capture their attention and leave a lasting impression?",
+            ],
+            dateCreated: "2024-08-18T14:59:01.549137+00:00",
+        },
+    ];
+
     it("returns all units of section", async () => {
         const mockEq = jest
             .fn()
-            .mockResolvedValue({ data: expectedResult, error: null });
+            .mockResolvedValue({ data: rawResult, error: null });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
         supabase.from.mockReturnValue({ select: mockSelect });
 
         const result = await unitService.getAllUnitsBySection(
-            expectedResult[0].sectionID
+            rawResult[0].sectionID
         );
 
         expect(result).toEqual(expectedResult);
@@ -102,7 +128,7 @@ describe("getUnitDetailsBySectionAndUnit", () => {
     const sectionID = "SEC0001";
     const unitID = "UNIT0001";
 
-    const expectedResult = {
+    const rawResult = {
         sectionID: "SEC0001",
         unitID: "UNIT0001",
         unitName: "Foundations of Communication",
@@ -116,11 +142,34 @@ describe("getUnitDetailsBySectionAndUnit", () => {
             "Imagine you're attending a bustling networking event filled with professionals from various industries. As you navigate through the crowd, you notice people engaged in conversations, exchanging business cards, and forming connections.\r\nSuddenly, you spot a potential client across the room who seems disinterested in the conversation they're having. How do you approach them and effectively convey your message to capture their attention and leave a lasting impression?",
         dateCreated: "2024-08-18T14:59:01.549137+00:00",
     };
+    const expectedResult = {
+        sectionID: "SEC0001",
+        unitID: "UNIT0001",
+        unitName: "Foundations of Communication",
+        unitDescription: [
+            "🎉 Get ready to dive into the exciting world of communication!",
+            "📚 Let's decode the mysteries of verbal and non-verbal signals, uncover the secrets of various communication styles, and embark on a journey through behavioral insights concepts to unlock the power of effective communication! 🚀",
+        ],
+        assessmentIntro: [
+            "🌟 Ready to level up your communication game? Dive into our ultimate cheat sheet packed with tips and tricks to decode the secret language of verbal and non-verbal signals!",
+            "📚 From mastering tone and body language to recognizing diverse communication styles and behavioral insights, this guide is your passport to engaging and effective interactions.",
+            "Whether you're looking to fine-tune your speaking style or understand others better, we've got you covered with essential insights and fun pointers. 🎯",
+        ],
+        realityCheck: [
+            "🎉 Welcome to the ultimate party mixer challenge!",
+            "🎊 Get ready to navigate diverse conversations, decode communication styles, and master the art of making meaningful connections! 🚀",
+        ],
+        scenario: [
+            "Imagine you're attending a bustling networking event filled with professionals from various industries. As you navigate through the crowd, you notice people engaged in conversations, exchanging business cards, and forming connections.",
+            "Suddenly, you spot a potential client across the room who seems disinterested in the conversation they're having. How do you approach them and effectively convey your message to capture their attention and leave a lasting impression?",
+        ],
+        dateCreated: "2024-08-18T14:59:01.549137+00:00",
+    };
 
     it("returns unit details of section and unit", async () => {
         const mockSingle = jest
             .fn()
-            .mockResolvedValue({ data: expectedResult, error: null });
+            .mockResolvedValue({ data: rawResult, error: null });
 
         const mockEq2 = jest.fn().mockReturnValue({ single: mockSingle });
         const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });

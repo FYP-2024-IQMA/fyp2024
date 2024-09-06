@@ -65,10 +65,6 @@ function getUnitDetailsBySectionAndUnit(sectionUnit) {
             throw error;
         }
         else {
-            // const unitDescriptionArray = data.unitDescription ? data.unitDescription.split('\r\n') : [];
-            // const assessmentIntroArray = data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [];
-            // const realityCheckArray = data.realityCheck ? data.realityCheck.split('\r\n') : [];
-            // const scenarioArray = data.scenario ? data.scenario.split('\r\n') : [];
             return Object.assign(Object.assign({}, data), { unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [], assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [], realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [], scenario: data.scenario ? data.scenario.split('\r\n') : [] });
         }
     });
