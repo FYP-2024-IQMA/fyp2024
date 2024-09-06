@@ -7,12 +7,13 @@ export const LogoutButton = () => {
 
     return (
         <>
-            {currentUser ? (
+            {/* {currentUser ? (
                 <Button onPress={logOut} title="Log out" />
             ) : (
                 // if currentUser does not exist, disable Log Out button
                 <Button onPress={logOut} title="Log out" disabled />
-            )}
+            )} */}
+            <Button onPress={logOut} title="Log out" />
         </>
     );
 };
