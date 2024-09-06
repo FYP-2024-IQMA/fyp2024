@@ -33,4 +33,5 @@ const router = (0, express_1.Router)();
 /* READ */
 router.get("/gettotalunit/:sectionID", authMiddleware_1.default, unitController.getNoOfUnitPerSection);
 router.get("/getallunitsbysection/:sectionID", authMiddleware_1.default, unitController.getAllUnitsBySection);
+router.get("/getallunitsbysectionandunit/:sectionID/:unitID", authMiddleware_1.default, unitController.getUnitDetailsBySectionandUnit);
 exports.default = router;
