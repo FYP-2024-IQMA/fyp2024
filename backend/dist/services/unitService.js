@@ -44,7 +44,9 @@ function getAllUnitsBySection(sectionID) {
             throw error;
         }
         else {
-            return data;
+            // return data;
+            const transformedData = data.map(unit => (Object.assign(Object.assign({}, unit), { unitDescription: unit.unitDescription ? unit.unitDescription.split('\r\n') : [], assessmentIntro: unit.assessmentIntro ? unit.assessmentIntro.split('\r\n') : [], realityCheck: unit.realityCheck ? unit.realityCheck.split('\r\n') : [], scenario: unit.scenario ? unit.scenario.split('\r\n') : [] })));
+            return transformedData;
         }
     });
 }
@@ -63,7 +65,11 @@ function getUnitDetailsBySectionAndUnit(sectionUnit) {
             throw error;
         }
         else {
-            return data;
+            // const unitDescriptionArray = data.unitDescription ? data.unitDescription.split('\r\n') : [];
+            // const assessmentIntroArray = data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [];
+            // const realityCheckArray = data.realityCheck ? data.realityCheck.split('\r\n') : [];
+            // const scenarioArray = data.scenario ? data.scenario.split('\r\n') : [];
+            return Object.assign(Object.assign({}, data), { unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [], assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [], realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [], scenario: data.scenario ? data.scenario.split('\r\n') : [] });
         }
     });
 }
