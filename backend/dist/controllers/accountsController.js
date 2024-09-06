@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.createAccount = void 0;
+exports.deleteAccount = exports.updateAccount = exports.getAccountsByRole = exports.getAccountById = exports.getAllAccounts = exports.logout = exports.getJwtToken = exports.createAccount = void 0;
 const accountsService = __importStar(require("../services/accountsService"));
 /* CREATE */
 const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,10 +52,33 @@ const createAccount = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.createAccount = createAccount;
+const getJwtToken = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Extract the token from the Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+    const token = authHeader.split(' ')[1]; // Get the token part after 'Bearer '
+    console.log('Received Token:', token);
+    // Set the token as an HTTP-only cookie
+    res.cookie('authToken', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production', // Ensure the cookie is sent over HTTPS
+        sameSite: 'strict', // Helps mitigate CSRF attacks
+    });
+    res.json({ message: 'Token Obtained Successfully' });
+});
+exports.getJwtToken = getJwtToken;
+const logout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.clearCookie('authToken');
+    res.json({ message: 'Logged out successfully!' });
+});
+exports.logout = logout;
 /* READ */
 const getAllAccounts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const accounts = yield accountsService.getAllAccounts();
+        console.log(" Iam here ");
         res.status(200).json(accounts);
     }
     catch (error) {

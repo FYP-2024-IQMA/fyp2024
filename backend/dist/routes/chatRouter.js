@@ -22,14 +22,18 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const chatController = __importStar(require("../controllers/chatController"));
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
-router.post("/createchathistory", chatController.createChats);
+router.post("/createchathistory", authMiddleware_1.default, chatController.createChats);
 /* READ */
-router.get("/getchathistory/:userid/:sectionid", chatController.getChatHistory);
+router.get("/getchathistory/:userid/:sectionid", authMiddleware_1.default, chatController.getChatHistory);
 /* DELETE */
-router.delete("/deletechathistory/:userid/:sectionid", chatController.deleteChat);
+router.delete("/deletechathistory/:userid/:sectionid", authMiddleware_1.default, chatController.deleteChat);
 exports.default = router;

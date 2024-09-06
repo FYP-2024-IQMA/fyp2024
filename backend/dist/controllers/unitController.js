@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNoOfUnitPerSection = void 0;
+exports.getUnitDetailsBySectionAndUnit = exports.getAllUnitsBySection = exports.getNoOfUnitPerSection = void 0;
 const unitService = __importStar(require("../services/unitService"));
 /* READ */
 const getNoOfUnitPerSection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,3 +45,27 @@ const getNoOfUnitPerSection = (req, res) => __awaiter(void 0, void 0, void 0, fu
     }
 });
 exports.getNoOfUnitPerSection = getNoOfUnitPerSection;
+const getAllUnitsBySection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const units = yield unitService.getAllUnitsBySection(req.params.sectionID);
+        res.status(200).json(units);
+    }
+    catch (error) {
+        res.status(500).json({ error: `Failed to retrieve all of units of ${req.params.sectionID}` });
+    }
+});
+exports.getAllUnitsBySection = getAllUnitsBySection;
+const getUnitDetailsBySectionAndUnit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const SectionUnit = {
+        sectionID: req.params.sectionID,
+        unitID: req.params.unitID
+    };
+    try {
+        const units = yield unitService.getUnitDetailsBySectionAndUnit(SectionUnit);
+        res.status(200).json(units);
+    }
+    catch (error) {
+        res.status(500).json({ error: `Failed to retrieve all of units of ${req.params.sectionID} and ${req.params.unitID}` });
+    }
+});
+exports.getUnitDetailsBySectionAndUnit = getUnitDetailsBySectionAndUnit;

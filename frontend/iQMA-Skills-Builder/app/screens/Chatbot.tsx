@@ -8,7 +8,7 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 
 import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -77,7 +77,7 @@ const saveChatHistory = async (
             queryPair: queryPair,
         };
 
-        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/chat/createchathistory`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/createchathistory`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -100,7 +100,7 @@ const loadChatHistory = async (userId: string, sectionId: string) => {
     console.log('LOAD CHAT HISTORY');
 
     try {
-        const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/chat/getchathistory/${userId}/${sectionId}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/getchathistory/${userId}/${sectionId}`;
 
         const response = await fetch(url);
 
