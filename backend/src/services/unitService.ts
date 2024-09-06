@@ -32,7 +32,16 @@ export async function getAllUnitsBySection(sectionID: string){
         console.error(error);
         throw error;
     } else {
-        return data;
+        // return data;
+        const transformedData = data.map(unit => ({
+            ...unit,
+            unitDescription: unit.unitDescription ? unit.unitDescription.split('\r\n') : [],
+            assessmentIntro: unit.assessmentIntro ? unit.assessmentIntro.split('\r\n') : [],
+            realityCheck: unit.realityCheck ? unit.realityCheck.split('\r\n') : [],
+            scenario: unit.scenario ? unit.scenario.split('\r\n') : []
+        }));
+
+        return transformedData;
     }
 }
 
@@ -52,6 +61,13 @@ export async function getUnitDetailsBySectionAndUnit(sectionUnit: SectionUnit){
         console.error(error);
         throw error;
     } else {
-        return data;
+
+        return {
+            ...data,
+            unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [],
+            assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [],
+            realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [],
+            scenario: data.scenario ? data.scenario.split('\r\n') : []
+        };
     }
 }
