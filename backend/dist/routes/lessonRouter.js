@@ -26,11 +26,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const sectionController = __importStar(require("../controllers/sectionController"));
+const lessonController = __importStar(require("../controllers/lessonController"));
 const express_1 = require("express");
 const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* READ */
-router.get("/sectiondetails", authMiddleware_1.default, sectionController.getAllSections);
-router.get("/sectiondetails/:sectionID", authMiddleware_1.default, sectionController.getSectionDetails);
+router.get("/getnumberoflessons/:sectionID/:unitID", authMiddleware_1.default, lessonController.getNoOfLessonPerUnit);
+router.get("/getlesson/:sectionID/:unitID/:lessonID", authMiddleware_1.default, lessonController.getLesson);
+router.get("/getalllessons/:sectionID/:unitID", authMiddleware_1.default, lessonController.getAllLessons);
 exports.default = router;
