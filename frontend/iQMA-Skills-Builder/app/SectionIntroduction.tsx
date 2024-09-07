@@ -1,15 +1,25 @@
 import {StyleSheet, Text, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect, useEffect} from 'react';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
-import {router} from 'expo-router';
+import {router, useLocalSearchParams} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
+import {formatSection} from '@/helpers/formatSectionID';
+import {OverviewCard} from '@/components/OverviewCard';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 
 // where things show up
 export default function SectionIntroduction() {
     const navigation = useNavigation();
+
+    // const { sectionID } = useLocalSearchParams();
+    const sectionID = 'SEC0001'; // to be removed
+    const [sectionNumber, setSectionNumber] = useState<string>('');
+    const [sectionName, setSectionName] = useState<string>('');
+    const [videoId, setVideoId] = useState<string>('');
+    const [playing, setPlaying] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -19,16 +29,27 @@ export default function SectionIntroduction() {
         });
     }, [navigation]);
 
+    useEffect(() => {
+        if (sectionID) {
+            (async () => {
+                const sectionDetails = await sectionEndpoints.getSectionDetails(
+                    sectionID as string
+                );
+
+                setVideoId(sectionDetails.introductionURL);
+                setSectionName(sectionDetails.sectionName);
+            })();
+            setSectionNumber(formatSection(sectionID as string));
+        }
+    }, [sectionID]);
+
     const handlePress = () => {
         // router.push('UnitIntroduction');
         router.push({
             pathname: 'UnitIntroduction',
-            params: { sectionID: 'SEC0001', unitID: 'UNIT0001' }
-          })
+            params: {sectionID: sectionID, unitID: 'UNIT0001'},
+        });
     };
-
-    const [videoId, setVideoId] = useState<string>('pU4fCakueEE');
-    const [playing, setPlaying] = useState<boolean>(false);
 
     const onStateChange = (state: string) => {
         if (state === 'ended') {
@@ -44,35 +65,35 @@ export default function SectionIntroduction() {
 
     return (
         <View style={styles.container}>
-
             <View>
-            <SectionCard
-                title="SECTION 1, UNIT 1"
-                subtitle="Foundations of Communication"
-            />
-            <Text
-                style={{
-                    fontSize: 14,
-                    fontWeight: 'bold',
-                    color: '#4143A3',
-                    marginBottom: 20,
-                    marginHorizontal: 10,
-                }}
-            >
-                Section Introduction
-            </Text>
-            {videoId ? (
-                <YoutubePlayer
-                    height={300}
-                    play={playing}
-                    onChangeState={onStateChange}
-                    videoId={videoId} // YouTube video ID
+                <SectionCard
+                    title={`SECTION ${sectionNumber}`}
+                    subtitle={sectionName}
                 />
-            ) : (
-                <Text style={{marginBottom: 30, textAlign: 'center'}}>
-                    Loading Video...
+                <Text
+                    style={{
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        color: '#4143A3',
+                        marginBottom: 20,
+                        marginHorizontal: 10,
+                    }}
+                >
+                    Section {sectionNumber}: Introduction
                 </Text>
-            )}
+                {videoId ? (
+                    <YoutubePlayer
+                        height={300}
+                        play={playing}
+                        onChangeState={onStateChange}
+                        videoId={videoId} // YouTube video ID
+                    />
+                ) : (
+                    <OverviewCard
+                        isError={true}
+                        text="Video not available. Please check with your administrator."
+                    />
+                )}
             </View>
 
             <View

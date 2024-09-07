@@ -28,7 +28,12 @@ export const CustomButton = ({
                 onPress={onPressHandler}
             >
                 <View>
-                    <Text style={[styles.buttonText, {color: labelColor, textTransform: textStyle}]}>
+                    <Text
+                        style={[
+                            styles.buttonText,
+                            {color: labelColor, textTransform: textStyle},
+                        ]}
+                    >
                         {label}
                     </Text>
                 </View>
