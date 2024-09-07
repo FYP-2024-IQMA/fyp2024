@@ -26,16 +26,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
 const accountsSocialController = __importStar(require("../controllers/accountsSocialController"));
+const express_1 = require("express");
 const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
 router.post("/createaccountsocial", authMiddleware_1.default, accountsSocialController.createAccountSocial);
 /* READ */
-router.get('/getaccountsocialbyid/:id', authMiddleware_1.default, accountsSocialController.getAccountSocialById);
+router.get("/getaccountsocialbyid/:id", authMiddleware_1.default, accountsSocialController.getAccountSocialById);
 /* UPDATE */
-router.patch('/updateaccountsocial', authMiddleware_1.default, accountsSocialController.updateAccountSocial);
+router.patch("/updateaccountsocial", authMiddleware_1.default, accountsSocialController.updateAccountSocial);
 /* DELETE */
-router.delete('/deleteaccountsocial/:id', authMiddleware_1.default, accountsSocialController.deleteAccountSocial);
+router.delete("/deleteaccountsocial/:id", authMiddleware_1.default, accountsSocialController.deleteAccountSocial);
 exports.default = router;
