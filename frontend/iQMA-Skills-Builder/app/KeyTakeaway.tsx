@@ -25,10 +25,10 @@ export default function KeyTakeaway() {
     }, [navigation]);
 
     const handlePress = () => {
-        // router.push({
-        //     pathname: 'CheatSheet',
-        //     params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-        // });
+        router.push({
+            pathname: 'CheatSheet',
+            params: {sectionID: sectionID, unitID: unitID},
+        });
     };
 
     const sectionID = 'SEC0001';
@@ -65,7 +65,7 @@ export default function KeyTakeaway() {
     }, [sectionID, unitID]);
     return (
         <View style={styles.container}>
-            <View>
+            <View style={{flexGrow: 1}}>
                 <SectionCard
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
@@ -115,6 +115,8 @@ export default function KeyTakeaway() {
                 style={{
                     alignSelf: 'center',
                     bottom: 20,
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
                 <CustomButton
@@ -132,7 +134,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
-        justifyContent: 'space-between',
     },
     takeawayHeader: {
         marginBottom: 10,
