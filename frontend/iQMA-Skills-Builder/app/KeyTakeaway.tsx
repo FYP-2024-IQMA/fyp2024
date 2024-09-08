@@ -72,7 +72,7 @@ export default function KeyTakeaway() {
                 />
                 <Text
                     style={{
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: 'bold',
                         color: '#4143A3',
                         marginBottom: 20,
@@ -113,8 +113,6 @@ export default function KeyTakeaway() {
 
             <View
                 style={{
-                    alignSelf: 'center',
-                    bottom: 20,
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
@@ -140,6 +138,7 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         color: '#4143A3',
         fontWeight: 'bold',
+        fontSize: 14,
     },
     takeawayText: {
         marginLeft: 15,
