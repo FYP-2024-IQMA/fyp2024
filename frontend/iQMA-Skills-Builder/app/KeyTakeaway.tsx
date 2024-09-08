@@ -6,6 +6,7 @@ import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
 import {CustomButton} from '@/components/CustomButton';
+import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
@@ -91,9 +92,10 @@ export default function KeyTakeaway() {
                         </View>
                     ))
                 ) : (
-                    <Text style={styles.takeawayText}>
-                        No key takeaways available.
-                    </Text>
+                    <OverviewCard
+                        isError={true}
+                        text="Key Takeaways are not available. Please check with your administrator."
+                    />
                 )}
 
                 <View
@@ -133,7 +135,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     takeawayHeader: {
-        marginBottom: 5,
+        marginBottom: 10,
         marginLeft: 15,
         color: '#4143A3',
         fontWeight: 'bold',
