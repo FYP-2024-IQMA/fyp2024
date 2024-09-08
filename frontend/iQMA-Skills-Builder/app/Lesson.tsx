@@ -1,15 +1,28 @@
 import {StyleSheet, Text, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect, useEffect} from 'react';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
 import ProgressBar from '@/components/ProgressBar';
 import {useNavigation} from '@react-navigation/native';
 import {OverviewCard} from '@/components/OverviewCard';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
+import {router, useLocalSearchParams} from 'expo-router';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const [sectionNumber, setSectionNumber] = useState<string>('');
+    const [unitNumber, setUnitNumber] = useState<string>('');
+    const [unitName, setUnitName] = useState<string>('');
+    const [lessonName, setLessonName] = useState<string>('');
+    const [videoId, setVideoId] = useState<string>('');
+    const [playing, setPlaying] = useState<boolean>(true);
+    const [lessonDescription, setLessonDescription] = useState<string | []>();
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -20,17 +33,36 @@ export default function Lesson() {
     }, [navigation]);
 
     const handlePress = () => {
-        // router.push('Lesson');
+        router.push({
+            pathname: 'VideoQuiz',
+            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+        });
     };
 
-    const [lessonName, setLessonName] = useState<string>(
-        'Lesson 1a: Understanding Verbal and Non-Verbal Signals'
-    );
-    const [videoId, setVideoId] = useState<string>('4_5dayHDdBk');
-    const [playing, setPlaying] = useState<boolean>(false);
-    const [lessonDescription, setLessonDescription] = useState<string>(
-        "🎤👀 Communication isn't just about what we say; it's also about how we say it!\n\n ✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. \n\nLearn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
-    );
+    useEffect(() => {
+        if (sectionID && unitID && lessonID) {
+            (async () => {
+                const unitDetails = await unitEndpoints.getUnitDetails(
+                    sectionID as string,
+                    unitID as string
+                );
+
+                const lessonDetails = await lessonEndpoints.getLessonDetails(
+                    sectionID as string,
+                    unitID as string,
+                    lessonID as string
+                );
+
+                setLessonDescription(lessonDetails.lessonDescription);
+                setLessonName(lessonDetails.lessonName);
+                setVideoId(lessonDetails.lessonURL);
+                setUnitName(unitDetails.unitName);
+            })();
+            setSectionNumber(formatSection(sectionID as string));
+            setUnitNumber(formatUnit(unitID as string));
+        }
+    }, [sectionID, unitID]);
 
     const onStateChange = (state: string) => {
         if (state === 'ended') {
@@ -48,8 +80,8 @@ export default function Lesson() {
         <View style={styles.container}>
             <View>
                 <SectionCard
-                    title="SECTION 1, UNIT 1"
-                    subtitle="Foundations of Communication"
+                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                    subtitle={unitName}
                 />
                 <Text
                     style={{
@@ -63,7 +95,7 @@ export default function Lesson() {
                     {lessonName}
                 </Text>
 
-                <OverviewCard text={lessonDescription}></OverviewCard>
+                <OverviewCard text={lessonDescription!}></OverviewCard>
 
                 {videoId ? (
                     <YoutubePlayer
@@ -73,9 +105,10 @@ export default function Lesson() {
                         videoId={videoId} // YouTube video ID
                     />
                 ) : (
-                    <Text style={{marginBottom: 30, textAlign: 'center'}}>
-                        Loading Video...
-                    </Text>
+                    <OverviewCard
+                        isError={true}
+                        text="Video not available. Please check with your administrator."
+                    />
                 )}
             </View>
             <View

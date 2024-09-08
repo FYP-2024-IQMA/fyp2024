@@ -11,7 +11,7 @@ export const CustomButton = ({
     onPressHandler = () => {},
     capitalise = true,
 }) => {
-    const textStyle = capitalise ? 'uppercase' : 'capitalize';
+    const textStyle = capitalise ? 'uppercase' : 'none';
 
     return (
         <View>
@@ -28,7 +28,12 @@ export const CustomButton = ({
                 onPress={onPressHandler}
             >
                 <View>
-                    <Text style={[styles.buttonText, {color: labelColor, textTransform: textStyle}]}>
+                    <Text
+                        style={[
+                            styles.buttonText,
+                            {color: labelColor, textTransform: textStyle},
+                        ]}
+                    >
                         {label}
                     </Text>
                 </View>

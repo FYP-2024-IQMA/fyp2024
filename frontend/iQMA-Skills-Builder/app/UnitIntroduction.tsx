@@ -1,7 +1,6 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
 import React, {useState, useLayoutEffect, useEffect} from 'react';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
@@ -9,25 +8,13 @@ import ProgressBar from '@/components/ProgressBar';
 import {OverviewCard} from '@/components/OverviewCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
-
-const getUnitDetails = async (sectionID: string, unitID: string) => {
-    try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/getallunitsbysectionandunit/${sectionID}/${unitID}`;
-        const response = await fetch(url);
-        const unitDetails = await response.json();
-        // console.log(unitDetails);
-        return unitDetails;
-    } catch (error) {
-        console.error('Error fetching unitDetails:', error);
-        return;
-    }
-};
+import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 // where things show up
-export default function SectionIntroduction() {
+export default function UnitIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -44,21 +31,26 @@ export default function SectionIntroduction() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const unitDetails = await getUnitDetails(
+                const unitDetails = await unitEndpoints.getUnitDetails(
                     sectionID as string,
                     unitID as string
                 );
 
                 setUnitDescription(unitDetails.unitDescription);
-                setUnitName(unitDetails.unitName)
+                setUnitName(unitDetails.unitName);
             })();
+            setSectionNumber(formatSection(sectionID as string));
+            setUnitNumber(formatUnit(unitID as string));
         }
-        setSectionNumber(formatSection(sectionID as string));
-        setUnitNumber(formatUnit(unitID as string));
     }, [sectionID, unitID]);
 
     const handlePress = () => {
-        router.push('Lesson');
+        // router.push('Lesson');
+        router.push({
+            pathname: 'Lesson',
+            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+        });
     };
 
     return (

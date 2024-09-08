@@ -1,25 +1,9 @@
-import { Image, StyleSheet, Text, View, Modal } from 'react-native';
-import React, { useState } from 'react';
+import {Image, StyleSheet, Text, View, Modal} from 'react-native';
+import React, {useState} from 'react';
 import {CustomButton} from '@/components/CustomButton';
+import { Option, Question } from '@/constants/Quiz';
 
-interface Option {
-    option: string;
-    explanation: string;
-}
-
-interface QuestionData {
-    quizID: number;
-    questionNo: number;
-    question: string;
-    option1: Option;
-    option2: Option;
-    option3: Option;
-    option4: Option;
-    answer: string;
-    isSelfReflection: boolean;
-}
-
-export const QuizCard: React.FC<{ questionData: QuestionData, onNextQuestion: () => void}> = ({ questionData, onNextQuestion }) => {
+export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => void}> = ({ questionData, onNextQuestion }) => {
     const { question, option1, option2, option3, option4, answer } = questionData;
     const [selectedButton, setSelectedButton] = useState<Option | undefined>(undefined);
     const [selectedLabel, setSelectedLabel] = useState<string>('');
@@ -38,7 +22,7 @@ export const QuizCard: React.FC<{ questionData: QuestionData, onNextQuestion: ()
             }
             setModalVisible(true);
         }
-    }
+    };
 
     const handleAnswer = () => {
         if (isCorrect) {
@@ -47,56 +31,80 @@ export const QuizCard: React.FC<{ questionData: QuestionData, onNextQuestion: ()
         setModalVisible(false);
         setIsCorrect(false);
         setSelectedButton(undefined);
-    }
+    };
 
     return (
         <View>
-            <Text style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: '#4143A3',
-                marginBottom: 10,
-            }}>
+            <Text
+                style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                    color: '#4143A3',
+                    marginBottom: 10,
+                }}
+            >
                 {question}
             </Text>
-            
-            <View
-                style={{alignItems:"center"}}
-            >
+
+            <View style={{alignItems: 'center'}}>
                 <CustomButton
                     label={option1.option}
-                    labelColor={selectedButton === option1 ? '#FFFFFF' : '#5C5776'}
-                    backgroundColor={selectedButton === option1 ? '#7654F2' : '#FFFFFF'}
-                    borderColor={selectedButton === option1 ? '#7654F2' : '#5C5776'}
-                    onPressHandler={() => handleButtonPress("option1", option1)}
+                    labelColor={
+                        selectedButton === option1 ? '#FFFFFF' : '#5C5776'
+                    }
+                    backgroundColor={
+                        selectedButton === option1 ? '#7654F2' : '#FFFFFF'
+                    }
+                    borderColor={
+                        selectedButton === option1 ? '#7654F2' : '#5C5776'
+                    }
+                    onPressHandler={() => handleButtonPress('option1', option1)}
                     capitalise={false}
                 />
                 <CustomButton
                     label={option2.option}
-                    labelColor={selectedButton === option2 ? '#FFFFFF' : '#5C5776'}
-                    backgroundColor={selectedButton === option2 ? '#7654F2' : '#FFFFFF'}
-                    borderColor={selectedButton === option2 ? '#7654F2' : '#5C5776'}
-                    onPressHandler={() => handleButtonPress("option2", option2)}
+                    labelColor={
+                        selectedButton === option2 ? '#FFFFFF' : '#5C5776'
+                    }
+                    backgroundColor={
+                        selectedButton === option2 ? '#7654F2' : '#FFFFFF'
+                    }
+                    borderColor={
+                        selectedButton === option2 ? '#7654F2' : '#5C5776'
+                    }
+                    onPressHandler={() => handleButtonPress('option2', option2)}
                     capitalise={false}
                 />
                 <CustomButton
                     label={option3.option}
-                    labelColor={selectedButton === option3 ? '#FFFFFF' : '#5C5776'}
-                    backgroundColor={selectedButton === option3 ? '#7654F2' : '#FFFFFF'}
-                    borderColor={selectedButton === option3 ? '#7654F2' : '#5C5776'}
-                    onPressHandler={() => handleButtonPress("option3", option3)}
+                    labelColor={
+                        selectedButton === option3 ? '#FFFFFF' : '#5C5776'
+                    }
+                    backgroundColor={
+                        selectedButton === option3 ? '#7654F2' : '#FFFFFF'
+                    }
+                    borderColor={
+                        selectedButton === option3 ? '#7654F2' : '#5C5776'
+                    }
+                    onPressHandler={() => handleButtonPress('option3', option3)}
                     capitalise={false}
                 />
                 <CustomButton
                     label={option4.option}
-                    labelColor={selectedButton === option4 ? '#FFFFFF' : '#5C5776'}
-                    backgroundColor={selectedButton === option4 ? '#7654F2' : '#FFFFFF'}
-                    borderColor={selectedButton === option4 ? '#7654F2' : '#5C5776'}
-                    onPressHandler={() => handleButtonPress("option4", option4)}
+                    labelColor={
+                        selectedButton === option4 ? '#FFFFFF' : '#5C5776'
+                    }
+                    backgroundColor={
+                        selectedButton === option4 ? '#7654F2' : '#FFFFFF'
+                    }
+                    borderColor={
+                        selectedButton === option4 ? '#7654F2' : '#5C5776'
+                    }
+                    onPressHandler={() => handleButtonPress('option4', option4)}
                     capitalise={false}
                 />
 
-                <View style={{ marginTop: 50, marginBottom: 50 }}>
+                <View style={{marginTop: 50, marginBottom: 50}}>
                     <CustomButton
                         label="check"
                         labelColor="#18113C"
@@ -115,18 +123,38 @@ export const QuizCard: React.FC<{ questionData: QuestionData, onNextQuestion: ()
             >
                 <View style={styles.modalContainer}>
                     <View style={styles.modalContent}>
-                        <View style={{flexDirection: 'row', alignItems: 'center', marginBottom: 10}}>
+                        <View
+                            style={{
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                marginBottom: 10,
+                            }}
+                        >
                             <Image
-                                source={isCorrect ? require('@/assets/images/correct.png') : require('@/assets/images/incorrect.png')}
-                                style={{ marginRight: 8 }}
+                                source={
+                                    isCorrect
+                                        ? require('@/assets/images/correct.png')
+                                        : require('@/assets/images/incorrect.png')
+                                }
+                                style={{marginRight: 8}}
                             />
-                            <Text style={{fontWeight: 'bold', fontSize: 16, color: isCorrect ? "#1ACB98" : "#E66A63"}}>{isCorrect ? "Correct" : "Incorrect"}</Text>
+                            <Text
+                                style={{
+                                    fontWeight: 'bold',
+                                    fontSize: 16,
+                                    color: isCorrect ? '#1ACB98' : '#E66A63',
+                                }}
+                            >
+                                {isCorrect ? 'Correct' : 'Incorrect'}
+                            </Text>
                         </View>
-                        <Text style={{marginBottom: 10}}>{selectedButton ? selectedButton!.explanation : ''}</Text>
-                        <View style={{alignItems: "center"}}>
+                        <Text style={{marginBottom: 10}}>
+                            {selectedButton ? selectedButton!.explanation : ''}
+                        </Text>
+                        <View style={{alignItems: 'center'}}>
                             <CustomButton
                                 label={isCorrect ? "continue" : "try again"}
-                                labelColor="#18113C"
+                                labelColor={isCorrect ? "#18113C" : "#FFFFFF"}
                                 backgroundColor={isCorrect ? '#8CE5CB' : '#E66A63'}
                                 borderColor={isCorrect ? '#8CE5CB' : '#E66A63'}
                                 onPressHandler={handleAnswer}
@@ -136,8 +164,8 @@ export const QuizCard: React.FC<{ questionData: QuestionData, onNextQuestion: ()
                 </View>
             </Modal>
         </View>
-    )
-}
+    );
+};
 
 const styles = StyleSheet.create({
     modalContainer: {
@@ -153,4 +181,4 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 20,
     },
-})
+});
