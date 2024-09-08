@@ -49,7 +49,11 @@ export default function CheatSheet() {
     }, [sectionID, unitID]);
 
     const handlePress = () => {
-        router.push("Lesson")
+        // router.push("Lesson")
+        router.push({
+            pathname: "Lesson", // to be replaced with Unit Reality Check page
+            params: {sectionID: sectionID, unitID: unitID},
+        });
     };
 
     return (
