@@ -414,15 +414,80 @@ output "loadbalancer_public_ip"{
 
 
 
+# S3 bucket to store athena output data
+resource "aws_s3_bucket" "athena_output" {
+  bucket = "isb-raw-data-athena-output"
 
+  tags = {
+    Name        = "My bucket"
+    Environment = "Dev"
+  }
+}
 
+# Athena Workgroup
+resource "aws_athena_workgroup" "athena_workgroup" {
+  name = "JsonQuery"
 
+  configuration {
+    enforce_workgroup_configuration    = true
+    publish_cloudwatch_metrics_enabled = true
 
+    result_configuration {
+      output_location = "s3://isb-raw-data-athena-output/"
+    }
+  }
+}
 
+# Athena Database
+resource "aws_athena_database" "athena_db" {
+  name   = "s3jsondb"
+  bucket = "isb-raw-data-athena-output"
+}
 
+# Structured Table in Athena Database
+resource "aws_glue_catalog_table" "athena_table" {
+  database_name = "s3jsondb"
+  name          = "s3jsontable"
 
+  table_type = "EXTERNAL_TABLE"
 
+  storage_descriptor {
+    columns {
+      name = "event_type"
+      type = "string"
+    }
+    columns {
+      name = "event_id"
+      type = "string"
+    }
+    columns {
+      name = "timestamp"
+      type = "timestamp"
+    }
+    columns {
+      name = "user_id"
+      type = "string"
+    }
 
+    location = "s3://isb-raw-data-athena/"
 
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
 
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+      parameters = {
+        "ignore.malformed.json" = "FALSE"
+        "dots.in.keys"          = "FALSE"
+        "case.insensitive"      = "TRUE"
+        "mapping"               = "TRUE"
+      }
+    }
+  }
 
+  parameters = {
+    "classification" = "json"
+  }
+
+  depends_on = [aws_athena_database.athena_db]
+}
