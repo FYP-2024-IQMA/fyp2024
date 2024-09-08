@@ -8,6 +8,7 @@ const router = Router();
 /* READ */
 router.get(
 	"/getquestions/:sectionid/:unitid?/:lessonid?",
+	verifyToken,
 	questionController.getQuizQuestions
 );
 
