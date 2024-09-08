@@ -91,7 +91,7 @@ export default function SectionIntroduction() {
                 ) : (
                     <OverviewCard
                         isError={true}
-                        text="Video not available. Please check with your administrator."
+                        text="Video is not available. Please check with your administrator."
                     />
                 )}
             </View>

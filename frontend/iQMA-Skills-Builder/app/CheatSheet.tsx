@@ -1,16 +1,3 @@
-
-const formatCheatSheet = (cheatsheet: any) => {
-    if (Array.isArray(cheatsheet)) {
-        return cheatsheet.map((item, index) => (
-            <OverviewCard key={index} text={item}></OverviewCard>
-        ));
-    } else {
-        return Object.entries(cheatsheet).map(([title, text], index) => (
-            <OverviewCard isCheatsheetObject={true} key={index} title={title} text={text as string | string[]}></OverviewCard>
-        ));
-    }
-}
-
 import {ScrollView, StyleSheet, Text, View, SafeAreaView} from 'react-native';
 import React, {useState, useLayoutEffect, useEffect} from 'react';
 import {CustomButton} from '@/components/CustomButton';
@@ -19,12 +6,47 @@ import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import { OverviewCard } from '@/components/OverviewCard';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import { formatUnit } from '@/helpers/formatUnitID';
+
+const formatCheatSheet = (cheatsheet: any) => {
+    if (Array.isArray(cheatsheet)) {
+        if (cheatsheet.length === 0) {
+            return (
+                <OverviewCard
+                    isError={true}
+                    text="Lesson Cheatsheet is not available. Please check with your administrator."
+                />
+            );
+        }
+        return cheatsheet.map((item, index) => (
+            <OverviewCard key={index} text={item}></OverviewCard>
+        ));
+    } else {
+        if (Object.keys(cheatsheet).length === 0) {
+            return (
+                <OverviewCard
+                    isError={true}
+                    text="Lesson Cheatsheet is not available. Please check with your administrator."
+                />
+            );
+        }
+        return Object.entries(cheatsheet).map(([title, text], index) => (
+            <OverviewCard
+                isCheatsheetObject={true}
+                key={index}
+                title={title}
+                text={text as string | string[]}
+            ></OverviewCard>
+        ));
+    }
+};
 
 // where things show up
 export default function CheatSheet() {
     const navigation = useNavigation();
     const {sectionID, unitID} = useLocalSearchParams();
     const [lessons, setLessons] = useState<any[]>([]);
+    const [unitNumber, setUnitNumber] = useState<string>('');
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -45,6 +67,7 @@ export default function CheatSheet() {
 
                 setLessons(lessonDetails);
             })();
+            setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
@@ -57,17 +80,35 @@ export default function CheatSheet() {
     };
 
     return (
-        <ScrollView
-            style={styles.container}
-        >
+        <ScrollView style={styles.container}>
             <View style={{marginBottom: 20}}>
                 <View style={{flex: 1}}>
-                    {lessons.map((lesson, index) => (
-                        <View key={index} style={[styles.cheatSheet]}>
-                            <Text style={styles.title}>{lesson.lessonName}</Text>
-                            {formatCheatSheet(lesson.lessonCheatSheet)}
-                        </View>
-                    ))}
+                    <Text
+                        style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#4143A3',
+                            marginBottom: 20,
+                            marginHorizontal: 10,
+                        }}
+                    >
+                        Unit {unitNumber}: Cheat Sheet
+                    </Text>
+                    {lessons.length > 0 ? (
+                        lessons.map((lesson, index) => (
+                            <View key={index} style={[styles.cheatSheet]}>
+                                <Text style={styles.title}>
+                                    {lesson.lessonName}
+                                </Text>
+                                {formatCheatSheet(lesson.lessonCheatSheet)}
+                            </View>
+                        ))
+                    ) : (
+                        <OverviewCard
+                            text="Lesson Cheatsheets are not available. Please check with your administrator."
+                            isError={true}
+                        ></OverviewCard>
+                    )}
                 </View>
                 <View style={styles.buttonContainer}>
                     <CustomButton

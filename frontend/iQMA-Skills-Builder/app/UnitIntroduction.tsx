@@ -72,9 +72,16 @@ export default function UnitIntroduction() {
                     Unit {unitNumber}: Introduction
                 </Text>
 
-                {unitDescription.map((description, index) => (
-                    <OverviewCard key={index} text={description} />
-                ))}
+                {unitDescription.length > 0 ? (
+                    unitDescription.map((description, index) => (
+                        <OverviewCard key={index} text={description} />
+                    ))
+                ) : (
+                    <OverviewCard
+                        isError={true}
+                        text="Unit description is not available. Please check with your administrator."
+                    />
+                )}
 
                 <View style={{width: '100%', flexDirection: 'row-reverse'}}>
                     <Image

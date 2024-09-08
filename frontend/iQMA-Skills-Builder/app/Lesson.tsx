@@ -78,7 +78,7 @@ export default function Lesson() {
 
     return (
         <View style={styles.container}>
-            <View style={{ flexGrow: 1 }}>
+            <View style={{flexGrow: 1}}>
                 <SectionCard
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
@@ -95,7 +95,14 @@ export default function Lesson() {
                     {lessonName}
                 </Text>
 
-                <OverviewCard text={lessonDescription!}></OverviewCard>
+                {lessonDescription ? (
+                    <OverviewCard text={lessonDescription!}></OverviewCard>
+                ) : (
+                    <OverviewCard
+                        isError={true}
+                        text="Lesson Description is not available. Please check with your administrator."
+                    />
+                )}
 
                 {videoId ? (
                     <YoutubePlayer
@@ -107,7 +114,7 @@ export default function Lesson() {
                 ) : (
                     <OverviewCard
                         isError={true}
-                        text="Video not available. Please check with your administrator."
+                        text="Video is not available. Please check with your administrator."
                     />
                 )}
             </View>
