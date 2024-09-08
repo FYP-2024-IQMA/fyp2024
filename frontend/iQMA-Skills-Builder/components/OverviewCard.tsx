@@ -40,6 +40,7 @@ export const OverviewCard = ({
                     <Text
                         style={[
                             styles.OverviewCardSubtitle,
+                            isCheatsheetObject ? styles.OverviewCardSubtitleArr : {},
                             isError ? styles.ErrorCardSubtitle : {},
                         ]}
                     >

@@ -65,7 +65,7 @@ export default function SectionIntroduction() {
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={{flexGrow: 1}}>
                 <SectionCard
                     title={`SECTION ${sectionNumber}`}
                     subtitle={sectionName}
@@ -96,12 +96,7 @@ export default function SectionIntroduction() {
                 )}
             </View>
 
-            <View
-                style={{
-                    alignSelf: 'center',
-                    bottom: 20,
-                }}
-            >
+            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
                 <CustomButton
                     label="continue"
                     backgroundColor="white"
@@ -116,7 +111,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1,
-        justifyContent: 'space-between',
+        flex: 1,        
     },
 });
