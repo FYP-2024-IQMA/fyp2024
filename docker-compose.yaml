@@ -19,7 +19,7 @@ services:
     env_file:
     - ./backend/src/chatbot/.env
 
-  
+
 
   db:
     image: postgres
@@ -61,7 +61,17 @@ services:
       - app-network
     depends_on:
       - redis
-  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PW}
+    networks:
+      - app-network
+      
   
 volumes:
   db-data:
