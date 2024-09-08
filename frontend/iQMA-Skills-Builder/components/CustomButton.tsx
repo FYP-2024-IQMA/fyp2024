@@ -11,7 +11,7 @@ export const CustomButton = ({
     onPressHandler = () => {},
     capitalise = true,
 }) => {
-    const textStyle = capitalise ? 'uppercase' : 'capitalize';
+    const textStyle = capitalise ? 'uppercase' : 'none';
 
     return (
         <View>

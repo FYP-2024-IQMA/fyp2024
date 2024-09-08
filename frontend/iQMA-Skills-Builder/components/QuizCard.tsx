@@ -1,32 +1,11 @@
 import {Image, StyleSheet, Text, View, Modal} from 'react-native';
 import React, {useState} from 'react';
 import {CustomButton} from '@/components/CustomButton';
+import { Option, Question } from '@/constants/Quiz';
 
-interface Option {
-    option: string;
-    explanation: string;
-}
-
-interface QuestionData {
-    quizID: number;
-    questionNo: number;
-    question: string;
-    option1: Option;
-    option2: Option;
-    option3: Option;
-    option4: Option;
-    answer: string;
-    isSelfReflection: boolean;
-}
-
-export const QuizCard: React.FC<{
-    questionData: QuestionData;
-    onNextQuestion: () => void;
-}> = ({questionData, onNextQuestion}) => {
-    const {question, option1, option2, option3, option4, answer} = questionData;
-    const [selectedButton, setSelectedButton] = useState<Option | undefined>(
-        undefined
-    );
+export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => void}> = ({ questionData, onNextQuestion }) => {
+    const { question, option1, option2, option3, option4, answer } = questionData;
+    const [selectedButton, setSelectedButton] = useState<Option | undefined>(undefined);
     const [selectedLabel, setSelectedLabel] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
@@ -174,11 +153,9 @@ export const QuizCard: React.FC<{
                         </Text>
                         <View style={{alignItems: 'center'}}>
                             <CustomButton
-                                label={isCorrect ? 'continue' : 'try again'}
-                                labelColor='#18113C'
-                                backgroundColor={
-                                    isCorrect ? '#8CE5CB' : '#E66A63'
-                                }
+                                label={isCorrect ? "continue" : "try again"}
+                                labelColor={isCorrect ? "#18113C" : "#FFFFFF"}
+                                backgroundColor={isCorrect ? '#8CE5CB' : '#E66A63'}
                                 borderColor={isCorrect ? '#8CE5CB' : '#E66A63'}
                                 onPressHandler={handleAnswer}
                             />
