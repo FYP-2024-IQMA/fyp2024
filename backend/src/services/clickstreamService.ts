@@ -8,10 +8,10 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
-async function uploadToS3(body: string) {
+async function uploadToS3(queue: string, body: string) {
     const params = {
-        Bucket: 'isb-raw-data-athena',
-        Key: `${Date.now()}.json`,
+        Bucket: `isb-raw-data-athena`,
+        Key: `${queue}/${Date.now()}.json`,
         Body: body
     };
 
@@ -35,7 +35,7 @@ async function consumeMessage() {
                 if (message !== null) {
                     const data = message.content.toString();
                     try {
-                        await uploadToS3(data);
+                        await uploadToS3(queue, data);
                         channel.ack(message);
                         console.log(message)
                     } catch (error) {
