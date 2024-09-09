@@ -55,7 +55,7 @@ export default function UnitIntroduction() {
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={{flexGrow: 1}}>
                 <SectionCard
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
@@ -72,9 +72,16 @@ export default function UnitIntroduction() {
                     Unit {unitNumber}: Introduction
                 </Text>
 
-                {unitDescription.map((description, index) => (
-                    <OverviewCard key={index} text={description} />
-                ))}
+                {unitDescription.length > 0 ? (
+                    unitDescription.map((description, index) => (
+                        <OverviewCard key={index} text={description} />
+                    ))
+                ) : (
+                    <OverviewCard
+                        isError={true}
+                        text="Unit description is not available. Please check with your administrator."
+                    />
+                )}
 
                 <View style={{width: '100%', flexDirection: 'row-reverse'}}>
                     <Image
@@ -84,12 +91,7 @@ export default function UnitIntroduction() {
                 </View>
             </View>
 
-            <View
-                style={{
-                    alignSelf: 'center',
-                    bottom: 20,
-                }}
-            >
+            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
                 <CustomButton
                     label="continue"
                     backgroundColor="white"
@@ -104,7 +106,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1,
-        justifyContent: 'space-between',
+        flex: 1
     },
 });

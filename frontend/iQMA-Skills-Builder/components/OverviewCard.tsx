@@ -40,6 +40,7 @@ export const OverviewCard = ({
                     <Text
                         style={[
                             styles.OverviewCardSubtitle,
+                            isCheatsheetObject ? styles.OverviewCardSubtitleArr : {},
                             isError ? styles.ErrorCardSubtitle : {},
                         ]}
                     >
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E66A63',
     },
     OverviewCardTitle: {
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     OverviewCardSubtitle: {

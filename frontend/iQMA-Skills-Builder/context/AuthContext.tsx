@@ -113,6 +113,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('VideoQuiz');
                     // router.replace('Lesson');
                     // router.replace("SectionIntroduction");
+                    // router.replace('CheatSheet');
                 } else {
                     router.replace('IntroductionMascot');
                 }
