@@ -32,7 +32,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCircularProgress = exports.getUserProgress = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
+exports.getNoOfCompletedLesson = exports.getCircularProgress = exports.getUserProgress = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
 const resultService = __importStar(require("../services/resultService"));
 const lessonService = __importStar(require("../services/lessonService"));
 /* CREATE */
@@ -101,3 +101,15 @@ const getCircularProgress = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getCircularProgress = getCircularProgress;
+const getNoOfCompletedLesson = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const userProgress = yield resultService.getNoOfCompletedLesson(req.params.userid, req.params.sectionid, req.params.unitid);
+        res.status(200).json(userProgress);
+    }
+    catch (error) {
+        res.status(500).json({
+            error: `Failed to retrieve ${req.params.userid}'s progress`,
+        });
+    }
+});
+exports.getNoOfCompletedLesson = getNoOfCompletedLesson;

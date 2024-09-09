@@ -226,3 +226,38 @@ describe("GET /getcircularprogress/:userid/:sectionid/:unitid", () => {
         expect(resultService.getUserProgress).toHaveBeenCalledTimes(1);
     });
 });
+
+describe("GET /getnoofcompletedlessons/:userid/:sectionid/:unitid", () => {
+    const userID = "USR0001";
+    const sectionID = "SEC0001";
+    const unitID = "UNIT0001";
+
+    it.only("should return 200 and the unit progress of a user", async () => {
+        resultService.getNoOfCompletedLesson.mockResolvedValue(2);
+
+        const response = await request(app).get(
+            `/result/getnoofcompletedlessons/${userID}/${sectionID}/${unitID}`
+        );
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(2);
+        expect(resultService.getNoOfCompletedLesson).toHaveBeenCalledTimes(1);
+    });
+
+    it.only("should return 500 and an error message on failure", async () => {
+        const mockError = new Error("Database error");
+
+        resultService.getNoOfCompletedLesson.mockRejectedValue(mockError);
+
+        const response = await request(app).get(
+            `/result/getnoofcompletedlessons/${userID}/${sectionID}/${unitID}`
+        );
+
+        expect(response.status).toBe(500);
+        expect(response.body).toEqual({
+            error: `Failed to retrieve ${userID}'s progress`,
+        });
+        expect(resultService.getNoOfCompletedLesson).toHaveBeenCalledTimes(1);
+    });
+
+});

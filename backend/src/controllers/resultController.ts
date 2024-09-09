@@ -76,3 +76,19 @@ export const getCircularProgress = async (req: Request, res: Response) => {
         });
     }
 };   
+
+
+export const getNoOfCompletedLesson = async (req: Request, res: Response) => {
+    try {
+        const userProgress = await resultService.getNoOfCompletedLesson(
+            req.params.userid,
+            req.params.sectionid,
+            req.params.unitid
+        );
+        res.status(200).json(userProgress);
+    } catch (error) {
+        res.status(500).json({
+            error: `Failed to retrieve ${req.params.userid}'s progress`,
+        });
+    }
+};
