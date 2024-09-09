@@ -18,6 +18,7 @@ const quizRouter_1 = __importDefault(require("./routes/quizRouter"));
 const resultRouter_1 = __importDefault(require("./routes/resultRouter"));
 const sectionRouter_1 = __importDefault(require("./routes/sectionRouter"));
 const unitRouter_1 = __importDefault(require("./routes/unitRouter"));
+const clickstreamRouter_1 = __importDefault(require("./routes/clickstreamRouter"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use((0, cookie_parser_1.default)());
@@ -35,6 +36,7 @@ app.use("/unit", unitRouter_1.default);
 app.use("/chat", chatRouter_1.default);
 app.use("/lesson", lessonRouter_1.default);
 app.use("/section", sectionRouter_1.default);
+app.use("/clickstream", clickstreamRouter_1.default);
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });

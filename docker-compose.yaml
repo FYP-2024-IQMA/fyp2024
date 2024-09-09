@@ -8,16 +8,16 @@ services:
     - "3000:3000"
     networks:
     - app-network
-  chatbot:
-    build:
-      dockerfile: Dockerfile
-      context: ./backend/src/chatbot
-    ports:
-    - "8080:8080"
-    networks:
-    - app-network
-    env_file:
-    - ./backend/src/chatbot/.env
+  # chatbot:
+  #   build:
+  #     dockerfile: Dockerfile
+  #     context: ./backend/src/chatbot
+  #   ports:
+  #   - "8080:8080"
+  #   networks:
+  #   - app-network
+  #   env_file:
+  #   - ./backend/src/chatbot/.env
 
 
 
@@ -64,14 +64,15 @@ services:
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: rabbitmq
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PW}
+      RABBITMQ_URL: ${RABBITMQ_URL}
     networks:
       - app-network
-      
+
   
 volumes:
   db-data:
