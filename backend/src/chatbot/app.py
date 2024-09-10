@@ -1,11 +1,9 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from langchain_openai import ChatOpenAI
-from langchain_core.output_parsers import StrOutputParser
 from langchain_community.adapters.openai import convert_openai_messages
 import logging
 import os
-from pydantic import BaseModel, Field
 from pydantic.dataclasses import dataclass
 from typing import List, Optional
 
@@ -59,7 +57,7 @@ async def langchain_text(prompt: Prompt):
     try:
         llm = ChatOpenAI(
             model="gpt-4o-mini",
-            api_key=os.environ.get("OPENAI_KEY"),
+            api_key=os.environ.get("OPENAI_API_KEY"),
         )
         if prompt.history:
             langchain_format = convert_openai_messages(prompt.history)
