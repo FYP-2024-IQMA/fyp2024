@@ -38,10 +38,10 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const messageBody = req.body;
     try {
         const message = yield clickstreamService.sendMessage(messageBody);
-        res.status(200).json(message);
+        res.status(200).json({ message: 'Published message successfully' });
     }
-    catch (error) {
-        res.status(500).json({ error: "Failed to send data" });
+    catch (e) {
+        res.status(500).json({ error: "Failed to send data", e });
     }
 });
 exports.sendMessage = sendMessage;

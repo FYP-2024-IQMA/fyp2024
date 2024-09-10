@@ -1,6 +1,7 @@
 import { Clickstream } from "../models/clickstreamModel";
 import amqp from "amqplib";
 import AWS from "aws-sdk";
+import { v4 as uuidv4 } from 'uuid';
 
 const s3 = new AWS.S3({
     region: 'ap-southeast-1',
@@ -11,7 +12,7 @@ const s3 = new AWS.S3({
 async function uploadToS3(queue: string, body: string) {
     const params = {
         Bucket: `isb-raw-data-athena`,
-        Key: `${queue}/${Date.now()}.json`,
+        Key: `${queue}/${uuidv4()}.json`,
         Body: body
     };
 

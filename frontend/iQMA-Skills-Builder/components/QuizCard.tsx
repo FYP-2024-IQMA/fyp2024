@@ -2,13 +2,16 @@ import {Image, StyleSheet, Text, View, Modal} from 'react-native';
 import React, {useState} from 'react';
 import {CustomButton} from '@/components/CustomButton';
 import { Option, Question } from '@/constants/Quiz';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => void}> = ({ questionData, onNextQuestion }) => {
-    const { question, option1, option2, option3, option4, answer } = questionData;
+    const { quizID, questionNo, question, option1, option2, option3, option4, answer } = questionData;
     const [selectedButton, setSelectedButton] = useState<Option | undefined>(undefined);
     const [selectedLabel, setSelectedLabel] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
+    const [count, setCount] = useState<number>(0);
 
     const handleButtonPress = (label: string, option: Option) => {
         setSelectedButton(option);
@@ -20,18 +23,40 @@ export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => 
             if (selectedLabel == answer) {
                 setIsCorrect(true);
             }
+            setCount(count+1);
             setModalVisible(true);
         }
     };
 
     const handleAnswer = () => {
         if (isCorrect) {
+            sendMessage();
             onNextQuestion();
+            setCount(0);
         }
         setModalVisible(false);
         setIsCorrect(false);
         setSelectedButton(undefined);
     };
+
+    const sendMessage = async () => {
+        const userID = await AsyncStorage.getItem('userID');
+        try {
+            const response = await axios.post(
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`, 
+                {
+                    "userID": userID,
+                    "eventType": "attemptsTaken",
+                    "event": `quizID ${quizID}, questionNo ${questionNo}`,
+                    "timestamp": new Date().toISOString(),
+                    "attempts": count
+                }
+            )
+            console.log(response.data)
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
     return (
         <View>
