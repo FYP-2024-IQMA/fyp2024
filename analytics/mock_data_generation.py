@@ -63,4 +63,5 @@ df = pd.DataFrame(users)
 file_path = 'random_users_weighted.csv'
 df.to_csv(file_path, index=False)
 
+# Acknowledge the user that the CSV file has been saved
 print(f"CSV file saved at: {file_path}")
