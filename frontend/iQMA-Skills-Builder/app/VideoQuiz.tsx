@@ -48,8 +48,7 @@ export default function VideoQuiz() {
             setCurrentQnsIdx(newIdx);
         }
         else {
-            // TO CHANGE:
-            router.replace("SectionIntroduction");
+            router.replace("KeyTakeaway");
         }
     };
 
