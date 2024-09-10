@@ -1,17 +1,22 @@
 fastapi
-langchain
-langchain-chroma
-langchain-core
+# langchain
+# langchain-chroma
+# langchain-core
 langchain-community
-langchain-huggingface
+# langchain-huggingface
 langchain-openai
-llama-index
-llama-parse
+# langchain-text-splitters
+# llama-index
+# llama-index-embeddings-huggingface
+# llama-index-embeddings-langchain
+# llama-index-vector-stores-chroma
+# llama-parse
 openai
 pydantic
 pytest
 python-dotenv
 requests
+# streamlit
 typing
-unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
+# unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
 uvicorn
