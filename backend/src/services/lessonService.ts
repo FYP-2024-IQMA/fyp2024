@@ -147,9 +147,9 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 		const formattedLessons = data.map((lesson: any) => {
 			let formattedLessonURL =
 				extractYouTubeID(lesson.lessonURL) || lesson.lessonURL;
-			console.log(formattedLessonURL);
+			// console.log(formattedLessonURL);
 			let description = lesson.lessonDescription;
-			console.log(description);
+			// console.log(description);
 			let formattedDescription: string[] | null = description
 				? description.split(/\r?\n/)
 				: null;

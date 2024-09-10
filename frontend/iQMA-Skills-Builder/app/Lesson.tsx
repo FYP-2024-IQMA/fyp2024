@@ -78,7 +78,7 @@ export default function Lesson() {
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={{flexGrow: 1}}>
                 <SectionCard
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
@@ -95,7 +95,14 @@ export default function Lesson() {
                     {lessonName}
                 </Text>
 
-                <OverviewCard text={lessonDescription!}></OverviewCard>
+                {lessonDescription ? (
+                    <OverviewCard text={lessonDescription!}></OverviewCard>
+                ) : (
+                    <OverviewCard
+                        isError={true}
+                        text="Lesson Description is not available. Please check with your administrator."
+                    />
+                )}
 
                 {videoId ? (
                     <YoutubePlayer
@@ -107,16 +114,11 @@ export default function Lesson() {
                 ) : (
                     <OverviewCard
                         isError={true}
-                        text="Video not available. Please check with your administrator."
+                        text="Video is not available. Please check with your administrator."
                     />
                 )}
             </View>
-            <View
-                style={{
-                    alignSelf: 'center',
-                    bottom: 20,
-                }}
-            >
+            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
                 <CustomButton
                     label="continue"
                     backgroundColor="white"
@@ -132,6 +134,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
-        justifyContent: 'space-between',
     },
 });

@@ -122,9 +122,9 @@ function getAllLessons(sectionID, unitID) {
         else {
             const formattedLessons = data.map((lesson) => {
                 let formattedLessonURL = extractYouTubeID(lesson.lessonURL) || lesson.lessonURL;
-                console.log(formattedLessonURL);
+                // console.log(formattedLessonURL);
                 let description = lesson.lessonDescription;
-                console.log(description);
+                // console.log(description);
                 let formattedDescription = description
                     ? description.split(/\r?\n/)
                     : null;
