@@ -1,6 +1,5 @@
 import random
 import pandas as pd
-import numpy as np
 
 # Define the value database with weights (weights representing a normal-like distribution)
 value_database = {
@@ -48,9 +47,38 @@ value_database = {
                                           [0.35, 0.35, 0.2, 0.1])
 }
 
+# New features
+def generate_course_data():
+    # Use weighted choices to have 30% of completion values at 100%
+    completion = random.choices(
+        [100, round(random.uniform(0, 99.99), 2)], 
+        weights=[0.3, 0.7]
+    )[0]
+    
+    # Time taken and attempts are only relevant if the course was 100% completed
+    if completion == 100:
+        time_taken = random.randint(1, 7)  # Time in days
+        attempts = random.randint(1, 10)   # Attempts taken
+    else:
+        time_taken = 0
+        attempts = 0
+    
+    # Course feedback
+    feedback = random.choice(['positive', 'negative'])
+
+    return completion, time_taken, attempts, feedback
+
 # Function to generate a random user based on weighted choices
 def generate_random_user():
     user = {key: random.choices(value_database[key][0], weights=value_database[key][1])[0] for key in value_database}
+    
+    # Generate course data
+    completion, time_taken, attempts, feedback = generate_course_data()
+    user['COURSE_COMPLETION'] = completion
+    user['TIME_TAKEN_TO_COMPLETE'] = time_taken
+    user['ATTEMPTS_TAKEN'] = attempts
+    user['COURSE_FEEDBACK'] = feedback
+    
     return user
 
 # Generate 1000 users
@@ -60,8 +88,5 @@ users = [generate_random_user() for _ in range(1000)]
 df = pd.DataFrame(users)
 
 # Save the DataFrame to a CSV file
-file_path = 'random_users_weighted.csv'
+file_path = 'random_users_with_course_data.csv'
 df.to_csv(file_path, index=False)
-
-# Acknowledge the user that the CSV file has been saved
-print(f"CSV file saved at: {file_path}")

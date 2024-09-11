@@ -1,0 +1,578 @@
+<?xml version='1.0' encoding='utf-8' ?>
+
+<!-- build 20242.24.0807.0327                               -->
+<workbook original-version='18.1' source-build='2024.2.2 (20242.24.0807.0327)' source-platform='win' version='18.1' xmlns:user='http://www.tableausoftware.com/xml/user'>
+  <document-format-change-manifest>
+    <_.fcp.AnimationOnByDefault.true...AnimationOnByDefault />
+    <_.fcp.MarkAnimation.true...MarkAnimation />
+    <_.fcp.ObjectModelEncapsulateLegacy.true...ObjectModelEncapsulateLegacy />
+    <_.fcp.ObjectModelTableType.true...ObjectModelTableType />
+    <_.fcp.SchemaViewerObjectModel.true...SchemaViewerObjectModel />
+    <SheetIdentifierTracking />
+    <WindowsPersistSimpleIdentifiers />
+  </document-format-change-manifest>
+  <preferences>
+    <preference name='ui.encoding.shelf.height' value='24' />
+    <preference name='ui.shelf.height' value='26' />
+  </preferences>
+  <_.fcp.AnimationOnByDefault.false...style>
+    <_.fcp.AnimationOnByDefault.false..._.fcp.MarkAnimation.true...style-rule element='animation'>
+      <_.fcp.AnimationOnByDefault.false...format attr='animation-on' value='ao-on' />
+    </_.fcp.AnimationOnByDefault.false..._.fcp.MarkAnimation.true...style-rule>
+  </_.fcp.AnimationOnByDefault.false...style>
+  <datasources>
+    <datasource caption='random_users_weighted' inline='true' name='federated.1mst14p0yj3jin117u74s0srhmco' version='18.1'>
+      <connection class='federated'>
+        <named-connections>
+          <named-connection caption='random_users_weighted' name='textscan.0m7akv81cmm15s1cjie411qwdbdh'>
+            <connection class='textclean' cleaning='yes' compat='no' csvFile='C:/Users/kengb/Documents/GitHub/fyp2024/analytics/random_users_weighted.csv' dataRefreshTime='' directory='C:/Users/kengb/Documents/GitHub/fyp2024/analytics' filename='C:/Users/kengb/AppData/Local/Temp/TableauTemp/18d83rv0bnf4gc1h71op3059pb51/random_users_weighted.csv.xlsx' interpretationMode='8' password='' server='' validate='no' />
+          </named-connection>
+        </named-connections>
+        <_.fcp.ObjectModelEncapsulateLegacy.false...relation connection='textscan.0m7akv81cmm15s1cjie411qwdbdh' name='random_users_weighted.csv' table='[random_users_weighted#csv$]' type='table'>
+          <columns character-set='UTF-8' gridOrigin='A1:V1001:no:A1:V1001:0' header='yes' locale='en_SG' separator=','>
+            <column datatype='string' name='ROLE' ordinal='0' />
+            <column datatype='string' name='AGE_TYPE' ordinal='1' />
+            <column datatype='string' name='GENDER_TYPE' ordinal='2' />
+            <column datatype='string' name='RACE_TYPE' ordinal='3' />
+            <column datatype='string' name='JOB_CATEGORY_TYPE' ordinal='4' />
+            <column datatype='string' name='LIFE_STAGE_TYPE' ordinal='5' />
+            <column datatype='string' name='CAREER_STAGE_TYPE' ordinal='6' />
+            <column datatype='string' name='SPECIAL_NEEDS_TYPE' ordinal='7' />
+            <column datatype='string' name='EDUCATIONAL_LEVEL_TYPE' ordinal='8' />
+            <column datatype='string' name='LANGUAGE_ABILITIES_TYPE' ordinal='9' />
+            <column datatype='string' name='LITERACY_NUMERACY_PROFICIENCY_TYPE' ordinal='10' />
+            <column datatype='string' name='LEARNING_PREFERENCES_TYPE' ordinal='11' />
+            <column datatype='string' name='PRIOR_KNOWLEDGE_SKILLS_TYPE' ordinal='12' />
+            <column datatype='string' name='RELATIONSHIP_TO_PEERS_TYPE' ordinal='13' />
+            <column datatype='string' name='TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE' ordinal='14' />
+            <column datatype='string' name='SOCIAL_BACKGROUND_TYPE' ordinal='15' />
+            <column datatype='string' name='COMPUTER_LITERACY_TYPE' ordinal='16' />
+            <column datatype='string' name='ATTITUDE_TOWARDS_LEARNING_TYPE' ordinal='17' />
+            <column datatype='string' name='MOTIVATIONAL_LEVEL_TYPE' ordinal='18' />
+            <column datatype='string' name='BARRIERS_TO_LEARNING_INTERESTS' ordinal='19' />
+            <column datatype='string' name='PERSONALITY_TYPE' ordinal='20' />
+            <column datatype='string' name='REASONS_FOR_ATTENDING_COURSE_TYPE' ordinal='21' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.false...relation>
+        <_.fcp.ObjectModelEncapsulateLegacy.true...relation connection='textscan.0m7akv81cmm15s1cjie411qwdbdh' name='random_users_weighted.csv' table='[random_users_weighted#csv$]' type='table'>
+          <columns character-set='UTF-8' gridOrigin='A1:V1001:no:A1:V1001:0' header='yes' locale='en_SG' separator=','>
+            <column datatype='string' name='ROLE' ordinal='0' />
+            <column datatype='string' name='AGE_TYPE' ordinal='1' />
+            <column datatype='string' name='GENDER_TYPE' ordinal='2' />
+            <column datatype='string' name='RACE_TYPE' ordinal='3' />
+            <column datatype='string' name='JOB_CATEGORY_TYPE' ordinal='4' />
+            <column datatype='string' name='LIFE_STAGE_TYPE' ordinal='5' />
+            <column datatype='string' name='CAREER_STAGE_TYPE' ordinal='6' />
+            <column datatype='string' name='SPECIAL_NEEDS_TYPE' ordinal='7' />
+            <column datatype='string' name='EDUCATIONAL_LEVEL_TYPE' ordinal='8' />
+            <column datatype='string' name='LANGUAGE_ABILITIES_TYPE' ordinal='9' />
+            <column datatype='string' name='LITERACY_NUMERACY_PROFICIENCY_TYPE' ordinal='10' />
+            <column datatype='string' name='LEARNING_PREFERENCES_TYPE' ordinal='11' />
+            <column datatype='string' name='PRIOR_KNOWLEDGE_SKILLS_TYPE' ordinal='12' />
+            <column datatype='string' name='RELATIONSHIP_TO_PEERS_TYPE' ordinal='13' />
+            <column datatype='string' name='TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE' ordinal='14' />
+            <column datatype='string' name='SOCIAL_BACKGROUND_TYPE' ordinal='15' />
+            <column datatype='string' name='COMPUTER_LITERACY_TYPE' ordinal='16' />
+            <column datatype='string' name='ATTITUDE_TOWARDS_LEARNING_TYPE' ordinal='17' />
+            <column datatype='string' name='MOTIVATIONAL_LEVEL_TYPE' ordinal='18' />
+            <column datatype='string' name='BARRIERS_TO_LEARNING_INTERESTS' ordinal='19' />
+            <column datatype='string' name='PERSONALITY_TYPE' ordinal='20' />
+            <column datatype='string' name='REASONS_FOR_ATTENDING_COURSE_TYPE' ordinal='21' />
+          </columns>
+        </_.fcp.ObjectModelEncapsulateLegacy.true...relation>
+        <metadata-records>
+          <metadata-record class='capability'>
+            <remote-name />
+            <remote-type>0</remote-type>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias />
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <attributes>
+              <attribute datatype='integer' name='context'>0</attribute>
+              <attribute datatype='string' name='gridOrigin'>&quot;A1:V1001:no:A1:V1001:0&quot;</attribute>
+              <attribute datatype='integer' name='outcome'>6</attribute>
+            </attributes>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ROLE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[ROLE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>ROLE</remote-alias>
+            <ordinal>0</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>AGE_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[AGE_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>AGE_TYPE</remote-alias>
+            <ordinal>1</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>GENDER_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[GENDER_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>GENDER_TYPE</remote-alias>
+            <ordinal>2</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>RACE_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[RACE_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>RACE_TYPE</remote-alias>
+            <ordinal>3</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>JOB_CATEGORY_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[JOB_CATEGORY_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>JOB_CATEGORY_TYPE</remote-alias>
+            <ordinal>4</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>LIFE_STAGE_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[LIFE_STAGE_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>LIFE_STAGE_TYPE</remote-alias>
+            <ordinal>5</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>CAREER_STAGE_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[CAREER_STAGE_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>CAREER_STAGE_TYPE</remote-alias>
+            <ordinal>6</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>SPECIAL_NEEDS_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[SPECIAL_NEEDS_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>SPECIAL_NEEDS_TYPE</remote-alias>
+            <ordinal>7</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>EDUCATIONAL_LEVEL_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[EDUCATIONAL_LEVEL_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>EDUCATIONAL_LEVEL_TYPE</remote-alias>
+            <ordinal>8</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>LANGUAGE_ABILITIES_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[LANGUAGE_ABILITIES_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>LANGUAGE_ABILITIES_TYPE</remote-alias>
+            <ordinal>9</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>LITERACY_NUMERACY_PROFICIENCY_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[LITERACY_NUMERACY_PROFICIENCY_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>LITERACY_NUMERACY_PROFICIENCY_TYPE</remote-alias>
+            <ordinal>10</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>LEARNING_PREFERENCES_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[LEARNING_PREFERENCES_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>LEARNING_PREFERENCES_TYPE</remote-alias>
+            <ordinal>11</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>PRIOR_KNOWLEDGE_SKILLS_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[PRIOR_KNOWLEDGE_SKILLS_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>PRIOR_KNOWLEDGE_SKILLS_TYPE</remote-alias>
+            <ordinal>12</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>RELATIONSHIP_TO_PEERS_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[RELATIONSHIP_TO_PEERS_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>RELATIONSHIP_TO_PEERS_TYPE</remote-alias>
+            <ordinal>13</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE</remote-alias>
+            <ordinal>14</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>SOCIAL_BACKGROUND_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[SOCIAL_BACKGROUND_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>SOCIAL_BACKGROUND_TYPE</remote-alias>
+            <ordinal>15</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>COMPUTER_LITERACY_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[COMPUTER_LITERACY_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>COMPUTER_LITERACY_TYPE</remote-alias>
+            <ordinal>16</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>ATTITUDE_TOWARDS_LEARNING_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[ATTITUDE_TOWARDS_LEARNING_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>ATTITUDE_TOWARDS_LEARNING_TYPE</remote-alias>
+            <ordinal>17</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>MOTIVATIONAL_LEVEL_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[MOTIVATIONAL_LEVEL_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>MOTIVATIONAL_LEVEL_TYPE</remote-alias>
+            <ordinal>18</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>BARRIERS_TO_LEARNING_INTERESTS</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[BARRIERS_TO_LEARNING_INTERESTS]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>BARRIERS_TO_LEARNING_INTERESTS</remote-alias>
+            <ordinal>19</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>PERSONALITY_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[PERSONALITY_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>PERSONALITY_TYPE</remote-alias>
+            <ordinal>20</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+          <metadata-record class='column'>
+            <remote-name>REASONS_FOR_ATTENDING_COURSE_TYPE</remote-name>
+            <remote-type>130</remote-type>
+            <local-name>[REASONS_FOR_ATTENDING_COURSE_TYPE]</local-name>
+            <parent-name>[random_users_weighted.csv]</parent-name>
+            <remote-alias>REASONS_FOR_ATTENDING_COURSE_TYPE</remote-alias>
+            <ordinal>21</ordinal>
+            <local-type>string</local-type>
+            <aggregation>Count</aggregation>
+            <contains-null>true</contains-null>
+            <collation flag='1' name='LEN_RSG_S2' />
+            <attributes>
+              <attribute datatype='string' name='DebugRemoteType'>&quot;WSTR&quot;</attribute>
+            </attributes>
+            <_.fcp.ObjectModelEncapsulateLegacy.true...object-id>[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]</_.fcp.ObjectModelEncapsulateLegacy.true...object-id>
+          </metadata-record>
+        </metadata-records>
+      </connection>
+      <aliases enabled='yes' />
+      <column caption='Age Type' datatype='string' name='[AGE_TYPE]' role='dimension' type='nominal' />
+      <column caption='Attitude Towards Learning Type' datatype='string' name='[ATTITUDE_TOWARDS_LEARNING_TYPE]' role='dimension' type='nominal' />
+      <column caption='Barriers To Learning Interests' datatype='string' name='[BARRIERS_TO_LEARNING_INTERESTS]' role='dimension' type='nominal' />
+      <column caption='Career Stage Type' datatype='string' name='[CAREER_STAGE_TYPE]' role='dimension' type='nominal' />
+      <column caption='Computer Literacy Type' datatype='string' name='[COMPUTER_LITERACY_TYPE]' role='dimension' type='nominal' />
+      <column caption='Educational Level Type' datatype='string' name='[EDUCATIONAL_LEVEL_TYPE]' role='dimension' type='nominal' />
+      <column caption='Gender Type' datatype='string' name='[GENDER_TYPE]' role='dimension' type='nominal' />
+      <column caption='Job Category Type' datatype='string' name='[JOB_CATEGORY_TYPE]' role='dimension' type='nominal' />
+      <column caption='Language Abilities Type' datatype='string' name='[LANGUAGE_ABILITIES_TYPE]' role='dimension' type='nominal' />
+      <column caption='Learning Preferences Type' datatype='string' name='[LEARNING_PREFERENCES_TYPE]' role='dimension' type='nominal' />
+      <column caption='Life Stage Type' datatype='string' name='[LIFE_STAGE_TYPE]' role='dimension' type='nominal' />
+      <column caption='Literacy Numeracy Proficiency Type' datatype='string' name='[LITERACY_NUMERACY_PROFICIENCY_TYPE]' role='dimension' type='nominal' />
+      <column caption='Motivational Level Type' datatype='string' name='[MOTIVATIONAL_LEVEL_TYPE]' role='dimension' type='nominal' />
+      <column caption='Personality Type' datatype='string' name='[PERSONALITY_TYPE]' role='dimension' type='nominal' />
+      <column caption='Prior Knowledge Skills Type' datatype='string' name='[PRIOR_KNOWLEDGE_SKILLS_TYPE]' role='dimension' type='nominal' />
+      <column caption='Race Type' datatype='string' name='[RACE_TYPE]' role='dimension' type='nominal' />
+      <column caption='Reasons For Attending Course Type' datatype='string' name='[REASONS_FOR_ATTENDING_COURSE_TYPE]' role='dimension' type='nominal' />
+      <column caption='Relationship To Peers Type' datatype='string' name='[RELATIONSHIP_TO_PEERS_TYPE]' role='dimension' type='nominal' />
+      <column caption='Role' datatype='string' name='[ROLE]' role='dimension' type='nominal' />
+      <column caption='Social Background Type' datatype='string' name='[SOCIAL_BACKGROUND_TYPE]' role='dimension' type='nominal' />
+      <column caption='Special Needs Type' datatype='string' name='[SPECIAL_NEEDS_TYPE]' role='dimension' type='nominal' />
+      <column caption='Tendency To Compete Or Cooperate Type' datatype='string' name='[TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE]' role='dimension' type='nominal' />
+      <_.fcp.ObjectModelTableType.true...column caption='random_users_weighted.csv' datatype='table' name='[__tableau_internal_object_id__].[random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7]' role='measure' type='quantitative' />
+      <layout _.fcp.SchemaViewerObjectModel.false...dim-percentage='0.5' _.fcp.SchemaViewerObjectModel.false...measure-percentage='0.4' dim-ordering='alphabetic' measure-ordering='alphabetic' show-structure='true' />
+      <semantic-values>
+        <semantic-value key='[Country].[Name]' value='&quot;Singapore&quot;' />
+      </semantic-values>
+      <_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
+        <objects>
+          <object caption='random_users_weighted.csv' id='random_users_weighted.csv_77746FF3F68841DAAAAA738BC4340CD7'>
+            <properties context=''>
+              <relation connection='textscan.0m7akv81cmm15s1cjie411qwdbdh' name='random_users_weighted.csv' table='[random_users_weighted#csv$]' type='table'>
+                <columns character-set='UTF-8' gridOrigin='A1:V1001:no:A1:V1001:0' header='yes' locale='en_SG' separator=','>
+                  <column datatype='string' name='ROLE' ordinal='0' />
+                  <column datatype='string' name='AGE_TYPE' ordinal='1' />
+                  <column datatype='string' name='GENDER_TYPE' ordinal='2' />
+                  <column datatype='string' name='RACE_TYPE' ordinal='3' />
+                  <column datatype='string' name='JOB_CATEGORY_TYPE' ordinal='4' />
+                  <column datatype='string' name='LIFE_STAGE_TYPE' ordinal='5' />
+                  <column datatype='string' name='CAREER_STAGE_TYPE' ordinal='6' />
+                  <column datatype='string' name='SPECIAL_NEEDS_TYPE' ordinal='7' />
+                  <column datatype='string' name='EDUCATIONAL_LEVEL_TYPE' ordinal='8' />
+                  <column datatype='string' name='LANGUAGE_ABILITIES_TYPE' ordinal='9' />
+                  <column datatype='string' name='LITERACY_NUMERACY_PROFICIENCY_TYPE' ordinal='10' />
+                  <column datatype='string' name='LEARNING_PREFERENCES_TYPE' ordinal='11' />
+                  <column datatype='string' name='PRIOR_KNOWLEDGE_SKILLS_TYPE' ordinal='12' />
+                  <column datatype='string' name='RELATIONSHIP_TO_PEERS_TYPE' ordinal='13' />
+                  <column datatype='string' name='TENDENCY_TO_COMPETE_OR_COOPERATE_TYPE' ordinal='14' />
+                  <column datatype='string' name='SOCIAL_BACKGROUND_TYPE' ordinal='15' />
+                  <column datatype='string' name='COMPUTER_LITERACY_TYPE' ordinal='16' />
+                  <column datatype='string' name='ATTITUDE_TOWARDS_LEARNING_TYPE' ordinal='17' />
+                  <column datatype='string' name='MOTIVATIONAL_LEVEL_TYPE' ordinal='18' />
+                  <column datatype='string' name='BARRIERS_TO_LEARNING_INTERESTS' ordinal='19' />
+                  <column datatype='string' name='PERSONALITY_TYPE' ordinal='20' />
+                  <column datatype='string' name='REASONS_FOR_ATTENDING_COURSE_TYPE' ordinal='21' />
+                </columns>
+              </relation>
+            </properties>
+          </object>
+        </objects>
+      </_.fcp.ObjectModelEncapsulateLegacy.true...object-graph>
+    </datasource>
+  </datasources>
+  <worksheets>
+    <worksheet name='Sheet 1'>
+      <table>
+        <view>
+          <datasources />
+          <aggregation value='true' />
+        </view>
+        <style />
+        <panes>
+          <pane selection-relaxation-option='selection-relaxation-allow'>
+            <view>
+              <breakdown value='auto' />
+            </view>
+            <mark class='Automatic' />
+          </pane>
+        </panes>
+        <rows />
+        <cols />
+      </table>
+      <simple-id uuid='{1521C848-94F5-47DD-BECD-FFC3A3C2462C}' />
+    </worksheet>
+  </worksheets>
+  <windows saved-dpi-scale-factor='1.5' source-height='44'>
+    <window class='worksheet' maximized='true' name='Sheet 1'>
+      <cards>
+        <edge name='left'>
+          <strip size='160'>
+            <card type='pages' />
+            <card type='filters' />
+            <card type='marks' />
+          </strip>
+        </edge>
+        <edge name='top'>
+          <strip size='2147483647'>
+            <card type='columns' />
+          </strip>
+          <strip size='2147483647'>
+            <card type='rows' />
+          </strip>
+          <strip size='30'>
+            <card type='title' />
+          </strip>
+        </edge>
+      </cards>
+      <simple-id uuid='{CA2BAAF8-4B83-47BD-B46E-7C22158AB4EF}' />
+    </window>
+  </windows>
+  <thumbnails>
+    <thumbnail height='192' name='Sheet 1' width='192'>
+      iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAACXBIWXMAABYlAAAWJQFJUiTw
+      AAACFUlEQVR4nO3TMQEAIAzAMMC/5yFjRxMFfXpnZg5Eve0A2GQA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQD
+      kGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBp
+      BiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA
+      0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDN
+      AKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxA
+      mgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZ
+      gDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFI
+      MwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKQZgDQDkGYA0gxAmgFIMwBpBiDNAKR9Y+0F
+      fBUOM1sAAAAASUVORK5CYII=
+    </thumbnail>
+  </thumbnails>
+</workbook>
