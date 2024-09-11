@@ -12,6 +12,10 @@ const testQuiz = () => {
     router.push('VideoQuiz');
 };
 
+const testAsssessment = () => {
+    router.push('Assessment');
+};
+
 const SettingPage: React.FC = () => (
     <View style={styles.container}>
         <Text>Settings Screen</Text>
@@ -19,6 +23,8 @@ const SettingPage: React.FC = () => (
         <Button title="Test Lesson" onPress={testLesson}></Button>
         <View style={{marginBottom: 10}}></View>
         <Button title="Test Quiz" onPress={testQuiz}></Button>
+        <View style={{marginBottom: 10}}></View>
+        <Button title="Test Assessment" onPress={testAsssessment}></Button>
         <View style={{marginBottom: 10}}></View>
         <LogoutButton></LogoutButton>
     </View>
