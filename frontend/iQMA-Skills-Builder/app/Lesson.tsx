@@ -35,8 +35,8 @@ export default function Lesson() {
     const handlePress = () => {
         router.push({
             pathname: 'VideoQuiz',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
         });
     };
 

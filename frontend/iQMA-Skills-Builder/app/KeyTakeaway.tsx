@@ -1,7 +1,7 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
@@ -31,10 +31,10 @@ export default function KeyTakeaway() {
         });
     };
 
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0001';
-    const lessonID = '1a';
-    // const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0001';
+    // const lessonID = '1a';
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -63,67 +63,65 @@ export default function KeyTakeaway() {
             setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
+
     return (
-        <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                    subtitle={unitName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    {lessonName}
-                </Text>
-
-                <Text style={styles.takeawayHeader}>Key Takeaways</Text>
-                {keyTakeaway && keyTakeaway.length > 0 ? (
-                    keyTakeaway.map((takeaway: string, index: number) => (
-                        <View key={index}>
-                            <Text style={styles.takeawayText}>
-                                {index + 1}. {takeaway}
-                            </Text>
-                        </View>
-                    ))
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Key Takeaways are not available. Please check with your administrator."
+        <ScrollView style={styles.container}>
+            <View style={{marginBottom: 20}}>
+                <View style={{flex: 1}}>
+                    <SectionCard
+                        title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                        subtitle={unitName}
                     />
-                )}
+                    <Text
+                        style={{
+                            fontSize: 14,
+                            fontWeight: 'bold',
+                            color: '#4143A3',
+                            marginBottom: 20,
+                            marginHorizontal: 10,
+                        }}
+                    >
+                        {lessonName}
+                    </Text>
 
-                <View
-                    style={{
-                        width: '100%',
-                        flexDirection: 'row-reverse',
-                    }}
-                >
-                    <Image
-                        style={{height: 110}}
-                        source={require('@/assets/images/happycloseeye.png')}
-                    ></Image>
+                    <Text style={styles.takeawayHeader}>Key Takeaways</Text>
+                    {keyTakeaway && keyTakeaway.length > 0 ? (
+                        keyTakeaway.map((takeaway: string, index: number) => (
+                            <View key={index}>
+                                <Text style={styles.takeawayText}>
+                                    {index + 1}. {takeaway}
+                                </Text>
+                            </View>
+                        ))
+                    ) : (
+                        <OverviewCard
+                            isError={true}
+                            text="Key Takeaways are not available. Please check with your administrator."
+                        />
+                    )}
+
+                    <View
+                        style={{
+                            width: '100%',
+                            flexDirection: 'row-reverse',
+                        }}
+                    >
+                        <Image
+                            style={{height: 110}}
+                            source={require('@/assets/images/happycloseeye.png')}
+                        ></Image>
+                    </View>
+                </View>
+
+                <View style={styles.buttonContainer}>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </View>
             </View>
-
-            <View
-                style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -146,5 +144,10 @@ const styles = StyleSheet.create({
         lineHeight: 25,
         color: '#4143A3',
         marginBottom: 15,
+    },
+    buttonContainer: {
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        paddingBottom: 20,
     },
 });

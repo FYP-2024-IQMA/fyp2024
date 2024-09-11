@@ -48,8 +48,8 @@ export default function UnitIntroduction() {
         // router.push('Lesson');
         router.push({
             pathname: 'Lesson',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
         });
     };
 
