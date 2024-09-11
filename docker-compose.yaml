@@ -41,6 +41,13 @@ services:
       RABBITMQ_URL: ${RABBITMQ_URL}
     networks:
       - app-network
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: iqma-log-group
+        awslogs-region: ap-southeast-1
+        awslogs-stream: iqma-log-stream
+    
 
 
 
