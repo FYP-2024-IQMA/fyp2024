@@ -6,18 +6,49 @@ import { useNavigation } from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import { QuizCard } from '@/components/QuizCard';
 import axios from 'axios';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Question } from '@/constants/Quiz';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
+    const [sectionNumber, setSectionNumber] = useState<string>('');
+    const [unitNumber, setUnitNumber] = useState<string>('');
+    const [unitName, setUnitName] = useState<string>('');
     const [questions, setQuestions] = useState<Question[]>([]);;
+    const [lessonName, setLessonName] = useState<string>('');
     
-    const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
-    const sectionID = "SEC0001";
-    const unitID = "UNIT0001";
-    const lessonID = "1a";
+    // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
+    // const sectionID = "SEC0001";
+    // const unitID = "UNIT0001";
+    // const lessonID = "1a";
+
+    useEffect(() => {
+        if (sectionID && unitID && lessonID) {
+            (async () => {
+                const unitDetails = await unitEndpoints.getUnitDetails(
+                    sectionID as string,
+                    unitID as string
+                );
+
+                const lessonDetails = await lessonEndpoints.getLessonDetails(
+                    sectionID as string,
+                    unitID as string,
+                    lessonID as string
+                );
+
+                setLessonName(lessonDetails.lessonName);
+                setUnitName(unitDetails.unitName);
+            })();
+            setSectionNumber(formatSection(sectionID as string));
+            setUnitNumber(formatUnit(unitID as string));
+        }
+    }, [sectionID, unitID, lessonID]);
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -49,7 +80,11 @@ export default function VideoQuiz() {
         }
         else {
             // TO CHANGE:
-            router.replace("SectionIntroduction");
+            router.push({
+                pathname: 'KeyTakeaway',
+                // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+                params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            });
         }
     };
 
