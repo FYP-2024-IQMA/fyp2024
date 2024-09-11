@@ -30,6 +30,17 @@ services:
         awslogs-group: iqma-log-group
         awslogs-region: ap-southeast-1
         awslogs-stream: iqma-log-stream
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PW}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+    networks:
+      - app-network
 
 
 
