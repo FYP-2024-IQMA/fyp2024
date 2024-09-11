@@ -24,20 +24,22 @@ function extractYouTubeID(url) {
 /* READ */
 function getAllSections() {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default.from("section").select("*");
+        const { data, error } = yield supabaseConfig_1.default.from("section")
+            .select("sectionID, sectionName");
         if (error) {
             console.error(error);
             throw error;
         }
-        else {
-            const formattedData = data.map((section) => {
-                if (section.introductionURL) {
-                    section.introductionURL = extractYouTubeID(section.introductionURL);
-                }
-                return section;
-            });
-            return formattedData;
-        }
+        return data;
+        // else {
+        // 	const formattedData = data.map((section) => {
+        // 		if (section.introductionURL) {
+        // 			section.introductionURL = extractYouTubeID(section.introductionURL);
+        // 		}
+        // 		return section;
+        // 	});
+        // 	return formattedData;
+        // }
     });
 }
 function getSectionDetails(sectionID) {
