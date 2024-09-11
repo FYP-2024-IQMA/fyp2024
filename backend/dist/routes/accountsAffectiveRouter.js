@@ -26,16 +26,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = require("express");
 const accountsAffectiveController = __importStar(require("../controllers/accountsAffectiveController"));
+const express_1 = require("express");
 const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* CREATE */
 router.post("/createaccountaffective", authMiddleware_1.default, accountsAffectiveController.createAccountAffective);
 /* READ */
-router.get('/getaccountaffectivebyid/:id', authMiddleware_1.default, accountsAffectiveController.getAccountAffectiveById);
+router.get("/getaccountaffectivebyid/:id", authMiddleware_1.default, accountsAffectiveController.getAccountAffectiveById);
 /* UPDATE */
-router.patch('/updateaccountaffective', authMiddleware_1.default, accountsAffectiveController.updateAccountAffective);
+router.patch("/updateaccountaffective", authMiddleware_1.default, accountsAffectiveController.updateAccountAffective);
 /* DELETE */
-router.delete('/deleteaccountaffective/:id', authMiddleware_1.default, accountsAffectiveController.deleteAccountAffective);
+router.delete("/deleteaccountaffective/:id", authMiddleware_1.default, accountsAffectiveController.deleteAccountAffective);
 exports.default = router;

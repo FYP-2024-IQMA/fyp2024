@@ -22,7 +22,7 @@ class ChatGPT(object):
         :max_tokens (int): maximum number of tokens to generate
         :temperature (float): temperature for variance in reply (0 = consistent, 1 = random)
         """
-        self.key = os.getenv("OPENAI_KEY")
+        self.key = os.getenv("OPENAI_API_KEY")
         self.client = openai.OpenAI(api_key=self.key)
         self.num_tries = num_tries
         self.model = model

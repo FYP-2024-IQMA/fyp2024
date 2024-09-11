@@ -2,7 +2,7 @@ import {Button, StyleSheet, Text, View} from 'react-native';
 
 import React from 'react';
 import {LogoutButton} from '@/components/LogoutButton';
-import { router } from 'expo-router';
+import {router} from 'expo-router';
 
 const testLesson = () => {
     router.push('SectionIntroduction');
@@ -13,7 +13,6 @@ const testQuiz = () => {
 };
 
 const SettingPage: React.FC = () => (
-    
     <View style={styles.container}>
         <Text>Settings Screen</Text>
         <View style={{marginBottom: 10}}></View>
@@ -22,7 +21,6 @@ const SettingPage: React.FC = () => (
         <Button title="Test Quiz" onPress={testQuiz}></Button>
         <View style={{marginBottom: 10}}></View>
         <LogoutButton></LogoutButton>
-        
     </View>
 );
 
