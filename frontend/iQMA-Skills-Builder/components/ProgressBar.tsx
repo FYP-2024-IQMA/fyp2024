@@ -13,9 +13,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     progress,
     isQuestionnaire,
 }) => {
-    // const screenWidth = Dimensions.get("window").width;
-    // const padding = 20;
-    // const progressBarWidth = screenWidth - 2 * padding - 30;
 
     const handlePress = () => {
         router.replace('Home');

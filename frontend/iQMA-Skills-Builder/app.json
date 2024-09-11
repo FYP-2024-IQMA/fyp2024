@@ -20,7 +20,8 @@
                 "foregroundImage": "./assets/images/iqma-adaptive-icon.png",
                 "backgroundColor": "#ffffff"
             },
-            "package": "com.iqma.iqmaskillsbuilder"
+            "package": "com.iqma.iqmaskillsbuilder",
+            "versionCode": 10
         },
         "web": {
             "bundler": "metro",

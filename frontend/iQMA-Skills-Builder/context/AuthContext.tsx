@@ -23,12 +23,12 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const watchUserSession = async () => {
         if (user) {
             setCurrentUser(user);
-            fetchToken();
+            await fetchToken();
             console.log(user);
             // router.push("CreateProfile");
             // router.push("IntroductionMascot");
             // router.replace("/Home");
-            checkFirstLogin();
+            await checkFirstLogin();
             if (user.sub) {
                 await AsyncStorage.setItem('userID', user.sub);
             }
@@ -47,7 +47,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 setToken(credentials.idToken);
 
                 const response = await fetch(
-                    `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/setToken`,
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/setToken`,
                     {
                         method: 'POST',
                         headers: {
@@ -58,7 +58,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 );
 
                 console.log(response.status);
-                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getallaccounts`;
+                const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getallaccounts`;
             }
         } catch (e) {
             console.log('Error fetching token:', e);
@@ -89,7 +89,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     // Check First Time Login
     const checkFirstLogin = async () => {
         try {
-            const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/accounts/getaccountbyid/${user?.sub}`;
+            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${user?.sub}`;
 
             const response = await fetch(url);
 
@@ -113,7 +113,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('UnitIntroduction');
                     // router.replace('VideoQuiz');
                     // router.replace('Lesson');
-                    // router.replace("SectionIntroduction")
+                    // router.replace("SectionIntroduction");
+                    // router.replace('CheatSheet');
                 } else {
                     router.replace('IntroductionMascot');
                 }
