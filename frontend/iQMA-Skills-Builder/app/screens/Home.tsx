@@ -5,63 +5,30 @@ import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
-import ProgressPath from '@/components/ProgressPath';
+import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
 import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import {useContext} from 'react';
-
-interface SectionDividerProps {
-    label: string;
-}
-
-interface Icon {
-    name: string;
-    color: string;
-    size: number;
-    status: string;
-}
-
-const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
-    try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/gettotalunit/${sectionID}`;
-        const response = await fetch(url);
-        const unitProgress = await response.json();
-        return unitProgress;
-    } catch (error) {
-        console.error('Error while loading unit progress:', error);
-        return 0;
-    }
-};
-
-// need to + 1 to find the current unit
-const numberOfCompletedUnitsPerSection = async (
-    userID: string,
-    sectionID: string
-): Promise<number> => {
-    try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${userID}/${sectionID}`;
-        const response = await fetch(url);
-        const unitProgress = await response.json();
-        return unitProgress;
-    } catch (error) {
-        console.error('Error while loading completed unit:', error);
-        return 0;
-    }
-};
+import {router} from 'expo-router';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
-    const [icons, setIcons] = useState<Icon[]>([]);
     const [circularProgress, setCircularProgress] = useState<number>(0);
-    const [sectionCircularProgress, setSectionCircularProgress] =
-        useState<number>(0);
+    const [sectionCircularProgress, setSectionCircularProgress] = useState<number>(0);
+    const [allSectionDetails, setAllSectionDetails] = useState<any[]>([]);
+    const [iconsData, setIconsData] = useState<{ [key: number]: ProgressPathProps['icons'] }>({});
+    const [loading, setLoading] = useState(true);
 
     const loadUnitCircularProgress = async (
         userID: string,
         sectionID: string,
         unitID: string
     ) => {
-        // console.log('LOAD UNIT CIRCULAR PROGRESS');
+        console.log('LOAD UNIT CIRCULAR PROGRESS');
         // console.log(userID, sectionID, unitID);
 
         try {
@@ -86,19 +53,23 @@ const HomeScreen: React.FC = () => {
         }
     };
 
-    // number of units user did out of total units in that section
+    // number of units user did out of total units in that section (completed units/ total units)
+    // for top right circular progress
     // will show 0 if only lessons done in unit 1, because it 0 units completed
     const loadSectionProgress = async (
         userID: string,
         sectionID: string
     ): Promise<number> => {
         try {
-            const sectionProgress = await numberOfCompletedUnitsPerSection(
-                userID,
+            const sectionProgress =
+                await resultEndpoints.numberOfCompletedUnitsPerSection(
+                    userID,
+                    sectionID
+                );
+
+            const noOfUnits = await unitEndpoints.numberOfUnitsPerSection(
                 sectionID
             );
-
-            const noOfUnits = await numberOfUnitsPerSection(sectionID);
 
             setSectionCircularProgress(
                 Math.ceil((sectionProgress / noOfUnits) * 100)
@@ -111,93 +82,197 @@ const HomeScreen: React.FC = () => {
         }
     };
 
-    const getIconStatus = (totalUnits: number, completedUnits: number) => {
+    const getIconStatus = async (
+        sectionID: string,
+        circularProgress: number,
+        completedUnits: number,
+        totalLesson: number,
+        completedLessons: number,
+        currentLessonId?: string
+    ) => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
+
+        // console.log('Section ID:', sectionID);
+        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+        const currentUnit = completedUnits + 1;
+
+        // console.log('Current Unit:', currentUnit);
+        // // % of lesson & unit quiz completion
+        // console.log('circular progress:', circularProgress);
+        // console.log('total lesson:', totalLesson);
+        // console.log('completed lessons:', completedLessons);
+        // console.log('current lesson id:', currentLessonId);
+
         return Array.from({length: totalUnits}, (_, index) => {
-            let status, icon;
-            if (index < completedUnits) {
-                status = 'completed';
-                icon = iconTypes[index % iconTypes.length];
-            } else if (index === completedUnits) {
+            const icon = iconTypes[index % iconTypes.length];
+            let status = 'not-started';
+            let routerName = 'UnitIntroduction';
+
+            const unitID = `UNIT${(index + 1).toString().padStart(4, '0')}`;
+
+            if (index + 1 === currentUnit) {
                 status = 'in-progress';
-                icon = iconTypes[index % iconTypes.length];
-            } else {
-                status = 'not-started';
-                icon = iconTypes[index % iconTypes.length];
+
+                if (
+                    totalLesson === completedLessons &&
+                    circularProgress !== 100
+                ) {
+                    routerName = 'CheatSheet';
+                } else if (completedLessons !== 0) {
+                    routerName = 'Lesson';
+                } else if (completedUnits === 0) {
+                    routerName = 'SectionIntroduction';
+                }
+            } else if (index + 1 < currentUnit) {
+                status = 'completed';
+                if (index === 0) {
+                    routerName = 'SectionIntroduction';
+                }
             }
-            return {name: icon, color: '#FFFFFF', size: 40, status};
+
+            if (currentLessonId !== null) {
+                return {
+                    name: icon,
+                    status,
+                    onPress: () => handlePress(routerName, sectionID, unitID, currentLessonId),
+                };
+            }
+
+            return {
+                name: icon,
+                status,
+                onPress: () => handlePress(routerName, sectionID, unitID),
+            };
         });
     };
 
+    const fetchProgressDataNew = async (secId: number) => {
+        const sectionID = `SEC${secId.toString().padStart(4, '0')}`;
+
+        const completedUnits = await resultEndpoints.numberOfCompletedUnitsPerSection(currentUser.sub, sectionID);
+
+        // unit to light up (current unit)
+        const lightedUnit = completedUnits + 1;
+        const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
+
+        const completedLessons = await resultEndpoints.numberOfCompletedLessonsPerUnit(currentUser.sub, sectionID, unitID);
+        // setCompletedLessons(completedLessons);
+        const totalLesson = await lessonEndpoints.getNumofLessonsPerUnit(sectionID, unitID);
+        // setTotalLesson(totalLesson);
+
+        const getAllLessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
+
+        let currentLessonId = null;
+
+        if (completedLessons < totalLesson) {
+            // no need to add 1 because indexing starts from 0
+            currentLessonId = getAllLessons[completedLessons].lessonID;
+        }
+
+        // circular progress is set inside here
+        loadUnitCircularProgress(currentUser.sub, sectionID, unitID);
+
+        const iconsStatus = await getIconStatus(
+            sectionID,
+            circularProgress,
+            completedUnits,
+            totalLesson,
+            completedLessons,
+            currentLessonId
+        );
+
+        return iconsStatus;
+    };
+
     useEffect(() => {
-        const fetchProgressData = async () => {
-            const currentSection = await getCurrentSection();
-            await AsyncStorage.setItem(
-                'currentSection',
-                currentSection.toString()
-            );
 
-            const sectionID = `SEC${currentSection
-                .toString()
-                .padStart(4, '0')}`;
-            await AsyncStorage.setItem('sectionID', sectionID);
+        (async () => {
+            try {
+                const sectionDetails =
+                    await sectionEndpoints.getAllSectionDetails();
+                const currentSection = await getCurrentSection();
+                console.log(currentSection);
+                setAllSectionDetails(
+                    sectionDetails.slice(0, currentSection + 1)
+                );
 
-            const totalUnits = await numberOfUnitsPerSection(`${sectionID}`);
-            const completedUnits = await numberOfCompletedUnitsPerSection(
-                `${currentUser.sub}`,
-                `${sectionID}`
-            );
+                await AsyncStorage.setItem(
+                    'currentSection',
+                    currentSection.toString()
+                );
 
-            // unit to light up
-            const lightedUnit = completedUnits + 1;
-            const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
-            await AsyncStorage.setItem('unitID', unitID);
+                const sectionID = `SEC${currentSection
+                    .toString()
+                    .padStart(4, '0')}`;
+                await AsyncStorage.setItem('sectionID', sectionID);
 
-            const iconsStatus = getIconStatus(totalUnits, completedUnits);
-            setIcons(iconsStatus);
-            loadUnitCircularProgress(
-                `${currentUser.sub}`,
-                `${sectionID}`,
-                `${unitID}`
-            );
-            loadSectionProgress(`${currentUser.sub}`, `${sectionID}`);
-        };
+                await loadSectionProgress(currentUser.sub, sectionID);
 
-        fetchProgressData();
+                // Initialize iconsData
+                const newIconsData: {
+                    [key: number]: ProgressPathProps['icons'];
+                } = {};
+
+                // Load iconsData based on currentSection
+                for (let i = 0; i < currentSection; i++) {
+                    const progressData = await fetchProgressDataNew(i + 1);
+                    newIconsData[i] = progressData;
+                }
+
+                setIconsData(newIconsData);
+            } catch (error) {
+                console.log('Error Loading Data', error);
+            } finally {
+                setLoading(false);
+            }
+        })();
+
     }, []);
-    const SectionDivider: React.FC<SectionDividerProps> = ({label}) => (
-        <View style={styles.dividerContainer}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>{label}</Text>
-            <View style={styles.dividerLine} />
-        </View>
-    );
+
+    useEffect(() => {
+        console.log('All Section Details:', allSectionDetails);
+    }, [allSectionDetails]);
+
+    const handlePress = (
+        pathName: string,
+        sectionID: string,
+        unitID?: string,
+        lessonID?: string
+    ) => {
+        console.log('Pressed in HOME');
+        console.log(pathName, sectionID, unitID, lessonID);
+        router.push({
+            pathname: pathName,
+            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+        });
+    };
+
+    if (loading) {
+        // add spinner next time
+        return <Text>Loading...</Text>;
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
             {/* Top Stats */}
             <TopStats circularProgress={sectionCircularProgress} />
 
-            {/* Section 1 */}
-            <SectionCard
-                title="SECTION 1, UNIT 1"
-                subtitle="Foundations of Communication"
-            />
-
-            <View>
-                <ProgressPath
-                    icons={icons}
-                    circularProgress={circularProgress}
-                />
-            </View>
-            {/* Divider */}
-            <SectionDivider label="Written Communication Proficiency" />
-
-            {/* Section 2 */}
-            <SectionCard
-                title="SECTION 1, UNIT 2"
-                subtitle="Written Communication Proficiency"
-            />
+            {allSectionDetails.length > 0 ? (
+                allSectionDetails.map((sectionDetail, index) => (
+                    <View key={index}>
+                        <SectionCard
+                            title={`SECTION ${index + 1}`}
+                            subtitle={sectionDetail.sectionName}
+                        />
+                        <ProgressPath
+                            icons={iconsData[index] || []}
+                            circularProgress={circularProgress}
+                        />
+                    </View>
+                ))
+            ) : (
+                <Text>No sections available</Text>
+            )}
         </ScrollView>
     );
 };
