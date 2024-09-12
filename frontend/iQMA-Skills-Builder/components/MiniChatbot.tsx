@@ -13,16 +13,21 @@ import {
 } from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 
-import {AntDesign} from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {ChatBubble} from '@/components/ChatBubble';
-import {ChatDrawerParamList} from '@/components/ChatbotDrawer';
 import ChatInput from '@/components/ChatInput';
-import {DrawerScreenProps} from '@react-navigation/drawer';
-import {Feather} from '@expo/vector-icons';
-import {useDrawerStatus} from '@react-navigation/drawer';
-import {useNavigation} from '@react-navigation/native';
+
+interface QuizItem {
+    answer: string | null;
+    isSelfReflection: boolean;
+    option1: object | null;
+    option2: object | null;
+    option3: object | null;
+    option4: object | null;
+    question: string;
+    questionNo: number;
+    quizID: number;
+}
 
 // Getting response from chatbot -> to add examples and summarise
 const getChatbotResponse = async (
@@ -31,8 +36,6 @@ const getChatbotResponse = async (
     history?: Array<{role: string; content: string}>
 ) => {
     try {
-        // const response = await fetch(`http://10.0.2.2:8000/generate`, {
-
         const response = await fetch(`http://10.0.2.2:8000/generate`, {
             method: 'POST',
             headers: {
@@ -64,8 +67,6 @@ const saveChatHistory = async (
             queryPair: queryPair,
         };
 
-        console.log(body);
-        console.log('inside savechathistory function in mini');
         const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/createchathistory`;
 
         const response = await fetch(url, {
@@ -85,17 +86,16 @@ const saveChatHistory = async (
 };
 
 //get reflection qn from backend
-const reflectionQuestion = async (
-    sectionID: string,
-    unitID: string,
-    lessonID: string
-) => {
+const reflectionQuestion = async (sectionID: string, unitID: string) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/getquestions/${sectionID}/${unitID}/${lessonID}}`;
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const data = await response.json();
-        console.log('refkectuib qb', data);
-        return data;
+        const reflectionQn = data.filter(
+            (item: QuizItem) => item.isSelfReflection === true
+        );
+
+        return reflectionQn[0].question;
     } catch (error) {
         console.error('Error while getting reflection question:', error);
     }
@@ -110,15 +110,11 @@ const MiniChatbot: React.FC = () => {
     const scrollViewRef = useRef<ScrollView>(null);
 
     const sectionID = 'SEC0001';
-    const lessonID = '4c';
-    const unitID = 'UNI0001';
+    const unitID = 'UNIT0001';
 
     // handle user input
     const handleSend = async (message: string) => {
-        console.log('in minichatbot handlesend');
-        console.log(message);
         const userMessage = {text: message, isUser: true};
-        console.log(userMessage);
         const newMessages = [...messages, userMessage];
         setMessages(newMessages);
         setMessage('');
@@ -146,23 +142,18 @@ const MiniChatbot: React.FC = () => {
 
             scrollViewRef.current?.scrollToEnd({animated: true});
 
-            // saveChatHistory(currentUser.sub, sectionID, queryPair);
+            saveChatHistory(currentUser.sub, sectionID, queryPair);
         }
     };
 
     useEffect(() => {
-        if (sectionID && lessonID && unitID) {
-            async () => {
-                const response = await reflectionQuestion(
-                    sectionID,
-                    unitID,
-                    lessonID
-                );
-                console.log(response);
-                setMessages([response]);
-            };
+        if (sectionID && unitID) {
+            (async () => {
+                const response = await reflectionQuestion(sectionID, unitID);
+                setMessages([{text: response, isUser: false}]);
+            })();
         }
-    }, [sectionID, lessonID, unitID]);
+    }, [sectionID, unitID]);
     return (
         <>
             <View style={styles.container}>
