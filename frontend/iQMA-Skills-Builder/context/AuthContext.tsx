@@ -35,6 +35,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         } else {
             setIsLoading(false);
         }
+        setIsLoading(false);
     };
 
     // Retrieve Access Token if user is Logged In
@@ -80,6 +81,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             await clearSession();
             setCurrentUser(null);
             setToken(null);
+            await AsyncStorage.removeItem('userID'); 
             router.replace('/'); // For redirect if page is not Index
         } catch (e) {
             console.log(e);

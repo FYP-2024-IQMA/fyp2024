@@ -111,7 +111,7 @@ const ChatbotDrawer: React.FC<any> = ({navigation}) => {
     useEffect(() => {
         const fetchSectionID = async () => {
             try {
-                const url = `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:3000/result/getuserprogress/${currentUser?.uid}`;
+                const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${currentUser?.uid}`;
                 const response = await fetch(url);
                 let Id = await response.json();
                 if (Id < 2) {
