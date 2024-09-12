@@ -59,13 +59,19 @@ export default function CheatSheet() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-
                 const lessonDetails = await lessonEndpoints.getAllLesson(
                     sectionID as string,
                     unitID as string
                 );
 
-                setLessons(lessonDetails);
+                const processedLessonDetails = lessonDetails
+                    .filter((lesson: any) => !lesson.lessonID.includes('.2'))
+                    .map((lesson: any) => ({
+                        ...lesson,
+                        lessonName: lesson.lessonName.replace('.1', ''),
+                    }));
+
+                setLessons(processedLessonDetails);
             })();
             setUnitNumber(formatUnit(unitID as string));
         }
@@ -74,7 +80,7 @@ export default function CheatSheet() {
     const handlePress = () => {
         // router.push("Lesson")
         router.push({
-            pathname: "Lesson", // to be replaced with Unit Reality Check page
+            pathname: "UnitIntroduction", // to be replaced with Unit Reality Check page
             params: {sectionID: sectionID, unitID: unitID},
         });
     };
