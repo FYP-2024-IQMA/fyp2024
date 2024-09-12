@@ -31,17 +31,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessage = void 0;
 const clickstreamService = __importStar(require("../services/clickstreamService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const messageBody = req.body;
     try {
         const message = yield clickstreamService.sendMessage(messageBody);
         res.status(200).json({ message: 'Published message successfully' });
     }
-    catch (e) {
-        res.status(500).json({ error: "Failed to send data", e });
+    catch (error) {
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.sendMessage = sendMessage;
