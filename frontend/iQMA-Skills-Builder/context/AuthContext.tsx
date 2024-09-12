@@ -101,8 +101,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             console.log(response.status);
 
             if (
-                response.status === 500 &&
-                data.error === 'Failed to retrieve account'
+                response.status === 406 &&
+                // data.error === 'Failed to retrieve account'
+                data.details === 'The result contains 0 rows'
             ) {
                 console.log('First Time:', data);
 

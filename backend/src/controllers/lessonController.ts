@@ -1,6 +1,7 @@
 import * as lessonService from "../services/lessonService";
 
 import { Request, Response } from "express";
+import handleError from "../errors/errorHandling";
 
 /* READ */
 
@@ -11,10 +12,11 @@ export const getNoOfLessonPerUnit = async (req: Request, res: Response) => {
 			req.params.unitID
 		);
 		res.status(200).json(lessonCount);
-	} catch (error) {
-		res.status(500).json({
-			error: `Failed to retrieve no. of lesson per unit of ${req.params.unitID}`,
-		});
+	} catch (error: any) {
+		const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
 	}
 };
 
@@ -26,10 +28,11 @@ export const getLesson = async (req: Request, res: Response) => {
 			req.params.lessonID
 		);
 		res.status(200).json(lesson);
-	} catch (error) {
-		res.status(500).json({
-			error: `Failed to retrieve lesson ${req.params.lessonID}`,
-		});
+	} catch (error: any) {
+		const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
 	}
 };
 
@@ -40,9 +43,10 @@ export const getAllLessons = async (req: Request, res: Response) => {
 			req.params.unitID
 		);
 		res.status(200).json(lessons);
-	} catch (error) {
-		res.status(500).json({
-			error: `Failed to retrieve lessons of ${req.params.unitID}`,
-		});
+	} catch (error: any) {
+		const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
 	}
 };
