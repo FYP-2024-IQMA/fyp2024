@@ -16,7 +16,7 @@ export const LoginButton = () => {
 
     return (
         <>
-            {currentUser ? (
+            {/* {currentUser ? (
                 // if currentUser exists, disable Log in button
                 <Button onPress={logIn} title="Get Started" disabled />
             ) : (
@@ -25,7 +25,12 @@ export const LoginButton = () => {
                         <Text style={{color: 'white'}}>Get Started</Text>
                     </View>
                 </Pressable>
-            )}
+            )} */}
+            <Pressable onPress={logIn} style={[styles.button]}>
+                <View>
+                    <Text style={{color: 'white'}}>Get Started</Text>
+                </View>
+            </Pressable>
         </>
     );
 };

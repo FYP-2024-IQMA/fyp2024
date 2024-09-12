@@ -44,7 +44,8 @@ const getChatbotResponse = async (
 ) => {
     try {
         const response = await fetch(
-            `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`,
+            // `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`,
+            `http://10.0.2.2:8000/generate`,
             {
                 method: 'POST',
                 headers: {

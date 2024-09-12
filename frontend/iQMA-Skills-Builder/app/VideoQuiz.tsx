@@ -8,29 +8,34 @@ import { QuizCard } from '@/components/QuizCard';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { Question } from '@/constants/Quiz';
+import * as quizEndpoints from '@/helpers/quizEndpoints';
+
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);;
     
+    // Hardcoded. Change after routing confirmed.
     const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     const sectionID = "SEC0001";
     const unitID = "UNIT0001";
     const lessonID = "1a";
 
     useEffect(() => {
-        const fetchQuestions = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}/${lessonID}`
+        if (sectionID && unitID && lessonID) {
+            (async () => {
+                const response = await quizEndpoints.getQuizzes(
+                    sectionID as string,
+                    unitID as string,
+                    lessonID as string
                 );
-                setQuestions(response.data)
-            } catch (e) {
-                console.error(e);
-            }
-        };
-        fetchQuestions();
+
+                setQuestions(response)
+            })();
+
+        }
+
     }, [sectionID, unitID, lessonID]);
 
     useLayoutEffect(() => {
