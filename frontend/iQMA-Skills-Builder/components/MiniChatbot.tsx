@@ -67,7 +67,7 @@ const saveChatHistory = async (
             queryPair: queryPair,
         };
 
-        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/createchathistory`;
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/createchathistory`;
 
         const response = await fetch(url, {
             method: 'POST',
