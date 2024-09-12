@@ -9,45 +9,23 @@ import {OverviewCard} from '@/components/OverviewCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 
 // where things show up
 export default function RealityCheck() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    // Use this for Routing
+    // const {sectionID, unitID} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
-    const [unitDescription, setUnitDescription] = useState<string[]>([]);
-
-    const [seconds, setSeconds] = useState<number>(0);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-    const startTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-        timerRef.current = setInterval(() => {
-            setSeconds(prevSeconds => prevSeconds + 1);
-        }, 1000);
-    };
-
-    const stopTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-    };
+    const [realityCheckDescription, setRealityCheckDescription] = useState<string[]>([]);
+    
+    // Only for testing, please delete
+    const [sectionID, setSectionID] = useState<string>("SEC0001")
+    const [unitID, setUnitID] = useState<string>("UNIT0001")
 
     useEffect(() => {
-        startTimer();
-        return () => {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-          }
-        };
     }, []);
 
     useLayoutEffect(() => {
@@ -66,7 +44,7 @@ export default function RealityCheck() {
                     unitID as string
                 );
 
-                setUnitDescription(unitDetails.unitDescription);
+                setRealityCheckDescription(unitDetails.realityCheck);
                 setUnitName(unitDetails.unitName);
             })();
             setSectionNumber(formatSection(sectionID as string));
@@ -75,30 +53,11 @@ export default function RealityCheck() {
     }, [sectionID, unitID]);
 
     const handlePress = async () => {
-        // router.push('Lesson');
+
         router.push({
-            pathname: 'Lesson',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            pathname: 'Assessment',
+            params: {sectionID: sectionID, unitID: unitID},
         });
-        stopTimer();
-        const userID = await AsyncStorage.getItem('userID');
-        try {
-            const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`, 
-                {
-                    "userID": userID,
-                    "eventType": "timeTaken",
-                    "event": `unitID ${unitID}`,
-                    "timestamp": new Date().toISOString(),
-                    "time": `${seconds}`
-                }
-            )
-            console.log(response.data)
-        } catch (e) {
-            console.error(e);
-        }
-        setSeconds(0);
     };
 
     return (
@@ -117,11 +76,11 @@ export default function RealityCheck() {
                         marginHorizontal: 10,
                     }}
                 >
-                    Unit {unitNumber}: Introduction
+                    Unit {unitNumber}: Reality Check
                 </Text>
 
-                {unitDescription.length > 0 ? (
-                    unitDescription.map((description, index) => (
+                {realityCheckDescription.length > 0 ? (
+                    realityCheckDescription.map((description, index) => (
                         <OverviewCard key={index} text={description} />
                     ))
                 ) : (
@@ -134,7 +93,7 @@ export default function RealityCheck() {
                 <View style={{width: '100%', flexDirection: 'row-reverse'}}>
                     <Image
                         style={{}}
-                        source={require('@/assets/images/neutral.png')}
+                        source={require('@/assets/images/happycloseeye.png')}
                     ></Image>
                 </View>
             </View>

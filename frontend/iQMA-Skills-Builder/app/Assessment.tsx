@@ -6,7 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
 import axios from 'axios';
-import {router} from 'expo-router';
+import {router, useLocalSearchParams} from 'expo-router';
 import {Question} from '@/constants/Quiz';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
@@ -24,8 +24,9 @@ export default function Assessment() {
     const [unitScenario, setUnitScenario] = useState<string>('');
 
     // Hardcoded for now until routing confirmed
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0001';
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0001';
+    const {sectionID, unitID} = useLocalSearchParams();
 
     useEffect(() => {
         if (sectionID && unitID) {
