@@ -53,7 +53,20 @@ export default function VideoQuiz() {
             setCurrentQnsIdx(newIdx);
         }
         else {
-            router.replace("KeyTakeaway");
+            try {
+                const resultResponse = await axios.post(
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`,
+                    {
+                        "userID": await AsyncStorage.getItem('userID'),
+                        "quizID": questions[currentQnsIdx].quizID
+                    }
+                )
+                console.log(resultResponse.data)
+                router.replace("KeyTakeaway");
+            } catch (e) {
+                console.error(e);
+            } 
+            
         }
     };
 
