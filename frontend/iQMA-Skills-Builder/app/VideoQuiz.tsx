@@ -91,8 +91,8 @@ export default function VideoQuiz() {
     return (
         <ScrollView style={styles.container}>
             <SectionCard
-                title="SECTION 1, UNIT 1"
-                subtitle="Foundations of Communication"
+                title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                subtitle={unitName}
             />
             <View style={{marginHorizontal: 10}}>
                 <Text
@@ -120,7 +120,10 @@ export default function VideoQuiz() {
                     />
                 </View>
                 {questions.length > 0 && questions[currentQnsIdx] && (
-                    <QuizCard questionData={questions[currentQnsIdx]} onNextQuestion={handleNextQuestion} />
+                    <QuizCard
+                        questionData={questions[currentQnsIdx]}
+                        onNextQuestion={handleNextQuestion}
+                    />
                 )}
             </View>
         </ScrollView>

@@ -44,7 +44,7 @@ const getChatbotResponse = async (
 ) => {
     try {
         const response = await fetch(
-            `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`,
+            `${process.env.EXPO_PUBLIC_CHATBOT_URL}/generate`,
             {
                 method: 'POST',
                 headers: {
@@ -101,7 +101,7 @@ const loadChatHistory = async (userId: string, sectionId: string) => {
 
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/getchathistory/${userId}/${sectionId}`;
-        console.log('URL: ', url);
+        // console.log('URL: ', url);
 
         const response = await fetch(url);
 

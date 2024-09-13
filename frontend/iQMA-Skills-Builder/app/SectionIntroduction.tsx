@@ -14,8 +14,8 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    // const { sectionID } = useLocalSearchParams();
-    const sectionID = 'SEC0001'; // to be removed
+    const { sectionID, unitID, lessonID } = useLocalSearchParams();
+    // const sectionID = 'SEC0001'; // to be removed
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
     const [videoId, setVideoId] = useState<string>('');
@@ -47,7 +47,7 @@ export default function SectionIntroduction() {
         // router.push('UnitIntroduction');
         router.push({
             pathname: 'UnitIntroduction',
-            params: {sectionID: sectionID, unitID: 'UNIT0001'},
+            params: {sectionID, unitID, lessonID},
         });
     };
 

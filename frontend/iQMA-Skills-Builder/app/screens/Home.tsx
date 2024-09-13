@@ -88,7 +88,6 @@ const HomeScreen: React.FC = () => {
         completedUnits: number,
         totalLesson: number,
         completedLessons: number,
-        currentLessonId?: string
     ) => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
 
@@ -103,12 +102,22 @@ const HomeScreen: React.FC = () => {
         // console.log('completed lessons:', completedLessons);
         // console.log('current lesson id:', currentLessonId);
 
-        return Array.from({length: totalUnits}, (_, index) => {
+    const iconsData = await Promise.all(
+        Array.from({length: totalUnits}, async (_, index) => {
             const icon = iconTypes[index % iconTypes.length];
             let status = 'not-started';
             let routerName = 'UnitIntroduction';
 
             const unitID = `UNIT${(index + 1).toString().padStart(4, '0')}`;
+
+            // to get the lessonID
+            const getAllLessons = await lessonEndpoints.getAllLesson(
+                sectionID,
+                unitID
+            );
+
+            let currentLessonId = getAllLessons[completedLessons].lessonID;
+            const firstLessonId = getAllLessons[0].lessonID;
 
             if (index + 1 === currentUnit) {
                 status = 'in-progress';
@@ -125,25 +134,22 @@ const HomeScreen: React.FC = () => {
                 }
             } else if (index + 1 < currentUnit) {
                 status = 'completed';
+                currentLessonId = firstLessonId;
                 if (index === 0) {
                     routerName = 'SectionIntroduction';
                 }
             }
 
-            if (currentLessonId !== null) {
-                return {
-                    name: icon,
-                    status,
-                    onPress: () => handlePress(routerName, sectionID, unitID, currentLessonId),
-                };
-            }
-
             return {
                 name: icon,
                 status,
-                onPress: () => handlePress(routerName, sectionID, unitID),
+                onPress: () =>
+                    handlePress(routerName, sectionID, unitID, currentLessonId),
             };
-        });
+        })
+    );
+
+    return iconsData;
     };
 
     const fetchProgressDataNew = async (secId: number) => {
@@ -156,18 +162,7 @@ const HomeScreen: React.FC = () => {
         const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
 
         const completedLessons = await resultEndpoints.numberOfCompletedLessonsPerUnit(currentUser.sub, sectionID, unitID);
-        // setCompletedLessons(completedLessons);
         const totalLesson = await lessonEndpoints.getNumofLessonsPerUnit(sectionID, unitID);
-        // setTotalLesson(totalLesson);
-
-        const getAllLessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
-
-        let currentLessonId = null;
-
-        if (completedLessons < totalLesson) {
-            // no need to add 1 because indexing starts from 0
-            currentLessonId = getAllLessons[completedLessons].lessonID;
-        }
 
         // circular progress is set inside here
         loadUnitCircularProgress(currentUser.sub, sectionID, unitID);
@@ -178,7 +173,6 @@ const HomeScreen: React.FC = () => {
             completedUnits,
             totalLesson,
             completedLessons,
-            currentLessonId
         );
 
         return iconsStatus;
@@ -188,8 +182,7 @@ const HomeScreen: React.FC = () => {
 
         (async () => {
             try {
-                const sectionDetails =
-                    await sectionEndpoints.getAllSectionDetails();
+                const sectionDetails = await sectionEndpoints.getAllSectionDetails();
                 const currentSection = await getCurrentSection();
                 console.log(currentSection);
                 setAllSectionDetails(
@@ -201,9 +194,7 @@ const HomeScreen: React.FC = () => {
                     currentSection.toString()
                 );
 
-                const sectionID = `SEC${currentSection
-                    .toString()
-                    .padStart(4, '0')}`;
+                const sectionID = `SEC${currentSection.toString().padStart(4, '0')}`;
                 await AsyncStorage.setItem('sectionID', sectionID);
 
                 await loadSectionProgress(currentUser.sub, sectionID);
