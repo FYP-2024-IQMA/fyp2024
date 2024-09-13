@@ -96,13 +96,11 @@ export default function SectionIntroduction() {
                 )}
             </View>
 
-            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }

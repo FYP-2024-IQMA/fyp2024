@@ -65,62 +65,64 @@ export default function KeyTakeaway() {
     }, [sectionID, unitID]);
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={{marginBottom: 20}}>
-                <View style={{flex: 1}}>
-                    <SectionCard
-                        title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                        subtitle={unitName}
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
+            <View>
+                <SectionCard
+                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                    subtitle={unitName}
+                />
+                <Text
+                    style={{
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        color: '#4143A3',
+                        marginBottom: 20,
+                        marginHorizontal: 10,
+                    }}
+                >
+                    {lessonName}
+                </Text>
+
+                <Text style={styles.takeawayHeader}>Key Takeaways</Text>
+                {keyTakeaway && keyTakeaway.length > 0 ? (
+                    keyTakeaway.map((takeaway: string, index: number) => (
+                        <View key={index}>
+                            <Text style={styles.takeawayText}>
+                                {index + 1}. {takeaway}
+                            </Text>
+                        </View>
+                    ))
+                ) : (
+                    <OverviewCard
+                        isError={true}
+                        text="Key Takeaways are not available. Please check with your administrator."
                     />
-                    <Text
-                        style={{
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                            color: '#4143A3',
-                            marginBottom: 20,
-                            marginHorizontal: 10,
-                        }}
-                    >
-                        {lessonName}
-                    </Text>
+                )}
 
-                    <Text style={styles.takeawayHeader}>Key Takeaways</Text>
-                    {keyTakeaway && keyTakeaway.length > 0 ? (
-                        keyTakeaway.map((takeaway: string, index: number) => (
-                            <View key={index}>
-                                <Text style={styles.takeawayText}>
-                                    {index + 1}. {takeaway}
-                                </Text>
-                            </View>
-                        ))
-                    ) : (
-                        <OverviewCard
-                            isError={true}
-                            text="Key Takeaways are not available. Please check with your administrator."
-                        />
-                    )}
-
-                    <View
-                        style={{
-                            width: '100%',
-                            flexDirection: 'row-reverse',
-                        }}
-                    >
-                        <Image
-                            style={{height: 110}}
-                            source={require('@/assets/images/happycloseeye.png')}
-                        ></Image>
-                    </View>
-                </View>
-
-                <View style={styles.buttonContainer}>
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                <View
+                    style={{
+                        width: '100%',
+                        flexDirection: 'row-reverse',
+                    }}
+                >
+                    <Image
+                        style={{height: 110}}
+                        source={require('@/assets/images/happycloseeye.png')}
+                    ></Image>
                 </View>
             </View>
+
+            <View style={{marginBottom: 40}}>
+                <CustomButton
+                    label="continue"
+                    backgroundColor="white"
+                    onPressHandler={handlePress}
+                />
+            </View>
+
         </ScrollView>
     );
 }

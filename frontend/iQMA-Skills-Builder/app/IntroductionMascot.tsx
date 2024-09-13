@@ -1,4 +1,4 @@
-import {Image, View} from 'react-native';
+import {StyleSheet, Image, View} from 'react-native';
 
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
@@ -10,33 +10,38 @@ export default function LearnerAssessment() {
     };
 
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-            }}
-        >
-            <Image
-                style={{marginBottom: 20}}
-                source={require('@/assets/images/handsinpocket2.png')}
-            ></Image>
-            <ChatBubble position="top" isUser={true}>
-                Hi there! I'm Dao!
-            </ChatBubble>
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: 25,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
+        <View style={styles.container}>
+            <View style={styles.mascot}>
+                <Image
+                    style={styles.mascotImage}
+                    source={require('@/assets/images/handsinpocket2.png')}
+                ></Image>
+                <ChatBubble position="top" isUser={true}>
+                    Hi there! I'm Dao!
+                </ChatBubble>
             </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascot: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexGrow: 1,
+    },
+    mascotImage: {
+        marginBottom: 20,
+    }
+});

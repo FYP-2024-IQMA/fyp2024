@@ -86,43 +86,44 @@ export default function CheatSheet() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <View style={{marginBottom: 20}}>
-                <View style={{flex: 1}}>
-                    <Text
-                        style={{
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                            color: '#4143A3',
-                            marginBottom: 20,
-                            marginHorizontal: 10,
-                        }}
-                    >
-                        Unit {unitNumber}: Cheat Sheet
-                    </Text>
-                    {lessons.length > 0 ? (
-                        lessons.map((lesson, index) => (
-                            <View key={index} style={[styles.cheatSheet]}>
-                                <Text style={styles.title}>
-                                    {lesson.lessonName}
-                                </Text>
-                                {formatCheatSheet(lesson.lessonCheatSheet)}
-                            </View>
-                        ))
-                    ) : (
-                        <OverviewCard
-                            text="Lesson Cheatsheets are not available. Please check with your administrator."
-                            isError={true}
-                        ></OverviewCard>
-                    )}
-                </View>
-                <View style={styles.buttonContainer}>
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
-                </View>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
+            <View>
+                <Text
+                    style={{
+                        fontSize: 14,
+                        fontWeight: 'bold',
+                        color: '#4143A3',
+                        marginBottom: 20,
+                        marginHorizontal: 10,
+                    }}
+                >
+                    Unit {unitNumber}: Cheat Sheet
+                </Text>
+                {lessons.length > 0 ? (
+                    lessons.map((lesson, index) => (
+                        <View key={index} style={[styles.cheatSheet]}>
+                            <Text style={styles.title}>
+                                {lesson.lessonName}
+                            </Text>
+                            {formatCheatSheet(lesson.lessonCheatSheet)}
+                        </View>
+                    ))
+                ) : (
+                    <OverviewCard
+                        text="Lesson Cheatsheets are not available. Please check with your administrator."
+                        isError={true}
+                    ></OverviewCard>
+                )}
+            </View>
+            <View style={{marginBottom: 40}}>
+                <CustomButton
+                    label="continue"
+                    backgroundColor="white"
+                    onPressHandler={handlePress}
+                />
             </View>
         </ScrollView>
     );

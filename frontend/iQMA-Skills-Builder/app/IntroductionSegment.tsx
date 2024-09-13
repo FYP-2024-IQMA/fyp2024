@@ -1,4 +1,4 @@
-import {Image, Text, View} from 'react-native';
+import {StyleSheet, Image, Text, View} from 'react-native';
 
 import {ChatBubble} from '@/components/ChatBubble';
 import {CustomButton} from '@/components/CustomButton';
@@ -10,34 +10,40 @@ export default function IntroductionSegment() {
     };
 
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-            }}
-        >
-            <Image
-                style={{marginBottom: 20}}
-                source={require('@/assets/images/handsinpocket2.png')}
-            ></Image>
-            <ChatBubble position="top" isUser={true}>
-                Help me understand you better with just{'\n'}
-                <Text style={{fontWeight: 'bold'}}>4 quick segments</Text>!
-            </ChatBubble>
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: 25,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
+        <View style={styles.container}>
+            <View style={styles.mascot}>
+                <Image
+                    style={styles.mascotImage}
+                    source={require('@/assets/images/handsinpocket2.png')}
+                ></Image>
+                <ChatBubble position="top" isUser={true}>
+                    Help me understand you better with just{'\n'}
+                    <Text style={{fontWeight: 'bold'}}>4 quick segments</Text>!
+                </ChatBubble>
             </View>
+
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascot: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexGrow: 1,
+    },
+    mascotImage: {
+        marginBottom: 20,
+    },
+});

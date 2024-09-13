@@ -91,13 +91,11 @@ export default function UnitIntroduction() {
                 </View>
             </View>
 
-            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }
