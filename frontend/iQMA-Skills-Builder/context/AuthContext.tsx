@@ -35,6 +35,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         } else {
             setIsLoading(false);
         }
+        setIsLoading(false);
     };
 
     // Retrieve Access Token if user is Logged In
@@ -80,6 +81,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             await clearSession();
             setCurrentUser(null);
             setToken(null);
+            await AsyncStorage.removeItem('userID'); 
             router.replace('/'); // For redirect if page is not Index
         } catch (e) {
             console.log(e);
@@ -99,8 +101,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             console.log(response.status);
 
             if (
-                response.status === 500 &&
-                data.error === 'Failed to retrieve account'
+                response.status === 406 &&
+                // data.error === 'Failed to retrieve account'
+                data.details === 'The result contains 0 rows'
             ) {
                 console.log('First Time:', data);
 
@@ -113,6 +116,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('VideoQuiz');
                     // router.replace('Lesson');
                     // router.replace("SectionIntroduction");
+                    // router.replace('CheatSheet');
                 } else {
                     router.replace('IntroductionMascot');
                 }

@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUnitDetailsBySectionAndUnit = exports.getAllUnitsBySection = exports.getNoOfUnitPerSection = void 0;
 const unitService = __importStar(require("../services/unitService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
 const getNoOfUnitPerSection = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -41,7 +45,10 @@ const getNoOfUnitPerSection = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(200).json(unitCount);
     }
     catch (error) {
-        res.status(500).json({ error: `Failed to retrieve no. of unit of ${req.params.sectionID}` });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getNoOfUnitPerSection = getNoOfUnitPerSection;
@@ -51,7 +58,10 @@ const getAllUnitsBySection = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json(units);
     }
     catch (error) {
-        res.status(500).json({ error: `Failed to retrieve all of units of ${req.params.sectionID}` });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAllUnitsBySection = getAllUnitsBySection;
@@ -65,7 +75,10 @@ const getUnitDetailsBySectionAndUnit = (req, res) => __awaiter(void 0, void 0, v
         res.status(200).json(units);
     }
     catch (error) {
-        res.status(500).json({ error: `Failed to retrieve all of units of ${req.params.sectionID} and ${req.params.unitID}` });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getUnitDetailsBySectionAndUnit = getUnitDetailsBySectionAndUnit;

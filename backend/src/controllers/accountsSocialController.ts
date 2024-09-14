@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as accountsSocialService from "../services/accountsSocialService";
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
 
 /* CREATE */
 
@@ -13,10 +15,11 @@ export const createAccountSocial = async (req: Request, res: Response) => {
             status: 201,
             statusText: "Created",
         });
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Social`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -26,8 +29,11 @@ export const getAccountSocialById = async (req: Request, res: Response) => {
     try {
         const account = await accountsSocialService.getAccountSocialById(req.params.id);
         res.status(200).json(account);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Social" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -42,8 +48,11 @@ export const updateAccountSocial = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Social Updated Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update Account Social" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -57,7 +66,10 @@ export const deleteAccountSocial = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Social Deleted Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Social" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };

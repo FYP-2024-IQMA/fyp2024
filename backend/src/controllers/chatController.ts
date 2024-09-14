@@ -2,6 +2,9 @@ import * as chatService from "../services/chatService";
 
 import { Request, Response } from "express";
 
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
+
 /* CREATE */
 
 export const createChats = async (req: Request, res: Response) => {
@@ -15,10 +18,11 @@ export const createChats = async (req: Request, res: Response) => {
 			status: 201,
 			statusText: "Created",
 		});
-	} catch (error) {
-		res.status(500).json({
-			error: `Failed to insert chat history`,
-		});
+	} catch (error: any) {
+		const errorResponse = handleError(error);
+		if (errorResponse) {
+			res.status(errorResponse.status).json(errorResponse);
+		}
 	}
 };
 
@@ -44,8 +48,11 @@ export const getChatHistory = async (req: Request, res: Response) => {
 			const chats = await chatService.getChatHistory(userSection);
 			res.status(200).json(chats);
 		}
-	} catch (error) {
-		res.status(500).json({ error: "Failed to retrieve chat history" });
+	} catch (error: any) {
+		const errorResponse = handleError(error);
+		if (errorResponse) {
+			res.status(errorResponse.status).json(errorResponse);
+		}
 	}
 };
 
@@ -64,7 +71,10 @@ export const deleteChat = async (req: Request, res: Response) => {
 			sectionID: req.params.sectionid,
 			statusText: "Chat History Deleted Successfully",
 		});
-	} catch (error) {
-		res.status(500).json({ error: "Failed to delete chat history" });
+	} catch (error: any) {
+		const errorResponse = handleError(error);
+		if (errorResponse) {
+			res.status(errorResponse.status).json(errorResponse);
+		}
 	}
 };

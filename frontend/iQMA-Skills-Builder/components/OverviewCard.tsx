@@ -5,11 +5,13 @@ export const OverviewCard = ({
     title,
     isCheatsheetObject,
     isError,
+    isScenario,
 }: {
     text: string | string[];
     title?: string;
     isCheatsheetObject?: boolean;
     isError?: boolean;
+    isScenario?: boolean;
 }) => {
     return (
         <>
@@ -19,7 +21,17 @@ export const OverviewCard = ({
                     isError ? styles.ErrorCard : styles.OverviewCard,
                 ]}
             >
-                {title && <Text style={styles.OverviewCardTitle}>{title}</Text>}
+                {title && (
+                    <Text
+                        style={
+                            isScenario
+                                ? styles.ScenarioTitle
+                                : styles.OverviewCardTitle
+                        }
+                    >
+                        {title}
+                    </Text>
+                )}
                 {Array.isArray(text) ? (
                     text.map((item, index) => (
                         <Text
@@ -29,8 +41,9 @@ export const OverviewCard = ({
                                 isCheatsheetObject
                                     ? styles.OverviewCardSubtitleArr
                                     : index !== 0
-                                      ? {marginTop: 10}
-                                      : {},
+                                    ? {marginTop: 10}
+                                    : {},
+                                isScenario ? styles.ScenarioCardSubtitle : {},
                             ]}
                         >
                             {item}
@@ -40,7 +53,11 @@ export const OverviewCard = ({
                     <Text
                         style={[
                             styles.OverviewCardSubtitle,
+                            isCheatsheetObject
+                                ? styles.OverviewCardSubtitleArr
+                                : {},
                             isError ? styles.ErrorCardSubtitle : {},
+                            isScenario ? styles.ScenarioCardSubtitle : {},
                         ]}
                     >
                         {text}
@@ -64,7 +81,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#E66A63',
     },
     OverviewCardTitle: {
-        fontSize: 15,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     OverviewCardSubtitle: {
@@ -78,5 +95,14 @@ const styles = StyleSheet.create({
         color: '#FFFFFF',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    ScenarioTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    ScenarioCardSubtitle: {
+        fontSize: 12,
+        lineHeight: 18,
     },
 });

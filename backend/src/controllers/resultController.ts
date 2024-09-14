@@ -1,6 +1,8 @@
 import * as resultService from "../services/resultService";
 import * as lessonService from "../services/lessonService";
 import { Request, Response } from "express";
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
 
 /* CREATE */
 
@@ -14,10 +16,11 @@ export const createResult = async (req: Request, res: Response) => {
             status: 201,
             statusText: "Created",
         });
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to create ${resultBody.userID} Result`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -27,8 +30,11 @@ export const getAllResults = async (req: Request, res: Response) => {
     try {
         const results = await resultService.getAllResults();
         res.status(200).json(results);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Results" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -36,8 +42,11 @@ export const getResultByUserId = async (req: Request, res: Response) => {
     try {
         const result = await resultService.getResultByUserId(req.params.userid);
         res.status(200).json(result);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Result" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -48,10 +57,11 @@ export const getUserProgress = async (req: Request, res: Response) => {
             req.params.sectionid
         );
         res.status(200).json(userProgress);
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve ${req.params.userid}'s progress`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -70,9 +80,10 @@ export const getCircularProgress = async (req: Request, res: Response) => {
 
         // totalLessons + 1 to account for unit assessment
         res.status(200).json(userProgress/ (totalLessons + 1));
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve ${req.params.userid}'s progress`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };   
