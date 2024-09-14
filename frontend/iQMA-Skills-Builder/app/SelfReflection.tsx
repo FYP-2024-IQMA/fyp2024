@@ -3,7 +3,7 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
 import {CustomButton} from '@/components/CustomButton';
@@ -59,7 +59,7 @@ export default function SelfReflection() {
 
     return (
         <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
+            <ScrollView>
                 <SectionCard
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
@@ -87,7 +87,7 @@ export default function SelfReflection() {
                     question.
                 </Text>
                 <MiniChatbot />
-            </View>
+            </ScrollView>
             <View
                 style={{
                     alignSelf: 'center',
