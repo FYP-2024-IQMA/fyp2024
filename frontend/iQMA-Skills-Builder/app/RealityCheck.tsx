@@ -9,6 +9,7 @@ import {OverviewCard} from '@/components/OverviewCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 
 // where things show up
 export default function RealityCheck() {
@@ -20,7 +21,7 @@ export default function RealityCheck() {
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [realityCheckDescription, setRealityCheckDescription] = useState<string[]>([]);
-    
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     // Only for testing, please delete
     const [sectionID, setSectionID] = useState<string>("SEC0001")
     const [unitID, setUnitID] = useState<string>("UNIT0001")
@@ -39,16 +40,23 @@ export default function RealityCheck() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
 
-                setRealityCheckDescription(unitDetails.realityCheck);
-                setUnitName(unitDetails.unitName);
+                    setRealityCheckDescription(unitDetails.realityCheck);
+                    setUnitName(unitDetails.unitName);
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching Unit details in Reality Check:', error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
+
         }
     }, [sectionID, unitID]);
 
@@ -62,49 +70,46 @@ export default function RealityCheck() {
 
     return (
         <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                    subtitle={unitName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    Unit {unitNumber}: Reality Check
-                </Text>
 
-                {realityCheckDescription.length > 0 ? (
-                    realityCheckDescription.map((description, index) => (
-                        <OverviewCard key={index} text={description} />
-                    ))
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Unit description is not available. Please check with your administrator."
-                    />
-                )}
+            {isLoading ? (
+                <LoadingIndicator />
+            ) : (
+                <>
+                    <View style={{flexGrow: 1}}>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                            subtitle={unitName}
+                        />
+                        <Text style={styles.screenTitle}>
+                            Unit {unitNumber}: Reality Check
+                        </Text>
 
-                <View style={{width: '100%', flexDirection: 'row-reverse'}}>
-                    <Image
-                        style={{}}
-                        source={require('@/assets/images/happycloseeye.png')}
-                    ></Image>
-                </View>
-            </View>
+                        {realityCheckDescription.length > 0 ? (
+                            realityCheckDescription.map((description, index) => (
+                                <OverviewCard key={index} text={description} />
+                            ))
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Unit description is not available. Please check with your administrator."
+                            />
+                        )}
 
-            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+                        <View style={{width: '100%', flexDirection: 'row-reverse'}}>
+                            <Image
+                                style={{}}
+                                source={require('@/assets/images/happycloseeye.png')}
+                            ></Image>
+                        </View>
+                    </View>
+
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />     
+                </>
+            )}
         </View>
     );
 }
@@ -114,5 +119,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

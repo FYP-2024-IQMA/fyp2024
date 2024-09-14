@@ -12,9 +12,11 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -44,23 +46,29 @@ export default function KeyTakeaway() {
     useEffect(() => {
         if (sectionID && unitID && lessonID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
 
-                const lessonDetails = await lessonEndpoints.getLessonDetails(
-                    sectionID as string,
-                    unitID as string,
-                    lessonID as string
-                );
+                    const lessonDetails = await lessonEndpoints.getLessonDetails(
+                        sectionID as string,
+                        unitID as string,
+                        lessonID as string
+                    );
 
-                setLessonName(lessonDetails.lessonName);
-                setUnitName(unitDetails.unitName);
-                setKeyTakeaway(lessonDetails.lessonKeyTakeaway);
+                    setLessonName(lessonDetails.lessonName);
+                    setUnitName(unitDetails.unitName);
+                    setKeyTakeaway(lessonDetails.lessonKeyTakeaway);
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching in Key Takeaway:', error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
@@ -69,59 +77,59 @@ export default function KeyTakeaway() {
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
         >
-            <View>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                    subtitle={unitName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    {lessonName}
-                </Text>
+            {isLoading ? (
+                <LoadingIndicator />
+            ) : (
+                <>
+                    <View>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                            subtitle={unitName}
+                        />
+                        <Text
+                            style={styles.screenTitle}
+                        >
+                            {lessonName}
+                        </Text>
 
-                <Text style={styles.takeawayHeader}>Key Takeaways</Text>
-                {keyTakeaway && keyTakeaway.length > 0 ? (
-                    keyTakeaway.map((takeaway: string, index: number) => (
-                        <View key={index}>
-                            <Text style={styles.takeawayText}>
-                                {index + 1}. {takeaway}
-                            </Text>
+                        <Text style={styles.takeawayHeader}>Key Takeaways</Text>
+                        {keyTakeaway && keyTakeaway.length > 0 ? (
+                            keyTakeaway.map((takeaway: string, index: number) => (
+                                <View key={index}>
+                                    <Text style={styles.takeawayText}>
+                                        {index + 1}. {takeaway}
+                                    </Text>
+                                </View>
+                            ))
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Key Takeaways are not available. Please check with your administrator."
+                            />
+                        )}
+
+                        <View
+                            style={{
+                                width: '100%',
+                                flexDirection: 'row-reverse',
+                            }}
+                        >
+                            <Image
+                                style={{height: 110}}
+                                source={require('@/assets/images/happycloseeye.png')}
+                            ></Image>
                         </View>
-                    ))
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Key Takeaways are not available. Please check with your administrator."
+                    </View>
+
+                    <View style={{marginBottom: 40}}>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
                     />
-                )}
-
-                <View
-                    style={{
-                        width: '100%',
-                        flexDirection: 'row-reverse',
-                    }}
-                >
-                    <Image
-                        style={{height: 110}}
-                        source={require('@/assets/images/happycloseeye.png')}
-                    ></Image>
-                </View>
-            </View>
-
-            <View style={{marginBottom: 40}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+                    </View>
+                </>
+            )}
         </ScrollView>
     );
 }
@@ -131,6 +139,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
     takeawayHeader: {
         marginBottom: 10,

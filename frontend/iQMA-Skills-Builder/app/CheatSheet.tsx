@@ -103,15 +103,7 @@ export default function CheatSheet() {
             ) : (
                 <>
                     <View>
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: '#4143A3',
-                                marginBottom: 20,
-                                marginHorizontal: 10,
-                            }}
-                        >
+                        <Text style={[styles.title, {marginHorizontal: 10}]}>
                             Unit {unitNumber}: Cheat Sheet
                         </Text>
                         {lessons.length > 0 ? (
@@ -130,7 +122,7 @@ export default function CheatSheet() {
                             ></OverviewCard>
                         )}
                     </View>
-                    <View style={{ marginBottom: 40 }}>
+                    <View style={{marginBottom: 40}}>
                         <CustomButton
                             label="continue"
                             backgroundColor="white"

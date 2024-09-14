@@ -100,13 +100,7 @@ export default function Lesson() {
                             subtitle={unitName}
                         />
                         <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: '#4143A3',
-                                marginBottom: 20,
-                                marginHorizontal: 10,
-                            }}
+                            style={styles.screenTitle}
                         >
                             {lessonName}
                         </Text>
@@ -152,5 +146,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

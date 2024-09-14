@@ -13,6 +13,7 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -23,6 +24,7 @@ export default function VideoQuiz() {
     const [unitName, setUnitName] = useState<string>('');
     const [questions, setQuestions] = useState<Question[]>([]);
     const [lessonName, setLessonName] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -32,29 +34,36 @@ export default function VideoQuiz() {
     useEffect(() => {
         if (sectionID && unitID && lessonID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
 
-                const lessonDetails = await lessonEndpoints.getLessonDetails(
-                    sectionID as string,
-                    unitID as string,
-                    lessonID as string
-                );
+                    const lessonDetails = await lessonEndpoints.getLessonDetails(
+                        sectionID as string,
+                        unitID as string,
+                        lessonID as string
+                    );
 
-                const response = await quizEndpoints.getQuizzes(
-                    sectionID as string,
-                    unitID as string,
-                    lessonID as string
-                );
+                    const response = await quizEndpoints.getQuizzes(
+                        sectionID as string,
+                        unitID as string,
+                        lessonID as string
+                    );
 
-                setLessonName(lessonDetails.lessonName);
-                setUnitName(unitDetails.unitName);
-                setQuestions(response);
+                    setLessonName(lessonDetails.lessonName);
+                    setUnitName(unitDetails.unitName);
+                    setQuestions(response);
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching quiz data:', error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
+            
         }
     }, [sectionID, unitID, lessonID]);
 
@@ -97,43 +106,53 @@ export default function VideoQuiz() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <SectionCard
-                title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                subtitle={unitName}
-            />
-            <View style={{marginHorizontal: 10}}>
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                    }}
-                >
-                    {lessonName}
-                </Text>
-                <Text
-                    style={{
-                        fontSize: 14,
-                        color: '#4143A3',
-                        marginBottom: 10,
-                    }}
-                >
-                    Choose the most appropriate option for each question.
-                </Text>
-                <View style={{alignItems: 'center'}}>
-                    <Image
-                        style={{marginBottom: 10}}
-                        source={require('@/assets/images/deepinthought.png')}
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
+            {isLoading ? (
+                <LoadingIndicator />
+            ) : (
+                <>
+                    <SectionCard
+                        title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                        subtitle={unitName}
                     />
-                </View>
-                {questions.length > 0 && questions[currentQnsIdx] && (
-                    <QuizCard
-                        questionData={questions[currentQnsIdx]}
-                        onNextQuestion={handleNextQuestion}
-                    />
-                )}
-            </View>
+                    <View style={{marginHorizontal: 10}}>
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: '#4143A3',
+                            }}
+                        >
+                            {lessonName}
+                        </Text>
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                color: '#4143A3',
+                                marginBottom: 10,
+                            }}
+                        >
+                            Choose the most appropriate option for each
+                            question.
+                        </Text>
+                        <View style={{alignItems: 'center'}}>
+                            <Image
+                                style={{marginBottom: 10}}
+                                source={require('@/assets/images/deepinthought.png')}
+                            />
+                        </View>
+                        {questions.length > 0 && questions[currentQnsIdx] && (
+                            <QuizCard
+                                questionData={questions[currentQnsIdx]}
+                                onNextQuestion={handleNextQuestion}
+                            />
+                        )}
+                    </View>
+                </>
+            )}
         </ScrollView>
     );
 }

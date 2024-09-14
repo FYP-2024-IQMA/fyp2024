@@ -12,7 +12,8 @@ import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
-import {OverviewCard} from '@/components/OverviewCard';
+import { OverviewCard } from '@/components/OverviewCard';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -22,7 +23,8 @@ export default function Assessment() {
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
-
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    
     // Hardcoded for now until routing confirmed
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
@@ -31,24 +33,30 @@ export default function Assessment() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
-                setUnitName(unitDetails.unitName);
-                setUnitScenario(unitDetails.scenario);
-            })();
-            (async () => {
-                const assessmentQuestions =
-                    await assessmentEndpoints.getAssessmentQuestions(
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,
                         unitID as string
                     );
+                    setUnitName(unitDetails.unitName);
+                    setUnitScenario(unitDetails.scenario);
 
-                setQuestions(assessmentQuestions);
+                    const assessmentQuestions =
+                        await assessmentEndpoints.getAssessmentQuestions(
+                            sectionID as string,
+                            unitID as string
+                        );
+                    setQuestions(assessmentQuestions);
+
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+
+                } catch (error) {
+                    console.error("Error fetching unit details", error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
@@ -71,36 +79,45 @@ export default function Assessment() {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <SectionCard
-                title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                subtitle={unitName}
-            />
-            <View style={{marginHorizontal: 10}}>
-                <Text
-                    style={{
-                        fontSize: 14,
-                        color: '#4143A3',
-                        marginBottom: 10,
-                    }}
-                >
-                    Choose the most appropriate option for each question.
-                </Text>
-            </View>
-            <View>
-                <OverviewCard
-                    isError={false}
-                    text={unitScenario}
-                    isScenario={true}
-                    title="Scenario:"
-                />
-            </View>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
+            {isLoading ? (
+                <LoadingIndicator />
+            ): (
+                <>
+                    <SectionCard
+                        title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                        subtitle={unitName}
+                    />
+                    <View style={{marginHorizontal: 10}}>
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                color: '#4143A3',
+                                marginBottom: 10,
+                            }}
+                        >
+                            Choose the most appropriate option for each question.
+                        </Text>
+                    </View>
+                    <View>
+                        <OverviewCard
+                            isError={false}
+                            text={unitScenario}
+                            isScenario={true}
+                            title="Scenario:"
+                        />
+                    </View>
 
-            {questions.length > 0 && questions[currentQnsIdx] && (
-                <QuizCard
-                    questionData={questions[currentQnsIdx]}
-                    onNextQuestion={handleNextQuestion}
-                />
+                    {questions.length > 0 && questions[currentQnsIdx] && (
+                        <QuizCard
+                            questionData={questions[currentQnsIdx]}
+                            onNextQuestion={handleNextQuestion}
+                        />
+                    )}
+                </>
             )}
         </ScrollView>
     );

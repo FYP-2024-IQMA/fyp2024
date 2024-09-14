@@ -111,12 +111,14 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             } else if (response.status === 200) {
                 console.log('Not first time:', data);
                 if (data.hasOnboarded) {
-                    router.replace('Home');
+                    // router.replace('Home');
                     // router.replace('UnitIntroduction');
                     // router.replace('VideoQuiz');
                     // router.replace('Lesson');
                     // router.replace("SectionIntroduction");
                     // router.replace('CheatSheet');
+                    // router.replace('SelfReflection');
+                    // router.replace('Assessment');
                 } else {
                     router.replace('IntroductionMascot');
                 }
