@@ -12,6 +12,8 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import * as quizEndpoints from '@/helpers/quizEndpoints';
+
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -42,26 +44,19 @@ export default function VideoQuiz() {
                     lessonID as string
                 );
 
+                const response = await quizEndpoints.getQuizzes(
+                    sectionID as string,
+                    unitID as string,
+                    lessonID as string
+                );
+
                 setLessonName(lessonDetails.lessonName);
                 setUnitName(unitDetails.unitName);
+                setQuestions(response)
             })();
             setSectionNumber(formatSection(sectionID as string));
             setUnitNumber(formatUnit(unitID as string));
         }
-    }, [sectionID, unitID, lessonID]);
-
-    useEffect(() => {
-        const fetchQuestions = async () => {
-            try {
-                const response = await axios.get(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}/${lessonID}`
-                );
-                setQuestions(response.data)
-            } catch (e) {
-                console.error(e);
-            }
-        };
-        fetchQuestions();
     }, [sectionID, unitID, lessonID]);
 
     useLayoutEffect(() => {
@@ -79,12 +74,24 @@ export default function VideoQuiz() {
             setCurrentQnsIdx(newIdx);
         }
         else {
-            // TO CHANGE:
-            router.push({
-                pathname: 'KeyTakeaway',
-                // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-                params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
-            });
+            try {
+                const resultResponse = await axios.post(
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`,
+                    {
+                        "userID": await AsyncStorage.getItem('userID'),
+                        "quizID": questions[currentQnsIdx].quizID
+                    }
+                )
+                console.log(resultResponse.data)
+                router.replace({
+                    pathname: 'KeyTakeaway',
+                    // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+                    params: {sectionID: sectionID, unitID: unitID,lessonID: lessonID},
+                });
+            } catch (e) {
+                console.error(e);
+            } 
+            
         }
     };
 

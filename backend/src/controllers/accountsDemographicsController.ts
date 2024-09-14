@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as accountsDemographicsService from "../services/accountsDemographicsService";
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
 
 /* CREATE */
 
@@ -13,10 +15,11 @@ export const createAccountDemographics = async (req: Request, res: Response) => 
             status: 201,
             statusText: "Created",
         });
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Demographics`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -26,8 +29,11 @@ export const getAccountDemographicsById = async (req: Request, res: Response) =>
     try {
         const account = await accountsDemographicsService.getAccountDemographicsById(req.params.id);
         res.status(200).json(account);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Demographics" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -42,8 +48,11 @@ export const updateAccountDemographics = async (req: Request, res: Response) => 
             status: 200,
             statusText: "Account Demographics Updated Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update Account Demographics" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -57,7 +66,10 @@ export const deleteAccountDemographics = async (req: Request, res: Response) => 
             status: 200,
             statusText: "Account Demographics Deleted Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Demographics" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };

@@ -13,6 +13,7 @@ import quizRouter from "./routes/quizRouter";
 import resultRouter from "./routes/resultRouter";
 import sectionRouter from "./routes/sectionRouter";
 import unitRouter from "./routes/unitRouter";
+import clickstreamRouter from "./routes/clickstreamRouter";
 
 const app = express();
 app.use(cors());
@@ -34,6 +35,7 @@ app.use("/unit", unitRouter);
 app.use("/chat", chatRouter);
 app.use("/lesson", lessonRouter);
 app.use("/section", sectionRouter);
+app.use("/clickstream", clickstreamRouter);
 
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);
