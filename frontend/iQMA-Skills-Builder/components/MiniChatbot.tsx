@@ -29,6 +29,10 @@ interface QuizItem {
     quizID: number;
 }
 
+interface MiniChatbotProps {
+    onChatHistoryUpdate: (length: number) => void;
+}
+
 //get reflection qn from backend
 const reflectionQuestion = async (sectionID: string, unitID: string) => {
     try {
@@ -45,7 +49,7 @@ const reflectionQuestion = async (sectionID: string, unitID: string) => {
     }
 };
 
-const MiniChatbot: React.FC = () => {
+const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
         []
@@ -80,18 +84,25 @@ const MiniChatbot: React.FC = () => {
                         },
                     ]
                 );
+
+                setMessages([
+                    {
+                        text: reflectionQn,
+                        isUser: false,
+                    },
+                ]);
+            } else {
+                const formattedChatHistory = chatHistory.flatMap(
+                    (item: {queryPair: {role: string; content: string}[]}) =>
+                        item.queryPair.map((message) => ({
+                            text: message.content,
+                            isUser: message.role === 'user',
+                        }))
+                );
+                setMessages(formattedChatHistory);
+                onChatHistoryUpdate(formattedChatHistory.length);
+                return formattedChatHistory;
             }
-
-            const formattedChatHistory = chatHistory.flatMap(
-                (item: {queryPair: {role: string; content: string}[]}) =>
-                    item.queryPair.map((message) => ({
-                        text: message.content,
-                        isUser: message.role === 'user',
-                    }))
-            );
-            setMessages(formattedChatHistory);
-
-            return formattedChatHistory;
         } catch (error) {
             console.error('Error while loading chat history:', error);
         }
@@ -121,7 +132,7 @@ const MiniChatbot: React.FC = () => {
             const botReply = {text: response.content, isUser: false};
             const updatedMessages = [...newMessages, botReply];
             setMessages(updatedMessages);
-            // Save the chat history
+            onChatHistoryUpdate(updatedMessages.length);
 
             const queryPair = [
                 {role: 'user', content: message},
@@ -144,15 +155,15 @@ const MiniChatbot: React.FC = () => {
             (async () => {
                 const response = await reflectionQuestion(sectionID, unitID);
                 setReflectionQn(response);
-                // setMessages([{text: response, isUser: false}]);
-                const chatHistory = loadUnitChatHistory(
-                    currentUser.sub,
-                    sectionID,
-                    unitID
-                );
             })();
         }
     }, [sectionID, unitID]);
+
+    useEffect(() => {
+        if (reflectionQn) {
+            loadUnitChatHistory(currentUser.sub, sectionID, unitID);
+        }
+    }, [reflectionQn, sectionID, unitID]);
     return (
         <>
             <View style={styles.container}>
