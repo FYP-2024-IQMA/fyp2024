@@ -20,7 +20,9 @@ const HomeScreen: React.FC = () => {
     const [circularProgress, setCircularProgress] = useState<number>(0);
     const [sectionCircularProgress, setSectionCircularProgress] = useState<number>(0);
     const [allSectionDetails, setAllSectionDetails] = useState<any[]>([]);
-    const [iconsData, setIconsData] = useState<{ [key: number]: ProgressPathProps['icons'] }>({});
+    const [iconsData, setIconsData] = useState<{
+        [key: number]: ProgressPathProps['icons'];
+    }>({});
     const [loading, setLoading] = useState(true);
 
     const loadUnitCircularProgress = async (
@@ -61,15 +63,9 @@ const HomeScreen: React.FC = () => {
         sectionID: string
     ): Promise<number> => {
         try {
-            const sectionProgress =
-                await resultEndpoints.numberOfCompletedUnitsPerSection(
-                    userID,
-                    sectionID
-                );
+            const sectionProgress = await resultEndpoints.numberOfCompletedUnitsPerSection(userID, sectionID);
 
-            const noOfUnits = await unitEndpoints.numberOfUnitsPerSection(
-                sectionID
-            );
+            const noOfUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
 
             setSectionCircularProgress(
                 Math.ceil((sectionProgress / noOfUnits) * 100)
@@ -87,7 +83,7 @@ const HomeScreen: React.FC = () => {
         circularProgress: number,
         completedUnits: number,
         totalLesson: number,
-        completedLessons: number,
+        completedLessons: number
     ) => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
 
@@ -96,60 +92,61 @@ const HomeScreen: React.FC = () => {
         const currentUnit = completedUnits + 1;
 
         // console.log('Current Unit:', currentUnit);
-        // // % of lesson & unit quiz completion
-        // console.log('circular progress:', circularProgress);
-        // console.log('total lesson:', totalLesson);
-        // console.log('completed lessons:', completedLessons);
-        // console.log('current lesson id:', currentLessonId);
 
-    const iconsData = await Promise.all(
-        Array.from({length: totalUnits}, async (_, index) => {
-            const icon = iconTypes[index % iconTypes.length];
+        const iconsData = [];
+        for (let i = 0; i < totalUnits; i++) {
+            const icon = iconTypes[i % iconTypes.length];
             let status = 'not-started';
             let routerName = 'UnitIntroduction';
+            const unitID = `UNIT${(i + 1).toString().padStart(4, '0')}`;
 
-            const unitID = `UNIT${(index + 1).toString().padStart(4, '0')}`;
+            // let getAllLessons: any[] = [];
+            let getAllLessons: any[] = [];
+            try {
+                getAllLessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
+            } catch (error) {
+                console.error('Home - getIconStatus: Error while getting all lessons:', error);
+            };
 
-            // to get the lessonID
-            const getAllLessons = await lessonEndpoints.getAllLesson(
-                sectionID,
-                unitID
-            );
+            let currentLessonId = getAllLessons[0].lessonID;
 
-            let currentLessonId = getAllLessons[completedLessons].lessonID;
-            const firstLessonId = getAllLessons[0].lessonID;
-
-            if (index + 1 === currentUnit) {
+            if (i + 1 === currentUnit) {
+                // console.log("Total Lesson:", totalLesson);
+                // console.log("Completed Lessons:", completedLessons);
                 status = 'in-progress';
-
                 if (
                     totalLesson === completedLessons &&
                     circularProgress !== 100
                 ) {
                     routerName = 'CheatSheet';
-                } else if (completedLessons !== 0) {
-                    routerName = 'Lesson';
-                } else if (completedUnits === 0) {
-                    routerName = 'SectionIntroduction';
+                } else {
+                    currentLessonId = getAllLessons[completedLessons].lessonID;
+                    if (completedLessons !== 0) {
+                        routerName = 'Lesson';
+                    } else if (completedUnits === 0) {
+                        routerName = 'SectionIntroduction';
+                    }
                 }
-            } else if (index + 1 < currentUnit) {
+            } else if (i + 1 < currentUnit) {
                 status = 'completed';
-                currentLessonId = firstLessonId;
-                if (index === 0) {
+                if (i === 0) {
                     routerName = 'SectionIntroduction';
                 }
             }
+            // no need else for i + 1 > currentUnit because it will be not-started
 
-            return {
+            // console.log("unitID:", unitID);
+            // console.log("currentLessonId:", currentLessonId);
+
+            iconsData.push({
                 name: icon,
                 status,
                 onPress: () =>
                     handlePress(routerName, sectionID, unitID, currentLessonId),
-            };
-        })
-    );
+            });
 
-    return iconsData;
+        }
+        return iconsData;
     };
 
     const fetchProgressDataNew = async (secId: number) => {
@@ -172,19 +169,18 @@ const HomeScreen: React.FC = () => {
             circularProgress,
             completedUnits,
             totalLesson,
-            completedLessons,
+            completedLessons
         );
 
         return iconsStatus;
     };
 
     useEffect(() => {
-
         (async () => {
             try {
                 const sectionDetails = await sectionEndpoints.getAllSectionDetails();
                 const currentSection = await getCurrentSection();
-                console.log(currentSection);
+                // console.log(currentSection);
                 setAllSectionDetails(
                     sectionDetails.slice(0, currentSection + 1)
                 );
@@ -217,24 +213,28 @@ const HomeScreen: React.FC = () => {
                 setLoading(false);
             }
         })();
-
     }, []);
 
     useEffect(() => {
-        console.log('All Section Details:', allSectionDetails);
+        // console.log('All Section Details:', allSectionDetails);
     }, [allSectionDetails]);
 
     const handlePress = (
         pathName: string,
         sectionID: string,
-        unitID?: string,
-        lessonID?: string
+        unitID: string,
+        lessonID: string,
+        // getAllLessons: any[]
     ) => {
         console.log('Pressed in HOME');
         console.log(pathName, sectionID, unitID, lessonID);
+
+        // // Serialize the array
+        // const serializedLessons = JSON.stringify(getAllLessons);
+
         router.push({
             pathname: pathName,
-            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            params: {sectionID, unitID, lessonID},
         });
     };
 
