@@ -1,5 +1,6 @@
+import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
+
 import React from 'react';
-import {View, Text, Pressable, StyleSheet, Dimensions} from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -10,6 +11,7 @@ export const CustomButton = ({
     borderColor = '#7654F2',
     onPressHandler = () => {},
     capitalise = true,
+    disabled = false,
 }) => {
     const textStyle = capitalise ? 'uppercase' : 'none';
 
@@ -21,17 +23,21 @@ export const CustomButton = ({
                     styles.rounded,
                     styles.shadow,
                     {
-                        backgroundColor: backgroundColor,
+                        backgroundColor: disabled ? '#D1D5DB' : backgroundColor,
                         borderColor: borderColor,
                     },
                 ]}
                 onPress={onPressHandler}
+                disabled={disabled}
             >
                 <View>
                     <Text
                         style={[
                             styles.buttonText,
-                            {color: labelColor, textTransform: textStyle},
+                            {
+                                color: disabled ? '#A0A0A0' : labelColor,
+                                textTransform: textStyle,
+                            },
                         ]}
                     >
                         {label}
