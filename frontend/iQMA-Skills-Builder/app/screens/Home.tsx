@@ -14,6 +14,7 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -265,7 +266,7 @@ const HomeScreen: React.FC = () => {
 
     if (loading) {
         // add spinner next time
-        return <Text>Loading...</Text>;
+        return <LoadingIndicator />;
     }
 
     return (

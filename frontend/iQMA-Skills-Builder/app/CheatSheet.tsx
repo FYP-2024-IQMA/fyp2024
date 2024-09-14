@@ -6,7 +6,8 @@ import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import {formatUnit} from '@/helpers/formatUnitID';
+import { formatUnit } from '@/helpers/formatUnitID';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 const formatCheatSheet = (cheatsheet: any) => {
     if (Array.isArray(cheatsheet)) {
@@ -47,6 +48,7 @@ export default function CheatSheet() {
     const {sectionID, unitID} = useLocalSearchParams();
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -59,21 +61,27 @@ export default function CheatSheet() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const lessonDetails = await lessonEndpoints.getAllLesson(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const lessonDetails = await lessonEndpoints.getAllLesson(
+                        sectionID as string,
+                        unitID as string
+                    );
 
-                const processedLessonDetails = lessonDetails
-                    .filter((lesson: any) => !lesson.lessonID.includes('.2'))
-                    .map((lesson: any) => ({
-                        ...lesson,
-                        lessonName: lesson.lessonName.replace('.1', ''),
-                    }));
+                    const processedLessonDetails = lessonDetails
+                        .filter((lesson: any) => !lesson.lessonID.includes('.2'))
+                        .map((lesson: any) => ({
+                            ...lesson,
+                            lessonName: lesson.lessonName.replace('.1', ''),
+                        }));
 
-                setLessons(processedLessonDetails);
-            })();
-            setUnitNumber(formatUnit(unitID as string));
+                    setLessons(processedLessonDetails);
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching Lesson details in CheatSheet:', error);
+                } finally {
+                    setIsLoading(false);
+                }  
+            })(); 
         }
     }, [sectionID, unitID]);
 
@@ -90,41 +98,47 @@ export default function CheatSheet() {
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
         >
-            <View>
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    Unit {unitNumber}: Cheat Sheet
-                </Text>
-                {lessons.length > 0 ? (
-                    lessons.map((lesson, index) => (
-                        <View key={index} style={[styles.cheatSheet]}>
-                            <Text style={styles.title}>
-                                {lesson.lessonName}
-                            </Text>
-                            {formatCheatSheet(lesson.lessonCheatSheet)}
-                        </View>
-                    ))
-                ) : (
-                    <OverviewCard
-                        text="Lesson Cheatsheets are not available. Please check with your administrator."
-                        isError={true}
-                    ></OverviewCard>
-                )}
-            </View>
-            <View style={{marginBottom: 40}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            {isLoading ? (
+                <LoadingIndicator />
+            ) : (
+                <>
+                    <View>
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: '#4143A3',
+                                marginBottom: 20,
+                                marginHorizontal: 10,
+                            }}
+                        >
+                            Unit {unitNumber}: Cheat Sheet
+                        </Text>
+                        {lessons.length > 0 ? (
+                            lessons.map((lesson, index) => (
+                                <View key={index} style={[styles.cheatSheet]}>
+                                    <Text style={styles.title}>
+                                        {lesson.lessonName}
+                                    </Text>
+                                    {formatCheatSheet(lesson.lessonCheatSheet)}
+                                </View>
+                            ))
+                        ) : (
+                            <OverviewCard
+                                text="Lesson Cheatsheets are not available. Please check with your administrator."
+                                isError={true}
+                            ></OverviewCard>
+                        )}
+                    </View>
+                    <View style={{ marginBottom: 40 }}>
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
+                    </View>
+                </>
+            )}
         </ScrollView>
     );
 }

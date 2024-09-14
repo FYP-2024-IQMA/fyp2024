@@ -11,6 +11,7 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {router, useLocalSearchParams} from 'expo-router';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function Lesson() {
@@ -23,6 +24,7 @@ export default function Lesson() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -43,24 +45,32 @@ export default function Lesson() {
     useEffect(() => {
         if (sectionID && unitID && lessonID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
 
-                const lessonDetails = await lessonEndpoints.getLessonDetails(
-                    sectionID as string,
-                    unitID as string,
-                    lessonID as string
-                );
+                    const lessonDetails =
+                        await lessonEndpoints.getLessonDetails(
+                            sectionID as string,
+                            unitID as string,
+                            lessonID as string
+                        );
 
-                setLessonDescription(lessonDetails.lessonDescription);
-                setLessonName(lessonDetails.lessonName);
-                setVideoId(lessonDetails.lessonURL);
-                setUnitName(unitDetails.unitName);
+                    setLessonDescription(lessonDetails.lessonDescription);
+                    setLessonName(lessonDetails.lessonName);
+                    setVideoId(lessonDetails.lessonURL);
+                    setUnitName(unitDetails.unitName);
+
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching Lesson details:', error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
@@ -78,51 +88,61 @@ export default function Lesson() {
 
     return (
         <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                    subtitle={unitName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    {lessonName}
-                </Text>
+            {isLoading ? (
+                <View style={{flexGrow: 1}}>
+                    <LoadingIndicator />
+                </View>
+            ) : (
+                <>
+                    <View style={{flexGrow: 1}}>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                            subtitle={unitName}
+                        />
+                        <Text
+                            style={{
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: '#4143A3',
+                                marginBottom: 20,
+                                marginHorizontal: 10,
+                            }}
+                        >
+                            {lessonName}
+                        </Text>
 
-                {lessonDescription ? (
-                    <OverviewCard text={lessonDescription!}></OverviewCard>
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Lesson Description is not available. Please check with your administrator."
-                    />
-                )}
+                        {lessonDescription ? (
+                            <OverviewCard
+                                text={lessonDescription!}
+                            ></OverviewCard>
+                        ) : (
+                            <OverviewCard
+                                // isError={true}
+                                text="Lesson Description is not available. Please check with your administrator."
+                            />
+                        )}
 
-                {videoId ? (
-                    <YoutubePlayer
-                        height={300}
-                        play={playing}
-                        onChangeState={onStateChange}
-                        videoId={videoId} // YouTube video ID
+                        {videoId ? (
+                            <YoutubePlayer
+                                height={300}
+                                play={playing}
+                                onChangeState={onStateChange}
+                                videoId={videoId} // YouTube video ID
+                            />
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Video is not available. Please check with your administrator."
+                            />
+                        )}
+                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
                     />
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Video is not available. Please check with your administrator."
-                    />
-                )}
-            </View>
-            <CustomButton
-                label="continue"
-                backgroundColor="white"
-                onPressHandler={handlePress}
-            />
+                </>
+            )}
         </View>
     );
 }
