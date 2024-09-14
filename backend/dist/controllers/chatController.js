@@ -60,8 +60,14 @@ const getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, function*
         sectionID: req.params.sectionid,
     };
     try {
-        const chats = yield chatService.getChatHistory(userSection);
-        res.status(200).json(chats);
+        if (req.params.unitID) {
+            const chats = yield chatService.getUnitChatHistory(userSection, req.params.unitID);
+            res.status(200).json(chats);
+        }
+        else {
+            const chats = yield chatService.getChatHistory(userSection);
+            res.status(200).json(chats);
+        }
     }
     catch (error) {
         res.status(500).json({ error: "Failed to retrieve chat history" });
