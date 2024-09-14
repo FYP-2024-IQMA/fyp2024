@@ -15,6 +15,12 @@ router.get(
 	chatController.getChatHistory
 );
 
+router.get(
+	"/getchathistory/:userid/:sectionid/:unitid",
+	verifyToken,
+	chatController.getChatHistory
+);
+
 /* DELETE */
 router.delete(
 	"/deletechathistory/:userid/:sectionid",

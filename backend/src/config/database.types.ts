@@ -27,6 +27,7 @@ export type Database = {
           email: string
           firstName: string
           gender: Database["public"]["Enums"]["gender_type"]
+          hasOnboarded?: boolean
           lastName: string
           role: Database["public"]["Enums"]["role"]
           userID: string
@@ -37,6 +38,7 @@ export type Database = {
           email?: string
           firstName?: string
           gender?: Database["public"]["Enums"]["gender_type"]
+          hasOnboarded?: boolean
           lastName?: string
           role?: Database["public"]["Enums"]["role"]
           userID?: string
@@ -230,27 +232,30 @@ export type Database = {
           dateCreated: string
           queryPair: Json[] | null
           sectionID: string
+          unitID: string
           userID: string
         }
         Insert: {
           dateCreated?: string
           queryPair?: Json[] | null
           sectionID: string
+          unitID: string
           userID: string
         }
         Update: {
           dateCreated?: string
           queryPair?: Json[] | null
           sectionID?: string
+          unitID?: string
           userID?: string
         }
         Relationships: [
           {
-            foreignKeyName: "chat_sectionID_fkey"
-            columns: ["sectionID"]
+            foreignKeyName: "chat_sectionID_unitID_fkey"
+            columns: ["sectionID", "unitID"]
             isOneToOne: false
-            referencedRelation: "section"
-            referencedColumns: ["sectionID"]
+            referencedRelation: "unit"
+            referencedColumns: ["sectionID", "unitID"]
           },
           {
             foreignKeyName: "chat_userID_fkey"

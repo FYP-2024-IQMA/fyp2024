@@ -10,7 +10,7 @@ let consoleErrorSpy;
 
 beforeEach(() => {
     jest.resetAllMocks();
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => { });
 });
 
 afterEach(() => {
@@ -201,7 +201,7 @@ describe("getChatHistory", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const result = await chatService.getChatHistory({userID, sectionID});
+        const result = await chatService.getChatHistory({ userID, sectionID });
 
         expect(result).toEqual(mockData);
     });
@@ -224,6 +224,76 @@ describe("getChatHistory", () => {
     });
 });
 
+
+describe("getUnitChatHistory", () => {
+
+    const userID = "USR0001";
+    const sectionID = "SEC0001";
+    const unitID = "UNIT0001";
+
+    const mockData = [
+        {
+            dateCreated: "2024-08-27T12:08:45.905447+00:00",
+            queryPair: [
+                {
+                    role: "user",
+                    content: "What type of communication modes are there?",
+                },
+                {
+                    role: "assistant",
+                    content: "verbal, non-verbal, written, visual, and digital",
+                },
+            ],
+        },
+        {
+            dateCreated: "2024-08-27T12:09:56.448132+00:00",
+            queryPair: [
+                {
+                    role: "user",
+                    content: "Can you summarize each point",
+                },
+                {
+                    role: "assistant",
+                    content: "sure!",
+                },
+            ],
+        },
+    ];
+
+    it("should return an array of a user's chat history", async () => {
+
+        const mockEq3 = jest
+            .fn()
+            .mockResolvedValue({ data: mockData, error: null });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        const result = await chatService.getUnitChatHistory({ userID, sectionID, unitID });
+
+        expect(result).toEqual(mockData);
+    });
+
+
+    it("should throw an error and log the error when there is an error from the database", async () => {
+        const errorMessage = "Failed to fetch admin accounts";
+
+        const mockEq3 = jest
+            .fn()
+            .mockResolvedValue({ data: mockData, error: new Error(errorMessage) });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        await expect(
+            chatService.getUnitChatHistory({ userID, sectionID })
+        ).rejects.toThrow(errorMessage);
+        expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
+    });
+});
+
 /* DELETE */
 
 describe("deleteChat", () => {
@@ -233,7 +303,7 @@ describe("deleteChat", () => {
 
     it("should delete the user's chat history successfully", async () => {
 
-    
+
         const mockEq2 = jest.fn().mockResolvedValue({
             status: 204,
             statusText: "No Content",
@@ -244,7 +314,7 @@ describe("deleteChat", () => {
 
         supabase.from.mockReturnValue({ delete: mockDelete });
 
-        const result = await chatService.deleteChat({userID, sectionID});
+        const result = await chatService.deleteChat({ userID, sectionID });
 
         expect(result).toEqual({ status: 204, statusText: "No Content" });
     });
@@ -262,7 +332,7 @@ describe("deleteChat", () => {
 
         supabase.from.mockReturnValue({ delete: mockDelete });
 
-        await expect(chatService.deleteChat({userID, sectionID})).rejects.toThrow(
+        await expect(chatService.deleteChat({ userID, sectionID })).rejects.toThrow(
             errorMessage
         );
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
