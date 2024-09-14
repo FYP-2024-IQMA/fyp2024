@@ -92,7 +92,6 @@ export default function SelfReflection() {
                 style={{
                     alignSelf: 'center',
                     bottom: 20,
-                    position: 'absolute',
                 }}
             >
                 <CustomButton

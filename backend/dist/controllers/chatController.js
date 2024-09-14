@@ -60,8 +60,8 @@ const getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, function*
         sectionID: req.params.sectionid,
     };
     try {
-        if (req.params.unitID) {
-            const chats = yield chatService.getUnitChatHistory(userSection, req.params.unitID);
+        if (req.params.unitid) {
+            const chats = yield chatService.getUnitChatHistory(userSection, req.params.unitid);
             res.status(200).json(chats);
         }
         else {

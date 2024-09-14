@@ -155,43 +155,37 @@ const MiniChatbot: React.FC = () => {
     }, [sectionID, unitID]);
     return (
         <>
-            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-                <View style={styles.container}>
-                    <View style={styles.purpleBox}>
-                        <ScrollView
-                            style={styles.scrollView}
-                            contentContainerStyle={styles.chatContainer}
-                            onContentSizeChange={() =>
-                                scrollViewRef.current?.scrollToEnd({
-                                    animated: true,
-                                })
-                            }
-                        >
-                            {messages.map((msg, index) => (
-                                <ChatBubble
-                                    key={index}
-                                    position={msg.isUser ? 'right' : 'left'}
-                                    bubbleColor={
-                                        msg.isUser ? '#B199FF' : '#D1D5DB'
-                                    }
-                                    textColor={
-                                        msg.isUser ? '#000000' : '#000000'
-                                    }
-                                    isUser={msg.isUser}
-                                    borderRadius={20}
-                                    showArrow={false}
-                                    chatbot={true}
-                                >
-                                    {msg.text}
-                                </ChatBubble>
-                            ))}
-                        </ScrollView>
-                        <View style={styles.inputContainer}>
-                            <ChatInput handleSend={handleSend} />
-                        </View>
+            <View style={styles.container}>
+                <View style={styles.purpleBox}>
+                    <ScrollView
+                        style={styles.scrollView}
+                        contentContainerStyle={styles.chatContainer}
+                        onContentSizeChange={() =>
+                            scrollViewRef.current?.scrollToEnd({
+                                animated: true,
+                            })
+                        }
+                    >
+                        {messages.map((msg, index) => (
+                            <ChatBubble
+                                key={index}
+                                position={msg.isUser ? 'right' : 'left'}
+                                bubbleColor={msg.isUser ? '#B199FF' : '#D1D5DB'}
+                                textColor={msg.isUser ? '#000000' : '#000000'}
+                                isUser={msg.isUser}
+                                borderRadius={20}
+                                showArrow={false}
+                                chatbot={true}
+                            >
+                                {msg.text}
+                            </ChatBubble>
+                        ))}
+                    </ScrollView>
+                    <View style={styles.inputContainer}>
+                        <ChatInput handleSend={handleSend} />
                     </View>
                 </View>
-            </TouchableWithoutFeedback>
+            </View>
         </>
     );
 };
