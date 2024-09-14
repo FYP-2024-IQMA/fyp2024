@@ -1,19 +1,18 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
-import { QuizCard } from '@/components/QuizCard';
+import {QuizCard} from '@/components/QuizCard';
 import axios from 'axios';
-import { router, useLocalSearchParams } from 'expo-router';
-import { Question } from '@/constants/Quiz';
+import {router, useLocalSearchParams} from 'expo-router';
+import {Question} from '@/constants/Quiz';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
-
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -22,9 +21,9 @@ export default function VideoQuiz() {
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
-    const [questions, setQuestions] = useState<Question[]>([]);;
+    const [questions, setQuestions] = useState<Question[]>([]);
     const [lessonName, setLessonName] = useState<string>('');
-    
+
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
     // const unitID = "UNIT0001";
@@ -52,7 +51,7 @@ export default function VideoQuiz() {
 
                 setLessonName(lessonDetails.lessonName);
                 setUnitName(unitDetails.unitName);
-                setQuestions(response)
+                setQuestions(response);
             })();
             setSectionNumber(formatSection(sectionID as string));
             setUnitNumber(formatUnit(unitID as string));
@@ -72,26 +71,28 @@ export default function VideoQuiz() {
         if (newIdx < questions.length) {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
-        }
-        else {
+        } else {
             try {
                 const resultResponse = await axios.post(
                     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`,
                     {
-                        "userID": await AsyncStorage.getItem('userID'),
-                        "quizID": questions[currentQnsIdx].quizID
+                        userID: await AsyncStorage.getItem('userID'),
+                        quizID: questions[currentQnsIdx].quizID,
                     }
-                )
-                console.log(resultResponse.data)
+                );
+                console.log(resultResponse.data);
                 router.replace({
                     pathname: 'KeyTakeaway',
                     // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-                    params: {sectionID: sectionID, unitID: unitID,lessonID: lessonID},
+                    params: {
+                        sectionID: sectionID,
+                        unitID: unitID,
+                        lessonID: lessonID,
+                    },
                 });
             } catch (e) {
                 console.error(e);
-            } 
-            
+            }
         }
     };
 

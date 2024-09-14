@@ -122,7 +122,6 @@ export default function KeyTakeaway() {
                     onPressHandler={handlePress}
                 />
             </View>
-
         </ScrollView>
     );
 }

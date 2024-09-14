@@ -12,7 +12,7 @@ import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
-import { OverviewCard } from '@/components/OverviewCard';
+import {OverviewCard} from '@/components/OverviewCard';
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -87,7 +87,12 @@ export default function Assessment() {
                 </Text>
             </View>
             <View>
-                <OverviewCard isError={false} text={unitScenario} isScenario={true} title="Scenario:"/>
+                <OverviewCard
+                    isError={false}
+                    text={unitScenario}
+                    isScenario={true}
+                    title="Scenario:"
+                />
             </View>
 
             {questions.length > 0 && questions[currentQnsIdx] && (

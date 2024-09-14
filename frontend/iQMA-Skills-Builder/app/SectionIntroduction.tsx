@@ -14,7 +14,7 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    const { sectionID, unitID, lessonID } = useLocalSearchParams();
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
     // const sectionID = 'SEC0001'; // to be removed
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
@@ -109,6 +109,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1,        
+        flex: 1,
     },
 });

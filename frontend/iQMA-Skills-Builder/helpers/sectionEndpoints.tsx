@@ -11,7 +11,6 @@ export const getSectionDetails = async (sectionID: string) => {
     }
 };
 
-
 export const getAllSectionDetails = async () => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/section/sectiondetails`;
@@ -27,5 +26,5 @@ export const getAllSectionDetails = async () => {
     } catch (error) {
         console.error('Error fetching all sectionDetails:', error);
         return;
-    } 
-}
+    }
+};

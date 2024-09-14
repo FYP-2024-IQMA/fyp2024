@@ -30,7 +30,7 @@ export default function UnitIntroduction() {
             clearInterval(timerRef.current);
         }
         timerRef.current = setInterval(() => {
-            setSeconds(prevSeconds => prevSeconds + 1);
+            setSeconds((prevSeconds) => prevSeconds + 1);
         }, 1000);
     };
 
@@ -44,9 +44,9 @@ export default function UnitIntroduction() {
     useEffect(() => {
         startTimer();
         return () => {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-          }
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
         };
     }, []);
 
@@ -85,16 +85,16 @@ export default function UnitIntroduction() {
         const userID = await AsyncStorage.getItem('userID');
         try {
             const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`, 
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
                 {
-                    "userID": userID,
-                    "eventType": "timeTaken",
-                    "event": `unitID ${unitID}`,
-                    "timestamp": new Date().toISOString(),
-                    "time": `${seconds}`
+                    userID: userID,
+                    eventType: 'timeTaken',
+                    event: `unitID ${unitID}`,
+                    timestamp: new Date().toISOString(),
+                    time: `${seconds}`,
                 }
-            )
-            console.log(response.data)
+            );
+            console.log(response.data);
         } catch (e) {
             console.error(e);
         }
@@ -152,6 +152,6 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1
+        flex: 1,
     },
 });

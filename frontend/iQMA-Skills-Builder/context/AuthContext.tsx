@@ -81,7 +81,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             await clearSession();
             setCurrentUser(null);
             setToken(null);
-            await AsyncStorage.removeItem('userID'); 
+            await AsyncStorage.removeItem('userID');
             router.replace('/'); // For redirect if page is not Index
         } catch (e) {
             console.log(e);

@@ -1,4 +1,8 @@
-export const getQuizzes = async (sectionID: string, unitID: string, lessonID: string) => {
+export const getQuizzes = async (
+    sectionID: string,
+    unitID: string,
+    lessonID: string
+) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}/${lessonID}`;
         const response = await fetch(url);

@@ -11,8 +11,9 @@ export const getUnitDetails = async (sectionID: string, unitID: string) => {
     }
 };
 
-
-export const numberOfUnitsPerSection = async (sectionID: string): Promise<number> => {
+export const numberOfUnitsPerSection = async (
+    sectionID: string
+): Promise<number> => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/gettotalunit/${sectionID}`;
         const response = await fetch(url);

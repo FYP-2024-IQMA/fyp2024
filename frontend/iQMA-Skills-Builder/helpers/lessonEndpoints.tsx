@@ -15,11 +15,7 @@ export const getLessonDetails = async (
     }
 };
 
-
-export const getAllLesson = async (
-    sectionID: string,
-    unitID: string,
-) => {
+export const getAllLesson = async (sectionID: string, unitID: string) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/lesson/getalllessons/${sectionID}/${unitID}`;
         const response = await fetch(url);
@@ -31,7 +27,6 @@ export const getAllLesson = async (
         return;
     }
 };
-
 
 export const getNumofLessonsPerUnit = async (
     sectionID: string,
@@ -46,4 +41,4 @@ export const getNumofLessonsPerUnit = async (
         console.error('Error while loading lesson progress:', error);
         return 0;
     }
-}
+};

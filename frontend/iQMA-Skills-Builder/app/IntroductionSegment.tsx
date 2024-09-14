@@ -31,7 +31,6 @@ export default function IntroductionSegment() {
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',

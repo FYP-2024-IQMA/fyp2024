@@ -107,7 +107,7 @@ export default function LearnerAssessmentComplete() {
 
             router.push('Home');
         } catch (e) {
-            console.log("here")
+            console.log('here');
             console.error(e);
         }
     };
@@ -129,7 +129,6 @@ export default function LearnerAssessmentComplete() {
                 backgroundColor="white"
                 onPressHandler={handlePress}
             />
-
         </View>
     );
 }

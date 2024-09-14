@@ -1,4 +1,3 @@
-
 export const numberOfCompletedUnitsPerSection = async (
     userID: string,
     sectionID: string
@@ -13,7 +12,6 @@ export const numberOfCompletedUnitsPerSection = async (
         return 0;
     }
 };
-
 
 export const numberOfCompletedLessonsPerUnit = async (
     userID: string,

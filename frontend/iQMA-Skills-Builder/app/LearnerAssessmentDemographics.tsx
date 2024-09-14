@@ -152,8 +152,8 @@ export default function LearnerAssessmentDemographics() {
                             style={[
                                 styles.textInputStyle,
                                 !isContinue && !ethnic
-                                ? styles.wrongBorder
-                                : styles.correctBorder,
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
                             ]}
                             multiline={true}
                             numberOfLines={4}
@@ -364,7 +364,6 @@ export default function LearnerAssessmentDemographics() {
                 backgroundColor="white"
                 onPressHandler={handlePress}
             />
-
         </ScrollView>
     );
 }

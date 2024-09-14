@@ -29,7 +29,6 @@ export default function LearnerAssessment() {
     );
 }
 
-
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
@@ -43,5 +42,5 @@ const styles = StyleSheet.create({
     },
     mascotImage: {
         marginBottom: 20,
-    }
+    },
 });

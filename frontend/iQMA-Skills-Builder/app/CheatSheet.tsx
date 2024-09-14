@@ -4,9 +4,9 @@ import {CustomButton} from '@/components/CustomButton';
 import {router, useLocalSearchParams} from 'expo-router';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
-import { OverviewCard } from '@/components/OverviewCard';
+import {OverviewCard} from '@/components/OverviewCard';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import { formatUnit } from '@/helpers/formatUnitID';
+import {formatUnit} from '@/helpers/formatUnitID';
 
 const formatCheatSheet = (cheatsheet: any) => {
     if (Array.isArray(cheatsheet)) {
@@ -51,7 +51,7 @@ export default function CheatSheet() {
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false}/>
+                <ProgressBar progress={0.25} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -80,7 +80,7 @@ export default function CheatSheet() {
     const handlePress = () => {
         // router.push("Lesson")
         router.push({
-            pathname: "UnitIntroduction", // to be replaced with Unit Reality Check page
+            pathname: 'UnitIntroduction', // to be replaced with Unit Reality Check page
             params: {sectionID: sectionID, unitID: unitID},
         });
     };
