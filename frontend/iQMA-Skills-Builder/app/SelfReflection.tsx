@@ -59,7 +59,7 @@ export default function SelfReflection() {
 
     return (
         <View style={styles.container}>
-            <View>
+            <View style={{flexGrow: 1}}>
                 <SectionCard
                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                     subtitle={unitName}
@@ -88,11 +88,11 @@ export default function SelfReflection() {
                 </Text>
                 <MiniChatbot />
             </View>
-
             <View
                 style={{
                     alignSelf: 'center',
                     bottom: 20,
+                    position: 'absolute',
                 }}
             >
                 <CustomButton
@@ -110,6 +110,5 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
-        justifyContent: 'space-between',
     },
 });

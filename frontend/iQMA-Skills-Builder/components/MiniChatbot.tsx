@@ -1,8 +1,8 @@
+import * as chatInputFunctions from '@/components/ChatInput';
+
 import {
     Alert,
     Keyboard,
-    KeyboardAvoidingView,
-    Platform,
     ScrollView,
     StyleSheet,
     Text,
@@ -29,62 +29,6 @@ interface QuizItem {
     quizID: number;
 }
 
-// Getting response from chatbot -> to add examples and summarise
-const getChatbotResponse = async (
-    role: string,
-    message: string,
-    history?: Array<{role: string; content: string}>
-) => {
-    try {
-        const response = await fetch(`http://10.0.2.2:8000/generate`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                role: role,
-                content: message,
-                ...(history && {history}),
-            }),
-        });
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error while getting chatbot response:', error);
-    }
-};
-
-// Save chat history
-const saveChatHistory = async (
-    userId: string,
-    sectionId: string,
-    queryPair: {role: string; content: string}[]
-) => {
-    try {
-        const body = {
-            userID: userId,
-            sectionID: sectionId,
-            queryPair: queryPair,
-        };
-
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/createchathistory`;
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-        });
-
-        const data = await response.json();
-
-        console.log('Status: ', data.status);
-    } catch (error) {
-        console.error('Error while saving chat history:', error);
-    }
-};
-
 //get reflection qn from backend
 const reflectionQuestion = async (sectionID: string, unitID: string) => {
     try {
@@ -92,7 +36,7 @@ const reflectionQuestion = async (sectionID: string, unitID: string) => {
         const response = await fetch(url);
         const data = await response.json();
         const reflectionQn = data.filter(
-            (item: QuizItem) => item.isSelfReflection === true
+            (item: QuizItem) => item.isSelfReflection
         );
 
         return reflectionQn[0].question;
@@ -107,10 +51,51 @@ const MiniChatbot: React.FC = () => {
         []
     );
     const {currentUser, isLoading} = useContext(AuthContext);
+    const [reflectionQn, setReflectionQn] = useState<string>('');
     const scrollViewRef = useRef<ScrollView>(null);
 
     const sectionID = 'SEC0001';
-    const unitID = 'UNIT0001';
+    const unitID = 'UNIT0002';
+
+    const loadUnitChatHistory = async (
+        userId: string,
+        sectionId: string,
+        unitId: string
+    ) => {
+        try {
+            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/getchathistory/${userId}/${sectionId}/${unitId}`;
+
+            const response = await fetch(url);
+            const chatHistory = await response.json();
+
+            if (chatHistory.length == 0) {
+                await chatInputFunctions.saveChatHistory(
+                    currentUser.sub,
+                    sectionID,
+                    unitID,
+                    [
+                        {
+                            role: 'assistant',
+                            content: reflectionQn,
+                        },
+                    ]
+                );
+            }
+
+            const formattedChatHistory = chatHistory.flatMap(
+                (item: {queryPair: {role: string; content: string}[]}) =>
+                    item.queryPair.map((message) => ({
+                        text: message.content,
+                        isUser: message.role === 'user',
+                    }))
+            );
+            setMessages(formattedChatHistory);
+
+            return formattedChatHistory;
+        } catch (error) {
+            console.error('Error while loading chat history:', error);
+        }
+    };
 
     // handle user input
     const handleSend = async (message: string) => {
@@ -124,9 +109,12 @@ const MiniChatbot: React.FC = () => {
             role: msg.isUser ? 'user' : 'assistant',
             content: msg.text,
         }));
-        console.log(history);
 
-        const response = await getChatbotResponse('user', message, history);
+        const response = await chatInputFunctions.getChatbotResponse(
+            'user',
+            message,
+            history
+        );
 
         if (response) {
             // Add the chatbot response to the chat
@@ -142,7 +130,12 @@ const MiniChatbot: React.FC = () => {
 
             scrollViewRef.current?.scrollToEnd({animated: true});
 
-            saveChatHistory(currentUser.sub, sectionID, queryPair);
+            chatInputFunctions.saveChatHistory(
+                currentUser.sub,
+                sectionID,
+                unitID,
+                queryPair
+            );
         }
     };
 
@@ -150,41 +143,55 @@ const MiniChatbot: React.FC = () => {
         if (sectionID && unitID) {
             (async () => {
                 const response = await reflectionQuestion(sectionID, unitID);
-                setMessages([{text: response, isUser: false}]);
+                setReflectionQn(response);
+                // setMessages([{text: response, isUser: false}]);
+                const chatHistory = loadUnitChatHistory(
+                    currentUser.sub,
+                    sectionID,
+                    unitID
+                );
             })();
         }
     }, [sectionID, unitID]);
     return (
         <>
-            <View style={styles.container}>
-                <View style={styles.purpleBox}>
-                    <ScrollView
-                        style={styles.scrollView}
-                        contentContainerStyle={styles.chatContainer}
-                        onContentSizeChange={() =>
-                            scrollViewRef.current?.scrollToEnd({animated: true})
-                        }
-                    >
-                        {messages.map((msg, index) => (
-                            <ChatBubble
-                                key={index}
-                                position={msg.isUser ? 'right' : 'left'}
-                                bubbleColor={msg.isUser ? '#B199FF' : '#D1D5DB'}
-                                textColor={msg.isUser ? '#000000' : '#000000'}
-                                isUser={msg.isUser}
-                                borderRadius={20}
-                                showArrow={false}
-                                chatbot={true}
-                            >
-                                {msg.text}
-                            </ChatBubble>
-                        ))}
-                    </ScrollView>
-                    <View style={styles.inputContainer}>
-                        <ChatInput handleSend={handleSend} />
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.container}>
+                    <View style={styles.purpleBox}>
+                        <ScrollView
+                            style={styles.scrollView}
+                            contentContainerStyle={styles.chatContainer}
+                            onContentSizeChange={() =>
+                                scrollViewRef.current?.scrollToEnd({
+                                    animated: true,
+                                })
+                            }
+                        >
+                            {messages.map((msg, index) => (
+                                <ChatBubble
+                                    key={index}
+                                    position={msg.isUser ? 'right' : 'left'}
+                                    bubbleColor={
+                                        msg.isUser ? '#B199FF' : '#D1D5DB'
+                                    }
+                                    textColor={
+                                        msg.isUser ? '#000000' : '#000000'
+                                    }
+                                    isUser={msg.isUser}
+                                    borderRadius={20}
+                                    showArrow={false}
+                                    chatbot={true}
+                                >
+                                    {msg.text}
+                                </ChatBubble>
+                            ))}
+                        </ScrollView>
+                        <View style={styles.inputContainer}>
+                            <ChatInput handleSend={handleSend} />
+                        </View>
                     </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </>
     );
 };

@@ -9,15 +9,7 @@ import {
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 
-import {AntDesign} from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthContext} from '@/context/AuthContext';
-import {ChatBubble} from '@/components/ChatBubble';
-import {ChatDrawerParamList} from '@/components/ChatbotDrawer';
-import {DrawerScreenProps} from '@react-navigation/drawer';
 import {Feather} from '@expo/vector-icons';
-import {useDrawerStatus} from '@react-navigation/drawer';
-import {useNavigation} from '@react-navigation/native';
 
 // import {TextInput} from 'react-native-gesture-handler';
 
@@ -26,14 +18,14 @@ interface ChatInputProps {
 }
 
 // Getting response from chatbot -> to add examples and summarise
-const getChatbotResponse = async (
+export const getChatbotResponse = async (
     role: string,
     message: string,
     history?: Array<{role: string; content: string}>
 ) => {
     try {
         const response = await fetch(
-            `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`,
+            `${process.env.EXPO_PUBLIC_CHATBOT_URL}/generate`,
             {
                 method: 'POST',
                 headers: {
@@ -54,19 +46,21 @@ const getChatbotResponse = async (
 };
 
 // Save chat history
-const saveChatHistory = async (
+export const saveChatHistory = async (
     userId: string,
     sectionId: string,
+    unitId: string,
     queryPair: {role: string; content: string}[]
 ) => {
     try {
         const body = {
             userID: userId,
             sectionID: sectionId,
+            unitID: unitId,
             queryPair: queryPair,
         };
 
-        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/createchathistory`;
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/createchathistory`;
 
         const response = await fetch(url, {
             method: 'POST',
@@ -142,11 +136,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        padding: 10,
-        backgroundColor: '#FFFFFF',
     },
 });
 
