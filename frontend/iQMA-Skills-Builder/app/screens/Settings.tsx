@@ -13,7 +13,7 @@ const testQuiz = () => {
 };
 
 const testAsssessment = () => {
-    router.push('Assessment');
+    router.push('RealityCheck');
 };
 
 const SettingPage: React.FC = () => (

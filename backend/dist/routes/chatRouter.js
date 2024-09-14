@@ -34,6 +34,7 @@ const router = (0, express_1.Router)();
 router.post("/createchathistory", authMiddleware_1.default, chatController.createChats);
 /* READ */
 router.get("/getchathistory/:userid/:sectionid", authMiddleware_1.default, chatController.getChatHistory);
+router.get("/getchathistory/:userid/:sectionid/:unitid", authMiddleware_1.default, chatController.getChatHistory);
 /* DELETE */
 router.delete("/deletechathistory/:userid/:sectionid", authMiddleware_1.default, chatController.deleteChat);
 exports.default = router;
