@@ -52,11 +52,12 @@ export default function KeyTakeaway() {
                         unitID as string
                     );
 
-                    const lessonDetails = await lessonEndpoints.getLessonDetails(
-                        sectionID as string,
-                        unitID as string,
-                        lessonID as string
-                    );
+                    const lessonDetails =
+                        await lessonEndpoints.getLessonDetails(
+                            sectionID as string,
+                            unitID as string,
+                            lessonID as string
+                        );
 
                     setLessonName(lessonDetails.lessonName);
                     setUnitName(unitDetails.unitName);
@@ -86,21 +87,19 @@ export default function KeyTakeaway() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={styles.screenTitle}
-                        >
-                            {lessonName}
-                        </Text>
+                        <Text style={styles.screenTitle}>{lessonName}</Text>
 
                         <Text style={styles.takeawayHeader}>Key Takeaways</Text>
                         {keyTakeaway && keyTakeaway.length > 0 ? (
-                            keyTakeaway.map((takeaway: string, index: number) => (
-                                <View key={index}>
-                                    <Text style={styles.takeawayText}>
-                                        {index + 1}. {takeaway}
-                                    </Text>
-                                </View>
-                            ))
+                            keyTakeaway.map(
+                                (takeaway: string, index: number) => (
+                                    <View key={index}>
+                                        <Text style={styles.takeawayText}>
+                                            {index + 1}. {takeaway}
+                                        </Text>
+                                    </View>
+                                )
+                            )
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -122,11 +121,11 @@ export default function KeyTakeaway() {
                     </View>
 
                     <View style={{marginBottom: 40}}>
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
                     </View>
                 </>
             )}

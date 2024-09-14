@@ -12,8 +12,8 @@ import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
-import { useNavigation } from '@react-navigation/native';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {useNavigation} from '@react-navigation/native';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -53,12 +53,14 @@ export default function SelfReflection() {
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
-                    console.error("Error fetching unitDetails in Self-Reflection", error);
+                    console.error(
+                        'Error fetching unitDetails in Self-Reflection',
+                        error
+                    );
                 } finally {
                     setIsLoading(false);
                 }
             })();
-
         }
     }, [sectionID, unitID]);
 
@@ -83,11 +85,7 @@ export default function SelfReflection() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={styles.screenTitle}
-                        >
-                            Self Reflection
-                        </Text>
+                        <Text style={styles.screenTitle}>Self Reflection</Text>
                         <Text
                             style={{
                                 fontSize: 11,

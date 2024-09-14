@@ -122,9 +122,7 @@ export default function UnitIntroduction() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={styles.screenTitle}
-                        >
+                        <Text style={styles.screenTitle}>
                             Unit {unitNumber}: Introduction
                         </Text>
 

@@ -99,11 +99,7 @@ export default function Lesson() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={styles.screenTitle}
-                        >
-                            {lessonName}
-                        </Text>
+                        <Text style={styles.screenTitle}>{lessonName}</Text>
 
                         {lessonDescription ? (
                             <OverviewCard

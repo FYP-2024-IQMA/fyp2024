@@ -12,7 +12,7 @@ import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
-import { OverviewCard } from '@/components/OverviewCard';
+import {OverviewCard} from '@/components/OverviewCard';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function Assessment() {
@@ -24,7 +24,7 @@ export default function Assessment() {
     const [unitName, setUnitName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    
+
     // Hardcoded for now until routing confirmed
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
@@ -50,9 +50,8 @@ export default function Assessment() {
 
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
-
                 } catch (error) {
-                    console.error("Error fetching unit details", error);
+                    console.error('Error fetching unit details', error);
                 } finally {
                     setIsLoading(false);
                 }
@@ -85,7 +84,7 @@ export default function Assessment() {
         >
             {isLoading ? (
                 <LoadingIndicator />
-            ): (
+            ) : (
                 <>
                     <SectionCard
                         title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
@@ -99,7 +98,8 @@ export default function Assessment() {
                                 marginBottom: 10,
                             }}
                         >
-                            Choose the most appropriate option for each question.
+                            Choose the most appropriate option for each
+                            question.
                         </Text>
                     </View>
                     <View>

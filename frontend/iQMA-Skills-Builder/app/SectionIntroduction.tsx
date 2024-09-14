@@ -9,7 +9,7 @@ import ProgressBar from '@/components/ProgressBar';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function SectionIntroduction() {
@@ -86,9 +86,7 @@ export default function SectionIntroduction() {
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
                         />
-                        <Text
-                            style={styles.screenTitle}
-                        >
+                        <Text style={styles.screenTitle}>
                             Section {sectionNumber}: Introduction
                         </Text>
                         {videoId ? (

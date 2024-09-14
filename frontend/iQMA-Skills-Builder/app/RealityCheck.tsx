@@ -9,7 +9,7 @@ import {OverviewCard} from '@/components/OverviewCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function RealityCheck() {
@@ -20,14 +20,15 @@ export default function RealityCheck() {
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
-    const [realityCheckDescription, setRealityCheckDescription] = useState<string[]>([]);
+    const [realityCheckDescription, setRealityCheckDescription] = useState<
+        string[]
+    >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     // Only for testing, please delete
-    const [sectionID, setSectionID] = useState<string>("SEC0001")
-    const [unitID, setUnitID] = useState<string>("UNIT0001")
+    const [sectionID, setSectionID] = useState<string>('SEC0001');
+    const [unitID, setUnitID] = useState<string>('UNIT0001');
 
-    useEffect(() => {
-    }, []);
+    useEffect(() => {}, []);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -51,17 +52,18 @@ export default function RealityCheck() {
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
-                    console.error('Error fetching Unit details in Reality Check:', error);
+                    console.error(
+                        'Error fetching Unit details in Reality Check:',
+                        error
+                    );
                 } finally {
                     setIsLoading(false);
                 }
             })();
-
         }
     }, [sectionID, unitID]);
 
     const handlePress = async () => {
-
         router.push({
             pathname: 'Assessment',
             params: {sectionID: sectionID, unitID: unitID},
@@ -70,7 +72,6 @@ export default function RealityCheck() {
 
     return (
         <View style={styles.container}>
-
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
@@ -85,9 +86,14 @@ export default function RealityCheck() {
                         </Text>
 
                         {realityCheckDescription.length > 0 ? (
-                            realityCheckDescription.map((description, index) => (
-                                <OverviewCard key={index} text={description} />
-                            ))
+                            realityCheckDescription.map(
+                                (description, index) => (
+                                    <OverviewCard
+                                        key={index}
+                                        text={description}
+                                    />
+                                )
+                            )
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -95,7 +101,12 @@ export default function RealityCheck() {
                             />
                         )}
 
-                        <View style={{width: '100%', flexDirection: 'row-reverse'}}>
+                        <View
+                            style={{
+                                width: '100%',
+                                flexDirection: 'row-reverse',
+                            }}
+                        >
                             <Image
                                 style={{}}
                                 source={require('@/assets/images/happycloseeye.png')}
@@ -107,7 +118,7 @@ export default function RealityCheck() {
                         label="continue"
                         backgroundColor="white"
                         onPressHandler={handlePress}
-                    />     
+                    />
                 </>
             )}
         </View>

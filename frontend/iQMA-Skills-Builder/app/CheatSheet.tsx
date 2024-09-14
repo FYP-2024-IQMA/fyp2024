@@ -6,7 +6,7 @@ import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import { formatUnit } from '@/helpers/formatUnitID';
+import {formatUnit} from '@/helpers/formatUnitID';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 const formatCheatSheet = (cheatsheet: any) => {
@@ -68,7 +68,9 @@ export default function CheatSheet() {
                     );
 
                     const processedLessonDetails = lessonDetails
-                        .filter((lesson: any) => !lesson.lessonID.includes('.2'))
+                        .filter(
+                            (lesson: any) => !lesson.lessonID.includes('.2')
+                        )
                         .map((lesson: any) => ({
                             ...lesson,
                             lessonName: lesson.lessonName.replace('.1', ''),
@@ -77,11 +79,14 @@ export default function CheatSheet() {
                     setLessons(processedLessonDetails);
                     setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
-                    console.error('Error fetching Lesson details in CheatSheet:', error);
+                    console.error(
+                        'Error fetching Lesson details in CheatSheet:',
+                        error
+                    );
                 } finally {
                     setIsLoading(false);
-                }  
-            })(); 
+                }
+            })();
         }
     }, [sectionID, unitID]);
 

@@ -40,11 +40,12 @@ export default function VideoQuiz() {
                         unitID as string
                     );
 
-                    const lessonDetails = await lessonEndpoints.getLessonDetails(
-                        sectionID as string,
-                        unitID as string,
-                        lessonID as string
-                    );
+                    const lessonDetails =
+                        await lessonEndpoints.getLessonDetails(
+                            sectionID as string,
+                            unitID as string,
+                            lessonID as string
+                        );
 
                     const response = await quizEndpoints.getQuizzes(
                         sectionID as string,
@@ -63,7 +64,6 @@ export default function VideoQuiz() {
                     setIsLoading(false);
                 }
             })();
-            
         }
     }, [sectionID, unitID, lessonID]);
 
