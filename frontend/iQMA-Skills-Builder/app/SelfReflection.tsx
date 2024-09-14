@@ -26,7 +26,10 @@ export default function SelfReflection() {
     const [sectionName, setSectionName] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
-
+    const [chatHistoryLength, setChatHistoryLength] = useState<number>(0);
+    const handleChatHistoryUpdate = (length: number) => {
+        setChatHistoryLength(length);
+    };
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
@@ -86,7 +89,7 @@ export default function SelfReflection() {
                     Use a few words to share your thoughts on the following
                     question.
                 </Text>
-                <MiniChatbot />
+                <MiniChatbot onChatHistoryUpdate={handleChatHistoryUpdate} />
             </ScrollView>
             <View
                 style={{
@@ -98,6 +101,7 @@ export default function SelfReflection() {
                     label="continue"
                     backgroundColor="white"
                     onPressHandler={handlePress}
+                    disabled={chatHistoryLength < 3}
                 />
             </View>
         </View>
