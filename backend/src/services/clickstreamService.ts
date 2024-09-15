@@ -8,8 +8,8 @@ const s3 = new AWS.S3({
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
 
-async function uploadToS3(queue: string, userID: string, newClickstream: string) {
-    const key = `${queue}/${userID}.json`;
+async function uploadToS3(queue: string, newClickstream: Clickstream) {
+    const key = `${queue}/${newClickstream.userID}.json`;
     const params = {
         Bucket: 'isb-raw-data-athena',
         Key: key,
@@ -18,13 +18,11 @@ async function uploadToS3(queue: string, userID: string, newClickstream: string)
 
     try {
         const existingData = await s3.getObject(params).promise();
-        let parsedData = JSON.parse(existingData.Body!.toString('utf-8'));
-        if (Array.isArray(parsedData)) {
-            existingClickstream = parsedData;
-        }
-        else {
-            existingClickstream = [parsedData];
-        }
+        let fileContent = existingData.Body!.toString('utf-8');
+        existingClickstream = fileContent
+            .split('\n')
+            .filter((line: string) => line.trim().length>0)
+            .map((line: string) => JSON.parse(line));
     } catch (error: any) {
         if (error.code === 'NoSuchKey') {
             console.log("Creating new file");
@@ -34,7 +32,7 @@ async function uploadToS3(queue: string, userID: string, newClickstream: string)
         }
     }
 
-    existingClickstream.push(JSON.parse(newClickstream));
+    existingClickstream.push(newClickstream);
     const lineDelimitedJson = existingClickstream.map(item => JSON.stringify(item)).join('\n');
     s3.putObject({
         ...params,
@@ -57,7 +55,7 @@ async function consumeMessage() {
                     const data = message.content.toString();
                     let parsedData: Clickstream = JSON.parse(data);
                     try {
-                        await uploadToS3(queue, parsedData.userID, data);
+                        await uploadToS3(queue, parsedData);
                         channel.ack(message);
                         console.log(message)
                     } catch (error) {
