@@ -1,9 +1,11 @@
+import * as SplashScreen from 'expo-splash-screen';
+
+import {ActivityIndicator, View} from 'react-native';
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
-import {router} from 'expo-router';
-import {ActivityIndicator, View} from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {router} from 'expo-router';
 
 export const AuthContext = createContext<any>(null);
 
@@ -119,6 +121,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('CheatSheet');
                     // router.replace('SelfReflection');
                     // router.replace('Assessment');
+                    // router.replace('FinalAssessment');
                 } else {
                     router.replace('IntroductionMascot');
                 }

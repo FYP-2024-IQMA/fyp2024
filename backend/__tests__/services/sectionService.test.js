@@ -30,6 +30,7 @@ describe("getSectionDetails", () => {
     const expectedResults = {
         ...mockSection,
         introductionURL: 'pU4fCakueEE',
+        finalAssessmentIntro: ["Welcome to the Grand Presentation Showdown..."],
     }
 
     it("should return section details on success", async () => {

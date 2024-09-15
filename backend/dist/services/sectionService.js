@@ -30,16 +30,21 @@ function getAllSections() {
             console.error(error);
             throw error;
         }
-        return data;
         // else {
         // 	const formattedData = data.map((section) => {
         // 		if (section.introductionURL) {
         // 			section.introductionURL = extractYouTubeID(section.introductionURL);
         // 		}
-        // 		return section;
+        // 		return {
+        // 			...section,
+        // 			finalAssessmentIntro: section.finalAssessmentIntro
+        // 				? section.finalAssessmentIntro.split(/\r\n/)
+        // 				: [],
+        // 		};
         // 	});
         // 	return formattedData;
-        // }
+        // };	
+        return data;
     });
 }
 function getSectionDetails(sectionID) {
@@ -57,7 +62,9 @@ function getSectionDetails(sectionID) {
             if (data.introductionURL) {
                 data.introductionURL = extractYouTubeID(data.introductionURL);
             }
-            return data;
+            return Object.assign(Object.assign({}, data), { finalAssessmentIntro: data.finalAssessmentIntro
+                    ? data.finalAssessmentIntro.split(/\r\n/)
+                    : [], introductionURL: data.introductionURL });
         }
     });
 }
