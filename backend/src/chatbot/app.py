@@ -11,8 +11,10 @@ from typing import List, Optional
 # dealing with relative / absolute imports
 if __package__ is None or __package__ == '' or __name__ == '__main__':
     from chatgpt import ChatGPT
+    from langchain_setup import full_chain
 else:
     from src.chatbot.chatgpt import ChatGPT
+    from src.chatbot.langchain_setup import full_chain
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -56,20 +58,20 @@ async def generate_text(prompt: Prompt):
 @app.post("/langchain")
 async def langchain_text(prompt: Prompt):
     """
-    Generate a response from the ChatGPT object based on the role and prompt.
+    Generate a response from Agent-integrated chain based on the role and prompt.
     """
     logger.info("Endpoint '/langchain' has been called with prompt: %s", prompt)
     try:
-        llm = ChatOpenAI(
-            model="gpt-4o-mini",
-            api_key=os.environ.get("OPENAI_API_KEY"),
-        )
+        # llm = ChatOpenAI(
+        #     model="gpt-4o-mini",
+        #     api_key=os.environ.get("OPENAI_API_KEY"),
+        # )
         if prompt.history:
             langchain_format = convert_openai_messages(prompt.history)
-            response = llm.invoke(langchain_format)
+            response = full_chain.invoke(langchain_format)
         else:
             # langchain_format = convert_openai_messages([{"role": prompt.role, "content": prompt.content}])
-            response = llm.invoke([{"role": prompt.role, "content": prompt.content}])
+            response = full_chain.invoke([{"role": prompt.role, "content": prompt.content}])
 
         return {
             "role": "assistant",
