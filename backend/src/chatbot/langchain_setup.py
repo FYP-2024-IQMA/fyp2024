@@ -123,10 +123,11 @@ full_chain = (
         # (lambda x: "summary" in x["choice"].lower(), RunnableAssign({'final_answer': answer_chain})),
         RunnableAssign({'final_answer': answer_chain})
     )
-    | reply_chain
-    | PPrint()
-    | StrOutputParser()
+    | RunnableAssign({'output': reply_chain})
 )
 
-input = "Why does a leader need to be adaptable?"
-output = full_chain.invoke({"input": input})
+if __name__ == "__main__":
+    # Test the chain
+    # input = "Why does a leader need to be adaptable?"
+    input = "I'm struggling with delegating tasks to my team because I worry they won't do it as well as I would."
+    output = full_chain.invoke({"input": input})

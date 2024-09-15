@@ -2,7 +2,8 @@ from fastapi import FastAPI
 from langchain_community.callbacks.streamlit import StreamlitCallbackHandler
 import streamlit as st
 
-from chroma_setup import agent_executor
+# from chroma_setup import agent_executor
+from langchain_setup import full_chain
 
 app = FastAPI()
 
@@ -33,7 +34,7 @@ if prompt := st.chat_input("What would you like to do today?"):
     with st.chat_message("assistant"):
         # chat function
         st_callback = StreamlitCallbackHandler(st.container())
-        response = agent_executor.invoke({
+        response = full_chain.invoke({
             "input": prompt}, 
             {"callback": [st_callback]}
         )
