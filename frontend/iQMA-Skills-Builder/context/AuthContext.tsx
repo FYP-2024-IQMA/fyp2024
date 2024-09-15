@@ -1,6 +1,3 @@
-import * as SplashScreen from 'expo-splash-screen';
-
-import {ActivityIndicator, View} from 'react-native';
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
 
@@ -113,7 +110,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             } else if (response.status === 200) {
                 console.log('Not first time:', data);
                 if (data.hasOnboarded) {
-                    // router.replace('Home');
+                    router.replace('Home');
                     // router.replace('UnitIntroduction');
                     // router.replace('VideoQuiz');
                     // router.replace('Lesson');
