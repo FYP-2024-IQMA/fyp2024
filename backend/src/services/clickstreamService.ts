@@ -18,7 +18,13 @@ async function uploadToS3(queue: string, userID: string, newClickstream: string)
 
     try {
         const existingData = await s3.getObject(params).promise();
-        existingClickstream = JSON.parse(existingData.Body!.toString('utf-8'));
+        const parsedData = JSON.parse(existingData.Body!.toString('utf-8'));
+        if (Array.isArray(parsedData)) {
+            existingClickstream = parsedData;
+        }
+        else {
+            existingClickstream = [parsedData];
+        }
     } catch (error: any) {
         if (error.code === 'NoSuchKey') {
             console.log("Creating new file");
@@ -29,9 +35,10 @@ async function uploadToS3(queue: string, userID: string, newClickstream: string)
     }
 
     existingClickstream.push(JSON.parse(newClickstream));
+    const lineDelimitedJson = existingClickstream.map(item => JSON.stringify(item)).join('\n');
     s3.putObject({
         ...params,
-        Body: JSON.stringify(existingClickstream),
+        Body: lineDelimitedJson,
         ContentType: "application/json"
     }).promise();
 }
