@@ -15,24 +15,36 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessage = sendMessage;
 const amqplib_1 = __importDefault(require("amqplib"));
 const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const uuid_1 = require("uuid");
 const s3 = new aws_sdk_1.default.S3({
     region: 'ap-southeast-1',
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
-function uploadToS3(queue, body) {
+function uploadToS3(queue, userID, newClickstream) {
     return __awaiter(this, void 0, void 0, function* () {
+        const key = `${queue}/${userID}.json`;
         const params = {
             Bucket: `isb-raw-data-athena`,
-            Key: `${queue}/${(0, uuid_1.v4)()}.json`,
-            Body: body
+            Key: key,
         };
         try {
-            yield s3.upload(params).promise();
+            const existingData = yield s3.getObject(params).promise();
+            let existingClickstream = JSON.parse(existingData.Body.toString('utf-8'));
+            if (Array.isArray(existingClickstream)) {
+                existingClickstream.push(JSON.parse(newClickstream));
+            }
+            else {
+                existingClickstream = [existingClickstream, JSON.parse(newClickstream)];
+            }
+            yield s3.putObject(Object.assign(Object.assign({}, params), { Body: JSON.stringify(existingClickstream), ContentType: "application/json" })).promise();
         }
         catch (error) {
-            console.error("Error uploading to S3", error);
+            if (error.code === 'NoSuchKey') {
+                yield s3.upload(Object.assign(Object.assign({}, params), { Body: JSON.stringify([JSON.parse(newClickstream)]), ContentType: "application/json" })).promise();
+            }
+            else {
+                console.error("Error uploading to S3", error);
+            }
         }
     });
 }
@@ -43,12 +55,13 @@ function consumeMessage() {
             const conn = yield amqplib_1.default.connect(process.env.RABBITMQ_URL);
             const channel = yield conn.createChannel();
             for (const queue of QUEUE_NAMES) {
-                const res = yield channel.assertQueue(queue);
+                yield channel.assertQueue(queue);
                 channel.consume(queue, (message) => __awaiter(this, void 0, void 0, function* () {
                     if (message !== null) {
                         const data = message.content.toString();
+                        const parsedData = JSON.parse(data);
                         try {
-                            yield uploadToS3(queue, data);
+                            yield uploadToS3(queue, parsedData.userID, data);
                             channel.ack(message);
                             console.log(message);
                         }
@@ -70,7 +83,7 @@ function sendMessage(clickstream) {
         const queue = clickstream.eventType;
         const conn = yield amqplib_1.default.connect(process.env.RABBITMQ_URL);
         const channel = yield conn.createChannel();
-        const res = yield channel.assertQueue(queue);
+        yield channel.assertQueue(queue);
         channel.sendToQueue(queue, Buffer.from(JSON.stringify(clickstream)));
         yield consumeMessage();
     });
