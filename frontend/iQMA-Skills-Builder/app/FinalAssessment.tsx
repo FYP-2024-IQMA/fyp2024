@@ -64,15 +64,9 @@ export default function FinalAssessment() {
                     sectionID as string
                 );
                 setSectionName(sectionDetails.sectionName);
-                const intro = sectionDetails.finalAssessmentIntro;
-                const sentences = intro.match(
-                    /(\p{Emoji_Presentation}?.*?[.!?]+\p{Emoji_Presentation}?)/gu
-                ) || [intro];
-
-                setSectionIntro(sentences);
+                setSectionIntro(sectionDetails.finalAssessmentIntro);
             })();
             setSectionNumber(formatSection(sectionID as string));
-            // setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
