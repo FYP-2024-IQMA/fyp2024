@@ -42,7 +42,6 @@ const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 const getAllSections = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sectionDetails = yield sectionService.getAllSections();
-        console.log(sectionDetails);
         res.status(200).json(sectionDetails);
     }
     catch (error) {
@@ -56,7 +55,6 @@ exports.getAllSections = getAllSections;
 const getSectionDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sectionDetails = yield sectionService.getSectionDetails(req.params.sectionID);
-        console.log(sectionDetails);
         res.status(200).json(sectionDetails);
     }
     catch (error) {
