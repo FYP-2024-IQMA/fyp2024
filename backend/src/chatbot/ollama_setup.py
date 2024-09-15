@@ -63,9 +63,9 @@ if __name__ == "__main__":
     # if .gguf doesn't exist, download it from the Hugging Face Hub
     if gguf_path:
         print(f"Found the .gguf file at: {gguf_path}")
-        os.chdir("../models")
+        print("Can run ollama create command")
     else:
-        os.chdir("../models")
+        print(".gguf file not found. Downloading from the Hugging Face Hub...")
         download_gguf(repo_id, filename, '.')
     
     create_model()
