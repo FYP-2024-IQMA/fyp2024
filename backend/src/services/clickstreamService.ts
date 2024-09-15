@@ -18,7 +18,7 @@ async function uploadToS3(queue: string, userID: string, newClickstream: string)
 
     try {
         const existingData = await s3.getObject(params).promise();
-        const parsedData = JSON.parse(existingData.Body!.toString('utf-8'));
+        let parsedData = JSON.parse(existingData.Body!.toString('utf-8'));
         if (Array.isArray(parsedData)) {
             existingClickstream = parsedData;
         }
@@ -55,7 +55,7 @@ async function consumeMessage() {
             channel.consume(queue, async (message) => {
                 if (message !== null) {
                     const data = message.content.toString();
-                    const parsedData: Clickstream = JSON.parse(data);
+                    let parsedData: Clickstream = JSON.parse(data);
                     try {
                         await uploadToS3(queue, parsedData.userID, data);
                         channel.ack(message);
