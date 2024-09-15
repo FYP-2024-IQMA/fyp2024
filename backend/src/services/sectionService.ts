@@ -10,25 +10,28 @@ function extractYouTubeID(url: string) {
 
 /* READ */
 export async function getAllSections() {
-	const { data, error } = await supabase.from("section").select("*");
+	const { data, error } = await supabase.from("section")
+		.select("sectionID, sectionName");
 
 	if (error) {
 		console.error(error);
 		throw error;
-	} else {
-		const formattedData = data.map((section) => {
-			if (section.introductionURL) {
-				section.introductionURL = extractYouTubeID(section.introductionURL);
-			}
-			return {
-				...section,
-				finalAssessmentIntro: section.finalAssessmentIntro
-					? section.finalAssessmentIntro.split(/\r\n/)
-					: [],
-			};
-		});
-		return formattedData;
 	}
+	// else {
+	// 	const formattedData = data.map((section) => {
+	// 		if (section.introductionURL) {
+	// 			section.introductionURL = extractYouTubeID(section.introductionURL);
+	// 		}
+	// 		return {
+	// 			...section,
+	// 			finalAssessmentIntro: section.finalAssessmentIntro
+	// 				? section.finalAssessmentIntro.split(/\r\n/)
+	// 				: [],
+	// 		};
+	// 	});
+	// 	return formattedData;
+	// };	
+	return data;
 }
 
 export async function getSectionDetails(sectionID: string) {

@@ -16,6 +16,7 @@ exports.createResult = createResult;
 exports.getAllResults = getAllResults;
 exports.getResultByUserId = getResultByUserId;
 exports.getUserProgress = getUserProgress;
+exports.getNoOfCompletedLesson = getNoOfCompletedLesson;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 /* CREATE */
 function createResult(Result) {
@@ -101,6 +102,28 @@ function getUserProgress(userID, sectionID, unitID) {
             }
         }
         const { count, error } = yield query;
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        else {
+            return count;
+        }
+    });
+}
+/*
+Get the User Progress:
+- no. of completed lessons per unit
+*/
+function getNoOfCompletedLesson(userID, sectionID, unitID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { count, error } = yield supabaseConfig_1.default
+            .from("result")
+            .select("quizID, quiz!inner(quizID)", { count: "exact" })
+            .eq("userID", userID)
+            .eq("quiz.sectionID", sectionID)
+            .eq("quiz.unitID", unitID)
+            .eq("quiz.quizType", "lesson");
         if (error) {
             console.error(error);
             throw error;

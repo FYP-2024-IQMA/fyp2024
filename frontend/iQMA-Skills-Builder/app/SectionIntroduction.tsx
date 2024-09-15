@@ -9,14 +9,14 @@ import ProgressBar from '@/components/ProgressBar';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    // const { sectionID } = useLocalSearchParams();
-    const sectionID = 'SEC0001'; // to be removed
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    // const sectionID = 'SEC0001'; // to be removed
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
     const [videoId, setVideoId] = useState<string>('');
@@ -57,7 +57,7 @@ export default function SectionIntroduction() {
         // router.push('UnitIntroduction');
         router.push({
             pathname: 'UnitIntroduction',
-            params: {sectionID: sectionID, unitID: 'UNIT0001'},
+            params: {sectionID, unitID, lessonID},
         });
     };
 
@@ -77,7 +77,7 @@ export default function SectionIntroduction() {
         <View style={styles.container}>
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
-                    <LoadingIndicator></LoadingIndicator>
+                    <LoadingIndicator />
                 </View>
             ) : (
                 <>
@@ -86,15 +86,7 @@ export default function SectionIntroduction() {
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
                         />
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: '#4143A3',
-                                marginBottom: 20,
-                                marginHorizontal: 10,
-                            }}
-                        >
+                        <Text style={styles.screenTitle}>
                             Section {sectionNumber}: Introduction
                         </Text>
                         {videoId ? (
@@ -112,18 +104,11 @@ export default function SectionIntroduction() {
                         )}
                     </View>
 
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </View>
@@ -135,5 +120,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

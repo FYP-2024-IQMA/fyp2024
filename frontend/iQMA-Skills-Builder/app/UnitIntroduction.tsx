@@ -86,8 +86,8 @@ export default function UnitIntroduction() {
         // router.push('Lesson');
         router.push({
             pathname: 'Lesson',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
         });
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');
@@ -113,7 +113,7 @@ export default function UnitIntroduction() {
         <View style={styles.container}>
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
-                    <LoadingIndicator></LoadingIndicator>
+                    <LoadingIndicator />
                 </View>
             ) : (
                 <>
@@ -122,15 +122,7 @@ export default function UnitIntroduction() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: '#4143A3',
-                                marginBottom: 20,
-                                marginHorizontal: 10,
-                            }}
-                        >
+                        <Text style={styles.screenTitle}>
                             Unit {unitNumber}: Introduction
                         </Text>
 
@@ -158,18 +150,11 @@ export default function UnitIntroduction() {
                         </View>
                     </View>
 
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </View>
@@ -181,5 +166,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

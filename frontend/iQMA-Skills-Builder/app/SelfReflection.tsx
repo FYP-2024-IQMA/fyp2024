@@ -13,6 +13,7 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -30,6 +31,7 @@ export default function SelfReflection() {
     const handleChatHistoryUpdate = (length: number) => {
         setChatHistoryLength(length);
     };
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
@@ -41,15 +43,24 @@ export default function SelfReflection() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
 
-                setUnitName(unitDetails.unitName);
+                    setUnitName(unitDetails.unitName);
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error(
+                        'Error fetching unitDetails in Self-Reflection',
+                        error
+                    );
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
@@ -61,50 +72,44 @@ export default function SelfReflection() {
     };
 
     return (
-        <View style={styles.container}>
-            <ScrollView>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                    subtitle={unitName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 7,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    Self Reflection
-                </Text>
-                <Text
-                    style={{
-                        fontSize: 11,
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    Use a few words to share your thoughts on the following
-                    question.
-                </Text>
-                <MiniChatbot onChatHistoryUpdate={handleChatHistoryUpdate} />
-            </ScrollView>
-            <View
-                style={{
-                    alignSelf: 'center',
-                    bottom: 20,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                    disabled={chatHistoryLength < 3}
-                />
-            </View>
-        </View>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
+            {isLoading ? (
+                <LoadingIndicator />
+            ) : (
+                <>
+                    <ScrollView>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                            subtitle={unitName}
+                        />
+                        <Text style={styles.screenTitle}>Self Reflection</Text>
+                        <Text
+                            style={{
+                                fontSize: 11,
+                                color: '#4143A3',
+                                marginBottom: 20,
+                                marginHorizontal: 10,
+                            }}
+                        >
+                            Use a few words to share your thoughts on the
+                            following question.
+                        </Text>
+                        <MiniChatbot
+                            onChatHistoryUpdate={handleChatHistoryUpdate}
+                        />
+                    </ScrollView>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                        disabled={chatHistoryLength < 3}
+                    />
+                </>
+            )}
+        </ScrollView>
     );
 }
 
@@ -113,5 +118,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

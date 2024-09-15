@@ -37,8 +37,8 @@ export default function Lesson() {
     const handlePress = () => {
         router.push({
             pathname: 'VideoQuiz',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
         });
     };
 
@@ -90,7 +90,7 @@ export default function Lesson() {
         <View style={styles.container}>
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
-                    <LoadingIndicator></LoadingIndicator>
+                    <LoadingIndicator />
                 </View>
             ) : (
                 <>
@@ -99,17 +99,7 @@ export default function Lesson() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: '#4143A3',
-                                marginBottom: 20,
-                                marginHorizontal: 10,
-                            }}
-                        >
-                            {lessonName}
-                        </Text>
+                        <Text style={styles.screenTitle}>{lessonName}</Text>
 
                         {lessonDescription ? (
                             <OverviewCard
@@ -136,18 +126,11 @@ export default function Lesson() {
                             />
                         )}
                     </View>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </View>
@@ -159,5 +142,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

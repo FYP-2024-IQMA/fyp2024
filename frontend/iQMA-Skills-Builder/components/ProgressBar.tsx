@@ -13,7 +13,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
     progress,
     isQuestionnaire,
 }) => {
-
     const handlePress = () => {
         router.replace('Home');
     };

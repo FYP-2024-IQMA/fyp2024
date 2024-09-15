@@ -37,4 +37,5 @@ router.get("/getallresults", authMiddleware_1.default, resultController.getAllRe
 router.get("/getresultbyid/:userid", authMiddleware_1.default, resultController.getResultByUserId);
 router.get("/getuserprogress/:userid/:sectionid?", authMiddleware_1.default, resultController.getUserProgress);
 router.get("/getcircularprogress/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getCircularProgress);
+router.get("/getnoofcompletedlessons/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getNoOfCompletedLesson);
 exports.default = router;

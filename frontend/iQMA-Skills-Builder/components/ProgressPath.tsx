@@ -6,7 +6,7 @@ import React from 'react';
 import StartLabel from './startLabel';
 import {TouchableOpacity} from 'react-native';
 
-interface ProgressItemProps {
+export interface ProgressItemProps {
     iconName: any;
     iconColor?: string;
     iconSize?: number;
@@ -46,6 +46,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     return (
         <TouchableOpacity
             onPress={onPress}
+            disabled={status === 'not-started'}
             style={[
                 styles.itemContainer,
                 position === 'left'
@@ -98,12 +99,13 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     );
 };
 
-interface ProgressPathProps {
+export interface ProgressPathProps {
     icons: {
         name: string;
-        color?: string;
-        size?: number;
+        // color?: string;
+        // size?: number;
         status: string;
+        onPress: () => void;
     }[];
     circularProgress?: number;
 }
@@ -119,12 +121,12 @@ const ProgressPath: React.FC<ProgressPathProps> = ({
                 <ProgressItem
                     key={index}
                     iconName={icon.name}
-                    iconColor={icon.color}
-                    iconSize={icon.size}
+                    iconColor={'#FFFFFF'}
+                    iconSize={40}
                     position={index % 2 === 0 ? 'left' : 'right'}
                     status={icon.status}
                     progress={circularProgress}
-                    onPress={() => console.log('Pressed')}
+                    onPress={icon.onPress}
                 />
             ))}
         </View>

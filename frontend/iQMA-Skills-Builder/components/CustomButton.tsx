@@ -16,7 +16,12 @@ export const CustomButton = ({
     const textStyle = capitalise ? 'uppercase' : 'none';
 
     return (
-        <View>
+        <View
+            style={[
+                styles.buttonContainer,
+                // !isQuiz && {justifyContent: 'flex-end'},
+            ]}
+        >
             <Pressable
                 style={[
                     styles.button,
@@ -49,9 +54,15 @@ export const CustomButton = ({
 };
 
 const styles = StyleSheet.create({
+    buttonContainer: {
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        // bottom: 20,
+        // paddingBottom: 20,
+    },
     button: {
         width: screenWidth * 0.8,
-        marginTop: 10,
+        marginVertical: 10,
         padding: 15,
         borderRadius: 10,
         borderWidth: 2,

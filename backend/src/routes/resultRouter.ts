@@ -25,5 +25,10 @@ router.get(
 	verifyToken,
 	resultController.getCircularProgress
 );
+router.get(
+    "/getnoofcompletedlessons/:userid/:sectionid/:unitid",
+    verifyToken,
+    resultController.getNoOfCompletedLesson
+);
 
 export default router;
