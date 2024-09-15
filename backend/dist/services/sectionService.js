@@ -34,7 +34,9 @@ function getAllSections() {
                 if (section.introductionURL) {
                     section.introductionURL = extractYouTubeID(section.introductionURL);
                 }
-                return section;
+                return Object.assign(Object.assign({}, section), { finalAssessmentIntro: section.finalAssessmentIntro
+                        ? section.finalAssessmentIntro.split(/\r\n/) // Modify the finalAssessmentIntro property
+                        : [] });
             });
             return formattedData;
         }
@@ -55,7 +57,9 @@ function getSectionDetails(sectionID) {
             if (data.introductionURL) {
                 data.introductionURL = extractYouTubeID(data.introductionURL);
             }
-            return data;
+            return Object.assign(Object.assign({}, data), { finalAssessmentIntro: data.finalAssessmentIntro
+                    ? data.finalAssessmentIntro.split(/\r\n/)
+                    : [], introductionURL: data.introductionURL });
         }
     });
 }

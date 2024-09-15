@@ -30,6 +30,7 @@ describe("getSectionDetails", () => {
     const expectedResults = {
         ...mockSection,
         introductionURL: 'pU4fCakueEE',
+        finalAssessmentIntro: ["Welcome to the Grand Presentation Showdown..."],
     }
 
     it("should return section details on success", async () => {
@@ -97,10 +98,12 @@ describe("getAllSections", () => {
             {
                 ...mockSections[0],
                 introductionURL: 'pU4fCakueEE',
+                finalAssessmentIntro: ["Welcome to the Grand Presentation Showdown..."],
             },
             {
                 ...mockSections[1],
                 introductionURL: 'abc12345xyz',
+                finalAssessmentIntro: ["This is your team collaboration challenge..."],
             }
         ];
 
