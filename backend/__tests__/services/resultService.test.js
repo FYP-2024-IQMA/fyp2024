@@ -203,3 +203,57 @@ describe("getUserProgress", () => {
 
 });
 
+describe("getNoOfCompletedLesson", () => {
+    const userID = "USR0001";
+    const sectionID = "SEC0001";
+    const unitID = "UNT0001";
+    const mockCount = 2;
+    const expectedResult = 2;
+
+    it("should return the no. of lesson quizzes completed by a user", async () => {
+        const mockEq4 = jest
+            .fn()
+            .mockResolvedValue({ count: mockCount, error: null });
+        const mockEq3 = jest.fn().mockReturnValue({ eq: mockEq4 });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        // Call the service function
+        const result = await resultService.getNoOfCompletedLesson(
+            userID,
+            sectionID,
+            unitID
+        );
+
+        expect(mockEq1).toHaveBeenCalledWith("userID", userID);
+        expect(mockEq2).toHaveBeenCalledWith("quiz.sectionID", sectionID);
+        expect(mockEq3).toHaveBeenCalledWith("quiz.unitID", unitID);
+        expect(mockEq4).toHaveBeenCalledWith("quiz.quizType", "lesson");
+
+        // Check the result
+        expect(result).toEqual(expectedResult);
+    });
+
+    it("should throw an error when there is an error from supabase", async () => {
+        const errorMessage = "Failed to fetch from database";
+
+        // Mocking the chain of calls
+        const mockEq4 = jest
+            .fn()
+            .mockResolvedValue({ count: null, error: new Error(errorMessage) });
+        const mockEq3 = jest.fn().mockReturnValue({ eq: mockEq4 });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        await expect(
+            resultService.getNoOfCompletedLesson(userID, sectionID, unitID)
+        ).rejects.toThrow(errorMessage);
+
+        expect(consoleErrorSpy).toHaveBeenCalledWith(new Error(errorMessage));
+    });
+});
+

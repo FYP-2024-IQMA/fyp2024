@@ -9,17 +9,19 @@ import ProgressBar from '@/components/ProgressBar';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    // const { sectionID } = useLocalSearchParams();
-    const sectionID = 'SEC0001'; // to be removed
+    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    // const sectionID = 'SEC0001'; // to be removed
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -32,77 +34,81 @@ export default function SectionIntroduction() {
     useEffect(() => {
         if (sectionID) {
             (async () => {
-                const sectionDetails = await sectionEndpoints.getSectionDetails(
-                    sectionID as string
-                );
+                try {
+                    const sectionDetails =
+                        await sectionEndpoints.getSectionDetails(
+                            sectionID as string
+                        );
 
-                setVideoId(sectionDetails.introductionURL);
-                setSectionName(sectionDetails.sectionName);
+                    setVideoId(sectionDetails.introductionURL);
+                    setSectionName(sectionDetails.sectionName);
+
+                    setSectionNumber(formatSection(sectionID as string));
+                } catch (error) {
+                    console.error('Error fetching Lesson details:', error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
         }
     }, [sectionID]);
 
     const handlePress = () => {
         // router.push('UnitIntroduction');
+        setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
-            params: {sectionID: sectionID, unitID: 'UNIT0001'},
+            params: {sectionID, unitID, lessonID},
         });
     };
 
     const onStateChange = (state: string) => {
-        if (state === 'ended') {
+        if (state === 'ended' || state === 'paused') {
             setPlaying(false);
         }
         if (state === 'playing') {
             setPlaying(true);
         }
-        if (state === 'paused') {
-            setPlaying(false);
-        }
     };
 
     return (
         <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}`}
-                    subtitle={sectionName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    Section {sectionNumber}: Introduction
-                </Text>
-                {videoId ? (
-                    <YoutubePlayer
-                        height={300}
-                        play={playing}
-                        onChangeState={onStateChange}
-                        videoId={videoId} // YouTube video ID
-                    />
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Video is not available. Please check with your administrator."
-                    />
-                )}
-            </View>
+            {isLoading ? (
+                <View style={{flexGrow: 1}}>
+                    <LoadingIndicator />
+                </View>
+            ) : (
+                <>
+                    <View style={{flexGrow: 1}}>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}`}
+                            subtitle={sectionName}
+                        />
+                        <Text style={styles.screenTitle}>
+                            Section {sectionNumber}: Introduction
+                        </Text>
+                        {videoId ? (
+                            <YoutubePlayer
+                                height={300}
+                                play={playing}
+                                onChangeState={onStateChange}
+                                videoId={videoId} // YouTube video ID
+                            />
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Video is not available. Please check with your administrator."
+                            />
+                        )}
+                    </View>
 
-            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
+                </>
+            )}
         </View>
     );
 }
@@ -111,6 +117,13 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1,        
+        flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

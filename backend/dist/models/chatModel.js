@@ -7,9 +7,10 @@ var Role;
     Role["Assistant"] = "assistant";
 })(Role || (exports.Role = Role = {}));
 class Chat {
-    constructor(userID, sectionID, queryPair, dateCreated) {
+    constructor(userID, sectionID, unitID, queryPair, dateCreated) {
         this.userID = userID;
         this.sectionID = sectionID;
+        this.unitID = unitID;
         this.queryPair = queryPair;
         this.dateCreated = dateCreated;
     }

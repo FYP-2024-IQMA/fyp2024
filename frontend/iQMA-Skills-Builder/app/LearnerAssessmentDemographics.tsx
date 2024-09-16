@@ -85,349 +85,324 @@ export default function LearnerAssessmentDemographics() {
     return (
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
-            style={{padding: 20, flex: 1, backgroundColor: '#FFFFFF'}}
+            style={styles.container}
         >
-            <View style={{flexDirection: 'row'}}>
-                <Image
-                    style={{
-                        height: 150,
-                        width: 50,
-                        marginRight: 40,
-                        marginLeft: 20,
-                    }}
-                    source={require('@/assets/images/handsinpocket.png')}
-                />
-                <View style={{marginTop: 5}}>
-                    <ChatBubble position="left" isUser={true}>
-                        What are your demographics?
-                    </ChatBubble>
-                </View>
-            </View>
-
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={[styles.text, {flex: 1}]}>Race</Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
-                                !isContinue && !selectedRace
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedRace}
-                            onValueChange={(itemValue: string) =>
-                                setRace(itemValue)
-                            }
-                        >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Race"
-                                value=""
-                                enabled={false}
-                            />
-                            {race.map((value) => (
-                                <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
-                                />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
+            <View style={{flexGrow: 1}}>
                 <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedRace && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
-                    </View>
-                </View>
-
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Ethnic{'\n'}Group
-                    </Text>
-                    <TextInput
-                        style={{
-                            flex: 2.3,
-                            borderWidth: 1,
-                            borderColor:
-                                !isContinue && !ethnic ? '#ff4c4c' : '#9CA3AF',
-                            borderRadius: 10,
-                            padding: 10,
-                            textAlignVertical: 'top',
-                        }}
-                        multiline={true}
-                        numberOfLines={4}
-                        value={ethnic}
-                        onChangeText={setEthnic}
-                        placeholder="Specify ethnic groups relevant to your region or organization"
+                    <Image
+                        style={styles.mascotImage}
+                        source={require('@/assets/images/handsinpocket.png')}
                     />
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!ethnic && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{marginTop: 5}}>
+                        <ChatBubble position="left" isUser={true}>
+                            What are your demographics?
+                        </ChatBubble>
                     </View>
                 </View>
+                <View style={{marginVertical: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.text, {flex: 1}]}>Race</Text>
+                        <View
+                            style={[
+                                styles.selectOption,
+                                !isContinue && !selectedRace
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
+                        >
+                            <Picker
+                                selectedValue={selectedRace}
+                                onValueChange={(itemValue: string) =>
+                                    setRace(itemValue)
+                                }
+                            >
+                                <Picker.Item
+                                    style={styles.defaultOptionText}
+                                    label="Select Race"
+                                    value=""
+                                    enabled={false}
+                                />
+                                {race.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedRace && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
+                    </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Job{'\n'}Category
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Ethnic{'\n'}Group
+                        </Text>
+                        <TextInput
+                            style={[
+                                styles.textInputStyle,
+                                !isContinue && !ethnic
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
+                            multiline={true}
+                            numberOfLines={4}
+                            value={ethnic}
+                            onChangeText={setEthnic}
+                            placeholder="Specify ethnic groups relevant to your region or organization"
+                        />
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!ethnic && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Job{'\n'}Category
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedJob
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedJob}
-                            onValueChange={(itemValue: string) =>
-                                setJob(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Job Category"
-                                value=""
-                                enabled={false}
-                            />
-                            {job.map((value) => (
+                            <Picker
+                                selectedValue={selectedJob}
+                                onValueChange={(itemValue: string) =>
+                                    setJob(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Job Category"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {job.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedJob && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedJob && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Life{'\n'}Stage
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Life{'\n'}Stage
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedLife
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedLife}
-                            onValueChange={(itemValue: string) =>
-                                setLife(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Life Stage"
-                                value=""
-                                enabled={false}
-                            />
-                            {life.map((value) => (
+                            <Picker
+                                selectedValue={selectedLife}
+                                onValueChange={(itemValue: string) =>
+                                    setLife(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Life Stage"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {life.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedLife && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedLife && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Career{'\n'}Stage
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Career{'\n'}Stage
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedCareer
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedCareer}
-                            onValueChange={(itemValue: string) =>
-                                setCareer(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Career Stage"
-                                value=""
-                                enabled={false}
-                            />
-                            {career.map((value) => (
+                            <Picker
+                                selectedValue={selectedCareer}
+                                onValueChange={(itemValue: string) =>
+                                    setCareer(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Career Stage"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {career.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedCareer && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedCareer && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Special{'\n'}Needs
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Special{'\n'}Needs
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedNeed
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedNeed}
-                            onValueChange={(itemValue: string) =>
-                                setNeed(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Special Needs"
-                                value=""
-                                enabled={false}
-                            />
-                            {need.map((value) => (
+                            <Picker
+                                selectedValue={selectedNeed}
+                                onValueChange={(itemValue: string) =>
+                                    setNeed(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Special Needs"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {need.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedNeed && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedNeed && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
                 </View>
             </View>
 
-            <View
-                style={{
-                    alignSelf: 'center',
-                    marginTop: 10,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascotImage: {
+        height: 150,
+        width: 50,
+        marginRight: 40,
+        marginLeft: 20,
+    },
+    selectOption: {
+        flex: 2.5,
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    alignOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    correctBorder: {
+        borderColor: '#9CA3AF',
+    },
+    wrongBorder: {
+        borderColor: '#ff4c4c',
+    },
+    textInputStyle: {
+        flex: 2.3,
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
+        textAlignVertical: 'top',
+    },
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',

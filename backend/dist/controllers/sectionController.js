@@ -31,33 +31,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSectionDetails = exports.getAllSections = void 0;
 const sectionService = __importStar(require("../services/sectionService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
 const getAllSections = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sectionDetails = yield sectionService.getAllSections();
-        console.log(sectionDetails);
         res.status(200).json(sectionDetails);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve section details`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAllSections = getAllSections;
 const getSectionDetails = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const sectionDetails = yield sectionService.getSectionDetails(req.params.sectionID);
-        console.log(sectionDetails);
         res.status(200).json(sectionDetails);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve section details`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getSectionDetails = getSectionDetails;

@@ -37,10 +37,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createChats = createChats;
 exports.getChatHistory = getChatHistory;
+exports.getUnitChatHistory = getUnitChatHistory;
 exports.getChatHistoryLimit = getChatHistoryLimit;
 exports.deleteChat = deleteChat;
-const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 const chatModel = __importStar(require("../models/chatModel"));
+const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 function validateQueryPair(queryPair) {
     return (typeof queryPair === "object" &&
         queryPair !== null &&
@@ -57,9 +58,7 @@ function createChats(chat) {
             }
         }
         const formattedChats = Object.assign(Object.assign({}, chat), { queryPair: chat.queryPair });
-        const { error } = yield supabaseConfig_1.default
-            .from("chat")
-            .insert(formattedChats);
+        const { error } = yield supabaseConfig_1.default.from("chat").insert(formattedChats);
         if (error) {
             console.error(error);
             throw error;
@@ -70,6 +69,7 @@ function createChats(chat) {
     });
 }
 /* READ */
+// for chat bot page (showing whole section)
 function getChatHistory(userSection) {
     return __awaiter(this, void 0, void 0, function* () {
         const { userID, sectionID } = userSection;
@@ -78,6 +78,24 @@ function getChatHistory(userSection) {
             .select("dateCreated, queryPair")
             .eq("userID", userID)
             .eq("sectionID", sectionID);
+        // .order("dateCreated", { ascending: false }); // Order by date created (latest first);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        return data;
+    });
+}
+// for self reflection page (showing only one unit)
+function getUnitChatHistory(userSection, unitID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { userID, sectionID } = userSection;
+        const { data, error } = yield supabaseConfig_1.default
+            .from("chat")
+            .select("dateCreated, queryPair")
+            .eq("userID", userID)
+            .eq("sectionID", sectionID)
+            .eq("unitID", unitID);
         // .order("dateCreated", { ascending: false }); // Order by date created (latest first);
         if (error) {
             console.error(error);
