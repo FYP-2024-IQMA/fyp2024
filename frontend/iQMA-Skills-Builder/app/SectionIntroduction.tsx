@@ -55,6 +55,7 @@ export default function SectionIntroduction() {
 
     const handlePress = () => {
         // router.push('UnitIntroduction');
+        setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
             params: {sectionID, unitID, lessonID},
@@ -62,14 +63,11 @@ export default function SectionIntroduction() {
     };
 
     const onStateChange = (state: string) => {
-        if (state === 'ended') {
+        if (state === 'ended' || state === 'paused') {
             setPlaying(false);
         }
         if (state === 'playing') {
             setPlaying(true);
-        }
-        if (state === 'paused') {
-            setPlaying(false);
         }
     };
 

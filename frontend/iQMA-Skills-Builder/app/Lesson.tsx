@@ -35,6 +35,7 @@ export default function Lesson() {
     }, [navigation]);
 
     const handlePress = () => {
+        setPlaying(false);
         router.push({
             pathname: 'VideoQuiz',
             // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
@@ -75,14 +76,11 @@ export default function Lesson() {
     }, [sectionID, unitID]);
 
     const onStateChange = (state: string) => {
-        if (state === 'ended') {
+        if (state === 'ended' || state === 'paused') {
             setPlaying(false);
         }
         if (state === 'playing') {
             setPlaying(true);
-        }
-        if (state === 'paused') {
-            setPlaying(false);
         }
     };
 
