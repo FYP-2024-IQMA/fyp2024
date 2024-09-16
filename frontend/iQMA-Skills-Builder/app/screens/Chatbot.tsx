@@ -1,5 +1,7 @@
 // app/Chatbot.tsx
 
+import * as chatInputFunctions from '@/components/ChatInput';
+
 import {
     Alert,
     ScrollView,
@@ -36,72 +38,13 @@ type ChatbotScreenProps = DrawerScreenProps<
     keyof ChatDrawerParamList
 >;
 
-// Getting response from chatbot
-const getChatbotResponse = async (
-    role: string,
-    message: string,
-    history?: Array<{role: string; content: string}>
-) => {
-    try {
-        const response = await fetch(
-            `http://${process.env.EXPO_PUBLIC_LOCALHOST_URL}:8000/generate`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    role: role,
-                    content: message,
-                    ...(history && {history}),
-                }),
-            }
-        );
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Error while getting chatbot response:', error);
-    }
-};
-
-// Save chat history
-const saveChatHistory = async (
-    userId: string,
-    sectionId: string,
-    queryPair: {role: string; content: string}[]
-) => {
-    try {
-        const body = {
-            userID: userId,
-            sectionID: sectionId,
-            queryPair: queryPair,
-        };
-
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/createchathistory`;
-
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(body),
-        });
-
-        const data = await response.json();
-
-        console.log('Status: ', data.status);
-    } catch (error) {
-        console.error('Error while saving chat history:', error);
-    }
-};
-
 // Load chat history
-const loadChatHistory = async (userId: string, sectionId: string) => {
+export const loadChatHistory = async (userId: string, sectionId: string) => {
     console.log('LOAD CHAT HISTORY');
 
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/getchathistory/${userId}/${sectionId}`;
-        console.log('URL: ', url);
+        // console.log('URL: ', url);
 
         const response = await fetch(url);
 
@@ -227,7 +170,11 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
             content: msg.text,
         }));
 
-        const response = await getChatbotResponse('user', message, history);
+        const response = await chatInputFunctions.getChatbotResponse(
+            'user',
+            message,
+            history
+        );
         if (response) {
             // Add the chatbot response to the chat
             const botReply = {text: response.content, isUser: false};
@@ -240,7 +187,11 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
                 {role: 'assistant', content: response.content},
             ];
 
-            saveChatHistory(currentUser.sub, sectionID, queryPair);
+            // chatInputFunctions.saveChatHistory(
+            //     currentUser.sub,
+            //     sectionID,
+            //     queryPair
+            // );
         }
     };
 

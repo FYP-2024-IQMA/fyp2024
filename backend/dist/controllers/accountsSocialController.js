@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAccountSocial = exports.updateAccountSocial = exports.getAccountSocialById = exports.createAccountSocial = void 0;
 const accountsSocialService = __importStar(require("../services/accountsSocialService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
@@ -46,9 +50,10 @@ const createAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Social`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.createAccountSocial = createAccountSocial;
@@ -59,7 +64,10 @@ const getAccountSocialById = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Social" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAccountSocialById = getAccountSocialById;
@@ -74,7 +82,10 @@ const updateAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update Account Social" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.updateAccountSocial = updateAccountSocial;
@@ -89,7 +100,10 @@ const deleteAccountSocial = (req, res) => __awaiter(void 0, void 0, void 0, func
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Social" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.deleteAccountSocial = deleteAccountSocial;

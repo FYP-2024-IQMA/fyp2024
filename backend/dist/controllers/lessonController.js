@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAllLessons = exports.getLesson = exports.getNoOfLessonPerUnit = void 0;
 const lessonService = __importStar(require("../services/lessonService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
 const getNoOfLessonPerUnit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -41,9 +45,10 @@ const getNoOfLessonPerUnit = (req, res) => __awaiter(void 0, void 0, void 0, fun
         res.status(200).json(lessonCount);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve no. of lesson per unit of ${req.params.unitID}`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getNoOfLessonPerUnit = getNoOfLessonPerUnit;
@@ -53,9 +58,10 @@ const getLesson = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json(lesson);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve lesson ${req.params.lessonID}`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getLesson = getLesson;
@@ -65,9 +71,10 @@ const getAllLessons = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         res.status(200).json(lessons);
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to retrieve lessons of ${req.params.unitID}`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAllLessons = getAllLessons;

@@ -7,7 +7,12 @@ import os
 from pydantic.dataclasses import dataclass
 from typing import List, Optional
 
-from src.chatbot.chatgpt import ChatGPT
+
+# dealing with relative / absolute imports
+if __package__ is None or __package__ == '' or __name__ == '__main__':
+    from chatgpt import ChatGPT
+else:
+    from src.chatbot.chatgpt import ChatGPT
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)

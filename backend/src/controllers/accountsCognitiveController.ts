@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as accountsCognitiveService from "../services/accountsCognitiveService";
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
 
 /* CREATE */
 
@@ -13,10 +15,11 @@ export const createAccountCognitive = async (req: Request, res: Response) => {
             status: 201,
             statusText: "Created",
         });
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Cognitive`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -26,8 +29,11 @@ export const getAccountCognitiveById = async (req: Request, res: Response) => {
     try {
         const account = await accountsCognitiveService.getAccountCognitiveById(req.params.id);
         res.status(200).json(account);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Cognitive" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -42,8 +48,11 @@ export const updateAccountCognitive = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Cognitive Updated Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update Account Cognitive" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -57,7 +66,10 @@ export const deleteAccountCognitive = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Cognitive Deleted Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Cognitive" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };

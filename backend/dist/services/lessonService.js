@@ -103,8 +103,10 @@ function getLesson(sectionID, unitID, lessonID) {
             }
             //when there is no headers
             const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
-            return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
-            return data;
+            if (sentences != null) {
+                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+            }
+            return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: [] });
         }
     });
 }
@@ -170,10 +172,12 @@ function getAllLessons(sectionID, unitID) {
                 }
                 // when there are no headers
                 const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
-                return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+                if (sentences != null) {
+                    return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+                }
+                return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: [] });
             });
             return formattedLessons;
-            // return data;
         }
     });
 }

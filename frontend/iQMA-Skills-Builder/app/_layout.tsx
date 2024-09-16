@@ -88,24 +88,24 @@ const AppTabs: React.FC = () => {
 // place to put ur headers, footers, and other layout components
 export default function RootLayout() {
     const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
-    }, []);
-    if (loading) {
-        return (
-            <View
-                style={{
-                    flex: 1,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                }}
-            >
-                <ActivityIndicator size="large" color="#8A2BE2" />
-            </View>
-        );
-    }
+    // useEffect(() => {
+    //     setTimeout(() => {
+    //         setLoading(false);
+    //     }, 1000);
+    // }, []);
+    // if (loading) {
+    //     return (
+    //         <View
+    //             style={{
+    //                 flex: 1,
+    //                 justifyContent: 'center',
+    //                 alignItems: 'center',
+    //             }}
+    //         >
+    //             <ActivityIndicator size="large" color="#8A2BE2" />
+    //         </View>
+    //     );
+    // }
 
     return (
         <Auth0Provider domain={config.domain} clientId={config.clientId}>
