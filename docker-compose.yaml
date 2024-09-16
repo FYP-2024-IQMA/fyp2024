@@ -47,18 +47,6 @@ services:
         awslogs-group: iqma-log-group
         awslogs-region: ap-southeast-1
         awslogs-stream: iqma-log-stream
-    
-  # chatbot:
-  #   build:
-  #     dockerfile: Dockerfile
-  #     context: ./backend/src/chatbot
-  #   ports:
-  #   - "8080:8080"
-  #   networks:
-  #   - app-network
-  #   env_file:
-  #   - ./backend/src/chatbot/.env
-
 
 
 
