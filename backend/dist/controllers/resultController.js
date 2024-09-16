@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNoOfCompletedLesson = exports.getCircularProgress = exports.getUserProgress = exports.getResultByUserId = exports.getAllResults = exports.createResult = void 0;
+exports.getNoOfCompletedLesson = exports.getCircularProgress = exports.getUserProgress = exports.getIfCompletedQuiz = exports.getAllResults = exports.createResult = void 0;
 const resultService = __importStar(require("../services/resultService"));
 const lessonService = __importStar(require("../services/lessonService"));
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
@@ -72,9 +72,9 @@ const getAllResults = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.getAllResults = getAllResults;
-const getResultByUserId = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const getIfCompletedQuiz = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield resultService.getResultByUserId(req.params.userid);
+        const result = yield resultService.getIfCompletedQuiz(req.params.userid, req.params.quizid);
         res.status(200).json(result);
     }
     catch (error) {
@@ -84,7 +84,7 @@ const getResultByUserId = (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
     }
 });
-exports.getResultByUserId = getResultByUserId;
+exports.getIfCompletedQuiz = getIfCompletedQuiz;
 const getUserProgress = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userProgress = yield resultService.getUserProgress(req.params.userid, req.params.sectionid);

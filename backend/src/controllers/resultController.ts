@@ -38,13 +38,16 @@ export const getAllResults = async (req: Request, res: Response) => {
     }
 };
 
-export const getResultByUserId = async (req: Request, res: Response) => {
+export const getIfCompletedQuiz = async (req: Request, res: Response) => {
     try {
-        const result = await resultService.getResultByUserId(req.params.userid);
+        const result = await resultService.getIfCompletedQuiz(
+            req.params.userid,
+            req.params.quizid
+        );
         res.status(200).json(result);
     } catch (error: any) {
         const errorResponse = handleError(error);
-        if(errorResponse){
+        if (errorResponse) {
             res.status(errorResponse.status).json(errorResponse);
         }
     }

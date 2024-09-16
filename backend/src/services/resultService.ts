@@ -39,17 +39,18 @@ export async function getAllResults() {
 }
 
 
-export async function getResultByUserId(userID: string) {
-    const { data, error } = await supabase
+export async function getIfCompletedQuiz(userID: string, quizID: string): Promise<boolean> {
+    const { count, error } = await supabase
         .from("result")
-        .select("quizID, dateCreated")
-        .eq("userID", userID);
+        .select("*", { count: "exact" })
+        .eq("userID", userID)
+        .eq("quizID", quizID);
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return data;
+        return count! > 0;
     }
 }
 

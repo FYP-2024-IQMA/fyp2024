@@ -34,7 +34,7 @@ const router = (0, express_1.Router)();
 router.post("/createresult", authMiddleware_1.default, resultController.createResult);
 /* READ */
 router.get("/getallresults", authMiddleware_1.default, resultController.getAllResults);
-router.get("/getresultbyid/:userid", authMiddleware_1.default, resultController.getResultByUserId);
+router.get("/getifcompletedquiz/:userid/:quizid", authMiddleware_1.default, resultController.getIfCompletedQuiz);
 router.get("/getuserprogress/:userid/:sectionid?", authMiddleware_1.default, resultController.getUserProgress);
 router.get("/getcircularprogress/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getCircularProgress);
 router.get("/getnoofcompletedlessons/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getNoOfCompletedLesson);

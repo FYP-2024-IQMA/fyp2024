@@ -69,44 +69,37 @@ describe("POST /createresult", () => {
 
 /* READ */
 
-describe("GET /getresultbyid/:userid", () => {
-
+describe("GET /getifcompletedquiz/:userid/:quizid", () => {
     const userID = "USR0001";
+    const quizID = 2;
 
-    it("should return 200 and the results of a user", async () => {
+    it.only("should return 200 and a boolean result to show if a user has completed the quiz", async () => {
+        const mockData = true;
 
-        const mockData = [
-            {
-                "quizID": 1,
-                "dateCreated": "2024-09-01T05:26:54.096997+00:00"
-            },
-            {
-                "quizID": 2,
-                "dateCreated": "2024-09-01T05:27:01.340253+00:00"
-            }
-        ]
+        resultService.getIfCompletedQuiz.mockResolvedValue(mockData);
 
-        resultService.getResultByUserId.mockResolvedValue(mockData);
-
-        const response = await request(app).get(`/result/getresultbyid/${userID}`);
+        const response = await request(app).get(
+            `/result/getifcompletedquiz/${userID}/${quizID}`
+        );
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockData);
-        expect(resultService.getResultByUserId).toHaveBeenCalledTimes(1);
+        expect(resultService.getIfCompletedQuiz).toHaveBeenCalledTimes(1);
     });
 
-    it("should return 500 and an error message on failure", async () => {
+    it.only("should return 500 and an error message on failure", async () => {
+        const errMessage = "Database error";
         const mockError = new Error("Database error");
 
-        resultService.getResultByUserId.mockRejectedValue(mockError);
+        resultService.getIfCompletedQuiz.mockRejectedValue(mockError);
 
-        const response = await request(app).get(`/result/getresultbyid/${userID}`);
+        const response = await request(app).get(
+            `/result/getifcompletedquiz/${userID}/${quizID}`
+        );
 
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({
-            error: "Failed to retrieve Result",
-        });
-        expect(resultService.getResultByUserId).toHaveBeenCalledTimes(1);
+        expect(response.body.details).toEqual(errMessage);
+        expect(resultService.getIfCompletedQuiz).toHaveBeenCalledTimes(1);
     });
 });
 
@@ -232,7 +225,7 @@ describe("GET /getnoofcompletedlessons/:userid/:sectionid/:unitid", () => {
     const sectionID = "SEC0001";
     const unitID = "UNIT0001";
 
-    it.only("should return 200 and the unit progress of a user", async () => {
+    it("should return 200 and the unit progress of a user", async () => {
         resultService.getNoOfCompletedLesson.mockResolvedValue(2);
 
         const response = await request(app).get(
@@ -244,7 +237,7 @@ describe("GET /getnoofcompletedlessons/:userid/:sectionid/:unitid", () => {
         expect(resultService.getNoOfCompletedLesson).toHaveBeenCalledTimes(1);
     });
 
-    it.only("should return 500 and an error message on failure", async () => {
+    it("should return 500 and an error message on failure", async () => {
         const mockError = new Error("Database error");
 
         resultService.getNoOfCompletedLesson.mockRejectedValue(mockError);
