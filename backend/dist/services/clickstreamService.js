@@ -20,32 +20,33 @@ const s3 = new aws_sdk_1.default.S3({
     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
 });
-function uploadToS3(queue, userID, newClickstream) {
+function uploadToS3(queue, newClickstream) {
     return __awaiter(this, void 0, void 0, function* () {
-        const key = `${queue}/${userID}.json`;
+        const key = `${queue}/${newClickstream.userID}.json`;
         const params = {
-            Bucket: `isb-raw-data-athena`,
+            Bucket: 'isb-raw-data-athena',
             Key: key,
         };
+        let existingClickstream = [];
         try {
             const existingData = yield s3.getObject(params).promise();
-            let existingClickstream = JSON.parse(existingData.Body.toString('utf-8'));
-            if (Array.isArray(existingClickstream)) {
-                existingClickstream.push(JSON.parse(newClickstream));
-            }
-            else {
-                existingClickstream = [existingClickstream, JSON.parse(newClickstream)];
-            }
-            yield s3.putObject(Object.assign(Object.assign({}, params), { Body: JSON.stringify(existingClickstream), ContentType: "application/json" })).promise();
+            let fileContent = existingData.Body.toString('utf-8');
+            existingClickstream = fileContent
+                .split('\n')
+                .filter((line) => line.trim().length > 0)
+                .map((line) => JSON.parse(line));
         }
         catch (error) {
             if (error.code === 'NoSuchKey') {
-                yield s3.upload(Object.assign(Object.assign({}, params), { Body: JSON.stringify([JSON.parse(newClickstream)]), ContentType: "application/json" })).promise();
+                console.log("Creating new file");
             }
             else {
                 console.error("Error uploading to S3", error);
             }
         }
+        existingClickstream.push(newClickstream);
+        const lineDelimitedJson = existingClickstream.map(item => JSON.stringify(item)).join('\n');
+        s3.putObject(Object.assign(Object.assign({}, params), { Body: lineDelimitedJson, ContentType: "application/json" })).promise();
     });
 }
 const QUEUE_NAMES = ['timeTaken', 'attemptsTaken'];
@@ -59,9 +60,9 @@ function consumeMessage() {
                 channel.consume(queue, (message) => __awaiter(this, void 0, void 0, function* () {
                     if (message !== null) {
                         const data = message.content.toString();
-                        const parsedData = JSON.parse(data);
+                        let parsedData = JSON.parse(data);
                         try {
-                            yield uploadToS3(queue, parsedData.userID, data);
+                            yield uploadToS3(queue, parsedData);
                             channel.ack(message);
                             console.log(message);
                         }
