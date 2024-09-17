@@ -16,10 +16,10 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 
-export default function AssessmentIntro() {
+export default function AssessmentIntroduction() {
     const navigation = useNavigation();
 
-    const isFinal: boolean = true;
+    const isFinal: boolean = false;
     const sectionID = 'SEC0001';
     const unitID = 'UNIT0001';
     const [sectionNumber, setSectionNumber] = useState<string>('');

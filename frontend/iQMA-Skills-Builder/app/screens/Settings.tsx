@@ -17,7 +17,7 @@ const testAsssessment = () => {
 };
 
 const assessmentIntro = () => {
-    router.push('AssessmentIntro');
+    router.push('AssessmentIntroduction');
 };
 
 const SettingPage: React.FC = () => (
