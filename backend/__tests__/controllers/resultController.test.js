@@ -69,14 +69,14 @@ describe("POST /createresult", () => {
 
 /* READ */
 
-describe("GET /getifcompletedquiz/:userid/:quizid", () => {
+describe("GET /checkifcompletedquiz/:userid/:quizid", () => {
     const userID = "USR0001";
     const quizID = 2;
 
-    it.only("should return 200 and a boolean result to show if a user has completed the quiz", async () => {
+    it("should return 200 and a boolean result to show if a user has completed the quiz", async () => {
         const mockData = true;
 
-        resultService.getIfCompletedQuiz.mockResolvedValue(mockData);
+        resultService.checkIfCompletedQuiz.mockResolvedValue(mockData);
 
         const response = await request(app).get(
             `/result/getifcompletedquiz/${userID}/${quizID}`
@@ -84,22 +84,22 @@ describe("GET /getifcompletedquiz/:userid/:quizid", () => {
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockData);
-        expect(resultService.getIfCompletedQuiz).toHaveBeenCalledTimes(1);
+        expect(resultService.checkIfCompletedQuiz).toHaveBeenCalledTimes(1);
     });
 
-    it.only("should return 500 and an error message on failure", async () => {
+    it("should return 500 and an error message on failure", async () => {
         const errMessage = "Database error";
         const mockError = new Error("Database error");
 
-        resultService.getIfCompletedQuiz.mockRejectedValue(mockError);
+        resultService.checkIfCompletedQuiz.mockRejectedValue(mockError);
 
         const response = await request(app).get(
-            `/result/getifcompletedquiz/${userID}/${quizID}`
+            `/result/checkifcompletedquiz/${userID}/${quizID}`
         );
 
         expect(response.status).toBe(500);
         expect(response.body.details).toEqual(errMessage);
-        expect(resultService.getIfCompletedQuiz).toHaveBeenCalledTimes(1);
+        expect(resultService.checkIfCompletedQuiz).toHaveBeenCalledTimes(1);
     });
 });
 

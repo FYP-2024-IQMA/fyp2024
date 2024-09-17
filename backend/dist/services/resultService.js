@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createResult = createResult;
 exports.getAllResults = getAllResults;
-exports.getIfCompletedQuiz = getIfCompletedQuiz;
+exports.checkIfCompletedQuiz = checkIfCompletedQuiz;
 exports.getUserProgress = getUserProgress;
 exports.getNoOfCompletedLesson = getNoOfCompletedLesson;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
@@ -52,7 +52,7 @@ function getAllResults() {
         }
     });
 }
-function getIfCompletedQuiz(userID, quizID) {
+function checkIfCompletedQuiz(userID, quizID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { count, error } = yield supabaseConfig_1.default
             .from("result")

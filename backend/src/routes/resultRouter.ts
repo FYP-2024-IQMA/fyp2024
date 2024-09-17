@@ -11,9 +11,9 @@ router.post("/createresult", verifyToken, resultController.createResult);
 /* READ */
 router.get("/getallresults", verifyToken, resultController.getAllResults);
 router.get(
-    "/getifcompletedquiz/:userid/:quizid",
+    "/checkifcompletedquiz/:userid/:quizid",
     verifyToken,
-    resultController.getIfCompletedQuiz
+    resultController.checkIfCompletedQuiz
 );
 router.get(
 	"/getuserprogress/:userid/:sectionid?",

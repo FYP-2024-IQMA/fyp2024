@@ -55,8 +55,7 @@ describe("createResult", () => {
 
 /* READ */
 
-describe("getIfCompletedQuiz", () => {
-
+describe("checkIfCompletedQuiz", () => {
     const userID = "USR0001";
     const quizID = 2;
 
@@ -69,7 +68,7 @@ describe("getIfCompletedQuiz", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const result = await resultService.getIfCompletedQuiz(userID, quizID);
+        const result = await resultService.checkIfCompletedQuiz(userID, quizID);
 
         expect(result).toEqual(true);
     });
@@ -83,7 +82,7 @@ describe("getIfCompletedQuiz", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const result = await resultService.getIfCompletedQuiz(userID, quizID);
+        const result = await resultService.checkIfCompletedQuiz(userID, quizID);
 
         expect(result).toEqual(false);
     });
@@ -98,9 +97,9 @@ describe("getIfCompletedQuiz", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        await expect(resultService.getIfCompletedQuiz(userID, quizID)).rejects.toThrow(
-            errorMessage
-        );
+        await expect(
+            resultService.checkIfCompletedQuiz(userID, quizID)
+        ).rejects.toThrow(errorMessage);
 
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
     });

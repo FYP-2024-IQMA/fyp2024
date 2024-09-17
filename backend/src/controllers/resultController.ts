@@ -38,9 +38,9 @@ export const getAllResults = async (req: Request, res: Response) => {
     }
 };
 
-export const getIfCompletedQuiz = async (req: Request, res: Response) => {
+export const checkIfCompletedQuiz = async (req: Request, res: Response) => {
     try {
-        const result = await resultService.getIfCompletedQuiz(
+        const result = await resultService.checkIfCompletedQuiz(
             req.params.userid,
             req.params.quizid
         );

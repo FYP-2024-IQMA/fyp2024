@@ -39,7 +39,7 @@ export async function getAllResults() {
 }
 
 
-export async function getIfCompletedQuiz(userID: string, quizID: string): Promise<boolean> {
+export async function checkIfCompletedQuiz(userID: string, quizID: string): Promise<boolean> {
     const { count, error } = await supabase
         .from("result")
         .select("*", { count: "exact" })
