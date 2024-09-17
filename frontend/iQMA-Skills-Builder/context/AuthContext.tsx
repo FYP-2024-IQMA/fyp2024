@@ -119,6 +119,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('SelfReflection');
                     // router.replace('Assessment');
                     // router.replace('FinalAssessment');
+                    // router.replace('KeyTakeaway');
                 } else {
                     router.replace('IntroductionMascot');
                 }

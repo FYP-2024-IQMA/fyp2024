@@ -16,7 +16,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -39,7 +39,15 @@ export default function Lesson() {
         router.push({
             pathname: 'VideoQuiz',
             // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+            },
         });
     };
 

@@ -19,8 +19,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
     const [circularProgress, setCircularProgress] = useState<number>(0);
-    const [sectionCircularProgress, setSectionCircularProgress] =
-        useState<number>(0);
+    const [sectionCircularProgress, setSectionCircularProgress] = useState<number>(0);
     const [allSectionDetails, setAllSectionDetails] = useState<any[]>([]);
     const [iconsData, setIconsData] = useState<{
         [key: number]: ProgressPathProps['icons'];
@@ -97,9 +96,11 @@ const HomeScreen: React.FC = () => {
         // console.log('Section ID:', sectionID);
         const totalUnits =
             await unitEndpoints.numberOfUnitsPerSection(sectionID);
+        // const totalUnits = 3
         const currentUnit = completedUnits + 1;
 
         // console.log('Current Unit:', currentUnit);
+        // console.log('Total Units:', totalUnits);
 
         const iconsData = [];
         for (let i = 0; i < totalUnits; i++) {
@@ -123,6 +124,17 @@ const HomeScreen: React.FC = () => {
             }
 
             let currentLessonId = getAllLessons[0].lessonID;
+            let currentLessonIdx = 0;
+            let isFinal = false;
+
+            // pass in parameters from the result of getCurrentSection
+            // if currentSection === totalSection then route to final assessment with isFinal = true
+            // const currentSection = await AsyncStorage.getItem('currentSection');
+
+            // if (parseInt(currentSection as string) === totalSection) {
+            //     routerName = 'AssessmentIntro';
+            //     isFinal = true;
+            // }
 
             if (i + 1 === currentUnit) {
                 // console.log("Total Lesson:", totalLesson);
@@ -132,9 +144,10 @@ const HomeScreen: React.FC = () => {
                     totalLesson === completedLessons &&
                     circularProgress !== 100
                 ) {
-                    routerName = 'CheatSheet';
+                    routerName = 'FinalAssessment';
                 } else {
                     currentLessonId = getAllLessons[completedLessons].lessonID;
+                    currentLessonIdx = completedLessons;
                     if (completedLessons !== 0) {
                         routerName = 'Lesson';
                     } else if (completedUnits === 0) {
@@ -156,7 +169,17 @@ const HomeScreen: React.FC = () => {
                 name: icon,
                 status,
                 onPress: () =>
-                    handlePress(routerName, sectionID, unitID, currentLessonId),
+                    handlePress(
+                        routerName,
+                        sectionID,
+                        unitID,
+                        currentLessonId,
+                        currentLessonIdx,
+                        totalLesson,
+                        currentUnit,
+                        totalUnits,
+                        isFinal
+                    ),
             });
         }
         return iconsData;
@@ -219,6 +242,8 @@ const HomeScreen: React.FC = () => {
                 const sectionID = `SEC${currentSection.toString().padStart(4, '0')}`;
                 await AsyncStorage.setItem('sectionID', sectionID);
 
+                // const totalSection = sectionDetails.length;
+
                 await loadSectionProgress(currentUser.sub, sectionID);
 
                 // Initialize iconsData
@@ -249,18 +274,31 @@ const HomeScreen: React.FC = () => {
         pathName: string,
         sectionID: string,
         unitID: string,
-        lessonID: string
+        lessonID: string,
+        currentLessonIdx: number,
+        totalLesson: number,
+        currentUnit: number,
+        totalUnits: number,
+        isFinal: boolean
         // getAllLessons: any[]
     ) => {
         console.log('Pressed in HOME');
-        console.log(pathName, sectionID, unitID, lessonID);
+        console.log(pathName, sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits);
 
         // // Serialize the array
         // const serializedLessons = JSON.stringify(getAllLessons);
 
         router.push({
             pathname: pathName,
-            params: {sectionID, unitID, lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits
+            },
         });
     };
 

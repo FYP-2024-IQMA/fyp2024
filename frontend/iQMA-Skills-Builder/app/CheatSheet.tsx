@@ -45,7 +45,7 @@ const formatCheatSheet = (cheatsheet: any) => {
 // where things show up
 export default function CheatSheet() {
     const navigation = useNavigation();
-    const {sectionID, unitID} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -91,10 +91,15 @@ export default function CheatSheet() {
     }, [sectionID, unitID]);
 
     const handlePress = () => {
-        // router.push("Lesson")
         router.push({
-            pathname: 'UnitIntroduction', // to be replaced with Unit Reality Check page
-            params: {sectionID: sectionID, unitID: unitID},
+            pathname: 'RealityCheck',
+            params: {
+                sectionID,
+                unitID,
+                currentUnit,
+                totalUnits,
+                isFinal,
+            },
         });
     };
 

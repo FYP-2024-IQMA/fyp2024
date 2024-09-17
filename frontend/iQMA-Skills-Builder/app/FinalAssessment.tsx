@@ -16,8 +16,9 @@ import {useNavigation} from '@react-navigation/native';
 export default function FinalAssessment() {
     const navigation = useNavigation();
 
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0001';
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0001';
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionIntro, setSectionIntro] = useState<string[]>([]);
     const [sectionName, setSectionName] = useState<string>('');
@@ -71,11 +72,20 @@ export default function FinalAssessment() {
     }, [sectionID, unitID]);
 
     const handlePress = async () => {
+
+        let pathName = 'CheatSheet';
+
+        if (isFinal === 'true') {
+            pathName = 'Assessment';
+        } 
         router.push({
-            pathname: 'Lesson',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            pathname: pathName,
+            params: {sectionID, unitID, currentUnit, totalUnits, isFinal},
             // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
         });
+
+
+
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');
         try {
@@ -119,7 +129,7 @@ export default function FinalAssessment() {
                 ) : (
                     <OverviewCard
                         isError={true}
-                        text="Unit description is not available. Please check with your administrator."
+                        text="Final Assessment introduction is not available. Please check with your administrator."
                     />
                 )}
 

@@ -1,11 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
-import axios from 'axios';
 import {router, useLocalSearchParams} from 'expo-router';
 import {Question} from '@/constants/Quiz';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
@@ -13,22 +12,21 @@ import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
+import {AuthContext} from '@/context/AuthContext';
 
 export default function Assessment() {
     const navigation = useNavigation();
+    const {currentUser, isLoading} = useContext(AuthContext);
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    // Hardcoded for now until routing confirmed
-    // const sectionID = 'SEC0001';
-    // const unitID = 'UNIT0001';
-    const {sectionID, unitID} = useLocalSearchParams();
+    const [loading, setIsLoading] = useState<boolean>(true);
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
 
     useEffect(() => {
         if (sectionID && unitID) {
@@ -73,7 +71,38 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
-            router.replace('Home'); // Change Here
+
+            try {
+                const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(currentUser.sub, questions[currentQnsIdx].quizID);
+
+                if (!ifCompleted) {
+                    await resultEndpoints.createResult(
+                        currentUser.sub,
+                        questions[currentQnsIdx].quizID
+                    );
+                }
+            } catch (error) {
+                console.error('Error in Assessment:', error);
+            }
+
+            // console.log('currentUnit:', currentUnit);
+            // console.log('totalUnits:', totalUnits);
+
+            if (isFinal === 'true') {
+                // final assessment don't have self-reflection
+                router.replace('Home');
+            } else {
+                router.push({
+                    pathname: 'SelfReflection',
+                    params: {
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        isFinal
+                    }
+                });
+            }
         }
     };
 
@@ -82,7 +111,7 @@ export default function Assessment() {
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
         >
-            {isLoading ? (
+            {loading ? (
                 <LoadingIndicator />
             ) : (
                 <>

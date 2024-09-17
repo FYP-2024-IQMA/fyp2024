@@ -15,7 +15,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
     // const sectionID = 'SEC0001'; // to be removed
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
@@ -54,11 +54,18 @@ export default function SectionIntroduction() {
     }, [sectionID]);
 
     const handlePress = () => {
-        // router.push('UnitIntroduction');
         setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
-            params: {sectionID, unitID, lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+            },
         });
     };
 
