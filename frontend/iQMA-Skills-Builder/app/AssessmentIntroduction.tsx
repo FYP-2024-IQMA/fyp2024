@@ -66,7 +66,7 @@ export default function AssessmentIntroduction() {
     }, [navigation]);
 
     useEffect(() => {
-        if (isFinal == 'true') {
+        if (isFinal === 'true') {
             (async () => {
                 try {
                     const sectionDetails =
