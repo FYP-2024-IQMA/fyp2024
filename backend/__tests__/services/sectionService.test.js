@@ -31,6 +31,7 @@ describe("getSectionDetails", () => {
         ...mockSection,
         introductionURL: 'pU4fCakueEE',
         finalAssessmentIntro: ["Welcome to the Grand Presentation Showdown..."],
+        finalScenario: ["You are part of a team participating in a high-stakes competition..."]
     }
 
     it("should return section details on success", async () => {

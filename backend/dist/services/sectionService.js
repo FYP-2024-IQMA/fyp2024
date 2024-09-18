@@ -24,7 +24,8 @@ function extractYouTubeID(url) {
 /* READ */
 function getAllSections() {
     return __awaiter(this, void 0, void 0, function* () {
-        const { data, error } = yield supabaseConfig_1.default.from("section")
+        const { data, error } = yield supabaseConfig_1.default
+            .from("section")
             .select("sectionID, sectionName");
         if (error) {
             console.error(error);
@@ -43,7 +44,7 @@ function getAllSections() {
         // 		};
         // 	});
         // 	return formattedData;
-        // };	
+        // };
         return data;
     });
 }
@@ -64,6 +65,8 @@ function getSectionDetails(sectionID) {
             }
             return Object.assign(Object.assign({}, data), { finalAssessmentIntro: data.finalAssessmentIntro
                     ? data.finalAssessmentIntro.split(/\r\n/)
+                    : [], finalScenario: data.finalScenario
+                    ? data.finalScenario.split(/\r\n/)
                     : [], introductionURL: data.introductionURL });
         }
     });

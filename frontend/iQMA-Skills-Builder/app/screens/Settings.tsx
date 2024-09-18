@@ -9,11 +9,11 @@ const testLesson = () => {
 };
 
 const testQuiz = () => {
-    router.push('AssessmentQuiz');
+    router.push('VideoQuiz');
 };
 
 const testAsssessment = () => {
-    router.push('RealityCheck');
+    router.push('Assessment');
 };
 
 const assessmentIntro = () => {

@@ -5,35 +5,33 @@ import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
-import axios from 'axios';
 import {router, useLocalSearchParams} from 'expo-router';
 import {Question} from '@/constants/Quiz';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
-import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 
-export default function AssessmentQuiz() {
+export default function Assessment() {
     const navigation = useNavigation();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
+    const [sectionName, setSectionName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
+    const [finalScenario, setFinalScenario] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [lessonName, setLessonName] = useState<string>('');
+ 
 
     // Hardcoded for now until routing confirmed
-    const isFinal: boolean = false;
+    const isFinal: boolean = true;
     const sectionID = 'SEC0001';
     const unitID = 'UNIT0001';
-    const lessonID = '1a';
-    // const {sectionID, unitID} = useLocalSearchParams();
 
     useEffect(() => {
         if (isFinal) {
@@ -46,14 +44,23 @@ export default function AssessmentQuiz() {
                     setUnitName(unitDetails.unitName);
                     setUnitScenario(unitDetails.scenario);
 
+                    const sectionDetails =
+                        await sectionEndpoints.getSectionDetails(
+                            sectionID as string
+                        );
+                    setFinalScenario(sectionDetails.finalScenario);
+                    setSectionName(sectionDetails.sectionName);
+
                     const assessmentQuestions =
-                        await assessmentEndpoints.getAssessmentQuestions(
-                            sectionID as string,
-                            unitID as string
+                        await quizEndpoints.getFinalAssessmentQuestions(
+                            sectionID as string
                         );
                     setQuestions(assessmentQuestions);
                 } catch (error) {
-                    console.error('Error fetching section details:', error);
+                    console.error(
+                        'Error fetching final assessment details:',
+                        error
+                    );
                 } finally {
                     setIsLoading(false);
                 }
@@ -65,25 +72,17 @@ export default function AssessmentQuiz() {
                         sectionID as string,
                         unitID as string
                     );
-
-                    const lessonDetails =
-                        await lessonEndpoints.getLessonDetails(
-                            sectionID as string,
-                            unitID as string,
-                            lessonID as string
-                        );
-
-                    const response = await quizEndpoints.getQuizzes(
-                        sectionID as string,
-                        unitID as string,
-                        lessonID as string
-                    );
-
-                    setLessonName(lessonDetails.lessonName);
                     setUnitName(unitDetails.unitName);
-                    setQuestions(response);
+                    setUnitScenario(unitDetails.scenario);
+
+                    const assessmentQuestions =
+                        await quizEndpoints.getAssessmentQuestions(
+                            sectionID as string,
+                            unitID as string
+                        );
+                    setQuestions(assessmentQuestions);
                 } catch (error) {
-                    console.error('Error fetching unit details:', error);
+                    console.error('Error fetching assessment details:', error);
                 } finally {
                     setIsLoading(false);
                 }
@@ -91,7 +90,7 @@ export default function AssessmentQuiz() {
         }
         setSectionNumber(formatSection(sectionID as string));
         setUnitNumber(formatUnit(unitID as string));
-    }, [sectionID, unitID, lessonID]);
+    }, [sectionID, unitID]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -125,23 +124,14 @@ export default function AssessmentQuiz() {
             ) : (
                 <>
                     <SectionCard
-                        title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                        subtitle={unitName}
+                        title={
+                            isFinal
+                                ? `SECTION ${sectionNumber}`
+                                : `SECTION ${sectionNumber}, UNIT ${unitNumber}`
+                        }
+                        subtitle={isFinal ? `${sectionName}` : `${unitName}`}
                     />
                     <View style={{marginHorizontal: 10}}>
-                        {isFinal ? (
-                            <></>
-                        ) : (
-                            <Text
-                                style={{
-                                    fontSize: 14,
-                                    fontWeight: 'bold',
-                                    color: '#4143A3',
-                                }}
-                            >
-                                {lessonName}
-                            </Text>
-                        )}
                         <Text
                             style={{
                                 fontSize: 14,
@@ -158,16 +148,18 @@ export default function AssessmentQuiz() {
                         <View>
                             <OverviewCard
                                 isError={false}
-                                text={unitScenario}
+                                text={finalScenario}
                                 isScenario={true}
                                 title="Scenario:"
                             />
                         </View>
                     ) : (
-                        <View style={{alignItems: 'center'}}>
-                            <Image
-                                style={{marginBottom: 10}}
-                                source={require('@/assets/images/deepinthought.png')}
+                        <View>
+                            <OverviewCard
+                                isError={false}
+                                text={unitScenario}
+                                isScenario={true}
+                                title="Scenario:"
                             />
                         </View>
                     )}
