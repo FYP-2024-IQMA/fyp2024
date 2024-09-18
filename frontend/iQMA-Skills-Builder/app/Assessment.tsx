@@ -29,7 +29,7 @@ export default function Assessment() {
  
 
     // Hardcoded for now until routing confirmed
-    const isFinal: boolean = true;
+    const isFinal: boolean = false;
     const sectionID = 'SEC0001';
     const unitID = 'UNIT0001';
 
@@ -37,13 +37,6 @@ export default function Assessment() {
         if (isFinal) {
             (async () => {
                 try {
-                    const unitDetails = await unitEndpoints.getUnitDetails(
-                        sectionID as string,
-                        unitID as string
-                    );
-                    setUnitName(unitDetails.unitName);
-                    setUnitScenario(unitDetails.scenario);
-
                     const sectionDetails =
                         await sectionEndpoints.getSectionDetails(
                             sectionID as string
