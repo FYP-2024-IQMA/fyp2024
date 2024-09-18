@@ -69,7 +69,7 @@ export default function CheatSheet() {
 
                     const processedLessonDetails = lessonDetails
                         .filter(
-                            (lesson: any) => !lesson.lessonID.includes('.2')
+                            (lesson: any) => !/\.[2-9]\d*/.test(lesson.lessonID)
                         )
                         .map((lesson: any) => ({
                             ...lesson,

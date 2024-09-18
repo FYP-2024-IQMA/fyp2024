@@ -1,8 +1,5 @@
-import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -13,12 +10,15 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { AuthContext } from '@/context/AuthContext';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
-
-    const {sectionID, unitID, currentUnit, totalUnits} = useLocalSearchParams();
+    const {currentUser} = useContext(AuthContext);
+    const {sectionID, unitID, currentUnit, totalUnits, quizID} = useLocalSearchParams();
 
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -60,10 +60,28 @@ export default function SelfReflection() {
         }
     }, [sectionID, unitID]);
 
-    const handlePress = () => {
+    const handlePress = async () => {
+
+        // (async () => {
+        try {
+            const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(
+                currentUser.sub,
+                parseInt(quizID as string)
+            );
+
+            if (!ifCompleted) {
+                await resultEndpoints.createResult(
+                    currentUser.sub,
+                    parseInt(quizID as string)
+                );
+            }
+        } catch (error) {
+            console.error('Error in Submitting Unit Assessment (Self-Reflection Page):', error);
+        }
+        // })();
 
         if (parseInt(currentUnit as string) === parseInt(totalUnits as string)) {
-            // if last unit, go back to Assessment Intro (FinalAssessment.tsx)
+            // if last unit, go back to Assessment Intro for Final Assessment (FinalAssessment.tsx)
             router.push({
                 pathname: 'FinalAssessment',
                 params: {

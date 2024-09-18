@@ -72,24 +72,25 @@ export default function Assessment() {
             setCurrentQnsIdx(newIdx);
         } else {
 
-            try {
-                const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(currentUser.sub, questions[currentQnsIdx].quizID);
-
-                if (!ifCompleted) {
-                    await resultEndpoints.createResult(
-                        currentUser.sub,
-                        questions[currentQnsIdx].quizID
-                    );
-                }
-            } catch (error) {
-                console.error('Error in Assessment:', error);
-            }
-
-            // console.log('currentUnit:', currentUnit);
-            // console.log('totalUnits:', totalUnits);
-
             if (isFinal === 'true') {
                 // final assessment don't have self-reflection
+                try {
+                    const ifCompleted =
+                        await resultEndpoints.checkIfCompletedQuiz(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                    if (!ifCompleted) {
+                        await resultEndpoints.createResult(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error in Assessment:', error);
+                }
+
                 router.replace('Home');
             } else {
                 router.push({
@@ -99,6 +100,7 @@ export default function Assessment() {
                         unitID,
                         currentUnit,
                         totalUnits,
+                        quizID: questions[currentQnsIdx].quizID,
                         isFinal
                     }
                 });

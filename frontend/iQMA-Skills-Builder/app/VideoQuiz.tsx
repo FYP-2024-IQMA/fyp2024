@@ -28,6 +28,7 @@ export default function VideoQuiz() {
     const [questions, setQuestions] = useState<Question[]>([]);
     const [lessonName, setLessonName] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
+    const [nextLessonID, setnextLessonID] = useState<string>('');
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -43,12 +44,24 @@ export default function VideoQuiz() {
                         unitID as string
                     );
 
-                    const lessonDetails =
-                        await lessonEndpoints.getLessonDetails(
-                            sectionID as string,
-                            unitID as string,
-                            lessonID as string
-                        );
+                    const lessonDetails = await lessonEndpoints.getLessonDetails(
+                        sectionID as string,
+                        unitID as string,
+                        lessonID as string
+                    );
+
+                    const getAllLessons = await lessonEndpoints.getAllLesson(
+                        sectionID as string,
+                        unitID as string
+                    );
+
+                    let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
+
+                    if (nxtLessonIdx === parseInt(totalLesson as string)) {
+                        setnextLessonID('LastLesson');
+                    } else {
+                        setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
+                    }
 
                     const response = await quizEndpoints.getQuizzes(
                         sectionID as string,
@@ -68,7 +81,7 @@ export default function VideoQuiz() {
                 }
             })();
         }
-    }, [sectionID, unitID, lessonID]);
+    }, [sectionID, unitID, lessonID, nextLessonID]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -88,28 +101,32 @@ export default function VideoQuiz() {
                 const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(currentUser.sub, questions[currentQnsIdx].quizID);
 
                 if (!ifCompleted) {
-                    const resultStatus = await resultEndpoints.createResult(
+                    await resultEndpoints.createResult(
                         currentUser.sub,
                         questions[currentQnsIdx].quizID
                     );
                 }
+
+                let pathName = 'KeyTakeaway';
+                let currLessonID = lessonID;
+                let currLessonIdx = parseInt(currentLessonIdx as string);
+
+                console.log('nextLessonID:', nextLessonID);
                 
-                // const resultResponse = await axios.post(
-                //     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`,
-                //     {
-                //         userID: await AsyncStorage.getItem('userID'),
-                //         quizID: questions[currentQnsIdx].quizID,
-                //     }
-                // );
-                // console.log(resultResponse.data);
+                // if nextlessonID have "." then route back to Lesson page
+                if (nextLessonID.includes('.')) {
+                    pathName = 'Lesson';
+                    currLessonID = nextLessonID;
+                    currLessonIdx += 1;
+                }
+
                 router.push({
-                    pathname: 'KeyTakeaway',
-                    // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+                    pathname: pathName,
                     params: {
                         sectionID,
                         unitID,
-                        lessonID,
-                        currentLessonIdx,
+                        lessonID: currLessonID,
+                        currentLessonIdx: currLessonIdx,
                         totalLesson,
                         currentUnit,
                         totalUnits,

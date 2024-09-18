@@ -31,7 +31,7 @@ export default function KeyTakeaway() {
         let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
         let pathName = 'Lesson';
 
-        // If it is the last lesson, go to Assessment Intro (FinalAssessment.tsx)
+        // If it is the last lesson, go to Assessment Intro for Unit Assessment (FinalAssessment.tsx)
         if (nextLessonIdx === parseInt(totalLesson as string)) {
             // lessonIdx can be anything because will reset in Home
             nextLessonIdx = 0;
@@ -63,13 +63,13 @@ export default function KeyTakeaway() {
     // const totalLesson = '3';
     // const currentUnit = '3';
     // const totalUnits = '3';
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
-    const [nextLessonID, setnextLessonID] = useState<number>(0);
+    const [nextLessonID, setnextLessonID] = useState<string>('');
 
     useEffect(() => {
         if (sectionID && unitID && lessonID && currentLessonIdx && totalLesson) {
@@ -96,6 +96,10 @@ export default function KeyTakeaway() {
                     
                     if (nxtLessonIdx === parseInt(totalLesson as string)) {
                         nxtLessonIdx = 0;
+                    }
+
+                    if (lessonID.includes(".")) {
+                        lessonDetails.lessonName = lessonDetails.lessonName.replace(/\.\d+/, '');
                     }
 
                     setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);

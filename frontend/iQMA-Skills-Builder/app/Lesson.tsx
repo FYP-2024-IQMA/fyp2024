@@ -38,7 +38,6 @@ export default function Lesson() {
         setPlaying(false);
         router.push({
             pathname: 'VideoQuiz',
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
             params: {
                 sectionID,
                 unitID,
