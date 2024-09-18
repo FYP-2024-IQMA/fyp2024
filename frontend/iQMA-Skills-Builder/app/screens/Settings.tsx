@@ -13,7 +13,11 @@ const testQuiz = () => {
 };
 
 const testAsssessment = () => {
-    router.push('RealityCheck');
+    router.push('Assessment');
+};
+
+const assessmentIntro = () => {
+    router.push('AssessmentIntroduction');
 };
 
 const SettingPage: React.FC = () => (
@@ -25,6 +29,8 @@ const SettingPage: React.FC = () => (
         <Button title="Test Quiz" onPress={testQuiz}></Button>
         <View style={{marginBottom: 10}}></View>
         <Button title="Test Assessment" onPress={testAsssessment}></Button>
+        <View style={{marginBottom: 10}}></View>
+        <Button title="Test Assessment Intro" onPress={assessmentIntro}></Button>
         <View style={{marginBottom: 10}}></View>
         <LogoutButton></LogoutButton>
     </View>
