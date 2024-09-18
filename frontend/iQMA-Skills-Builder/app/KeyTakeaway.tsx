@@ -31,11 +31,11 @@ export default function KeyTakeaway() {
         let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
         let pathName = 'Lesson';
 
-        // If it is the last lesson, go to Assessment Intro for Unit Assessment (FinalAssessment.tsx)
+        // If it is the last lesson, go to Assessment Intro for Unit Assessment (AssessmentIntroduction.tsx)
         if (nextLessonIdx === parseInt(totalLesson as string)) {
             // lessonIdx can be anything because will reset in Home
             nextLessonIdx = 0;
-            pathName = 'FinalAssessment';
+            pathName = 'AssessmentIntroduction';
         }
 
         console.log('nextLessonIdx:', nextLessonIdx);

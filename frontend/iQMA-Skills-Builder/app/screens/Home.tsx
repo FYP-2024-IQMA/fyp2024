@@ -144,7 +144,7 @@ const HomeScreen: React.FC = () => {
                     totalLesson === completedLessons &&
                     circularProgress !== 100
                 ) {
-                    routerName = 'FinalAssessment';
+                    routerName = 'AssessmentIntroduction';
                 } else {
                     currentLessonId = getAllLessons[completedLessons].lessonID;
                     currentLessonIdx = completedLessons;

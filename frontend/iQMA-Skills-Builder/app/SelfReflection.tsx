@@ -81,9 +81,9 @@ export default function SelfReflection() {
         // })();
 
         if (parseInt(currentUnit as string) === parseInt(totalUnits as string)) {
-            // if last unit, go back to Assessment Intro for Final Assessment (FinalAssessment.tsx)
+            // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
             router.push({
-                pathname: 'FinalAssessment',
+                pathname: 'AssessmentIntroduction',
                 params: {
                     sectionID,
                     unitID,

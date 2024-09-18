@@ -19,9 +19,10 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 export default function AssessmentIntroduction() {
     const navigation = useNavigation();
 
-    const isFinal: boolean = false;
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0001';
+    // const isFinal: boolean = false;
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0001';
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [seconds, setSeconds] = useState<number>(0);
@@ -29,6 +30,7 @@ export default function AssessmentIntroduction() {
     const [introName, setIntroName] = useState<string>('');
     const [introDetails, setIntroDetails] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [checkFinal, setCheckFinal] = useState<boolean>(false);
 
     const startTimer = () => {
         if (timerRef.current) {
@@ -64,7 +66,7 @@ export default function AssessmentIntroduction() {
     }, [navigation]);
 
     useEffect(() => {
-        if (isFinal) {
+        if (isFinal == 'true') {
             (async () => {
                 try {
                     const sectionDetails =
@@ -73,6 +75,7 @@ export default function AssessmentIntroduction() {
                         );
                     setIntroName(sectionDetails.sectionName);
                     setIntroDetails(sectionDetails.finalAssessmentIntro);
+                    setCheckFinal(true);
                 } catch (error) {
                     console.error('Error fetching section details:', error);
                 } finally {
@@ -82,12 +85,12 @@ export default function AssessmentIntroduction() {
         } else {
             (async () => {
                 try {
-                    const sectionDetails = await unitEndpoints.getUnitDetails(
+                    const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,
                         unitID as string
                     );
-                    setIntroName(sectionDetails.unitName);
-                    setIntroDetails(sectionDetails.assessmentIntro);
+                    setIntroName(unitDetails.unitName);
+                    setIntroDetails(unitDetails.assessmentIntro);
                 } catch (error) {
                     console.error('Error fetching unit details:', error);
                 } finally {
@@ -97,13 +100,18 @@ export default function AssessmentIntroduction() {
         }
         setSectionNumber(formatSection(sectionID as string));
         setUnitNumber(formatUnit(unitID as string));
-    }, [sectionID, unitID]);
+    }, [sectionID, unitID, checkFinal]);
 
     const handlePress = async () => {
+
+        let pathName = 'CheatSheet';
+
+        if (checkFinal) {
+            pathName = 'Assessment';
+        }
         router.push({
-            pathname: 'Lesson',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            pathname: pathName,
+            params: {sectionID, unitID, currentUnit, totalUnits, isFinal},
         });
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');
@@ -135,7 +143,7 @@ export default function AssessmentIntroduction() {
                     <View style={{flexGrow: 1}}>
                         <SectionCard
                             title={
-                                isFinal
+                                checkFinal
                                     ? `SECTION ${sectionNumber}`
                                     : `SECTION ${sectionNumber}, UNIT ${unitNumber}`
                             }
@@ -150,12 +158,12 @@ export default function AssessmentIntroduction() {
                                 marginHorizontal: 10,
                             }}
                         >
-                            {isFinal
+                            {checkFinal
                                 ? `Section ${sectionNumber}: Assessment`
                                 : `Unit ${unitNumber}: Assessment`}
                         </Text>
 
-                        {!isFinal ? (
+                        {!checkFinal ? (
                             introDetails.length > 0 ? (
                                 introDetails.map((details, index) => (
                                     <OverviewCard key={index} text={details} />
@@ -186,7 +194,7 @@ export default function AssessmentIntroduction() {
                         >
                             <Image
                                 source={
-                                    isFinal
+                                    checkFinal
                                         ? require('@/assets/images/happycloseeye.png')
                                         : require('@/assets/images/neutral.png')
                                 }

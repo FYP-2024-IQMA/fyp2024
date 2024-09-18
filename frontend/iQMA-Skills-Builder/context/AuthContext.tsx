@@ -118,7 +118,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('CheatSheet');
                     // router.replace('SelfReflection');
                     // router.replace('Assessment');
-                    // router.replace('FinalAssessment');
+                    // router.replace('AssessmentIntroduction');
                     // router.replace('KeyTakeaway');
                 } else {
                     router.replace('IntroductionMascot');
