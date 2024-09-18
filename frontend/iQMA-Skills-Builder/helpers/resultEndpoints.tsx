@@ -28,3 +28,42 @@ export const numberOfCompletedLessonsPerUnit = async (
         return 0;
     }
 };
+
+export const createResult = async (
+    userID: string,
+    quizID: number
+): Promise<void> => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userID, quizID })
+        });
+
+        const data = await response.json();
+        console.log(data);
+        console.log('Status: ', data.status);
+        return data.status;
+
+    } catch (error) {
+        console.error('Error while creating result:', error);
+    }
+}
+
+export const checkIfCompletedQuiz = async(
+    userID: string,
+    quizID: number
+): Promise<boolean> => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/checkifcompletedquiz/${userID}/${quizID}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error while checking if quiz is completed:', error);
+        return false;
+    }
+}

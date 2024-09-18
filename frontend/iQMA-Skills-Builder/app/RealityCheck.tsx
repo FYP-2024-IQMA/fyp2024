@@ -16,7 +16,7 @@ export default function RealityCheck() {
     const navigation = useNavigation();
 
     // Use this for Routing
-    // const {sectionID, unitID} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -24,9 +24,6 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    // Only for testing, please delete
-    const [sectionID, setSectionID] = useState<string>('SEC0001');
-    const [unitID, setUnitID] = useState<string>('UNIT0001');
 
     useEffect(() => {}, []);
 
@@ -66,7 +63,13 @@ export default function RealityCheck() {
     const handlePress = async () => {
         router.push({
             pathname: 'Assessment',
-            params: {sectionID: sectionID, unitID: unitID},
+            params: {
+                sectionID,
+                unitID,
+                currentUnit,
+                totalUnits,
+                isFinal,
+            },
         });
     };
 

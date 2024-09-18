@@ -17,7 +17,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 export default function UnitIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -87,7 +87,15 @@ export default function UnitIntroduction() {
         router.push({
             pathname: 'Lesson',
             // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+            },
         });
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');

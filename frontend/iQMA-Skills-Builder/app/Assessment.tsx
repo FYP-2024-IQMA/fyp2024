@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
@@ -13,10 +13,13 @@ import * as quizEndpoints from '@/helpers/quizEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
+import {AuthContext} from '@/context/AuthContext';
 
 export default function Assessment() {
     const navigation = useNavigation();
+    const {currentUser, isLoading} = useContext(AuthContext);
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [sectionNumber, setSectionNumber] = useState<string>('');
@@ -24,17 +27,18 @@ export default function Assessment() {
     const [unitName, setUnitName] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
+    const [loading, setIsLoading] = useState<boolean>(true);
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [checkFinal, setCheckFinal] = useState<boolean>(false);
  
-
     // Hardcoded for now until routing confirmed
-    const isFinal: boolean = false;
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0001';
+    // const isFinal: boolean = false;
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0001';
 
     useEffect(() => {
-        if (isFinal) {
+        if (isFinal === 'true') {
             (async () => {
                 try {
                     const sectionDetails =
@@ -49,6 +53,7 @@ export default function Assessment() {
                             sectionID as string
                         );
                     setQuestions(assessmentQuestions);
+                    setCheckFinal(true);
                 } catch (error) {
                     console.error(
                         'Error fetching final assessment details:',
@@ -83,7 +88,7 @@ export default function Assessment() {
         }
         setSectionNumber(formatSection(sectionID as string));
         setUnitNumber(formatUnit(unitID as string));
-    }, [sectionID, unitID]);
+    }, [sectionID, unitID, checkFinal]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -99,10 +104,39 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
-            if (isFinal) {
-                router.replace('Home'); // Change Here
+
+            if (checkFinal) {
+                // final assessment don't have self-reflection
+                try {
+                    const ifCompleted =
+                        await resultEndpoints.checkIfCompletedQuiz(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                    if (!ifCompleted) {
+                        await resultEndpoints.createResult(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error in Assessment:', error);
+                }
+
+                router.replace('Home');
             } else {
-                router.replace('Home'); // Change Here
+                router.push({
+                    pathname: 'SelfReflection',
+                    params: {
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        quizID: questions[currentQnsIdx].quizID,
+                        isFinal
+                    }
+                });
             }
         }
     };
@@ -112,17 +146,17 @@ export default function Assessment() {
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
         >
-            {isLoading ? (
+            {loading ? (
                 <LoadingIndicator />
             ) : (
                 <>
                     <SectionCard
                         title={
-                            isFinal
+                            checkFinal
                                 ? `SECTION ${sectionNumber}`
                                 : `SECTION ${sectionNumber}, UNIT ${unitNumber}`
                         }
-                        subtitle={isFinal ? `${sectionName}` : `${unitName}`}
+                        subtitle={checkFinal ? `${sectionName}` : `${unitName}`}
                     />
                     <View style={{marginHorizontal: 10}}>
                         <Text
@@ -137,7 +171,7 @@ export default function Assessment() {
                         </Text>
                     </View>
 
-                    {isFinal ? (
+                    {checkFinal ? (
                         <View>
                             <OverviewCard
                                 isError={false}

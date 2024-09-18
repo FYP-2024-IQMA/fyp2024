@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
@@ -13,18 +13,22 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
+import { AuthContext } from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {currentUser, isLoading} = useContext(AuthContext);
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [questions, setQuestions] = useState<Question[]>([]);
     const [lessonName, setLessonName] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [loading, setIsLoading] = useState<boolean>(true);
+    const [nextLessonID, setnextLessonID] = useState<string>('');
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -40,12 +44,24 @@ export default function VideoQuiz() {
                         unitID as string
                     );
 
-                    const lessonDetails =
-                        await lessonEndpoints.getLessonDetails(
-                            sectionID as string,
-                            unitID as string,
-                            lessonID as string
-                        );
+                    const lessonDetails = await lessonEndpoints.getLessonDetails(
+                        sectionID as string,
+                        unitID as string,
+                        lessonID as string
+                    );
+
+                    const getAllLessons = await lessonEndpoints.getAllLesson(
+                        sectionID as string,
+                        unitID as string
+                    );
+
+                    let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
+
+                    if (nxtLessonIdx === parseInt(totalLesson as string)) {
+                        setnextLessonID('LastLesson');
+                    } else {
+                        setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
+                    }
 
                     const response = await quizEndpoints.getQuizzes(
                         sectionID as string,
@@ -65,7 +81,7 @@ export default function VideoQuiz() {
                 }
             })();
         }
-    }, [sectionID, unitID, lessonID]);
+    }, [sectionID, unitID, lessonID, nextLessonID]);
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -82,25 +98,42 @@ export default function VideoQuiz() {
             setCurrentQnsIdx(newIdx);
         } else {
             try {
-                const resultResponse = await axios.post(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`,
-                    {
-                        userID: await AsyncStorage.getItem('userID'),
-                        quizID: questions[currentQnsIdx].quizID,
-                    }
-                );
-                console.log(resultResponse.data);
-                router.replace({
-                    pathname: 'KeyTakeaway',
-                    // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+                const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(currentUser.sub, questions[currentQnsIdx].quizID);
+
+                if (!ifCompleted) {
+                    await resultEndpoints.createResult(
+                        currentUser.sub,
+                        questions[currentQnsIdx].quizID
+                    );
+                }
+
+                let pathName = 'KeyTakeaway';
+                let currLessonID = lessonID;
+                let currLessonIdx = parseInt(currentLessonIdx as string);
+
+                console.log('nextLessonID:', nextLessonID);
+                
+                // if nextlessonID have "." then route back to Lesson page
+                if (nextLessonID.includes('.')) {
+                    pathName = 'Lesson';
+                    currLessonID = nextLessonID;
+                    currLessonIdx += 1;
+                }
+
+                router.push({
+                    pathname: pathName,
                     params: {
-                        sectionID: sectionID,
-                        unitID: unitID,
-                        lessonID: lessonID,
+                        sectionID,
+                        unitID,
+                        lessonID: currLessonID,
+                        currentLessonIdx: currLessonIdx,
+                        totalLesson,
+                        currentUnit,
+                        totalUnits,
                     },
                 });
             } catch (e) {
-                console.error(e);
+                console.error('Error in Video Quiz', e);
             }
         }
     };
@@ -110,7 +143,7 @@ export default function VideoQuiz() {
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
         >
-            {isLoading ? (
+            {loading ? (
                 <LoadingIndicator />
             ) : (
                 <>
