@@ -9,7 +9,7 @@ const testLesson = () => {
 };
 
 const testQuiz = () => {
-    router.push('VideoQuiz');
+    router.push('AssessmentQuiz');
 };
 
 const testAsssessment = () => {
