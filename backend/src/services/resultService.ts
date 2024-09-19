@@ -39,17 +39,18 @@ export async function getAllResults() {
 }
 
 
-export async function getResultByUserId(userID: string) {
-    const { data, error } = await supabase
+export async function checkIfCompletedQuiz(userID: string, quizID: string): Promise<boolean> {
+    const { count, error } = await supabase
         .from("result")
-        .select("quizID, dateCreated")
-        .eq("userID", userID);
+        .select("*", { count: "exact" })
+        .eq("userID", userID)
+        .eq("quizID", quizID);
 
     if (error) {
         console.error(error);
         throw error;
     } else {
-        return data;
+        return count! > 0;
     }
 }
 
@@ -88,6 +89,33 @@ export async function getUserProgress(userID: string, sectionID?: string, unitID
     }
 
     const { count, error } = await query;
+
+    if (error) {
+        console.error(error);
+        throw error;
+    } else {
+        return count!;
+    }
+}
+
+/*
+Get the User Progress: 
+- no. of completed lessons per unit
+*/
+
+export async function getNoOfCompletedLesson(
+    userID: string,
+    sectionID: string,
+    unitID: string
+): Promise<number> {
+
+    const { count, error } = await supabase
+        .from("result")
+        .select("quizID, quiz!inner(quizID)", { count: "exact" })
+        .eq("userID", userID)
+        .eq("quiz.sectionID", sectionID)
+        .eq("quiz.unitID", unitID)
+        .eq("quiz.quizType", "lesson");
 
     if (error) {
         console.error(error);

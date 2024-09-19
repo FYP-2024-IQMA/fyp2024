@@ -11,12 +11,13 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function UnitIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -24,13 +25,14 @@ export default function UnitIntroduction() {
 
     const [seconds, setSeconds] = useState<number>(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const startTimer = () => {
         if (timerRef.current) {
             clearInterval(timerRef.current);
         }
         timerRef.current = setInterval(() => {
-            setSeconds(prevSeconds => prevSeconds + 1);
+            setSeconds((prevSeconds) => prevSeconds + 1);
         }, 1000);
     };
 
@@ -44,16 +46,19 @@ export default function UnitIntroduction() {
     useEffect(() => {
         startTimer();
         return () => {
-          if (timerRef.current) {
-            clearInterval(timerRef.current);
-          }
+            if (timerRef.current) {
+                clearInterval(timerRef.current);
+            }
         };
     }, []);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -61,16 +66,22 @@ export default function UnitIntroduction() {
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
-                const unitDetails = await unitEndpoints.getUnitDetails(
-                    sectionID as string,
-                    unitID as string
-                );
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
+                    setUnitDescription(unitDetails.unitDescription);
+                    setUnitName(unitDetails.unitName);
 
-                setUnitDescription(unitDetails.unitDescription);
-                setUnitName(unitDetails.unitName);
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching unit details:', error);
+                } finally {
+                    setIsLoading(false);
+                }
             })();
-            setSectionNumber(formatSection(sectionID as string));
-            setUnitNumber(formatUnit(unitID as string));
         }
     }, [sectionID, unitID]);
 
@@ -78,23 +89,33 @@ export default function UnitIntroduction() {
         // router.push('Lesson');
         router.push({
             pathname: 'Lesson',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
         });
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');
         try {
             const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`, 
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
                 {
-                    "userID": userID,
-                    "eventType": "timeTaken",
-                    "event": `unitID ${unitID}`,
-                    "timestamp": new Date().toISOString(),
-                    "time": `${seconds}`
+                    userID: userID,
+                    eventType: 'timeTaken',
+                    event: `unitID ${unitID}`,
+                    timestamp: new Date().toISOString(),
+                    time: `${seconds}`,
                 }
-            )
-            console.log(response.data)
+            );
+            console.log(response.data);
         } catch (e) {
             console.error(e);
         }
@@ -103,49 +124,52 @@ export default function UnitIntroduction() {
 
     return (
         <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
-                <SectionCard
-                    title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                    subtitle={unitName}
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    Unit {unitNumber}: Introduction
-                </Text>
-
-                {unitDescription.length > 0 ? (
-                    unitDescription.map((description, index) => (
-                        <OverviewCard key={index} text={description} />
-                    ))
-                ) : (
-                    <OverviewCard
-                        isError={true}
-                        text="Unit description is not available. Please check with your administrator."
-                    />
-                )}
-
-                <View style={{width: '100%', flexDirection: 'row-reverse'}}>
-                    <Image
-                        style={{}}
-                        source={require('@/assets/images/neutral.png')}
-                    ></Image>
+            {isLoading ? (
+                <View style={{flexGrow: 1}}>
+                    <LoadingIndicator />
                 </View>
-            </View>
+            ) : (
+                <>
+                    <View style={{flexGrow: 1}}>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                            subtitle={unitName}
+                        />
+                        <Text style={styles.screenTitle}>
+                            Unit {unitNumber}: Introduction
+                        </Text>
 
-            <View style={{alignItems: 'center', justifyContent: 'flex-end'}}>
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+                        {unitDescription.length > 0 ? (
+                            unitDescription.map((description, index) => (
+                                <OverviewCard key={index} text={description} />
+                            ))
+                        ) : (
+                            <OverviewCard
+                                // isError={true}
+                                text="Unit description is not available. Please check with your administrator."
+                            />
+                        )}
+
+                        <View
+                            style={{
+                                width: '100%',
+                                flexDirection: 'row-reverse',
+                            }}
+                        >
+                            <Image
+                                style={{}}
+                                source={require('@/assets/images/neutral.png')}
+                            />
+                        </View>
+                    </View>
+
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
+                </>
+            )}
         </View>
     );
 }
@@ -154,6 +178,13 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1
+        flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

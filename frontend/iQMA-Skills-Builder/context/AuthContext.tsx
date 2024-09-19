@@ -1,9 +1,8 @@
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
-import {router} from 'expo-router';
-import {ActivityIndicator, View} from 'react-native';
-import * as SplashScreen from 'expo-splash-screen';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {router} from 'expo-router';
 
 export const AuthContext = createContext<any>(null);
 
@@ -81,7 +80,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             await clearSession();
             setCurrentUser(null);
             setToken(null);
-            await AsyncStorage.removeItem('userID'); 
+            await AsyncStorage.removeItem('userID');
             router.replace('/'); // For redirect if page is not Index
         } catch (e) {
             console.log(e);
@@ -117,6 +116,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('Lesson');
                     // router.replace("SectionIntroduction");
                     // router.replace('CheatSheet');
+                    // router.replace('SelfReflection');
+                    // router.replace('Assessment');
+                    // router.replace('AssessmentIntroduction');
+                    // router.replace('KeyTakeaway');
                 } else {
                     router.replace('IntroductionMascot');
                 }

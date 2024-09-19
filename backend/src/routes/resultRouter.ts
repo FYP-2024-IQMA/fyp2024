@@ -11,9 +11,9 @@ router.post("/createresult", verifyToken, resultController.createResult);
 /* READ */
 router.get("/getallresults", verifyToken, resultController.getAllResults);
 router.get(
-	"/getresultbyid/:userid",
-	verifyToken,
-	resultController.getResultByUserId
+    "/checkifcompletedquiz/:userid/:quizid",
+    verifyToken,
+    resultController.checkIfCompletedQuiz
 );
 router.get(
 	"/getuserprogress/:userid/:sectionid?",
@@ -24,6 +24,11 @@ router.get(
 	"/getcircularprogress/:userid/:sectionid/:unitid",
 	verifyToken,
 	resultController.getCircularProgress
+);
+router.get(
+    "/getnoofcompletedlessons/:userid/:sectionid/:unitid",
+    verifyToken,
+    resultController.getNoOfCompletedLesson
 );
 
 export default router;

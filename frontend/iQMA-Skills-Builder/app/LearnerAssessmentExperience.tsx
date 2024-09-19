@@ -84,291 +84,309 @@ export default function LearnerAssessmentExperience() {
     };
 
     return (
-        <View style={{padding: 20, flex: 1, backgroundColor: '#FFFFFF'}}>
-            <View style={{flexDirection: 'row'}}>
-                <Image
-                    style={{
-                        height: 150,
-                        width: 50,
-                        marginRight: 40,
-                        marginLeft: 20,
-                    }}
-                    source={require('@/assets/images/handsinpocket.png')}
-                />
-                <View style={{marginTop: 5}}>
-                    <ChatBubble position="left" isUser={true}>
-                        What are some factors that affect your learning
-                        experience?
-                    </ChatBubble>
+        <View style={styles.container}>
+            <View style={{flexGrow: 1}}>
+                <View style={{flexDirection: 'row'}}>
+                    <Image
+                        style={styles.mascotImage}
+                        source={require('@/assets/images/handsinpocket.png')}
+                    />
+                    <View style={{marginTop: 5}}>
+                        <ChatBubble position="left" isUser={true}>
+                            What are some factors that affect your learning
+                            experience?
+                        </ChatBubble>
+                    </View>
                 </View>
-            </View>
 
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Learning {'\n'}Attitude
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.3,
-                            borderWidth: 1,
-                            borderColor:
+                <View style={{marginTop: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Learning {'\n'}Attitude
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedAttitude
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedAttitude}
-                            onValueChange={(itemValue: string) =>
-                                setAttitude(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Attitude Towards Learning"
-                                value=""
-                                enabled={false}
-                            />
-                            {attitude.map((value) => (
+                            <Picker
+                                selectedValue={selectedAttitude}
+                                onValueChange={(itemValue: string) =>
+                                    setAttitude(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Attitude Towards Learning"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {attitude.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
                 </View>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1}}></View>
-                <View style={{flex: 2.3}}>
-                    {!selectedAttitude && !isContinue && (
-                        <Text style={[styles.errorText]}>
-                            This field is required.
-                        </Text>
-                    )}
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{flex: 2.3}}>
+                        {!selectedAttitude && !isContinue && (
+                            <Text style={[styles.errorText]}>
+                                This field is required.
+                            </Text>
+                        )}
+                    </View>
                 </View>
-            </View>
 
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Motivational {'\n'}Level
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.3,
-                            borderWidth: 1,
-                            borderColor:
+                <View style={{marginTop: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Motivational {'\n'}Level
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedMotivation
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedMotivation}
-                            onValueChange={(itemValue: string) =>
-                                setMotivation(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Motivational Level"
-                                value=""
-                                enabled={false}
-                            />
-                            {motivation.map((value) => (
-                                <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
-                                />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1}}></View>
-                <View style={{flex: 2.3}}>
-                    {!selectedMotivation && !isContinue && (
-                        <Text style={[styles.errorText]}>
-                            This field is required.
-                        </Text>
-                    )}
-                </View>
-            </View>
-
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[styles.text, {flex: 1, marginTop: 5}]}>
-                        Learning {'\n'}Barriers
-                    </Text>
-                    <View style={{flex: 2.3}}>
-                        {barriers.map((barrier) => (
-                            <TouchableOpacity
-                                key={barrier}
-                                onPress={() => toggleBarrierCheckbox(barrier)}
-                                style={styles.checkboxContainer}
+                            <Picker
+                                selectedValue={selectedMotivation}
+                                onValueChange={(itemValue: string) =>
+                                    setMotivation(itemValue)
+                                }
                             >
-                                <View
-                                    style={[
-                                        styles.checkbox,
-                                        selectedBarriers.includes(barrier) &&
-                                            styles.checkedCheckbox,
-                                        {
-                                            borderColor:
-                                                !isContinue &&
-                                                !selectedBarriers.length
-                                                    ? '#ff4c4c'
-                                                    : '#9CA3AF',
-                                        },
-                                    ]}
-                                >
-                                    {selectedBarriers.includes(barrier) && (
-                                        <Text style={styles.checkmark}>✓</Text>
-                                    )}
-                                </View>
-                                <Text style={styles.defaultOptionText}>
-                                    {barrier}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
+                                <Picker.Item
+                                    style={styles.defaultOptionText}
+                                    label="Select Motivational Level"
+                                    value=""
+                                    enabled={false}
+                                />
+                                {motivation.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
                 </View>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1}}></View>
-                <View style={{flex: 2.3}}>
-                    {!isContinue && !selectedBarriers.length && (
-                        <Text style={[styles.errorText]}>
-                            This field is required.
-                        </Text>
-                    )}
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{flex: 2.3}}>
+                        {!selectedMotivation && !isContinue && (
+                            <Text style={[styles.errorText]}>
+                                This field is required.
+                            </Text>
+                        )}
+                    </View>
                 </View>
-            </View>
 
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={[styles.text, {flex: 1}]}>Personality</Text>
-                    <View
-                        style={{
-                            flex: 2.3,
-                            borderWidth: 1,
-                            borderColor:
+                <View style={{marginTop: 20}}>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={[styles.text, {flex: 1, marginTop: 5}]}>
+                            Learning {'\n'}Barriers
+                        </Text>
+                        <View style={{flex: 2.3}}>
+                            {barriers.map((barrier) => (
+                                <TouchableOpacity
+                                    key={barrier}
+                                    onPress={() =>
+                                        toggleBarrierCheckbox(barrier)
+                                    }
+                                    style={styles.checkboxContainer}
+                                >
+                                    <View
+                                        style={[
+                                            styles.checkbox,
+                                            selectedBarriers.includes(
+                                                barrier
+                                            ) && styles.checkedCheckbox,
+                                            !isContinue &&
+                                            !selectedBarriers.length
+                                                ? styles.wrongBorder
+                                                : styles.correctBorder,
+                                        ]}
+                                    >
+                                        {selectedBarriers.includes(barrier) && (
+                                            <Text style={styles.checkmark}>
+                                                ✓
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <Text style={styles.defaultOptionText}>
+                                        {barrier}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{flex: 2.3}}>
+                        {!isContinue && !selectedBarriers.length && (
+                            <Text style={[styles.errorText]}>
+                                This field is required.
+                            </Text>
+                        )}
+                    </View>
+                </View>
+
+                <View style={{marginTop: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Personality
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedPersonality
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedPersonality}
-                            onValueChange={(itemValue: string) =>
-                                setPersonality(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Personality"
-                                value=""
-                                enabled={false}
-                            />
-                            {personality.map((value) => (
-                                <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
-                                />
-                            ))}
-                        </Picker>
-                    </View>
-                </View>
-            </View>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1}}></View>
-                <View style={{flex: 2.3}}>
-                    {!selectedPersonality && !isContinue && (
-                        <Text style={[styles.errorText]}>
-                            This field is required.
-                        </Text>
-                    )}
-                </View>
-            </View>
-
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row'}}>
-                    <Text style={[styles.text, {flex: 1, marginTop: 5}]}>
-                        Reasons For {'\n'}Attending Course
-                    </Text>
-                    <View style={{flex: 2.3}}>
-                        {reasons.map((reason) => (
-                            <TouchableOpacity
-                                key={reason}
-                                onPress={() => toggleReasonCheckbox(reason)}
-                                style={styles.checkboxContainer}
+                            <Picker
+                                selectedValue={selectedPersonality}
+                                onValueChange={(itemValue: string) =>
+                                    setPersonality(itemValue)
+                                }
                             >
-                                <View
-                                    style={[
-                                        styles.checkbox,
-                                        selectedReasons.includes(reason) &&
-                                            styles.checkedCheckbox,
-                                        {
-                                            borderColor:
-                                                !isContinue &&
-                                                !selectedReasons.length
-                                                    ? '#ff4c4c'
-                                                    : '#9CA3AF',
-                                        },
-                                    ]}
+                                <Picker.Item
+                                    style={styles.defaultOptionText}
+                                    label="Select Personality"
+                                    value=""
+                                    enabled={false}
+                                />
+                                {personality.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
+                    </View>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{flex: 2.3}}>
+                        {!selectedPersonality && !isContinue && (
+                            <Text style={[styles.errorText]}>
+                                This field is required.
+                            </Text>
+                        )}
+                    </View>
+                </View>
+
+                <View style={{marginVertical: 20}}>
+                    <View style={{flexDirection: 'row'}}>
+                        <Text style={[styles.text, {flex: 1, marginTop: 5}]}>
+                            Reasons For {'\n'}Attending Course
+                        </Text>
+                        <View style={{flex: 2.3}}>
+                            {reasons.map((reason) => (
+                                <TouchableOpacity
+                                    key={reason}
+                                    onPress={() => toggleReasonCheckbox(reason)}
+                                    style={styles.checkboxContainer}
                                 >
-                                    {selectedReasons.includes(reason) && (
-                                        <Text style={styles.checkmark}>✓</Text>
-                                    )}
-                                </View>
-                                <Text style={styles.defaultOptionText}>
-                                    {reason}
-                                </Text>
-                            </TouchableOpacity>
-                        ))}
+                                    <View
+                                        style={[
+                                            styles.checkbox,
+                                            selectedReasons.includes(reason) &&
+                                                styles.checkedCheckbox,
+                                            !isContinue &&
+                                            !selectedReasons.length
+                                                ? styles.wrongBorder
+                                                : styles.correctBorder,
+                                        ]}
+                                    >
+                                        {selectedReasons.includes(reason) && (
+                                            <Text style={styles.checkmark}>
+                                                ✓
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <Text style={styles.defaultOptionText}>
+                                        {reason}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </View>
+                </View>
+                <View style={{flexDirection: 'row'}}>
+                    <View style={{flex: 1}}></View>
+                    <View style={{flex: 2.3}}>
+                        {!isContinue && !selectedReasons.length && (
+                            <Text style={[styles.errorText]}>
+                                This field is required.
+                            </Text>
+                        )}
                     </View>
                 </View>
             </View>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 1}}></View>
-                <View style={{flex: 2.3}}>
-                    {!isContinue && !selectedReasons.length && (
-                        <Text style={[styles.errorText]}>
-                            This field is required.
-                        </Text>
-                    )}
-                </View>
-            </View>
 
-            <View
-                style={{
-                    alignSelf: 'center',
-                    marginTop: 10,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascotImage: {
+        height: 150,
+        width: 50,
+        marginRight: 40,
+        marginLeft: 20,
+    },
+    selectOption: {
+        flex: 2.3,
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    alignOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    correctBorder: {
+        borderColor: '#9CA3AF',
+    },
+    wrongBorder: {
+        borderColor: '#ff4c4c',
+    },
+    textInputStyle: {
+        flex: 2.3,
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
+        textAlignVertical: 'top',
+    },
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',

@@ -104,27 +104,20 @@ const handleClearChats = async () => {
 // to open left tab for chat bot
 const ChatbotDrawer: React.FC<any> = ({navigation}) => {
     const {currentUser, isLoading} = useContext(AuthContext);
-    // const [sectionID, setSectionID] = useState<string | null>(null); // Initialize with null
+    const [sectionID, setSectionID] = useState<string | null>(null); // Initialize with null
     const [Id, setId] = useState<number | null>(null); // Initialize with null
     const [isFetching, setIsFetching] = useState<boolean>(true); // Add a loading state
 
     useEffect(() => {
         const fetchSectionID = async () => {
             try {
-                const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${currentUser?.uid}`;
-                const response = await fetch(url);
-                let Id = await response.json();
-                if (Id < 2) {
-                    Id = 1;
-                }
-                const newSectionID = `SEC${Id.toString().padStart(4, '0')}`; // if Id = 1 then sectionID = SEC0001, Id = 16 then sectionID = SEC0016
-                // await AsyncStorage.setItem("sectionID", newSectionID);
-                setId(Id);
-                // setSectionID(newSectionID);
+                let currSection = await AsyncStorage.getItem('currentSection');
+                const newSectionID = await AsyncStorage.getItem('sectionID');
+                setId(parseInt(currSection!));
+                setSectionID(newSectionID);
             } catch (error) {
                 console.error(
-                    // "Failed to save sectionID to AsyncStorage",
-                    'Failed to retrieve Id',
+                    'Failed to retrieve currSection and sectionID from AsyncStorage',
                     error
                 );
             } finally {

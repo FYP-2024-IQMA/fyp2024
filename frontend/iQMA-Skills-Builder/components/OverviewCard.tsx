@@ -41,8 +41,8 @@ export const OverviewCard = ({
                                 isCheatsheetObject
                                     ? styles.OverviewCardSubtitleArr
                                     : index !== 0
-                                    ? {marginTop: 10}
-                                    : {},
+                                      ? {marginTop: 10}
+                                      : {},
                                 isScenario ? styles.ScenarioCardSubtitle : {},
                             ]}
                         >

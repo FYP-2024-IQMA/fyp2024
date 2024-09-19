@@ -21,6 +21,8 @@ interface QuizItem {
 
 interface MiniChatbotProps {
     onChatHistoryUpdate: (length: number) => void;
+    sectionID: string;
+    unitID: string;
 }
 
 //get reflection qn from backend
@@ -39,7 +41,7 @@ const reflectionQuestion = async (sectionID: string, unitID: string) => {
     }
 };
 
-const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
+const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID, unitID}) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
         []
@@ -49,8 +51,8 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
     const scrollViewRef = useRef<ScrollView>(null);
     const [responseTime, setResponseTime] = useState<number>(0);
 
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0002';
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0002';
 
     const loadUnitChatHistory = async (
         userId: string,
@@ -62,6 +64,8 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
 
             const response = await fetch(url);
             const chatHistory = await response.json();
+
+            console.log(chatHistory)
 
             if (chatHistory.length == 0) {
                 await chatInputFunctions.saveChatHistory(

@@ -121,15 +121,24 @@ export async function getLesson(
 
 		//when there is no headers
 		const sentences = text?.split(/\r?\n/);
+
+		if (sentences != null) {
+			return {
+				...data[0],
+				lessonURL: formattedLessonURL,
+				lessonDescription: formattedDescription,
+				lessonKeyTakeaway: formattedTakeaway,
+				lessonCheatSheet: sentences,
+			};
+		}
+
 		return {
 			...data[0],
 			lessonURL: formattedLessonURL,
 			lessonDescription: formattedDescription,
 			lessonKeyTakeaway: formattedTakeaway,
-			lessonCheatSheet: sentences,
+			lessonCheatSheet: [],
 		};
-
-		return data;
 	}
 }
 
@@ -221,17 +230,25 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 
 			// when there are no headers
 			const sentences = text?.split(/\r?\n/);
+			if (sentences != null) {
+				return {
+					...lesson,
+					lessonURL: formattedLessonURL,
+					lessonDescription: formattedDescription,
+					lessonKeyTakeaway: formattedTakeaway,
+					lessonCheatSheet: sentences,
+				};
+			}
 
 			return {
 				...lesson,
 				lessonURL: formattedLessonURL,
 				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
-				lessonCheatSheet: sentences,
+				lessonCheatSheet: [],
 			};
 		});
 
 		return formattedLessons;
-		// return data;
 	}
 }
