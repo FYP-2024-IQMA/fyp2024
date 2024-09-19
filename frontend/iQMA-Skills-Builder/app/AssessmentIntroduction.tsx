@@ -22,7 +22,7 @@ export default function AssessmentIntroduction() {
     // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [seconds, setSeconds] = useState<number>(0);
@@ -58,9 +58,12 @@ export default function AssessmentIntroduction() {
     }, []);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -111,7 +114,15 @@ export default function AssessmentIntroduction() {
         }
         router.push({
             pathname: pathName,
-            params: {sectionID, unitID, currentUnit, totalUnits, isFinal},
+            params: {
+                sectionID,
+                unitID,
+                currentUnit,
+                totalUnits,
+                isFinal,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress
+            },
         });
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');
