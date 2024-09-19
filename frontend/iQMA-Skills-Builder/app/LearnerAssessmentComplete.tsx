@@ -1,4 +1,4 @@
-import {Image, ProgressBarAndroid, View} from 'react-native';
+import {StyleSheet, Image, View} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
@@ -107,38 +107,44 @@ export default function LearnerAssessmentComplete() {
 
             router.push('Home');
         } catch (e) {
+            console.log('here');
             console.error(e);
         }
     };
 
     return (
-        <View
-            style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#FFFFFF',
-            }}
-        >
-            <Image
-                style={{marginBottom: 5}}
-                source={require('@/assets/images/happyjump.png')}
-            ></Image>
-            <ChatBubble position="top" isUser={true}>
-                Let's have fun {'\n'}while learning!
-            </ChatBubble>
-            <View
-                style={{
-                    position: 'absolute',
-                    bottom: 25,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
+        <View style={styles.container}>
+            <View style={styles.mascot}>
+                <Image
+                    style={styles.mascotImage}
+                    source={require('@/assets/images/happyjump.png')}
+                ></Image>
+                <ChatBubble position="top" isUser={true}>
+                    Let's have fun {'\n'}while learning!
+                </ChatBubble>
             </View>
+
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascot: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexGrow: 1,
+    },
+    mascotImage: {
+        marginBottom: 20,
+    },
+});

@@ -8,6 +8,12 @@ services:
     - "3000:3000"
     networks:
     - app-network
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: iqma-log-group
+        awslogs-region: ap-southeast-1
+        awslogs-stream: iqma-log-stream
   chatbot:
     build:
       dockerfile: Dockerfile
@@ -18,8 +24,31 @@ services:
     - app-network
     env_file:
     - ./backend/src/chatbot/.env
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: iqma-log-group
+        awslogs-region: ap-southeast-1
+        awslogs-stream: iqma-log-stream
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PW}
+      RABBITMQ_URL: ${RABBITMQ_URL}
+    networks:
+      - app-network
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: iqma-log-group
+        awslogs-region: ap-southeast-1
+        awslogs-stream: iqma-log-stream
 
-  
+
 
   db:
     image: postgres
@@ -33,35 +62,36 @@ services:
     - backend
     volumes:
      - db-data:/var/lib/postgresql/data
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8082:8082
-    networks:
-    - app-network
-  redis:
-    image: redis
-    restart: always
-    volumes:
-    - redis-data:/data
-    depends_on:
-    - backend
-    networks:
-    - app-network
-  redis-commander:
-    image: rediscommander/redis-commander:latest
-    environment:
-      - REDIS_HOSTS=redis
-      - HTTP_USER=default
-      - HTTP_PASSWORD=password
-    ports:
-      - 8081:8081
-    networks:
-      - app-network
-    depends_on:
-      - redis
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8082:8082
+  #   networks:
+  #   - app-network
+  # redis:
+  #   image: redis
+  #   restart: always
+  #   volumes:
+  #   - redis-data:/data
+  #   depends_on:
+  #   - backend
+  #   networks:
+  #   - app-network
+  # redis-commander:
+  #   image: rediscommander/redis-commander:latest
+  #   environment:
+  #     - REDIS_HOSTS=redis
+  #     - HTTP_USER=default
+  #     - HTTP_PASSWORD=password
+  #   ports:
+  #     - 8081:8081
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - redis
   
+
   
 volumes:
   db-data:

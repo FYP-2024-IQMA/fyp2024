@@ -33,13 +33,13 @@ const router = (0, express_1.Router)();
 /* CREATE */
 router.post("/createaccount", authMiddleware_1.default, accountsController.createAccount);
 /* READ */
-router.get('/getallaccounts', authMiddleware_1.default, accountsController.getAllAccounts);
-router.get('/getaccountbyid/:id', authMiddleware_1.default, accountsController.getAccountById);
+router.get("/getallaccounts", authMiddleware_1.default, accountsController.getAllAccounts);
+router.get("/getaccountbyid/:id", authMiddleware_1.default, accountsController.getAccountById);
 router.get("/getaccountsbyrole/:role", authMiddleware_1.default, accountsController.getAccountsByRole);
-router.post('/setToken', accountsController.getJwtToken);
-router.post('/logout', authMiddleware_1.default, accountsController.logout);
+router.post("/setToken", accountsController.getJwtToken);
+router.post("/logout", authMiddleware_1.default, accountsController.logout);
 /* UPDATE */
-router.patch('/updateaccount', authMiddleware_1.default, accountsController.updateAccount);
+router.patch("/updateaccount", authMiddleware_1.default, accountsController.updateAccount);
 /* DELETE */
-router.delete('/deleteaccount/:id', authMiddleware_1.default, accountsController.deleteAccount);
+router.delete("/deleteaccount/:id", authMiddleware_1.default, accountsController.deleteAccount);
 exports.default = router;

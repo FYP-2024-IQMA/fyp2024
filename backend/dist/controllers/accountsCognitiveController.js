@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAccountCognitive = exports.updateAccountCognitive = exports.getAccountCognitiveById = exports.createAccountCognitive = void 0;
 const accountsCognitiveService = __importStar(require("../services/accountsCognitiveService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
@@ -46,9 +50,10 @@ const createAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Cognitive`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.createAccountCognitive = createAccountCognitive;
@@ -59,7 +64,10 @@ const getAccountCognitiveById = (req, res) => __awaiter(void 0, void 0, void 0, 
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Cognitive" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAccountCognitiveById = getAccountCognitiveById;
@@ -74,7 +82,10 @@ const updateAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update Account Cognitive" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.updateAccountCognitive = updateAccountCognitive;
@@ -89,7 +100,10 @@ const deleteAccountCognitive = (req, res) => __awaiter(void 0, void 0, void 0, f
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Cognitive" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.deleteAccountCognitive = deleteAccountCognitive;

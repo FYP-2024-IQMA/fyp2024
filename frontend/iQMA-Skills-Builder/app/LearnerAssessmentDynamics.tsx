@@ -61,257 +61,251 @@ export default function LearnerAssessmentDynamics() {
     };
 
     return (
-        <View style={{padding: 20, flex: 1, backgroundColor: '#FFFFFF'}}>
-            <View style={{flexDirection: 'row'}}>
-                <Image
-                    style={{
-                        height: 150,
-                        width: 50,
-                        marginRight: 40,
-                        marginLeft: 20,
-                    }}
-                    source={require('@/assets/images/handsinpocket.png')}
-                />
-                <View style={{marginTop: 5}}>
-                    <ChatBubble position="left" isUser={true}>
-                        How would you describe your social dynamics?
-                    </ChatBubble>
+        <View style={styles.container}>
+            <View style={{flexGrow: 1}}>
+                <View style={{flexDirection: 'row'}}>
+                    <Image
+                        style={styles.mascotImage}
+                        source={require('@/assets/images/handsinpocket.png')}
+                    />
+                    <View style={{marginTop: 5}}>
+                        <ChatBubble position="left" isUser={true}>
+                            How would you describe your social dynamics?
+                        </ChatBubble>
+                    </View>
                 </View>
-            </View>
 
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Relationship {'\n'}To Peers
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                <View style={{marginVertical: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Relationship {'\n'}To Peers
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedPeers
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedPeers}
-                            onValueChange={(itemValue: string) =>
-                                setPeers(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Relationship to Peers"
-                                value=""
-                                enabled={false}
-                            />
-                            {peers.map((value) => (
+                            <Picker
+                                selectedValue={selectedPeers}
+                                onValueChange={(itemValue: string) =>
+                                    setPeers(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Relationship to Peers"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {peers.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedPeers && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedPeers && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Compete or {'\n'}Cooperate
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Compete or {'\n'}Cooperate
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedTendency
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedTendency}
-                            onValueChange={(itemValue: string) =>
-                                setTendency(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Tendency to Compete or Cooperate"
-                                value=""
-                                enabled={false}
-                            />
-                            {tendency.map((value) => (
+                            <Picker
+                                selectedValue={selectedTendency}
+                                onValueChange={(itemValue: string) =>
+                                    setTendency(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Tendency to Compete or Cooperate"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {tendency.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedTendency && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedTendency && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Social {'\n'}Background
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Social {'\n'}Background
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedSocial
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedSocial}
-                            onValueChange={(itemValue: string) =>
-                                setSocial(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Social Background"
-                                value=""
-                                enabled={false}
-                            />
-                            {social.map((value) => (
+                            <Picker
+                                selectedValue={selectedSocial}
+                                onValueChange={(itemValue: string) =>
+                                    setSocial(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Social Background"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {social.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedSocial && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedSocial && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Computer {'\n'}Literacy
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Computer {'\n'}Literacy
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedComputer
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedComputer}
-                            onValueChange={(itemValue: string) =>
-                                setComputer(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Computer Literacy"
-                                value=""
-                                enabled={false}
-                            />
-                            {computer.map((value) => (
+                            <Picker
+                                selectedValue={selectedComputer}
+                                onValueChange={(itemValue: string) =>
+                                    setComputer(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Computer Literacy"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {computer.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedComputer && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedComputer && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
                 </View>
             </View>
 
-            <View
-                style={{
-                    alignSelf: 'center',
-                    marginTop: 10,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascotImage: {
+        height: 150,
+        width: 50,
+        marginRight: 40,
+        marginLeft: 20,
+    },
+    selectOption: {
+        flex: 2.5,
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    alignOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    correctBorder: {
+        borderColor: '#9CA3AF',
+    },
+    wrongBorder: {
+        borderColor: '#ff4c4c',
+    },
+    textInputStyle: {
+        flex: 2.3,
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
+        textAlignVertical: 'top',
+    },
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',

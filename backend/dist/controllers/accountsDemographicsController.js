@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAccountDemographics = exports.updateAccountDemographics = exports.getAccountDemographicsById = exports.createAccountDemographics = void 0;
 const accountsDemographicsService = __importStar(require("../services/accountsDemographicsService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const accountBody = req.body;
@@ -46,9 +50,10 @@ const createAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0
         });
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Demographics`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.createAccountDemographics = createAccountDemographics;
@@ -59,7 +64,10 @@ const getAccountDemographicsById = (req, res) => __awaiter(void 0, void 0, void 
         res.status(200).json(account);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Demographics" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getAccountDemographicsById = getAccountDemographicsById;
@@ -74,7 +82,10 @@ const updateAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to update Account Demographics" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.updateAccountDemographics = updateAccountDemographics;
@@ -89,7 +100,10 @@ const deleteAccountDemographics = (req, res) => __awaiter(void 0, void 0, void 0
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Demographics" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.deleteAccountDemographics = deleteAccountDemographics;

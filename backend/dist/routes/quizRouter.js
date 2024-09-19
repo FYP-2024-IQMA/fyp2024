@@ -27,10 +27,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const quizController = __importStar(require("../controllers/quizController"));
-const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const express_1 = require("express");
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* READ */
-router.get('/getallquizzes', authMiddleware_1.default, quizController.getAllQuizzes);
-router.get('/getquizzesbysectionid/:id', authMiddleware_1.default, quizController.getQuizzesBySectionId);
+router.get("/getallquizzes", authMiddleware_1.default, quizController.getAllQuizzes);
+router.get("/getquizzesbysectionid/:id", authMiddleware_1.default, quizController.getQuizzesBySectionId);
 exports.default = router;

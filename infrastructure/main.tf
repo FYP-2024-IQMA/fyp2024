@@ -262,6 +262,7 @@ resource "aws_instance" "app_instance_1" {
   key_name      = "server1-key"                # Replace with your existing key pair name
   subnet_id     = aws_subnet.private_subnet_1.id
   private_ip = "10.0.188.247"
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
 
   vpc_security_group_ids = [aws_security_group.app_instance_sg.id]
 
@@ -276,6 +277,7 @@ resource "aws_instance" "app_instance_2" {
   key_name      = "server2-key"                # Replace with your existing key pair name
   subnet_id     = aws_subnet.private_subnet_2.id
   private_ip = "10.0.237.165"
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
 
   vpc_security_group_ids = [aws_security_group.app_instance_sg.id]
 
@@ -414,15 +416,181 @@ output "loadbalancer_public_ip"{
 
 
 
+# Athena Workgroup
+resource "aws_athena_workgroup" "athena_workgroup" {
+  name = "JsonQuery"
 
+  configuration {
+    enforce_workgroup_configuration    = true
+    publish_cloudwatch_metrics_enabled = true
 
+    result_configuration {
+      output_location = "s3://isb-raw-data-athena-output/"
+    }
+  }
+}
 
+# Athena Database
+resource "aws_athena_database" "athena_db" {
+  name   = "s3jsondb"
+  bucket = "isb-raw-data-athena-output"
+}
 
+# Structured Table in Athena Database for timeTaken
+resource "aws_glue_catalog_table" "athena_table_time" {
+  database_name = "s3jsondb"
+  name          = "timetaken"
 
+  table_type = "EXTERNAL_TABLE"
 
+  storage_descriptor {
+    columns {
+      name = "userID"
+      type = "string"
+    }
+    columns {
+      name = "eventType"
+      type = "string"
+    }
+    columns {
+      name = "event"
+      type = "string"
+    }
+    columns {
+      name = "timestamp"
+      type = "string"
+    }
+    columns {
+      name = "time"
+      type = "int"
+    }
 
+    location = "s3://isb-raw-data-athena/timeTaken/"
 
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
 
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+      parameters = {
+        "ignore.malformed.json" = "FALSE"
+        "dots.in.keys"          = "FALSE"
+        "case.insensitive"      = "TRUE"
+        "mapping"               = "TRUE"
+      }
+    }
+  }
+
+  parameters = {
+    "classification" = "json"
+  }
+
+  depends_on = [aws_athena_database.athena_db]
+}
+
+# Structured Table in Athena Database for attemptsTaken
+resource "aws_glue_catalog_table" "athena_table_attempts" {
+  database_name = "s3jsondb"
+  name          = "attemptstaken"
+
+  table_type = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    columns {
+      name = "userID"
+      type = "string"
+    }
+    columns {
+      name = "eventType"
+      type = "string"
+    }
+    columns {
+      name = "event"
+      type = "string"
+    }
+    columns {
+      name = "timestamp"
+      type = "string"
+    }
+    columns {
+      name = "attempts"
+      type = "int"
+    }
+
+    location = "s3://isb-raw-data-athena/attemptsTaken/"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+      parameters = {
+        "ignore.malformed.json" = "FALSE"
+        "dots.in.keys"          = "FALSE"
+        "case.insensitive"      = "TRUE"
+        "mapping"               = "TRUE"
+      }
+    }
+  }
+
+  parameters = {
+    "classification" = "json"
+  }
+
+  depends_on = [aws_athena_database.athena_db]
+}
+
+resource "aws_iam_role" "ec2_role" {
+  name = "ec2_role"
+
+ 
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = {
+    tag-key = "tag-value"
+  }
+}
+
+resource "aws_iam_role_policy" "ec2_role_policy" {
+  name = "ec2-role-policy"
+  role = aws_iam_role.ec2_role.id
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        "Resource": "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  name = "ec2-instance-profile"
+  role = aws_iam_role.ec2_role.name
+}
+
+resource "aws_cloudwatch_log_group" "my_log_group" {
+  name = "iqma-log-group"
+}
 
 
 

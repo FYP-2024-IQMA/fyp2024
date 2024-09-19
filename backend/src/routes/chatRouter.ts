@@ -1,16 +1,31 @@
-import { Router } from "express";
 import * as chatController from "../controllers/chatController";
-import verifyToken from '../middleware/authMiddleware';
+
+import { Router } from "express";
+import verifyToken from "../middleware/authMiddleware";
 
 const router = Router();
 
 /* CREATE */
-router.post("/createchathistory", verifyToken,chatController.createChats);
+router.post("/createchathistory", verifyToken, chatController.createChats);
 
 /* READ */
-router.get("/getchathistory/:userid/:sectionid",verifyToken, chatController.getChatHistory);
+router.get(
+	"/getchathistory/:userid/:sectionid",
+	verifyToken,
+	chatController.getChatHistory
+);
+
+router.get(
+	"/getchathistory/:userid/:sectionid/:unitid",
+	verifyToken,
+	chatController.getChatHistory
+);
 
 /* DELETE */
-router.delete("/deletechathistory/:userid/:sectionid",verifyToken, chatController.deleteChat);
+router.delete(
+	"/deletechathistory/:userid/:sectionid",
+	verifyToken,
+	chatController.deleteChat
+);
 
 export default router;

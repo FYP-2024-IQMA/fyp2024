@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getQuizQuestions = void 0;
 const questionService = __importStar(require("../services/questionService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
 const getQuizQuestions = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -41,7 +45,10 @@ const getQuizQuestions = (req, res) => __awaiter(void 0, void 0, void 0, functio
         res.status(200).json(questions);
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve questions" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getQuizQuestions = getQuizQuestions;
