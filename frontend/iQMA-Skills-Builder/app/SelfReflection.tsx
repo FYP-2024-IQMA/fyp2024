@@ -18,7 +18,7 @@ import * as resultEndpoints from '@/helpers/resultEndpoints';
 export default function SelfReflection() {
     const navigation = useNavigation();
     const {currentUser} = useContext(AuthContext);
-    const {sectionID, unitID, currentUnit, totalUnits, quizID} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, quizID, currentProgress, totalProgress} = useLocalSearchParams();
 
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -29,9 +29,12 @@ export default function SelfReflection() {
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={1} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -90,6 +93,8 @@ export default function SelfReflection() {
                     currentUnit,
                     totalUnits,
                     isFinal: 'true',
+                    currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                    totalProgress
                 },
             });
         } else {

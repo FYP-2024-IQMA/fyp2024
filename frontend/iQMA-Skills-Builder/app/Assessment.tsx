@@ -28,7 +28,7 @@ export default function Assessment() {
     const [sectionName, setSectionName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
  
@@ -91,12 +91,15 @@ export default function Assessment() {
     }, [sectionID, unitID, checkFinal]);
 
     useLayoutEffect(() => {
+
+        let progress = checkFinal ? 1 : parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.3} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
-    }, [navigation]);
+    }, [navigation, checkFinal]);
 
     const handleNextQuestion = async () => {
         const newIdx = currentQnsIdx + 1;
@@ -134,7 +137,9 @@ export default function Assessment() {
                         currentUnit,
                         totalUnits,
                         quizID: questions[currentQnsIdx].quizID,
-                        isFinal
+                        isFinal,
+                        currentProgress,
+                        totalProgress,
                     }
                 });
             }

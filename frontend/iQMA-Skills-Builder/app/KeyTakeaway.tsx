@@ -19,9 +19,12 @@ export default function KeyTakeaway() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={1} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -52,6 +55,8 @@ export default function KeyTakeaway() {
                 currentUnit,
                 totalUnits,
                 isFinal: 'false',
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
             },
         });
     };
@@ -63,7 +68,7 @@ export default function KeyTakeaway() {
     // const totalLesson = '3';
     // const currentUnit = '3';
     // const totalUnits = '3';
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');

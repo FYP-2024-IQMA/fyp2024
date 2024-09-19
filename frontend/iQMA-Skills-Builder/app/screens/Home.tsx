@@ -14,7 +14,52 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+
+function calculateTotalProgress(i: number, totalUnits: number, getLessonIds: any[]) {
+    const uniqueAlphabets = new Set(getLessonIds);
+    // Get the count of unique alphabets for key takeaway count
+    const uniqueAlphabetCount = uniqueAlphabets.size;
+
+    // regular total progress
+    // 5 = UnitIntro + UnitAIntro + CheatSheet + RealityCheck + Assessment
+    // uniqueAlphabetCount = no. of KeyTakeaway
+    let totalProgress = 5 + (getLessonIds.length * 2) + uniqueAlphabetCount;
+
+    if (i === 0) {
+        // to account for sectionIntro
+        totalProgress += 1;
+    } else if (i === totalUnits - 1) {
+        // to account for final assessment Intro & final assessment
+        totalProgress += 2;
+    }
+
+    // console.log('Total Progress:', totalProgress);
+    return totalProgress
+}
+
+function calculateKTProgress(lessons: any[], completedLessonCount: number) {
+    const lessonCounts = lessons.reduce((acc, lessonID) => {
+        acc[lessonID] = (acc[lessonID] || 0) + 1;
+        return acc;
+    }, {});
+
+    const completedLessons = lessons
+        .slice(0, completedLessonCount)
+        .reduce((acc, lessonID) => {
+            acc[lessonID] = acc[lessonID] || 0; // Initialize if not already present
+            if (acc[lessonID] < lessonCounts[lessonID]) {
+                acc[lessonID]++; // Increment if below total occurrences
+            }
+            return acc;
+        }, {});
+
+    return Object.keys(lessonCounts).reduce((progress, lessonID) => {
+        return (
+            progress + (completedLessons[lessonID] === lessonCounts[lessonID] ? 1 : 0)
+        );
+    }, 0);
+}
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -25,12 +70,14 @@ const HomeScreen: React.FC = () => {
         [key: number]: ProgressPathProps['icons'];
     }>({});
     const [loading, setLoading] = useState(true);
+    const [completedFinals, setCompletedFinals] = useState<boolean>(false);
 
     const loadUnitCircularProgress = async (
         userID: string,
         sectionID: string,
         unitID: string,
-        isLastUnit: boolean
+        isLastUnit: boolean,
+        // completedFinals: boolean
     ) => {
         console.log('LOAD UNIT CIRCULAR PROGRESS');
         console.log(userID, sectionID, unitID);
@@ -41,12 +88,15 @@ const HomeScreen: React.FC = () => {
             const circularProgress = await response.json();
             if (isLastUnit) {
                 const noOfLessonPerUnit = await lessonEndpoints.getNumofLessonsPerUnit(sectionID, unitID) + 1;
-                const completedLU = circularProgress * noOfLessonPerUnit;
+                let completedLU = circularProgress * noOfLessonPerUnit;
 
                 // need to + 1 to completedLU when user complete final assessment
-                setCircularProgress(Math.ceil((completedLU / (noOfLessonPerUnit + 2)) * 100));
+                if (completedFinals) {
+                    completedLU += 1;
+                }
+                setCircularProgress(() => Math.ceil((completedLU / (noOfLessonPerUnit + 1)) * 100));
             } else {
-                setCircularProgress(Math.ceil(circularProgress * 100));
+                setCircularProgress(() => Math.ceil(circularProgress * 100));
             }
             
         } catch (error) {
@@ -71,29 +121,24 @@ const HomeScreen: React.FC = () => {
     // will show 0 if only lessons done in unit 1, because it 0 units completed
     const loadSectionProgress = async (
         userID: string,
-        sectionID: string
+        sectionID: string,
     ): Promise<number> => {
         try {
-            const sectionProgress =
+            let sectionProgress =
                 await resultEndpoints.numberOfCompletedUnitsPerSection(
                     userID,
                     sectionID
                 );
 
-            const noOfUnits =
-                await unitEndpoints.numberOfUnitsPerSection(sectionID);
+            const noOfUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+            // const noOfUnits = 4; // (ger testing)
 
-            // const noOfUnits = 4;
-
-            console.log('Section Progress:', sectionProgress);
-            console.log('No of Units:', noOfUnits);
             // need to + 1 to sectionProgress when user complete final assessment
-            setSectionCircularProgress(
-                // + 1 to account for final assessment
-                Math.ceil((sectionProgress / (noOfUnits + 1)) * 100)
-            );
+            if (completedFinals) sectionProgress += 1;
 
-            return sectionProgress;
+            setSectionCircularProgress(() => Math.ceil((sectionProgress / (noOfUnits + 1)) * 100))
+
+            return Math.ceil((sectionProgress / (noOfUnits + 1)) * 100);
         } catch (error) {
             console.error('Error while loading section progress:', error);
             return 0;
@@ -111,15 +156,12 @@ const HomeScreen: React.FC = () => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
 
         console.log('Section ID:', sectionID);
-        const totalUnits =
-            await unitEndpoints.numberOfUnitsPerSection(sectionID);
-        // const totalUnits = 4;
+        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+        // const totalUnits = 4; // (ger testing)
         let currentUnit = completedUnits + 1;
         if (currentUnit > totalUnits) {
             currentUnit = totalUnits;
         }
-        // console.log('Current Unit:', currentUnit);
-        // console.log('Total Units:', totalUnits);
 
         const iconsData = [];
         for (let i = 0; i < totalUnits; i++) {
@@ -127,6 +169,7 @@ const HomeScreen: React.FC = () => {
             let status = 'not-started';
             let routerName = 'UnitIntroduction';
             const unitID = `UNIT${(i + 1).toString().padStart(4, '0')}`;
+            // console.log('Unit ID:', unitID);
 
             let getAllLessons: any[] = [];
             try {
@@ -134,7 +177,6 @@ const HomeScreen: React.FC = () => {
                     sectionID,
                     unitID
                 );
-                // console.log('Unit ID:', unitID, getAllLessons.length);
             } catch (error) {
                 console.error(
                     'Home - getIconStatus: Error while getting all lessons:',
@@ -142,39 +184,53 @@ const HomeScreen: React.FC = () => {
                 );
             }
 
+            const getLessonIds = getAllLessons.map(
+                (lesson) => lesson.lessonID.split('.')[0]
+            );
+
+            // console.log('Lesson IDs:', getLessonIds);
+
+            const totalProgress = calculateTotalProgress(i, totalUnits, getLessonIds);
+            let currentProgress = 1;
+
             let currentLessonId = getAllLessons[0].lessonID;
             let currentLessonIdx = 0;
             let isFinal = false;
 
-            if (i + 1 === currentUnit) {
+            const finishEverything = (currentUnit === totalUnits) && circularProgress === 100 && sectionCircularProgress === 100;
+
+            if (i + 1 < currentUnit || finishEverything) {
+                status = 'completed';
+                if (i === 0) {
+                    routerName = 'SectionIntroduction';
+                }
+            } else if (i + 1 === currentUnit) {
                 status = 'in-progress';
+                
                 if (
                     totalLesson === completedLessons &&
                     circularProgress !== 100
                 ) {
                     routerName = 'AssessmentIntroduction';
+
+                    currentProgress = i === totalUnits - 1 ? totalProgress - 5 : totalProgress - 3;
+                    
                     if (isLastUnit) {
                         isFinal = true;
+                        currentProgress = totalProgress - 1;
                     }
                 } else {
                     currentLessonId = getAllLessons[completedLessons].lessonID;
                     currentLessonIdx = completedLessons;
                     if (completedLessons !== 0) {
                         routerName = 'Lesson';
+                        currentProgress = 1 + (completedLessons * 2) + calculateKTProgress(getLessonIds, completedLessons);
+                        // console.log('Current Progress:', currentProgress);
                     } else if (completedUnits === 0) {
                         routerName = 'SectionIntroduction';
                     }
                 }
-            } else if (i + 1 < currentUnit) {
-                status = 'completed';
-                if (i === 0) {
-                    routerName = 'SectionIntroduction';
-                }
             }
-            // no need else for i + 1 > currentUnit because it will be not-started
-
-            // console.log("unitID:", unitID);
-            // console.log("currentLessonId:", currentLessonId);
 
             iconsData.push({
                 name: icon,
@@ -189,7 +245,9 @@ const HomeScreen: React.FC = () => {
                         totalLesson,
                         currentUnit,
                         totalUnits,
-                        isFinal
+                        isFinal,
+                        currentProgress,
+                        totalProgress
                     ),
             });
         }
@@ -205,9 +263,8 @@ const HomeScreen: React.FC = () => {
                 sectionID
             );
 
-        const totalUnits =
-            await unitEndpoints.numberOfUnitsPerSection(sectionID);
-        // const totalUnits = 4;
+        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+        // const totalUnits = 4; // (ger testing)
 
         // unit to light up (current unit)
         let lightedUnit = completedUnits + 1;
@@ -249,12 +306,15 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         (async () => {
             try {
-                const sectionDetails = await sectionEndpoints.getAllSectionDetails();
+                const sectionDetails =
+                    await sectionEndpoints.getAllSectionDetails();
                 let currentSection = await getCurrentSection();
-                console.log(currentSection);
+                console.log("Current Section Outside:", currentSection);
 
                 if (currentSection > sectionDetails.length) {
                     currentSection = sectionDetails.length;
+                    console.log('Current Section when completed all section:', currentSection);
+                    setCompletedFinals(() => true);
                 }
 
                 setAllSectionDetails(
@@ -290,7 +350,7 @@ const HomeScreen: React.FC = () => {
                 setLoading(false);
             }
         })();
-    }, []);
+    }, [completedFinals, sectionCircularProgress, circularProgress]);
 
     useEffect(() => {
         // console.log('All Section Details:', allSectionDetails);
@@ -305,14 +365,14 @@ const HomeScreen: React.FC = () => {
         totalLesson: number,
         currentUnit: number,
         totalUnits: number,
-        isFinal: boolean
-        // getAllLessons: any[]
+        isFinal: boolean,
+        currentProgress: number,
+        totalProgress: number
     ) => {
         console.log('Pressed in HOME');
         console.log(pathName, sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, isFinal);
 
-        // // Serialize the array
-        // const serializedLessons = JSON.stringify(getAllLessons);
+        console.log('Current Progress:', currentProgress, 'Total Progress:', totalProgress);
 
         router.push({
             pathname: pathName,
@@ -324,13 +384,14 @@ const HomeScreen: React.FC = () => {
                 totalLesson,
                 currentUnit,
                 totalUnits,
-                isFinal: isFinal.toString()
+                isFinal: isFinal.toString(),
+                currentProgress,
+                totalProgress
             },
         });
     };
 
     if (loading) {
-        // add spinner next time
         return <LoadingIndicator />;
     }
 

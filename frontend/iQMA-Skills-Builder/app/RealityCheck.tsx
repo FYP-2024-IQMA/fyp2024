@@ -16,7 +16,7 @@ export default function RealityCheck() {
     const navigation = useNavigation();
 
     // Use this for Routing
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -28,9 +28,12 @@ export default function RealityCheck() {
     useEffect(() => {}, []);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -69,6 +72,8 @@ export default function RealityCheck() {
                 currentUnit,
                 totalUnits,
                 isFinal,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress
             },
         });
     };

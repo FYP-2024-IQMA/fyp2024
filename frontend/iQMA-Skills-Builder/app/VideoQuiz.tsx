@@ -20,7 +20,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 export default function VideoQuiz() {
     const navigation = useNavigation();
     const {currentUser, isLoading} = useContext(AuthContext);
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -84,9 +84,12 @@ export default function VideoQuiz() {
     }, [sectionID, unitID, lessonID, nextLessonID]);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.3} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -130,6 +133,8 @@ export default function VideoQuiz() {
                         totalLesson,
                         currentUnit,
                         totalUnits,
+                        currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                        totalProgress,
                     },
                 });
             } catch (e) {
