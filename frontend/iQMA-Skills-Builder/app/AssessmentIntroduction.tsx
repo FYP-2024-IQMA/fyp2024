@@ -22,6 +22,8 @@ export default function AssessmentIntroduction() {
     // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
+    // const currentUnit = "1";
+    // const totalUnits = "1"
     const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -106,7 +108,6 @@ export default function AssessmentIntroduction() {
     }, [sectionID, unitID, checkFinal]);
 
     const handlePress = async () => {
-
         let pathName = 'CheatSheet';
 
         if (checkFinal) {
@@ -213,18 +214,11 @@ export default function AssessmentIntroduction() {
                         </View>
                     </View>
 
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </View>
