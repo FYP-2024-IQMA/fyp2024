@@ -42,8 +42,8 @@ app.use("/section", sectionRouter_1.default);
 app.use("/clickstream", clickstreamRouter_1.default);
 // RabbitMQ Producer: Sends "timeTaken" data to RabbitMQ
 app.post("/rabbitmq", (req, res) => {
-    const { timeTaken } = req.body;
-    console.log("timetaken:", timeTaken);
+    const data = req.body;
+    console.log("Data received from frontend: ", data);
     // Connect to RabbitMQ
     callback_api_1.default.connect("amqp://localhost", (error0, connection) => {
         if (error0) {
@@ -53,20 +53,37 @@ app.post("/rabbitmq", (req, res) => {
             if (error1) {
                 throw error1;
             }
-            const queue = "response_times";
-            const msg = JSON.stringify({ timeTaken });
-            // Ensure the queue exists
-            channel.assertQueue(queue, { durable: false });
-            // Send message to RabbitMQ queue
-            channel.sendToQueue(queue, Buffer.from(msg));
-            console.log(` [x] Sent ${msg}`);
+            const queues = ["session_logs", "response_times", "number_of_messages"];
+            // Ensure all queues exist
+            queues.forEach((queue) => {
+                channel.assertQueue(queue, { durable: false });
+            });
+            console.log(queues);
+            // Determine which queue to send the message to
+            let queueToSend;
+            if (data.type === "session_logs") {
+                queueToSend = "session_logs";
+            }
+            else if (data.type === "response_times") {
+                queueToSend = "response_times";
+            }
+            else if (data.type === "number_of_messages") {
+                queueToSend = "number_of_messages";
+            }
+            else {
+                return res.status(400).send("Invalid data type");
+            }
+            // Send the message to the appropriate queue
+            const msg = JSON.stringify(data);
+            channel.sendToQueue(queueToSend, Buffer.from(msg));
+            console.log(` [x] Sent to ${queueToSend}: ${msg}`);
+            // Close the connection after sending the message
+            setTimeout(() => {
+                connection.close();
+                res.send("Data sent to RabbitMQ");
+            }, 500);
         });
-        // Close the connection after sending the message
-        setTimeout(() => {
-            connection.close();
-        }, 500);
     });
-    res.send("Time sent to RabbitMQ");
 });
 // Start the Express server
 app.listen(port, () => {
