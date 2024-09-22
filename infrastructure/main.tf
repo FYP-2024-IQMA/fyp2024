@@ -237,6 +237,14 @@ resource "aws_vpc_security_group_ingress_rule" "app_allow_backend" {
   referenced_security_group_id =aws_security_group.lb_sg.id
 }
 
+resource "aws_vpc_security_group_ingress_rule" "app_allow_chatbot" {
+  security_group_id = aws_security_group.app_instance_sg.id
+  ip_protocol = "tcp"
+  from_port = 8080
+  to_port = 8080
+  referenced_security_group_id =aws_security_group.lb_sg.id
+}
+
 resource "aws_vpc_endpoint" "s3_endpoint" {
   vpc_id = aws_vpc.prod_vpc.id
   service_name = "com.amazonaws.ap-southeast-1.s3"
@@ -270,7 +278,7 @@ resource "aws_eip_association" "jump_host_eip" {
 
 resource "aws_instance" "app_instance_1" {
   ami           = "ami-060e277c0d4cce553"  # Replace with the AMI ID you want to use
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   key_name      = "server1-key"                # Replace with your existing key pair name
   subnet_id     = aws_subnet.private_subnet_1.id
   private_ip = "10.0.188.247"
@@ -285,7 +293,7 @@ resource "aws_instance" "app_instance_1" {
 
 resource "aws_instance" "app_instance_2" {
   ami           = "ami-060e277c0d4cce553"  # Replace with the AMI ID you want to use
-  instance_type = "t2.micro"
+  instance_type = "t2.small"
   key_name      = "server2-key"                # Replace with your existing key pair name
   subnet_id     = aws_subnet.private_subnet_2.id
   private_ip = "10.0.237.165"
@@ -362,6 +370,8 @@ resource "aws_lb_listener" "https" {
   }
 }
 
+
+
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.app_lb.arn
   port              = "80"
@@ -377,6 +387,33 @@ resource "aws_lb_listener" "http" {
     }
   }
 }
+
+resource "aws_lb_listener_rule" "chatbot_rule" {
+  listener_arn = aws_lb_listener.https.arn
+  priority     = 100  # Ensure this priority is unique
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.chatbot_tg.arn
+   
+  }
+
+
+  condition {
+    path_pattern {
+      values = ["/chatbot/*","/chatbot"]
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
 
 
 resource "aws_lb_target_group" "app_tg" {
@@ -399,6 +436,28 @@ resource "aws_lb_target_group" "app_tg" {
     Name = "Application Target Group"
   }
 }
+resource "aws_lb_target_group" "chatbot_tg" {
+  name        = "chatbot-target-group"
+  port        = 8080
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.prod_vpc.id
+  target_type = "instance"
+
+  health_check {
+    path                = "/"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 5
+    unhealthy_threshold = 2
+    matcher             = "200"
+  }
+
+  tags = {
+    Name = "Chatbot Target Group"
+  }
+}
+
+
 
 
 resource "aws_lb_target_group_attachment" "app_instance_1" {
@@ -411,6 +470,18 @@ resource "aws_lb_target_group_attachment" "app_instance_2" {
   target_group_arn = aws_lb_target_group.app_tg.arn
   target_id        = aws_instance.app_instance_2.id
   port             = 3000
+}
+
+resource "aws_lb_target_group_attachment" "app_instance_1_chatbot" {
+  target_group_arn = aws_lb_target_group.chatbot_tg.arn
+  target_id        = aws_instance.app_instance_1.id
+  port             = 8080
+}
+
+resource "aws_lb_target_group_attachment" "app_instance_2_chatbot" {
+  target_group_arn = aws_lb_target_group.chatbot_tg.arn
+  target_id        = aws_instance.app_instance_2.id
+  port             = 8080
 }
 
 

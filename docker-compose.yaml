@@ -8,12 +8,12 @@ services:
     - "3000:3000"
     networks:
     - app-network
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: iqma-log-group
-        awslogs-region: ap-southeast-1
-        awslogs-stream: iqma-log-stream
+    # logging:
+    #   driver: awslogs
+    #   options:
+    #     awslogs-group: iqma-log-group
+    #     awslogs-region: ap-southeast-1
+    #     awslogs-stream: iqma-log-stream
   chatbot:
     build:
       dockerfile: Dockerfile
@@ -24,12 +24,12 @@ services:
     - app-network
     env_file:
     - ./backend/src/chatbot/.env
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: iqma-log-group
-        awslogs-region: ap-southeast-1
-        awslogs-stream: iqma-log-stream
+    # logging:
+    #   driver: awslogs
+    #   options:
+    #     awslogs-group: iqma-log-group
+    #     awslogs-region: ap-southeast-1
+    #     awslogs-stream: iqma-log-stream
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -41,27 +41,27 @@ services:
       RABBITMQ_URL: ${RABBITMQ_URL}
     networks:
       - app-network
-    logging:
-      driver: awslogs
-      options:
-        awslogs-group: iqma-log-group
-        awslogs-region: ap-southeast-1
-        awslogs-stream: iqma-log-stream
+    # logging:
+    #   driver: awslogs
+    #   options:
+    #     awslogs-group: iqma-log-group
+    #     awslogs-region: ap-southeast-1
+    #     awslogs-stream: iqma-log-stream
 
 
 
-  db:
-    image: postgres
-    environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mysecretpassword
-    networks:
-    - app-network
-    depends_on:
-    - backend
-    volumes:
-     - db-data:/var/lib/postgresql/data
+  # db:
+  #   image: postgres
+  #   environment:
+  #     POSTGRES_DB: mydatabase
+  #     POSTGRES_USER: myuser
+  #     POSTGRES_PASSWORD: mysecretpassword
+  #   networks:
+  #   - app-network
+  #   depends_on:
+  #   - backend
+  #   volumes:
+  #    - db-data:/var/lib/postgresql/data
   # adminer:
   #   image: adminer
   #   restart: always

@@ -27,7 +27,7 @@ class Prompt:
     content: str
     history: Optional[List] = None
 
-@app.get("/")
+@app.get("/chatbot")
 async def root():
     """
     Root endpoint for the FastAPI application.
@@ -37,7 +37,7 @@ async def root():
         "content": "Welcome to the ChatGPT API!"
     }
 
-@app.post("/generate")
+@app.post("/chatbot/generate")
 async def generate_text(prompt: Prompt):
     """
     Generate a response from the ChatGPT object based on the role and prompt.
@@ -53,7 +53,7 @@ async def generate_text(prompt: Prompt):
         logger.error("Error in '/generate' endpoint: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.post("/langchain")
+@app.post("/chatbot/langchain")
 async def langchain_text(prompt: Prompt):
     """
     Generate a response from the ChatGPT object based on the role and prompt.
