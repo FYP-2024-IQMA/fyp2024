@@ -91,14 +91,6 @@ services:
   #   depends_on:
   #     - redis
   
-
-  
-volumes:
-  db-data:
-  redis-data:
-  
-
-
 networks:
   app-network:
     driver: bridge
