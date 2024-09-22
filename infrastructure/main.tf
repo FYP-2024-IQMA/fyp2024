@@ -237,6 +237,18 @@ resource "aws_vpc_security_group_ingress_rule" "app_allow_backend" {
   referenced_security_group_id =aws_security_group.lb_sg.id
 }
 
+resource "aws_vpc_endpoint" "s3_endpoint" {
+  vpc_id = aws_vpc.prod_vpc.id
+  service_name = "com.amazonaws.ap-southeast-1.s3"
+  route_table_ids = [aws_route_table.private_route_table_1.id,aws_route_table.private_route_table_2.id]
+  vpc_endpoint_type = "Gateway"
+
+
+
+
+  
+}
+
 resource "aws_vpc_security_group_egress_rule" "app_allow_outbound" {
   security_group_id = aws_security_group.app_instance_sg.id
   ip_protocol = -1
