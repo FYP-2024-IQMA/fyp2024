@@ -70,313 +70,291 @@ export default function LearnerAssessmentCognitive() {
     return (
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
-            style={{padding: 20, flex: 1, backgroundColor: '#FFFFFF'}}
+            style={styles.container}
         >
-            <View style={{flexDirection: 'row'}}>
-                <Image
-                    style={{
-                        height: 150,
-                        width: 50,
-                        marginRight: 40,
-                        marginLeft: 20,
-                    }}
-                    source={require('@/assets/images/handsinpocket.png')}
-                />
-                <View style={{marginTop: 5}}>
-                    <ChatBubble position="left" isUser={true}>
-                        What cognitive abilities do you possess?
-                    </ChatBubble>
+            <View style={{flexGrow: 1}}>
+                <View style={{flexDirection: 'row'}}>
+                    <Image
+                        style={styles.mascotImage}
+                        source={require('@/assets/images/handsinpocket.png')}
+                    />
+                    <View style={{marginTop: 5}}>
+                        <ChatBubble position="left" isUser={true}>
+                            What cognitive abilities do you possess?
+                        </ChatBubble>
+                    </View>
                 </View>
-            </View>
 
-            <View style={{marginTop: 20}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Education Level
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                <View style={{marginVertical: 20}}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Education Level
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedEducation
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedEducation}
-                            onValueChange={(itemValue: string) =>
-                                setEducation(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Education Level"
-                                value=""
-                                enabled={false}
-                            />
-                            {education.map((value) => (
+                            <Picker
+                                selectedValue={selectedEducation}
+                                onValueChange={(itemValue: string) =>
+                                    setEducation(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Education Level"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {education.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedEducation && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedEducation && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Language Abilities
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Language Abilities
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedLanguage
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedLanguage}
-                            onValueChange={(itemValue: string) =>
-                                setLanguage(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Language Abilities"
-                                value=""
-                                enabled={false}
-                            />
-                            {language.map((value) => (
+                            <Picker
+                                selectedValue={selectedLanguage}
+                                onValueChange={(itemValue: string) =>
+                                    setLanguage(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Language Abilities"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {language.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedLanguage && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedLanguage && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Literacy & Numeracy
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Literacy & Numeracy
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedLiteracy
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedLiteracy}
-                            onValueChange={(itemValue: string) =>
-                                setLiteracy(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Literacy & Numeracy Proficiency"
-                                value=""
-                                enabled={false}
-                            />
-                            {literacy.map((value) => (
+                            <Picker
+                                selectedValue={selectedLiteracy}
+                                onValueChange={(itemValue: string) =>
+                                    setLiteracy(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Literacy & Numeracy Proficiency"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {literacy.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedLiteracy && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedLiteracy && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Learning{'\n'}Preferences
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Learning{'\n'}Preferences
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedLearning
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedLearning}
-                            onValueChange={(itemValue: string) =>
-                                setLearning(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Learning Preferences"
-                                value=""
-                                enabled={false}
-                            />
-                            {learning.map((value) => (
+                            <Picker
+                                selectedValue={selectedLearning}
+                                onValueChange={(itemValue: string) =>
+                                    setLearning(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Learning Preferences"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {learning.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedLearning && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedLearning && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
-                </View>
 
-                <View
-                    style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginTop: 12,
-                    }}
-                >
-                    <Text style={[styles.text, {flex: 1}]}>
-                        Prior Knowledge & Skills
-                    </Text>
-                    <View
-                        style={{
-                            flex: 2.5,
-                            borderWidth: 1,
-                            borderColor:
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Prior Knowledge & Skills
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
                                 !isContinue && !selectedSkill
-                                    ? '#ff4c4c'
-                                    : '#9CA3AF',
-                            borderRadius: 10,
-                        }}
-                    >
-                        <Picker
-                            selectedValue={selectedSkill}
-                            onValueChange={(itemValue: string) =>
-                                setSkill(itemValue)
-                            }
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
                         >
-                            <Picker.Item
-                                style={styles.defaultOptionText}
-                                label="Select Prior Knowledge & Skills"
-                                value=""
-                                enabled={false}
-                            />
-                            {literacy.map((value) => (
+                            <Picker
+                                selectedValue={selectedSkill}
+                                onValueChange={(itemValue: string) =>
+                                    setSkill(itemValue)
+                                }
+                            >
                                 <Picker.Item
-                                    style={{fontSize: 14}}
-                                    key={value}
-                                    label={value}
-                                    value={value}
+                                    style={styles.defaultOptionText}
+                                    label="Select Prior Knowledge & Skills"
+                                    value=""
+                                    enabled={false}
                                 />
-                            ))}
-                        </Picker>
+                                {literacy.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
                     </View>
-                </View>
-                <View style={{flexDirection: 'row'}}>
-                    <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.5}}>
-                        {!selectedSkill && !isContinue && (
-                            <Text style={[styles.errorText]}>
-                                This field is required.
-                            </Text>
-                        )}
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedSkill && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
                     </View>
                 </View>
             </View>
 
-            <View
-                style={{
-                    alignSelf: 'center',
-                    marginTop: 10,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+            <CustomButton
+                label="continue"
+                backgroundColor="white"
+                onPressHandler={handlePress}
+            />
         </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        backgroundColor: '#FFFFFF',
+        padding: 20,
+        flex: 1,
+    },
+    mascotImage: {
+        height: 150,
+        width: 50,
+        marginRight: 40,
+        marginLeft: 20,
+    },
+    selectOption: {
+        flex: 2.5,
+        borderWidth: 1,
+        borderRadius: 10,
+    },
+    alignOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 12,
+    },
+    correctBorder: {
+        borderColor: '#9CA3AF',
+    },
+    wrongBorder: {
+        borderColor: '#ff4c4c',
+    },
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',

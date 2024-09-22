@@ -31,9 +31,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteChat = exports.getChatHistory = exports.createChats = void 0;
 const chatService = __importStar(require("../services/chatService"));
+const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* CREATE */
 const createChats = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const chatsBody = req.body;
@@ -47,9 +51,10 @@ const createChats = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
     catch (error) {
-        res.status(500).json({
-            error: `Failed to insert chat history`,
-        });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.createChats = createChats;
@@ -60,11 +65,20 @@ const getChatHistory = (req, res) => __awaiter(void 0, void 0, void 0, function*
         sectionID: req.params.sectionid,
     };
     try {
-        const chats = yield chatService.getChatHistory(userSection);
-        res.status(200).json(chats);
+        if (req.params.unitid) {
+            const chats = yield chatService.getUnitChatHistory(userSection, req.params.unitid);
+            res.status(200).json(chats);
+        }
+        else {
+            const chats = yield chatService.getChatHistory(userSection);
+            res.status(200).json(chats);
+        }
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to retrieve chat history" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.getChatHistory = getChatHistory;
@@ -84,7 +98,10 @@ const deleteChat = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         });
     }
     catch (error) {
-        res.status(500).json({ error: "Failed to delete chat history" });
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 });
 exports.deleteChat = deleteChat;

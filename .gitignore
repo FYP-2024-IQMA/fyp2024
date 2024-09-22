@@ -11,6 +11,8 @@ android
 .idea
 .gguf
 infrastructure/.terraform
+infrastructure/terraform.tfstate
+infrastructure/terraform.tfstate.backup
 
 # chatbot
 __pycache__

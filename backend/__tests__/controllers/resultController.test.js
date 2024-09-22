@@ -69,44 +69,37 @@ describe("POST /createresult", () => {
 
 /* READ */
 
-describe("GET /getresultbyid/:userid", () => {
-
+describe("GET /checkifcompletedquiz/:userid/:quizid", () => {
     const userID = "USR0001";
+    const quizID = 2;
 
-    it("should return 200 and the results of a user", async () => {
+    it("should return 200 and a boolean result to show if a user has completed the quiz", async () => {
+        const mockData = true;
 
-        const mockData = [
-            {
-                "quizID": 1,
-                "dateCreated": "2024-09-01T05:26:54.096997+00:00"
-            },
-            {
-                "quizID": 2,
-                "dateCreated": "2024-09-01T05:27:01.340253+00:00"
-            }
-        ]
+        resultService.checkIfCompletedQuiz.mockResolvedValue(mockData);
 
-        resultService.getResultByUserId.mockResolvedValue(mockData);
-
-        const response = await request(app).get(`/result/getresultbyid/${userID}`);
+        const response = await request(app).get(
+            `/result/getifcompletedquiz/${userID}/${quizID}`
+        );
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(mockData);
-        expect(resultService.getResultByUserId).toHaveBeenCalledTimes(1);
+        expect(resultService.checkIfCompletedQuiz).toHaveBeenCalledTimes(1);
     });
 
     it("should return 500 and an error message on failure", async () => {
+        const errMessage = "Database error";
         const mockError = new Error("Database error");
 
-        resultService.getResultByUserId.mockRejectedValue(mockError);
+        resultService.checkIfCompletedQuiz.mockRejectedValue(mockError);
 
-        const response = await request(app).get(`/result/getresultbyid/${userID}`);
+        const response = await request(app).get(
+            `/result/checkifcompletedquiz/${userID}/${quizID}`
+        );
 
         expect(response.status).toBe(500);
-        expect(response.body).toEqual({
-            error: "Failed to retrieve Result",
-        });
-        expect(resultService.getResultByUserId).toHaveBeenCalledTimes(1);
+        expect(response.body.details).toEqual(errMessage);
+        expect(resultService.checkIfCompletedQuiz).toHaveBeenCalledTimes(1);
     });
 });
 
@@ -225,4 +218,39 @@ describe("GET /getcircularprogress/:userid/:sectionid/:unitid", () => {
         });
         expect(resultService.getUserProgress).toHaveBeenCalledTimes(1);
     });
+});
+
+describe("GET /getnoofcompletedlessons/:userid/:sectionid/:unitid", () => {
+    const userID = "USR0001";
+    const sectionID = "SEC0001";
+    const unitID = "UNIT0001";
+
+    it("should return 200 and the unit progress of a user", async () => {
+        resultService.getNoOfCompletedLesson.mockResolvedValue(2);
+
+        const response = await request(app).get(
+            `/result/getnoofcompletedlessons/${userID}/${sectionID}/${unitID}`
+        );
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual(2);
+        expect(resultService.getNoOfCompletedLesson).toHaveBeenCalledTimes(1);
+    });
+
+    it("should return 500 and an error message on failure", async () => {
+        const mockError = new Error("Database error");
+
+        resultService.getNoOfCompletedLesson.mockRejectedValue(mockError);
+
+        const response = await request(app).get(
+            `/result/getnoofcompletedlessons/${userID}/${sectionID}/${unitID}`
+        );
+
+        expect(response.status).toBe(500);
+        expect(response.body).toEqual({
+            error: `Failed to retrieve ${userID}'s progress`,
+        });
+        expect(resultService.getNoOfCompletedLesson).toHaveBeenCalledTimes(1);
+    });
+
 });

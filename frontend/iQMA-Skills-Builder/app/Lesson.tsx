@@ -1,95 +1,148 @@
 import {StyleSheet, Text, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect} from 'react';
+import React, {useState, useLayoutEffect, useEffect} from 'react';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
 import ProgressBar from '@/components/ProgressBar';
 import {useNavigation} from '@react-navigation/native';
 import {OverviewCard} from '@/components/OverviewCard';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
+import {router, useLocalSearchParams} from 'expo-router';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
+    const [sectionNumber, setSectionNumber] = useState<string>('');
+    const [unitNumber, setUnitNumber] = useState<string>('');
+    const [unitName, setUnitName] = useState<string>('');
+    const [lessonName, setLessonName] = useState<string>('');
+    const [videoId, setVideoId] = useState<string>('');
+    const [playing, setPlaying] = useState<boolean>(true);
+    const [lessonDescription, setLessonDescription] = useState<string | []>();
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
 
     const handlePress = () => {
-        // router.push('Lesson');
+        setPlaying(false);
+        router.push({
+            pathname: 'VideoQuiz',
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
+        });
     };
 
-    const [lessonName, setLessonName] = useState<string>(
-        'Lesson 1a: Understanding Verbal and Non-Verbal Signals'
-    );
-    const [videoId, setVideoId] = useState<string>('4_5dayHDdBk');
-    const [playing, setPlaying] = useState<boolean>(false);
-    const [lessonDescription, setLessonDescription] = useState<string>(
-        "🎤👀 Communication isn't just about what we say; it's also about how we say it!\n\n ✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. \n\nLearn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
-    );
+    useEffect(() => {
+        if (sectionID && unitID && lessonID) {
+            (async () => {
+                try {
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
+
+                    const lessonDetails =
+                        await lessonEndpoints.getLessonDetails(
+                            sectionID as string,
+                            unitID as string,
+                            lessonID as string
+                        );
+
+                    setLessonDescription(lessonDetails.lessonDescription);
+                    setLessonName(lessonDetails.lessonName);
+                    setVideoId(lessonDetails.lessonURL);
+                    setUnitName(unitDetails.unitName);
+
+                    setSectionNumber(formatSection(sectionID as string));
+                    setUnitNumber(formatUnit(unitID as string));
+                } catch (error) {
+                    console.error('Error fetching Lesson details:', error);
+                } finally {
+                    setIsLoading(false);
+                }
+            })();
+        }
+    }, [sectionID, unitID]);
 
     const onStateChange = (state: string) => {
-        if (state === 'ended') {
+        if (state === 'ended' || state === 'paused') {
             setPlaying(false);
         }
         if (state === 'playing') {
             setPlaying(true);
         }
-        if (state === 'paused') {
-            setPlaying(false);
-        }
     };
 
     return (
         <View style={styles.container}>
-            <View>
-                <SectionCard
-                    title="SECTION 1, UNIT 1"
-                    subtitle="Foundations of Communication"
-                />
-                <Text
-                    style={{
-                        fontSize: 14,
-                        fontWeight: 'bold',
-                        color: '#4143A3',
-                        marginBottom: 20,
-                        marginHorizontal: 10,
-                    }}
-                >
-                    {lessonName}
-                </Text>
+            {isLoading ? (
+                <View style={{flexGrow: 1}}>
+                    <LoadingIndicator />
+                </View>
+            ) : (
+                <>
+                    <View style={{flexGrow: 1}}>
+                        <SectionCard
+                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                            subtitle={unitName}
+                        />
+                        <Text style={styles.screenTitle}>{lessonName}</Text>
 
-                <OverviewCard text={lessonDescription}></OverviewCard>
+                        {lessonDescription ? (
+                            <OverviewCard
+                                text={lessonDescription!}
+                            ></OverviewCard>
+                        ) : (
+                            <OverviewCard
+                                // isError={true}
+                                text="Lesson Description is not available. Please check with your administrator."
+                            />
+                        )}
 
-                {videoId ? (
-                    <YoutubePlayer
-                        height={300}
-                        play={playing}
-                        onChangeState={onStateChange}
-                        videoId={videoId} // YouTube video ID
+                        {videoId ? (
+                            <YoutubePlayer
+                                height={300}
+                                play={playing}
+                                onChangeState={onStateChange}
+                                videoId={videoId} // YouTube video ID
+                            />
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Video is not available. Please check with your administrator."
+                            />
+                        )}
+                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
                     />
-                ) : (
-                    <Text style={{marginBottom: 30, textAlign: 'center'}}>
-                        Loading Video...
-                    </Text>
-                )}
-            </View>
-            <View
-                style={{
-                    alignSelf: 'center',
-                    bottom: 20,
-                }}
-            >
-                <CustomButton
-                    label="continue"
-                    backgroundColor="white"
-                    onPressHandler={handlePress}
-                />
-            </View>
+                </>
+            )}
         </View>
     );
 }
@@ -99,6 +152,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
-        justifyContent: 'space-between',
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

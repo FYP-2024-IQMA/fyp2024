@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as accountsAffectiveService from "../services/accountsAffectiveService";
+import { errorMapping } from "../errors/errorMappings";
+import handleError from "../errors/errorHandling";
 
 /* CREATE */
 
@@ -13,10 +15,11 @@ export const createAccountAffective = async (req: Request, res: Response) => {
             status: 201,
             statusText: "Created",
         });
-    } catch (error) {
-        res.status(500).json({
-            error: `Failed to create Account Affective`,
-        });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -26,8 +29,11 @@ export const getAccountAffectiveById = async (req: Request, res: Response) => {
     try {
         const account = await accountsAffectiveService.getAccountAffectiveById(req.params.id);
         res.status(200).json(account);
-    } catch (error) {
-        res.status(500).json({ error: "Failed to retrieve Account Affective" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -42,8 +48,11 @@ export const updateAccountAffective = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Affective Updated Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to update Account Affective" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
 
@@ -57,7 +66,10 @@ export const deleteAccountAffective = async (req: Request, res: Response) => {
             status: 200,
             statusText: "Account Affective Deleted Successfully",
         });
-    } catch (error) {
-        res.status(500).json({ error: "Failed to delete Account Affective" });
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if(errorResponse){
+            res.status(errorResponse.status).json(errorResponse);
+        }
     }
 };
