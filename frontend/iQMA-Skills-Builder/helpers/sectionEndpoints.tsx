@@ -1,6 +1,6 @@
 export const getSectionDetails = async (sectionID: string) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/section/sectiondetails/${sectionID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/section/sectiondetails/${sectionID}`;
         const response = await fetch(url);
         const sectionDetails = await response.json();
         // console.log(sectionDetails);
@@ -13,7 +13,7 @@ export const getSectionDetails = async (sectionID: string) => {
 
 export const getAllSectionDetails = async () => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/section/sectiondetails`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/section/sectiondetails`;
         const response = await fetch(url);
         const sectionDetails = await response.json();
         // Testing

@@ -129,7 +129,7 @@ export default function AssessmentIntroduction() {
         const userID = await AsyncStorage.getItem('userID');
         try {
             const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/clickstream/sendMessage`,
                 {
                     userID: userID,
                     eventType: 'timeTaken',

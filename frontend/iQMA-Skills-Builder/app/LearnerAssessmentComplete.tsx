@@ -61,19 +61,19 @@ export default function LearnerAssessmentComplete() {
                 experienceResponse,
             ] = await Promise.all([
                 await axios.post(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accountsdemographics/createaccountdemographics`,
+                    `${process.env.EXPO_PUBLIC_BACKEND_URL}/accountsdemographics/createaccountdemographics`,
                     demographics
                 ),
                 await axios.post(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accountscognitive/createaccountcognitive`,
+                    `${process.env.EXPO_PUBLIC_BACKEND_URL}/accountscognitive/createaccountcognitive`,
                     cognitive
                 ),
                 await axios.post(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accountssocial/createaccountsocial`,
+                    `${process.env.EXPO_PUBLIC_BACKEND_URL}/accountssocial/createaccountsocial`,
                     dynamics
                 ),
                 await axios.post(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accountsaffective/createaccountaffective`,
+                    `${process.env.EXPO_PUBLIC_BACKEND_URL}/accountsaffective/createaccountaffective`,
                     experience
                 ),
             ]);
@@ -83,7 +83,7 @@ export default function LearnerAssessmentComplete() {
                 hasOnboarded: true,
             };
             const accountResponse = await axios.patch(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updateaccount`,
+                `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/updateaccount`,
                 account
             );
 

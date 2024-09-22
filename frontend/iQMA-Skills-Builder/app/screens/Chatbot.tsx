@@ -43,7 +43,7 @@ export const loadChatHistory = async (userId: string, sectionId: string) => {
     console.log('LOAD CHAT HISTORY');
 
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/getchathistory/${userId}/${sectionId}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/getchathistory/${userId}/${sectionId}`;
         // console.log('URL: ', url);
 
         const response = await fetch(url);

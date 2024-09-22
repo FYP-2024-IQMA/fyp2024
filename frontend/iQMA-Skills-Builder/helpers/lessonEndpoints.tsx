@@ -4,7 +4,7 @@ export const getLessonDetails = async (
     lessonID: string
 ) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/lesson/getlesson/${sectionID}/${unitID}/${lessonID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/lesson/getlesson/${sectionID}/${unitID}/${lessonID}`;
         const response = await fetch(url);
         const lessonDetails = await response.json();
         // console.log(lessonDetails);
@@ -17,7 +17,7 @@ export const getLessonDetails = async (
 
 export const getAllLesson = async (sectionID: string, unitID: string) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/lesson/getalllessons/${sectionID}/${unitID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/lesson/getalllessons/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const lessonDetails = await response.json();
         // console.log(lessonDetails);
@@ -33,7 +33,7 @@ export const getNumofLessonsPerUnit = async (
     unitID: string
 ) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/lesson/getnumberoflessons/${sectionID}/${unitID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/lesson/getnumberoflessons/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const lessonProgress = await response.json();
         return lessonProgress;

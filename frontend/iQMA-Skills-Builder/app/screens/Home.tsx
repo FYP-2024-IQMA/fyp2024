@@ -83,7 +83,7 @@ const HomeScreen: React.FC = () => {
         console.log(userID, sectionID, unitID);
 
         try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
             const response = await fetch(url);
             const circularProgress = await response.json();
             if (isLastUnit) {
@@ -106,7 +106,7 @@ const HomeScreen: React.FC = () => {
 
     const getCurrentSection = async (): Promise<number> => {
         try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${currentUser.sub}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/getuserprogress/${currentUser.sub}`;
             const response = await fetch(url);
             const completedSection = await response.json();
             return completedSection + 1;

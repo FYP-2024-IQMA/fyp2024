@@ -28,7 +28,7 @@ interface MiniChatbotProps {
 //get reflection qn from backend
 const reflectionQuestion = async (sectionID: string, unitID: string) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/getquestions/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const data = await response.json();
         const reflectionQn = data.filter(
@@ -60,7 +60,7 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID
         unitId: string
     ) => {
         try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/getchathistory/${userId}/${sectionId}/${unitId}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/getchathistory/${userId}/${sectionId}/${unitId}`;
 
             const response = await fetch(url);
             const chatHistory = await response.json();
@@ -155,7 +155,7 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID
 
     const sendToRabbitMQ = async (timeTaken: number) => {
         try {
-            await fetch(`${process.env.EXPO_PUBLIC_LOCALHOST_URL}/rabbitmq`, {
+            await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URL}/rabbitmq`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
