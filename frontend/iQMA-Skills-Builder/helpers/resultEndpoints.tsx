@@ -3,7 +3,7 @@ export const numberOfCompletedUnitsPerSection = async (
     sectionID: string
 ): Promise<number> => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${userID}/${sectionID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/getuserprogress/${userID}/${sectionID}`;
         const response = await fetch(url);
         const unitProgress = await response.json();
         return unitProgress;
@@ -19,7 +19,7 @@ export const numberOfCompletedLessonsPerUnit = async (
     unitID: string
 ): Promise<number> => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getnoofcompletedlessons/${userID}/${sectionID}/${unitID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/getnoofcompletedlessons/${userID}/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const lessonProgress = await response.json();
         return lessonProgress;
@@ -34,7 +34,7 @@ export const createResult = async (
     quizID: number
 ): Promise<void> => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/createresult`
         const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -58,7 +58,7 @@ export const checkIfCompletedQuiz = async(
     quizID: number
 ): Promise<boolean> => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/checkifcompletedquiz/${userID}/${quizID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/checkifcompletedquiz/${userID}/${quizID}`;
         const response = await fetch(url);
         const data = await response.json();
         return data;
