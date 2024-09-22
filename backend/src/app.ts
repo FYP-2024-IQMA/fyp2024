@@ -45,7 +45,7 @@ app.post("/rabbitmq", (req, res) => {
 	console.log("timetaken:", timeTaken);
 
 	// Connect to RabbitMQ
-	amqp.connect("amqp://localhost", (error0, connection) => {
+	amqp.connect(process.env.RABBITMQ_URL!, (error0, connection) => {
 		if (error0) {
 			throw error0;
 		}
