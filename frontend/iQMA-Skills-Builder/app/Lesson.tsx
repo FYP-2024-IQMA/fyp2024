@@ -16,7 +16,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -27,9 +27,12 @@ export default function Lesson() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -38,8 +41,17 @@ export default function Lesson() {
         setPlaying(false);
         router.push({
             pathname: 'VideoQuiz',
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
         });
     };
 

@@ -1,17 +1,7 @@
 import * as chatInputFunctions from '@/components/ChatInput';
 
-import {
-    Alert,
-    Keyboard,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    TouchableWithoutFeedback,
-    View,
-} from 'react-native';
 import React, {useContext, useEffect, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
 
 import {AuthContext} from '@/context/AuthContext';
 import {ChatBubble} from '@/components/ChatBubble';
@@ -31,6 +21,8 @@ interface QuizItem {
 
 interface MiniChatbotProps {
     onChatHistoryUpdate: (length: number) => void;
+    sectionID: string;
+    unitID: string;
 }
 
 //get reflection qn from backend
@@ -49,7 +41,7 @@ const reflectionQuestion = async (sectionID: string, unitID: string) => {
     }
 };
 
-const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
+const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID, unitID}) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
         []
@@ -57,9 +49,10 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
     const {currentUser, isLoading} = useContext(AuthContext);
     const [reflectionQn, setReflectionQn] = useState<string>('');
     const scrollViewRef = useRef<ScrollView>(null);
+    const [responseTime, setResponseTime] = useState<number>(0);
 
-    const sectionID = 'SEC0001';
-    const unitID = 'UNIT0002';
+    // const sectionID = 'SEC0001';
+    // const unitID = 'UNIT0002';
 
     const loadUnitChatHistory = async (
         userId: string,
@@ -71,6 +64,8 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
 
             const response = await fetch(url);
             const chatHistory = await response.json();
+
+            console.log(chatHistory)
 
             if (chatHistory.length == 0) {
                 await chatInputFunctions.saveChatHistory(
@@ -121,6 +116,8 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
             content: msg.text,
         }));
 
+        const start = Date.now();
+
         const response = await chatInputFunctions.getChatbotResponse(
             'user',
             message,
@@ -128,6 +125,12 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
         );
 
         if (response) {
+            const end = Date.now();
+            const timeTaken = end - start;
+            setResponseTime(timeTaken);
+            console.log(`Time taken for chatbot to respond: ${timeTaken}ms`);
+            await sendToRabbitMQ(timeTaken);
+
             // Add the chatbot response to the chat
             const botReply = {text: response.content, isUser: false};
             const updatedMessages = [...newMessages, botReply];
@@ -147,6 +150,22 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate}) => {
                 unitID,
                 queryPair
             );
+        }
+    };
+
+    const sendToRabbitMQ = async (timeTaken: number) => {
+        try {
+            await fetch(`${process.env.EXPO_PUBLIC_LOCALHOST_URL}/rabbitmq`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    timeTaken: timeTaken,
+                }),
+            });
+        } catch (error) {
+            console.error('Error sending time to RabbitMQ:', error);
         }
     };
 

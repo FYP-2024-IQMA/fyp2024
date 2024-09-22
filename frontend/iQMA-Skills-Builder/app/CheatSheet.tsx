@@ -45,15 +45,18 @@ const formatCheatSheet = (cheatsheet: any) => {
 // where things show up
 export default function CheatSheet() {
     const navigation = useNavigation();
-    const {sectionID, unitID} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -69,7 +72,7 @@ export default function CheatSheet() {
 
                     const processedLessonDetails = lessonDetails
                         .filter(
-                            (lesson: any) => !lesson.lessonID.includes('.2')
+                            (lesson: any) => !/\.[2-9]\d*/.test(lesson.lessonID)
                         )
                         .map((lesson: any) => ({
                             ...lesson,
@@ -91,10 +94,17 @@ export default function CheatSheet() {
     }, [sectionID, unitID]);
 
     const handlePress = () => {
-        // router.push("Lesson")
         router.push({
-            pathname: 'UnitIntroduction', // to be replaced with Unit Reality Check page
-            params: {sectionID: sectionID, unitID: unitID},
+            pathname: 'RealityCheck',
+            params: {
+                sectionID,
+                unitID,
+                currentUnit,
+                totalUnits,
+                isFinal,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress
+            },
         });
     };
 

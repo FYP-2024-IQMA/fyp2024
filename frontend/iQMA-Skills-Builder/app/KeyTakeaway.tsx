@@ -19,32 +19,65 @@ export default function KeyTakeaway() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={1} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
 
     const handlePress = () => {
+
+        let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
+        let pathName = 'Lesson';
+
+        // If it is the last lesson, go to Assessment Intro for Unit Assessment (AssessmentIntroduction.tsx)
+        if (nextLessonIdx === parseInt(totalLesson as string)) {
+            // lessonIdx can be anything because will reset in Home
+            nextLessonIdx = 0;
+            pathName = 'AssessmentIntroduction';
+        }
+
+        console.log('nextLessonIdx:', nextLessonIdx);
+        console.log('nextLessonID:', nextLessonID);
+
         router.push({
-            pathname: 'CheatSheet',
-            params: {sectionID: sectionID, unitID: unitID},
+            pathname: pathName,
+            params: {
+                sectionID,
+                unitID,
+                lessonID: nextLessonID,
+                currentLessonIdx: nextLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                isFinal: 'false',
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
         });
     };
 
     // const sectionID = 'SEC0001';
-    // const unitID = 'UNIT0001';
-    // const lessonID = '1a';
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    // const unitID = 'UNIT0002';
+    // const lessonID = '2a';
+    // const currentLessonIdx = '0';
+    // const totalLesson = '3';
+    // const currentUnit = '3';
+    // const totalUnits = '3';
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
+    const [nextLessonID, setnextLessonID] = useState<string>('');
 
     useEffect(() => {
-        if (sectionID && unitID && lessonID) {
+        if (sectionID && unitID && lessonID && currentLessonIdx && totalLesson) {
             (async () => {
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
@@ -59,6 +92,22 @@ export default function KeyTakeaway() {
                             lessonID as string
                         );
 
+                    const getAllLessons = await lessonEndpoints.getAllLesson(
+                        sectionID as string,
+                        unitID as string
+                    );
+
+                    let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
+                    
+                    if (nxtLessonIdx === parseInt(totalLesson as string)) {
+                        nxtLessonIdx = 0;
+                    }
+
+                    if (lessonID.includes(".")) {
+                        lessonDetails.lessonName = lessonDetails.lessonName.replace(/\.\d+/, '');
+                    }
+
+                    setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
                     setLessonName(lessonDetails.lessonName);
                     setUnitName(unitDetails.unitName);
                     setKeyTakeaway(lessonDetails.lessonKeyTakeaway);
@@ -71,7 +120,7 @@ export default function KeyTakeaway() {
                 }
             })();
         }
-    }, [sectionID, unitID]);
+    }, [sectionID, unitID, nextLessonID]);
 
     return (
         <ScrollView
@@ -119,7 +168,6 @@ export default function KeyTakeaway() {
                             ></Image>
                         </View>
                     </View>
-
                     <View style={{marginBottom: 40}}>
                         <CustomButton
                             label="continue"

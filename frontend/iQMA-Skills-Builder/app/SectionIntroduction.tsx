@@ -15,7 +15,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     // const sectionID = 'SEC0001'; // to be removed
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [sectionName, setSectionName] = useState<string>('');
@@ -24,9 +24,12 @@ export default function SectionIntroduction() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -54,11 +57,20 @@ export default function SectionIntroduction() {
     }, [sectionID]);
 
     const handlePress = () => {
-        // router.push('UnitIntroduction');
         setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
-            params: {sectionID, unitID, lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
         });
     };
 

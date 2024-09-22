@@ -1,8 +1,5 @@
-import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -13,18 +10,17 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { AuthContext } from '@/context/AuthContext';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
+    const {currentUser} = useContext(AuthContext);
+    const {sectionID, unitID, currentUnit, totalUnits, quizID, currentProgress, totalProgress} = useLocalSearchParams();
 
-    // const { sectionID } = useLocalSearchParams();
-    // const {sectionID, unitID, lessonID} = useLocalSearchParams();
-
-    const sectionID = 'SEC0001'; // to be removed
-    const unitID = 'UNIT0001';
     const [sectionNumber, setSectionNumber] = useState<string>('');
-    const [sectionName, setSectionName] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [chatHistoryLength, setChatHistoryLength] = useState<number>(0);
@@ -33,9 +29,12 @@ export default function SelfReflection() {
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={1} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -64,11 +63,46 @@ export default function SelfReflection() {
         }
     }, [sectionID, unitID]);
 
-    const handlePress = () => {
-        router.push({
-            pathname: 'UnitIntroduction',
-            params: {sectionID: sectionID, unitID: 'UNIT0001'},
-        });
+    const handlePress = async () => {
+
+        // (async () => {
+        try {
+            const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(
+                currentUser.sub,
+                parseInt(quizID as string)
+            );
+
+            if (!ifCompleted) {
+                await resultEndpoints.createResult(
+                    currentUser.sub,
+                    parseInt(quizID as string)
+                );
+            }
+        } catch (error) {
+            console.error('Error in Submitting Unit Assessment (Self-Reflection Page):', error);
+        }
+        // })();
+
+        if (parseInt(currentUnit as string) === parseInt(totalUnits as string)) {
+            // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
+            router.push({
+                pathname: 'AssessmentIntroduction',
+                params: {
+                    sectionID,
+                    unitID,
+                    currentUnit,
+                    totalUnits,
+                    isFinal: 'true',
+                    currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                    totalProgress
+                },
+            });
+        } else {
+            // after self-reflection navigate back to home for next unit
+            router.replace('Home');
+        }
+
+
     };
 
     return (
@@ -99,6 +133,8 @@ export default function SelfReflection() {
                         </Text>
                         <MiniChatbot
                             onChatHistoryUpdate={handleChatHistoryUpdate}
+                            sectionID={sectionID as string}
+                            unitID={unitID as string}
                         />
                     </ScrollView>
                     <CustomButton

@@ -55,43 +55,52 @@ describe("createResult", () => {
 
 /* READ */
 
-describe("getResultByUserId", () => {
-    const mockData = [
-        {
-            quizID: 1,
-            dateCreated: "2024-09-01T05:26:54.096997+00:00",
-        },
-        {
-            quizID: 2,
-            dateCreated: "2024-09-01T05:27:01.340253+00:00",
-        },
-    ];
-
+describe("checkIfCompletedQuiz", () => {
     const userID = "USR0001";
+    const quizID = 2;
 
-    it("should return an array of quizID & dateCreated", async () => {
-        const mockEq = jest
+    it("should return true when user completed the quiz", async () => {
+        const mockCount = 1;
+        const mockEq2 = jest
             .fn()
-            .mockResolvedValue({ data: mockData, error: null });
-        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
+            .mockResolvedValue({ count: mockCount, error: null });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const result = await resultService.getResultByUserId(userID);
+        const result = await resultService.checkIfCompletedQuiz(userID, quizID);
 
-        expect(result).toEqual(mockData);
+        expect(result).toEqual(true);
+    });
+
+    it("should return false when user did not complete the quiz", async () => {
+        const mockCount = 0;
+        const mockEq2 = jest
+            .fn()
+            .mockResolvedValue({ count: mockCount, error: null });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        const result = await resultService.checkIfCompletedQuiz(userID, quizID);
+
+        expect(result).toEqual(false);
     });
 
     it("should throw an error and log the error when there is an error from the database", async () => {
         const errorMessage = "Failed to fetch user results";
 
-        const mockEq = jest
+        const mockEq2 = jest
             .fn()
-            .mockResolvedValue({ data: null, error: new Error(errorMessage) });
-        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
+            .mockResolvedValue({ count: null, error: new Error(errorMessage) });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        await expect(resultService.getResultByUserId(userID)).rejects.toThrow(errorMessage);
-        
+        await expect(
+            resultService.checkIfCompletedQuiz(userID, quizID)
+        ).rejects.toThrow(errorMessage);
+
         expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });

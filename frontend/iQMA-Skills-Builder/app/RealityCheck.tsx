@@ -16,7 +16,7 @@ export default function RealityCheck() {
     const navigation = useNavigation();
 
     // Use this for Routing
-    // const {sectionID, unitID} = useLocalSearchParams();
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -24,16 +24,16 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    // Only for testing, please delete
-    const [sectionID, setSectionID] = useState<string>('SEC0001');
-    const [unitID, setUnitID] = useState<string>('UNIT0001');
 
     useEffect(() => {}, []);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -66,7 +66,15 @@ export default function RealityCheck() {
     const handlePress = async () => {
         router.push({
             pathname: 'Assessment',
-            params: {sectionID: sectionID, unitID: unitID},
+            params: {
+                sectionID,
+                unitID,
+                currentUnit,
+                totalUnits,
+                isFinal,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress
+            },
         });
     };
 

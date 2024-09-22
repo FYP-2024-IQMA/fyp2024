@@ -34,10 +34,14 @@ describe("GET /section/sectiondetails/:sectionID", () => {
         const expectedResults = {
             ...mockSection,
             introductionURL: 'pU4fCakueEE',
+            finalAssessmentIntro: ["Welcome to the Grand Presentation Showdown..."],
+            finalScenario: ["You are part of a team participating in a high-stakes competition..."]
         }
         sectionService.getSectionDetails.mockResolvedValue({
             ...mockSection,
             introductionURL: 'pU4fCakueEE',
+            finalAssessmentIntro: ["Welcome to the Grand Presentation Showdown..."],
+            finalScenario: ["You are part of a team participating in a high-stakes competition..."]
         });
 
         const response = await request(app).get("/section/sectiondetails/SEC0001");

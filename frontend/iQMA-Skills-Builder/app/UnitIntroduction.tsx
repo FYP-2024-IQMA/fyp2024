@@ -17,7 +17,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 export default function UnitIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -53,9 +53,12 @@ export default function UnitIntroduction() {
     }, []);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
@@ -87,7 +90,17 @@ export default function UnitIntroduction() {
         router.push({
             pathname: 'Lesson',
             // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
         });
         stopTimer();
         const userID = await AsyncStorage.getItem('userID');

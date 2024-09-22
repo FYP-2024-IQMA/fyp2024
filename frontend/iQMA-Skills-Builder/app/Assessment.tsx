@@ -1,37 +1,69 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
-import axios from 'axios';
 import {router, useLocalSearchParams} from 'expo-router';
 import {Question} from '@/constants/Quiz';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as assessmentEndpoints from '@/helpers/assessmentEndpoints';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import * as quizEndpoints from '@/helpers/quizEndpoints';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
+import {AuthContext} from '@/context/AuthContext';
 
 export default function Assessment() {
     const navigation = useNavigation();
+    const {currentUser, isLoading} = useContext(AuthContext);
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [questions, setQuestions] = useState<Question[]>([]);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
+    const [sectionName, setSectionName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-
+    const [loading, setIsLoading] = useState<boolean>(true);
+    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
+    const [finalScenario, setFinalScenario] = useState<string>('');
+    const [checkFinal, setCheckFinal] = useState<boolean>(false);
+ 
     // Hardcoded for now until routing confirmed
+    // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
-    const {sectionID, unitID} = useLocalSearchParams();
 
     useEffect(() => {
-        if (sectionID && unitID) {
+        if (isFinal === 'true') {
+            (async () => {
+                try {
+                    const sectionDetails =
+                        await sectionEndpoints.getSectionDetails(
+                            sectionID as string
+                        );
+                    setFinalScenario(sectionDetails.finalScenario);
+                    setSectionName(sectionDetails.sectionName);
+
+                    const assessmentQuestions =
+                        await quizEndpoints.getFinalAssessmentQuestions(
+                            sectionID as string
+                        );
+                    setQuestions(assessmentQuestions);
+                    setCheckFinal(true);
+                } catch (error) {
+                    console.error(
+                        'Error fetching final assessment details:',
+                        error
+                    );
+                } finally {
+                    setIsLoading(false);
+                }
+            })();
+        } else {
             (async () => {
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
@@ -42,30 +74,32 @@ export default function Assessment() {
                     setUnitScenario(unitDetails.scenario);
 
                     const assessmentQuestions =
-                        await assessmentEndpoints.getAssessmentQuestions(
+                        await quizEndpoints.getAssessmentQuestions(
                             sectionID as string,
                             unitID as string
                         );
                     setQuestions(assessmentQuestions);
-
-                    setSectionNumber(formatSection(sectionID as string));
-                    setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
-                    console.error('Error fetching unit details', error);
+                    console.error('Error fetching assessment details:', error);
                 } finally {
                     setIsLoading(false);
                 }
             })();
         }
-    }, [sectionID, unitID]);
+        setSectionNumber(formatSection(sectionID as string));
+        setUnitNumber(formatUnit(unitID as string));
+    }, [sectionID, unitID, checkFinal]);
 
     useLayoutEffect(() => {
+
+        let progress = checkFinal ? 1 : parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.3} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
-    }, [navigation]);
+    }, [navigation, checkFinal]);
 
     const handleNextQuestion = async () => {
         const newIdx = currentQnsIdx + 1;
@@ -73,7 +107,42 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
-            router.replace('Home'); // Change Here
+
+            if (checkFinal) {
+                // final assessment don't have self-reflection
+                try {
+                    const ifCompleted =
+                        await resultEndpoints.checkIfCompletedQuiz(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                    if (!ifCompleted) {
+                        await resultEndpoints.createResult(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error in Assessment:', error);
+                }
+
+                router.replace('Home');
+            } else {
+                router.push({
+                    pathname: 'SelfReflection',
+                    params: {
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        quizID: questions[currentQnsIdx].quizID,
+                        isFinal,
+                        currentProgress,
+                        totalProgress,
+                    }
+                });
+            }
         }
     };
 
@@ -82,13 +151,17 @@ export default function Assessment() {
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
         >
-            {isLoading ? (
+            {loading ? (
                 <LoadingIndicator />
             ) : (
                 <>
                     <SectionCard
-                        title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                        subtitle={unitName}
+                        title={
+                            checkFinal
+                                ? `SECTION ${sectionNumber}`
+                                : `SECTION ${sectionNumber}, UNIT ${unitNumber}`
+                        }
+                        subtitle={checkFinal ? `${sectionName}` : `${unitName}`}
                     />
                     <View style={{marginHorizontal: 10}}>
                         <Text
@@ -102,14 +175,26 @@ export default function Assessment() {
                             question.
                         </Text>
                     </View>
-                    <View>
-                        <OverviewCard
-                            isError={false}
-                            text={unitScenario}
-                            isScenario={true}
-                            title="Scenario:"
-                        />
-                    </View>
+
+                    {checkFinal ? (
+                        <View>
+                            <OverviewCard
+                                isError={false}
+                                text={finalScenario}
+                                isScenario={true}
+                                title="Scenario:"
+                            />
+                        </View>
+                    ) : (
+                        <View>
+                            <OverviewCard
+                                isError={false}
+                                text={unitScenario}
+                                isScenario={true}
+                                title="Scenario:"
+                            />
+                        </View>
+                    )}
 
                     {questions.length > 0 && questions[currentQnsIdx] && (
                         <QuizCard
