@@ -45,7 +45,10 @@ resource "aws_route_table" "private_route_table_1"{
     cidr_block = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat-1.id
   }
+  
 }
+
+
 
 resource "aws_route_table_association" "private_1" {
   subnet_id      = aws_subnet.private_subnet_1.id
@@ -59,6 +62,9 @@ resource "aws_route_table" "private_route_table_2"{
     cidr_block = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.nat-2.id
   }
+
+    
+
 }
 
 
@@ -95,6 +101,21 @@ resource "aws_subnet" "public_subnet_two" {
 
   
 }
+
+resource "aws_vpc_endpoint" "s3_endpoint" {
+  vpc_id = aws_vpc.prod_vpc.id
+  service_name = "com.amazonaws.ap-southeast-1.s3"
+  route_table_ids = [aws_route_table.private_route_table_1.id,aws_route_table.private_route_table_2.id]
+  vpc_endpoint_type = "Gateway"
+
+
+
+
+  
+}
+
+
+
 resource "aws_nat_gateway" "nat-1" {
   allocation_id = aws_eip.nat-1.id
   subnet_id     = aws_subnet.public_subnet_one.id
