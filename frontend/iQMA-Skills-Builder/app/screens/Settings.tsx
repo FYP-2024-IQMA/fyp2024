@@ -62,7 +62,7 @@ export default function Settings() {
 
     // If still loading, show the loading indicator
     if (isLoading) {
-        return <View />;
+        return <LoadingIndicator />;
     }
 
     return (
