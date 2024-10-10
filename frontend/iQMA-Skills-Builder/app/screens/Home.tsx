@@ -15,6 +15,7 @@ import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function calculateTotalProgress(i: number, totalUnits: number, getLessonIds: any[]) {
     const uniqueAlphabets = new Set(getLessonIds);
@@ -396,6 +397,7 @@ const HomeScreen: React.FC = () => {
     }
 
     return (
+        <SafeAreaView>
         <ScrollView contentContainerStyle={styles.container}>
             {/* Top Stats */}
             <TopStats circularProgress={sectionCircularProgress} />
@@ -417,6 +419,7 @@ const HomeScreen: React.FC = () => {
                 <Text>No sections available</Text>
             )}
         </ScrollView>
+        </SafeAreaView>
     );
 };
 
@@ -424,7 +427,6 @@ const styles = StyleSheet.create({
     container: {
         padding: 20,
         backgroundColor: '#F5F5F5',
-        marginTop: 10,
     },
     lineSeparator: {
         height: 1,
