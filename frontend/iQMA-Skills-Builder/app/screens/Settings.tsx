@@ -43,9 +43,9 @@ export default function Settings() {
             </View>
             <CustomButton label="Save" backgroundColor="white" />
 
-            <CustomButton label="Help Center" backgroundColor="white" />
+            {/* <CustomButton label="Help Center" backgroundColor="white" />
 
-            <CustomButton label="Feedback" backgroundColor="white" />
+            <CustomButton label="Feedback" backgroundColor="white" /> */}
 
             <CustomButton
                 label="Log out"
