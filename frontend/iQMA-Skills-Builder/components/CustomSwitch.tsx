@@ -26,7 +26,7 @@ const CustomSwitch: React.FC<CustomSwitchProps> = ({ isEnabled, onToggle }) => {
   
     const knobPosition = animationValue.interpolate({
       inputRange: [0, 1],
-      outputRange: [0, 21], // Left position for 'Off' and 'On'
+      outputRange: [0, 20], // Left position for 'Off' and 'On'
     });
   
     return (
