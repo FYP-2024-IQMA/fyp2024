@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
         // paddingBottom: 20,
     },
     button: {
-        width: screenWidth * 0.8,
+        width: screenWidth * 0.9,
         marginVertical: 10,
         padding: 15,
         borderRadius: 10,

@@ -1,47 +1,68 @@
-import {Button, StyleSheet, Text, View} from 'react-native';
-
-import React from 'react';
-import {LogoutButton} from '@/components/LogoutButton';
+import {Button, StyleSheet, Text, View, Switch} from 'react-native';
+import React, {useContext, useState} from 'react';
 import {router} from 'expo-router';
+import CustomSwitch from '@/components/CustomSwitch';
+import {CustomButton} from '@/components/CustomButton';
+import {AuthContext} from '@/context/AuthContext';
 
-const testLesson = () => {
-    router.push('SectionIntroduction');
-};
+export default function Settings() {
+    const {logOut, currentUser} = useContext(AuthContext);
 
-const testQuiz = () => {
-    router.push('VideoQuiz');
-};
+    const [isSoundEffectsEnabled, setIsSoundEffectsEnabled] = useState(false);
+    const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
 
-const testAsssessment = () => {
-    router.push('Assessment');
-};
+    const toggleSoundEffects = (value: boolean) => {
+        setIsSoundEffectsEnabled(value);
+    };
 
-const assessmentIntro = () => {
-    router.push('AssessmentIntroduction');
-};
+    const toggleNotifications = (value: boolean) => {
+        setIsNotificationsEnabled(value);
+    };
 
-const SettingPage: React.FC = () => (
-    <View style={styles.container}>
-        <Text>Settings Screen</Text>
-        <View style={{marginBottom: 10}}></View>
-        <Button title="Test Lesson" onPress={testLesson}></Button>
-        <View style={{marginBottom: 10}}></View>
-        <Button title="Test Quiz" onPress={testQuiz}></Button>
-        <View style={{marginBottom: 10}}></View>
-        <Button title="Test Assessment" onPress={testAsssessment}></Button>
-        <View style={{marginBottom: 10}}></View>
-        <Button title="Test Assessment Intro" onPress={assessmentIntro}></Button>
-        <View style={{marginBottom: 10}}></View>
-        <LogoutButton></LogoutButton>
-    </View>
-);
+    return (
+        <View style={styles.container}>
+            <Text style={styles.textHeading}>GENERAL</Text>
+            <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+            >
+                <Text style={{alignSelf: 'center'}}>Sound Effects</Text>
+                <CustomSwitch
+                    isEnabled={isSoundEffectsEnabled}
+                    onToggle={toggleSoundEffects}
+                />
+            </View>
+            <Text style={styles.textHeading}>NOTIFICATIONS</Text>
+            <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+            >
+                <Text style={{alignSelf: 'center'}}>All Notifications</Text>
+                <CustomSwitch
+                    isEnabled={isNotificationsEnabled}
+                    onToggle={toggleNotifications}
+                />
+            </View>
+            <CustomButton label="Save" backgroundColor="white" />
+
+            <CustomButton label="Help Center" backgroundColor="white" />
+
+            <CustomButton label="Feedback" backgroundColor="white" />
+
+            <CustomButton
+                label="Log out"
+                backgroundColor="white"
+                onPressHandler={logOut}
+            />
+        </View>
+    );
+}
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        padding: 20,
+    },
+    textHeading: {
+        color: '#7654F2',
+        fontWeight: 'bold',
     },
 });
-
-export default SettingPage;
