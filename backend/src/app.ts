@@ -15,6 +15,7 @@ import quizRouter from "./routes/quizRouter";
 import resultRouter from "./routes/resultRouter";
 import sectionRouter from "./routes/sectionRouter";
 import unitRouter from "./routes/unitRouter";
+import accountsGamificationRouter from "./routes/accountsGamificationRouter";
 
 const app = express();
 const port = 3000;
@@ -38,6 +39,7 @@ app.use("/chat", chatRouter);
 app.use("/lesson", lessonRouter);
 app.use("/section", sectionRouter);
 app.use("/clickstream", clickstreamRouter);
+app.use("/accounts", accountsGamificationRouter);
 
 // RabbitMQ Producer: Sends "timeTaken" data to RabbitMQ
 app.post("/rabbitmq", (req, res) => {

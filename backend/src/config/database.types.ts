@@ -153,6 +153,35 @@ export type Database = {
           },
         ]
       }
+      accountsgamification: {
+        Row: {
+          lastUnitCompletionDate: string | null
+          points: number
+          streaks: number
+          userID: string
+        }
+        Insert: {
+          lastUnitCompletionDate?: string | null
+          points?: number
+          streaks?: number
+          userID: string
+        }
+        Update: {
+          lastUnitCompletionDate?: string | null
+          points?: number
+          streaks?: number
+          userID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accountsgamification_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
       accountssocial: {
         Row: {
           compLiteracy: Database["public"]["Enums"]["computer_literacy_type"]
@@ -184,6 +213,24 @@ export type Database = {
             referencedColumns: ["userID"]
           },
         ]
+      }
+      badge: {
+        Row: {
+          badgeID: number
+          badgeName: string
+          badgeURI: string | null
+        }
+        Insert: {
+          badgeID?: number
+          badgeName: string
+          badgeURI?: string | null
+        }
+        Update: {
+          badgeID?: number
+          badgeName?: string
+          badgeURI?: string | null
+        }
+        Relationships: []
       }
       certificate: {
         Row: {
