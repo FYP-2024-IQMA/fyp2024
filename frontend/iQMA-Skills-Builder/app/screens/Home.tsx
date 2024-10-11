@@ -1,23 +1,37 @@
 // screens/HomeScreen.tsx
 
-import React, {useEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import * as resultEndpoints from '@/helpers/resultEndpoints';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
+import {
+    NativeScrollEvent,
+    NativeSyntheticEvent,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
+import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
+import React, {useEffect, useRef, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
-import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
+import {Ionicons} from '@expo/vector-icons';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
-import {useContext} from 'react';
 import {router} from 'expo-router';
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import * as resultEndpoints from '@/helpers/resultEndpoints';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {useContext} from 'react';
 
-function calculateTotalProgress(i: number, totalUnits: number, getLessonIds: any[]) {
+function calculateTotalProgress(
+    i: number,
+    totalUnits: number,
+    getLessonIds: any[]
+) {
     const uniqueAlphabets = new Set(getLessonIds);
     // Get the count of unique alphabets for key takeaway count
     const uniqueAlphabetCount = uniqueAlphabets.size;
@@ -25,7 +39,7 @@ function calculateTotalProgress(i: number, totalUnits: number, getLessonIds: any
     // regular total progress
     // 5 = UnitIntro + UnitAIntro + CheatSheet + RealityCheck + Assessment
     // uniqueAlphabetCount = no. of KeyTakeaway
-    let totalProgress = 5 + (getLessonIds.length * 2) + uniqueAlphabetCount;
+    let totalProgress = 5 + getLessonIds.length * 2 + uniqueAlphabetCount;
 
     if (i === 0) {
         // to account for sectionIntro
@@ -36,7 +50,7 @@ function calculateTotalProgress(i: number, totalUnits: number, getLessonIds: any
     }
 
     // console.log('Total Progress:', totalProgress);
-    return totalProgress
+    return totalProgress;
 }
 
 function calculateKTProgress(lessons: any[], completedLessonCount: number) {
@@ -57,7 +71,8 @@ function calculateKTProgress(lessons: any[], completedLessonCount: number) {
 
     return Object.keys(lessonCounts).reduce((progress, lessonID) => {
         return (
-            progress + (completedLessons[lessonID] === lessonCounts[lessonID] ? 1 : 0)
+            progress +
+            (completedLessons[lessonID] === lessonCounts[lessonID] ? 1 : 0)
         );
     }, 0);
 }
@@ -65,19 +80,39 @@ function calculateKTProgress(lessons: any[], completedLessonCount: number) {
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
     const [circularProgress, setCircularProgress] = useState<number>(0);
-    const [sectionCircularProgress, setSectionCircularProgress] = useState<number>(0);
+    const [sectionCircularProgress, setSectionCircularProgress] =
+        useState<number>(0);
     const [allSectionDetails, setAllSectionDetails] = useState<any[]>([]);
     const [iconsData, setIconsData] = useState<{
         [key: number]: ProgressPathProps['icons'];
     }>({});
     const [loading, setLoading] = useState(true);
     const [completedFinals, setCompletedFinals] = useState<boolean>(false);
+    const [showButton, setShowButton] = useState(false);
 
+    const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+        const yOffset = event.nativeEvent.contentOffset.y;
+        if (yOffset > 0) {
+            setShowButton(true);
+        } else {
+            setShowButton(false);
+        }
+    };
+
+    // Create a reference to the ScrollView
+    const scrollViewRef = useRef<ScrollView>(null);
+
+    // Scroll handler
+    const onScrollToTop = () => {
+        if (scrollViewRef.current) {
+            scrollViewRef.current.scrollTo({x: 0, y: 0, animated: true}); //animated: true for smooth scrolling
+        }
+    };
     const loadUnitCircularProgress = async (
         userID: string,
         sectionID: string,
         unitID: string,
-        isLastUnit: boolean,
+        isLastUnit: boolean
         // completedFinals: boolean
     ) => {
         console.log('LOAD UNIT CIRCULAR PROGRESS');
@@ -88,18 +123,23 @@ const HomeScreen: React.FC = () => {
             const response = await fetch(url);
             const circularProgress = await response.json();
             if (isLastUnit) {
-                const noOfLessonPerUnit = await lessonEndpoints.getNumofLessonsPerUnit(sectionID, unitID) + 1;
+                const noOfLessonPerUnit =
+                    (await lessonEndpoints.getNumofLessonsPerUnit(
+                        sectionID,
+                        unitID
+                    )) + 1;
                 let completedLU = circularProgress * noOfLessonPerUnit;
 
                 // need to + 1 to completedLU when user complete final assessment
                 if (completedFinals) {
                     completedLU += 1;
                 }
-                setCircularProgress(() => Math.ceil((completedLU / (noOfLessonPerUnit + 1)) * 100));
+                setCircularProgress(() =>
+                    Math.ceil((completedLU / (noOfLessonPerUnit + 1)) * 100)
+                );
             } else {
                 setCircularProgress(() => Math.ceil(circularProgress * 100));
             }
-            
         } catch (error) {
             console.error('Error while loading circular progress:', error);
         }
@@ -122,7 +162,7 @@ const HomeScreen: React.FC = () => {
     // will show 0 if only lessons done in unit 1, because it 0 units completed
     const loadSectionProgress = async (
         userID: string,
-        sectionID: string,
+        sectionID: string
     ): Promise<number> => {
         try {
             let sectionProgress =
@@ -131,13 +171,17 @@ const HomeScreen: React.FC = () => {
                     sectionID
                 );
 
-            const noOfUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+            const noOfUnits = await unitEndpoints.numberOfUnitsPerSection(
+                sectionID
+            );
             // const noOfUnits = 4; // (ger testing)
 
             // need to + 1 to sectionProgress when user complete final assessment
             if (completedFinals) sectionProgress += 1;
 
-            setSectionCircularProgress(() => Math.ceil((sectionProgress / (noOfUnits + 1)) * 100))
+            setSectionCircularProgress(() =>
+                Math.ceil((sectionProgress / (noOfUnits + 1)) * 100)
+            );
 
             return Math.ceil((sectionProgress / (noOfUnits + 1)) * 100);
         } catch (error) {
@@ -157,7 +201,9 @@ const HomeScreen: React.FC = () => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
 
         console.log('Section ID:', sectionID);
-        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(
+            sectionID
+        );
         // const totalUnits = 4; // (ger testing)
         let currentUnit = completedUnits + 1;
         if (currentUnit > totalUnits) {
@@ -191,14 +237,21 @@ const HomeScreen: React.FC = () => {
 
             // console.log('Lesson IDs:', getLessonIds);
 
-            const totalProgress = calculateTotalProgress(i, totalUnits, getLessonIds);
+            const totalProgress = calculateTotalProgress(
+                i,
+                totalUnits,
+                getLessonIds
+            );
             let currentProgress = 1;
 
             let currentLessonId = getAllLessons[0].lessonID;
             let currentLessonIdx = 0;
             let isFinal = false;
 
-            const finishEverything = (currentUnit === totalUnits) && circularProgress === 100 && sectionCircularProgress === 100;
+            const finishEverything =
+                currentUnit === totalUnits &&
+                circularProgress === 100 &&
+                sectionCircularProgress === 100;
 
             if (i + 1 < currentUnit || finishEverything) {
                 status = 'completed';
@@ -207,15 +260,18 @@ const HomeScreen: React.FC = () => {
                 }
             } else if (i + 1 === currentUnit) {
                 status = 'in-progress';
-                
+
                 if (
                     totalLesson === completedLessons &&
                     circularProgress !== 100
                 ) {
                     routerName = 'AssessmentIntroduction';
 
-                    currentProgress = i === totalUnits - 1 ? totalProgress - 5 : totalProgress - 3;
-                    
+                    currentProgress =
+                        i === totalUnits - 1
+                            ? totalProgress - 5
+                            : totalProgress - 3;
+
                     if (isLastUnit) {
                         isFinal = true;
                         currentProgress = totalProgress - 1;
@@ -225,7 +281,10 @@ const HomeScreen: React.FC = () => {
                     currentLessonIdx = completedLessons;
                     if (completedLessons !== 0) {
                         routerName = 'Lesson';
-                        currentProgress = 1 + (completedLessons * 2) + calculateKTProgress(getLessonIds, completedLessons);
+                        currentProgress =
+                            1 +
+                            completedLessons * 2 +
+                            calculateKTProgress(getLessonIds, completedLessons);
                         // console.log('Current Progress:', currentProgress);
                     } else if (completedUnits === 0) {
                         routerName = 'SectionIntroduction';
@@ -264,7 +323,9 @@ const HomeScreen: React.FC = () => {
                 sectionID
             );
 
-        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(sectionID);
+        const totalUnits = await unitEndpoints.numberOfUnitsPerSection(
+            sectionID
+        );
         // const totalUnits = 4; // (ger testing)
 
         // unit to light up (current unit)
@@ -290,7 +351,12 @@ const HomeScreen: React.FC = () => {
         );
 
         // circular progress is set inside here
-        loadUnitCircularProgress(currentUser.sub, sectionID, unitID, isLastUnit);
+        loadUnitCircularProgress(
+            currentUser.sub,
+            sectionID,
+            unitID,
+            isLastUnit
+        );
 
         const iconsStatus = await getIconStatus(
             sectionID,
@@ -310,11 +376,14 @@ const HomeScreen: React.FC = () => {
                 const sectionDetails =
                     await sectionEndpoints.getAllSectionDetails();
                 let currentSection = await getCurrentSection();
-                console.log("Current Section Outside:", currentSection);
+                console.log('Current Section Outside:', currentSection);
 
                 if (currentSection > sectionDetails.length) {
                     currentSection = sectionDetails.length;
-                    console.log('Current Section when completed all section:', currentSection);
+                    console.log(
+                        'Current Section when completed all section:',
+                        currentSection
+                    );
                     setCompletedFinals(() => true);
                 }
 
@@ -327,7 +396,9 @@ const HomeScreen: React.FC = () => {
                     currentSection.toString()
                 );
 
-                const sectionID = `SEC${currentSection.toString().padStart(4, '0')}`;
+                const sectionID = `SEC${currentSection
+                    .toString()
+                    .padStart(4, '0')}`;
                 await AsyncStorage.setItem('sectionID', sectionID);
 
                 // sectionID is based on currentSection
@@ -371,9 +442,24 @@ const HomeScreen: React.FC = () => {
         totalProgress: number
     ) => {
         console.log('Pressed in HOME');
-        console.log(pathName, sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, isFinal);
+        console.log(
+            pathName,
+            sectionID,
+            unitID,
+            lessonID,
+            currentLessonIdx,
+            totalLesson,
+            currentUnit,
+            totalUnits,
+            isFinal
+        );
 
-        console.log('Current Progress:', currentProgress, 'Total Progress:', totalProgress);
+        console.log(
+            'Current Progress:',
+            currentProgress,
+            'Total Progress:',
+            totalProgress
+        );
 
         router.push({
             pathname: pathName,
@@ -387,7 +473,7 @@ const HomeScreen: React.FC = () => {
                 totalUnits,
                 isFinal: isFinal.toString(),
                 currentProgress,
-                totalProgress
+                totalProgress,
             },
         });
     };
@@ -397,33 +483,49 @@ const HomeScreen: React.FC = () => {
     }
 
     return (
-        <SafeAreaView>
-        <ScrollView contentContainerStyle={styles.container}>
-            {/* Top Stats */}
-            <TopStats circularProgress={sectionCircularProgress} />
+        <SafeAreaView style={styles.outerContainer}>
+            <ScrollView
+                contentContainerStyle={styles.container}
+                onScroll={onScroll}
+                scrollEventThrottle={16}
+                ref={scrollViewRef}
+            >
+                {/* Top Stats */}
+                <TopStats circularProgress={sectionCircularProgress} />
 
-            {allSectionDetails.length > 0 ? (
-                allSectionDetails.map((sectionDetail, index) => (
-                    <View key={index}>
-                        <SectionCard
-                            title={`SECTION ${index + 1}`}
-                            subtitle={sectionDetail.sectionName}
-                        />
-                        <ProgressPath
-                            icons={iconsData[index] || []}
-                            circularProgress={circularProgress}
-                        />
-                    </View>
-                ))
-            ) : (
-                <Text>No sections available</Text>
+                {allSectionDetails.length > 0 ? (
+                    allSectionDetails.map((sectionDetail, index) => (
+                        <View key={index}>
+                            <SectionCard
+                                title={`SECTION ${index + 1}`}
+                                subtitle={sectionDetail.sectionName}
+                            />
+                            <ProgressPath
+                                icons={iconsData[index] || []}
+                                circularProgress={circularProgress}
+                            />
+                        </View>
+                    ))
+                ) : (
+                    <Text>No sections available</Text>
+                )}
+            </ScrollView>
+            {showButton && (
+                <TouchableOpacity
+                    style={styles.floatingButton}
+                    onPress={onScrollToTop}
+                >
+                    <Ionicons name="arrow-up" size={24} color="#7654F2" />
+                </TouchableOpacity>
             )}
-        </ScrollView>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
+    outerContainer: {
+        flex: 1,
+    },
     container: {
         padding: 20,
         backgroundColor: '#F5F5F5',
@@ -452,6 +554,18 @@ const styles = StyleSheet.create({
         marginHorizontal: 10,
         fontWeight: 'bold',
         color: '#AAAAAA',
+    },
+    floatingButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        backgroundColor: '#B199FF',
+        borderRadius: 10,
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
     },
 });
 
