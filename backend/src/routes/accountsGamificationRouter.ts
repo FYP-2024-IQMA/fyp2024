@@ -8,6 +8,7 @@ const router = Router();
 /* READ */
 router.get('/gamificationdata/:userid', verifyToken, accountsGamificationController.getGamificationData);
 router.get("/leaderboard/:userid", verifyToken, accountsGamificationController.getTop5Accounts);
+router.get("/badges/:userid", accountsGamificationController.getBadges);
 
 /* UPDATE */
 router.patch('/updatepoints', verifyToken, accountsGamificationController.updatePoints);

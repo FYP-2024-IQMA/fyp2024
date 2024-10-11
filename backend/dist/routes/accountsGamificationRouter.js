@@ -33,6 +33,7 @@ const router = (0, express_1.Router)();
 /* READ */
 router.get('/gamificationdata/:userid', authMiddleware_1.default, accountsGamificationController.getGamificationData);
 router.get("/leaderboard/:userid", authMiddleware_1.default, accountsGamificationController.getTop5Accounts);
+router.get("/badges/:userid", accountsGamificationController.getBadges);
 /* UPDATE */
 router.patch('/updatepoints', authMiddleware_1.default, accountsGamificationController.updatePoints);
 exports.default = router;

@@ -2,6 +2,7 @@ import supabase from "../config/supabaseConfig";
 import {
     AccountsGamification
 } from "../models/accountsGamificationModel";
+import * as resultService from "../services/resultService";
 
 /* READ */
 export async function getTop5Accounts(userID: string) {
@@ -69,6 +70,35 @@ export async function getGamificationData(userID: string) {
             new Date(data.lastUnitCompletionDate)
         );
     }
+}
+
+export async function getBadges(userID: string) {
+
+    const completedUnit = await resultService.getNoOfCompletedUnit(userID);
+
+    let badges = [];
+
+    const { data, error } = await supabase.storage
+        .from("badges")
+        .list();
+    
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    
+    const maxBadges = Math.min(data.length, completedUnit);
+
+    for (let i = maxBadges; i > 0; i--) {
+        const { data } = supabase.storage
+            .from("badges")
+            .getPublicUrl(`badge${i}.png`);
+
+        badges.push(data.publicUrl);
+    }
+    
+    return badges;
+
 }
 
 /* UPDATE */

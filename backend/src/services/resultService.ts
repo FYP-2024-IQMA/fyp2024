@@ -124,3 +124,28 @@ export async function getNoOfCompletedLesson(
         return count!;
     }
 }
+
+
+/*
+Get the User Progress: 
+- no. of completed lessons per unit
+*/
+
+export async function getNoOfCompletedUnit(
+    userID: string,
+): Promise<number> {
+
+    const { count, error } = await supabase
+        .from("result")
+        .select("quizID, quiz!inner(quizID)", { count: "exact" })
+        .eq("userID", userID)
+        .eq("quiz.quizType", "unit");
+
+    if (error) {
+        console.error(error);
+        throw error;
+    } else {
+        return count!;
+    }
+}
+
