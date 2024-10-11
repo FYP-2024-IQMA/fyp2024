@@ -22,13 +22,17 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const accountsGamificationController = __importStar(require("../controllers/accountsGamificationController"));
 const express_1 = require("express");
+const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* READ */
-router.get('/gamificationdata/:userid', accountsGamificationController.getGamificationData);
-router.get('/leaderboard/:userid', accountsGamificationController.getTop5Accounts);
+router.get('/gamificationdata/:userid', authMiddleware_1.default, accountsGamificationController.getGamificationData);
+router.get("/leaderboard/:userid", authMiddleware_1.default, accountsGamificationController.getTop5Accounts);
 /* UPDATE */
-router.patch('/updatepoints', accountsGamificationController.updatePoints);
+router.patch('/updatepoints', authMiddleware_1.default, accountsGamificationController.updatePoints);
 exports.default = router;

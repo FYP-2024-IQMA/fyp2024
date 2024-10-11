@@ -6,10 +6,10 @@ import verifyToken from '../middleware/authMiddleware';
 const router = Router();
 
 /* READ */
-router.get('/gamificationdata/:userid', accountsGamificationController.getGamificationData);
-router.get('/leaderboard/:userid', accountsGamificationController.getTop5Accounts);
+router.get('/gamificationdata/:userid', verifyToken, accountsGamificationController.getGamificationData);
+router.get("/leaderboard/:userid", verifyToken, accountsGamificationController.getTop5Accounts);
 
 /* UPDATE */
-router.patch('/updatepoints', accountsGamificationController.updatePoints);
+router.patch('/updatepoints', verifyToken, accountsGamificationController.updatePoints);
 
 export default router;
