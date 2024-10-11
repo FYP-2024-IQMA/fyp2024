@@ -1,6 +1,8 @@
-const accountsGamificationService = require("../../dist/services/accountsGamificationService");
 const supabase = require("../../dist/config/supabaseConfig");
 const accountsGamificationModel = require("../../dist/models/accountsGamificationModel");
+const accountsGamificationService = require("../../dist/services/accountsGamificationService");
+const __RewireAPI__ = require("../../dist/services/accountsGamificationService").__RewireAPI__;
+const sinon = require("sinon");
 
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
@@ -10,7 +12,7 @@ let consoleErrorSpy;
 
 beforeEach(() => {
     jest.resetAllMocks();
-    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => { });
+    consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 });
 
 afterEach(() => {
@@ -18,8 +20,7 @@ afterEach(() => {
 });
 
 describe("getTop5Accounts", () => {
-
-    userID = "2";
+    const userID = "2";
 
     const mockResult = [
         {
@@ -75,7 +76,7 @@ describe("getTop5Accounts", () => {
             accounts: {
                 userID: "jd",
                 lastName: "Doe",
-                firstName: "John"
+                firstName: "John",
             },
         },
     ];
@@ -109,14 +110,17 @@ describe("getTop5Accounts", () => {
     ];
 
     it("returns accounts ranked top 5 & user rank", async () => {
-
-        const mockOrder = jest.fn().mockReturnValue({ data: mockResult, error: null });
+        const mockOrder = jest
+            .fn()
+            .mockReturnValue({ data: mockResult, error: null });
 
         const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
 
         supabase.from.mockReturnValue({ select: mockSelect });
 
-        const accounts = await accountsGamificationService.getTop5Accounts(userID);
+        const accounts = await accountsGamificationService.getTop5Accounts(
+            userID
+        );
         expect(accounts).toEqual(expectedResult);
     });
 
@@ -146,7 +150,6 @@ describe("getTop5Accounts", () => {
     });
 
     it("returns more than 5 accounts if there is any same rank & user rank", async () => {
-
         const mockResult2 = [
             ...mockResult,
             {
@@ -186,11 +189,11 @@ describe("getTop5Accounts", () => {
     it("handles error correctly and logs it to console.error", async () => {
         const errorMessage = "Failed to fetch all accounts";
 
-        const mockOrder = jest.fn().mockResolvedValue({ data: null, error: new Error(errorMessage) });
-
-        const mockSelect = jest
+        const mockOrder = jest
             .fn()
-            .mockReturnValue({ order: mockOrder });
+            .mockResolvedValue({ data: null, error: new Error(errorMessage) });
+
+        const mockSelect = jest.fn().mockReturnValue({ order: mockOrder });
 
         supabase.from.mockReturnValue({ select: mockSelect });
 
@@ -221,12 +224,13 @@ describe("getGamificationData", () => {
             mockData.userID
         );
 
-        expect(result).toBeInstanceOf(accountsGamificationModel.AccountsGamification);
+        expect(result).toBeInstanceOf(
+            accountsGamificationModel.AccountsGamification
+        );
         expect(result).toEqual(mockData);
     });
 
     it("should return an AccountsGamification object & lastUnitCompletionDate is null", async () => {
-
         const mockData = {
             userID: "123",
             points: 10,
@@ -269,3 +273,100 @@ describe("getGamificationData", () => {
     });
 });
 
+describe("updatePoints", () => {
+    afterEach(() => {
+        // Reset the mocked dependency after each test
+        __RewireAPI__.__ResetDependency__("getGamificationData");
+    });
+
+    const mockGamificationData =
+        new accountsGamificationModel.AccountsGamification("123", 10, 5, null);
+
+    const expectedResult = {
+        status: 204,
+        statusText: "No Content",
+    };
+
+    it("should update the account successfully when valid fields are provided", async () => {
+        // Mock the getGamificationData response using sinon
+        const getGamificationDataSpy = sinon
+            .stub()
+            .returns(mockGamificationData);
+        __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
+
+        // Mock the Supabase update query
+        const mockEq = jest.fn().mockResolvedValue({
+            ...expectedResult,
+            error: null,
+        });
+
+        const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+        supabase.from.mockReturnValue({ update: mockUpdate });
+
+        // Call the function to test
+        const result = await accountsGamificationService.updatePoints("123", 5);
+
+        sinon.assert.calledWith(getGamificationDataSpy, "123");
+
+        // Validate that the update was called with the correct data
+        expect(mockUpdate).toHaveBeenCalledWith({
+            points: mockGamificationData.getPoints() + 5,
+        });
+
+        // Validate that the result matches the expected output
+        expect(result).toEqual(expectedResult);
+    });
+
+    it("should throw an error and log the error when supabase function to update threw the error", async () => {
+        const errorMessage = "update error";
+
+        // Mock the getGamificationData response using sinon
+        const getGamificationDataSpy = sinon.stub().returns(mockGamificationData);
+        __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
+
+        // Mock the Supabase update query
+        const mockEq = jest.fn().mockResolvedValue({
+            ...expectedResult,
+            error: new Error(errorMessage),
+        });
+
+        const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+        supabase.from.mockReturnValue({ update: mockUpdate });
+
+        await expect(
+            accountsGamificationService.updatePoints("123", 5)
+        ).rejects.toThrow(errorMessage);
+
+        // Check if console.error was called with the expected message
+        expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
+    });
+
+    it("should throw an error when getGamificationData throws the error, supabase function to update should not be called", async () => {
+        const errorMessage = "Failed to fetch account";
+
+        // Mock the getGamificationData response using sinon
+        const getGamificationDataSpy = sinon
+            .stub()
+            .throws(new Error(errorMessage));
+        __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
+
+        // Mock the Supabase update query
+        const mockEq = jest.fn().mockResolvedValue({
+            ...expectedResult,
+            error: new Error("another"),
+        });
+
+        const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+        supabase.from.mockReturnValue({ update: mockUpdate });
+
+        await expect(
+            accountsGamificationService.updatePoints("123", 5)
+        ).rejects.toThrow(errorMessage);
+
+        // Verify that the Supabase update function was never called
+        expect(supabase.from).not.toHaveBeenCalled();
+        expect(mockUpdate).not.toHaveBeenCalled();
+        expect(mockEq).not.toHaveBeenCalled();
+
+    });
+});

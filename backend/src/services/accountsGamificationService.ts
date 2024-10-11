@@ -90,4 +90,3 @@ export async function updatePoints(userID: string, points: number) {
         return { status, statusText };
     }
 }
-
