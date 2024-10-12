@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePoints = exports.getGamificationData = exports.getTop5Accounts = void 0;
+exports.updatePoints = exports.getBadges = exports.getGamificationData = exports.getTop5Accounts = void 0;
 const accountsGamificationService = __importStar(require("../services/accountsGamificationService"));
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
@@ -65,6 +65,19 @@ const getGamificationData = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getGamificationData = getGamificationData;
+const getBadges = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const badges = yield accountsGamificationService.getBadges(req.params.userid);
+        res.status(200).json(badges);
+    }
+    catch (error) {
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+});
+exports.getBadges = getBadges;
 /* UPDATE */
 const updatePoints = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userID, points } = req.body;
