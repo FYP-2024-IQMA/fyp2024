@@ -123,10 +123,18 @@ function getBadges(userID) {
         if (storageBadges.length === 0) {
             throw new Error("Badge Not Found");
         }
-        const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+        const designed = storageBadges
+            .map((badge) => badge.name)
+            .filter((badge) => badge.includes("badge"));
+        const withoutBadge = Math.max(0, completedUnit - designed.length);
         const minBadges = completedUnit - withoutBadge;
         for (let i = 0; i < withoutBadge; i++) {
-            badges.push("Badge Design in Progress!");
+            const { data: publicUrlData } = yield supabaseConfig_1.default.storage
+                .from("badges")
+                .getPublicUrl(`placeholder.png`);
+            if (publicUrlData) {
+                badges.push(publicUrlData.publicUrl);
+            }
         }
         for (let i = minBadges; i > 0; i--) {
             const { data: publicUrlData } = yield supabaseConfig_1.default.storage

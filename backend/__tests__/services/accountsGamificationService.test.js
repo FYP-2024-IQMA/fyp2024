@@ -282,6 +282,12 @@ describe("getGamificationData", () => {
 describe("getBadges", () => {
     const badges = [
         {
+            publicUrl: "https://badges.com/placeholder.png",
+        },
+        {
+            publicUrl: "https://badges.com/placeholder.png",
+        },
+        {
             publicUrl: "https://badges.com/badge2.png",
         },
         {
@@ -291,12 +297,15 @@ describe("getBadges", () => {
 
     const mockData = [
         {
-            badge: "badge1",
+            name: "badge1",
         },
         {
-            badge: "badge2",
-        }
-    ]
+            name: "badge2",
+        },
+        {
+            name: "placeholder",
+        },
+    ];
 
     it("should return an array of badge URLs", async () => {
         resultService.getNoOfCompletedUnit.mockResolvedValue(4);
@@ -305,10 +314,8 @@ describe("getBadges", () => {
         const mockList = jest
             .fn()
             .mockResolvedValue({ data: mockData, error: null });
-        // supabase.storage.from.mockReturnValue({ list: mockList });
 
         // indiv calls to get badges individually
-
         let mockGetPublicURL = jest.fn();
 
         for (let i = 0; i < badges.length; i++) {
@@ -324,11 +331,7 @@ describe("getBadges", () => {
 
         const expectedResult = badges.map((badge) => badge.publicUrl);
 
-        expect(result).toEqual([
-            "Badge Design in Progress!",
-            "Badge Design in Progress!",
-            ...expectedResult,
-        ]);
+        expect(result).toEqual(expectedResult);
     });
 
     it("should return 'Badges Not Found' when there are no badges in storage", async () => {
