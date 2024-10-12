@@ -21,6 +21,17 @@ function extractYouTubeID(url) {
     const matches = url.match(regex);
     return matches ? matches[1] : null;
 }
+const getSectionDuration = (sectionID) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, error } = yield supabaseConfig_1.default
+        .from("lesson")
+        .select("lessonDuration")
+        .eq("sectionID", sectionID);
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    return Math.ceil(data.reduce((acc, curr) => acc + curr.lessonDuration, 0));
+});
 /* READ */
 function getAllSections() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -31,6 +42,10 @@ function getAllSections() {
             console.error(error);
             throw error;
         }
+        const transformedData = yield Promise.all(data.map((section) => __awaiter(this, void 0, void 0, function* () {
+            const sectionDuration = yield getSectionDuration(section.sectionID);
+            return Object.assign(Object.assign({}, section), { sectionDuration });
+        })));
         // else {
         // 	const formattedData = data.map((section) => {
         // 		if (section.introductionURL) {
@@ -45,7 +60,7 @@ function getAllSections() {
         // 	});
         // 	return formattedData;
         // };
-        return data;
+        return transformedData;
     });
 }
 function getSectionDetails(sectionID) {
