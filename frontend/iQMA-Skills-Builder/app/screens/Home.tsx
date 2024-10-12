@@ -145,18 +145,6 @@ const HomeScreen: React.FC = () => {
         }
     };
 
-    const getCurrentSection = async (): Promise<number> => {
-        try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${currentUser.sub}`;
-            const response = await fetch(url);
-            const completedSection = await response.json();
-            return completedSection + 1;
-        } catch (error) {
-            console.error('Error while loading current section:', error);
-            return 0;
-        }
-    };
-
     // number of units user did out of total units in that section (completed units/ total units)
     // for top right circular progress
     // will show 0 if only lessons done in unit 1, because it 0 units completed
@@ -373,9 +361,8 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         (async () => {
             try {
-                const sectionDetails =
-                    await sectionEndpoints.getAllSectionDetails();
-                let currentSection = await getCurrentSection();
+                const sectionDetails = await sectionEndpoints.getAllSectionDetails();
+                let currentSection = await resultEndpoints.getCurrentSection(currentUser.sub);
                 console.log('Current Section Outside:', currentSection);
 
                 if (currentSection > sectionDetails.length) {
