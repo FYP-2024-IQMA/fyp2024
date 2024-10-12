@@ -78,7 +78,7 @@ export async function getBadges(userID: string) {
 
     let badges = [];
 
-    const { data, error } = await supabase.storage
+    const { data: storageBadges, error } = await supabase.storage
         .from("badges")
         .list();
     
@@ -86,15 +86,26 @@ export async function getBadges(userID: string) {
         console.error(error);
         throw error;
     }
-    
-    const maxBadges = Math.min(data.length, completedUnit);
 
-    for (let i = maxBadges; i > 0; i--) {
-        const { data } = supabase.storage
+    if (storageBadges.length === 0) {
+        throw new Error("Badge Not Found");
+    }
+    
+    const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+    const minBadges = completedUnit - withoutBadge;
+
+    for (let i = 0; i < withoutBadge; i++) {
+        badges.push("Badge Design in Progress!");
+    }
+
+    for (let i = minBadges; i > 0; i--) {
+        const { data: publicUrlData } = await supabase.storage
             .from("badges")
             .getPublicUrl(`badge${i}.png`);
-
-        badges.push(data.publicUrl);
+        
+        if (publicUrlData) {
+            badges.push(publicUrlData.publicUrl);
+        }
     }
     
     return badges;

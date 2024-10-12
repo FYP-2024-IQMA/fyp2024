@@ -113,19 +113,28 @@ function getBadges(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const completedUnit = yield resultService.getNoOfCompletedUnit(userID);
         let badges = [];
-        const { data, error } = yield supabaseConfig_1.default.storage
+        const { data: storageBadges, error } = yield supabaseConfig_1.default.storage
             .from("badges")
             .list();
         if (error) {
             console.error(error);
             throw error;
         }
-        const maxBadges = Math.min(data.length, completedUnit);
-        for (let i = maxBadges; i > 0; i--) {
-            const { data } = supabaseConfig_1.default.storage
+        if (storageBadges.length === 0) {
+            throw new Error("Badge Not Found");
+        }
+        const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+        const minBadges = completedUnit - withoutBadge;
+        for (let i = 0; i < withoutBadge; i++) {
+            badges.push("Badge Design in Progress!");
+        }
+        for (let i = minBadges; i > 0; i--) {
+            const { data: publicUrlData } = yield supabaseConfig_1.default.storage
                 .from("badges")
                 .getPublicUrl(`badge${i}.png`);
-            badges.push(data.publicUrl);
+            if (publicUrlData) {
+                badges.push(publicUrlData.publicUrl);
+            }
         }
         return badges;
     });

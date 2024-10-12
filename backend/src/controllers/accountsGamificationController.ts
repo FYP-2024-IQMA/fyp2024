@@ -37,6 +37,7 @@ export const getBadges = async (req: Request, res: Response) => {
     try {
         const badges = await accountsGamificationService.getBadges(req.params.userid);
         res.status(200).json(badges);
+
     } catch (error: any) {
         const errorResponse = handleError(error);
         if(errorResponse){
