@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updatePoints = exports.getGamificationData = exports.getTop5Accounts = void 0;
+exports.updateStreaksFromUnit = exports.updateStreaksFromLogin = exports.updatePoints = exports.getGamificationData = exports.getTop5Accounts = void 0;
 const accountsGamificationService = __importStar(require("../services/accountsGamificationService"));
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
@@ -83,3 +83,39 @@ const updatePoints = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.updatePoints = updatePoints;
+const updateStreaksFromLogin = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("in this login");
+    const userID = req.params.userid;
+    try {
+        const updatedStreak = yield accountsGamificationService.updateStreaksFromLogin(userID);
+        res.status(200).json({
+            status: 200,
+            statusText: "Streak Updated Successfully",
+        });
+    }
+    catch (error) {
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+});
+exports.updateStreaksFromLogin = updateStreaksFromLogin;
+const updateStreaksFromUnit = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("in this unit");
+    console.log(req.params.userid, req.params.quizid);
+    try {
+        const updatedStreak = yield accountsGamificationService.updateStreaksFromUnit(req.params.userid, parseInt(req.params.quizid));
+        res.status(200).json({
+            status: 200,
+            statusText: "Streak Updated Successfully",
+        });
+    }
+    catch (error) {
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+});
+exports.updateStreaksFromUnit = updateStreaksFromUnit;

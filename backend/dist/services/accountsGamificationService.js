@@ -26,8 +26,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTop5Accounts = getTop5Accounts;
 exports.getGamificationData = getGamificationData;
 exports.updatePoints = updatePoints;
-const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
+exports.updateStreaksFromUnit = updateStreaksFromUnit;
+exports.updateStreaksFromLogin = updateStreaksFromLogin;
 const accountsGamificationModel_1 = require("../models/accountsGamificationModel");
+const resultModel_1 = require("../models/resultModel");
+const resultService_1 = require("./resultService");
+const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 /* READ */
 function getTop5Accounts(userID) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -72,6 +76,7 @@ function getGamificationData(userID) {
             .select("*")
             .eq("userID", userID)
             .single();
+        console.log("calling get gamification data");
         if (error) {
             console.error(error);
             throw error;
@@ -100,6 +105,109 @@ function updatePoints(userID, points) {
         }
         else {
             return { status, statusText };
+        }
+    });
+}
+// Ensure that the GET request fetches accurate streak data for the specified user.
+// for both login and normal streak calculation
+// export async function getStreaks(userID: string) {
+// 	try {
+// 		const data = await getGamificationData(userID);
+// 		return data.streaks;
+// 	} catch (error) {
+// 		throw error;
+// 	}
+// }
+// Helper function to calculate streak based on last completion date
+function calculateStreak(lastDate, today) {
+    if (!lastDate)
+        return 1; // No last date, start a new streak
+    const differenceInDays = Math.round((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+    console.log("today", today);
+    console.log(differenceInDays);
+    if (differenceInDays == 1)
+        return 1; // Increment streak by 1 if difference is 1 day
+    if (differenceInDays > 1)
+        return 2; // Reset streak if difference is greater than 1 day
+    return 0; // Default case, no streak update
+}
+// Ensure that the POST request correctly updates the user's streak when they complete a new unit.
+function updateStreaksFromUnit(userID, quizID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const resultInstance = new resultModel_1.Result(userID, quizID, new Date());
+        const createResultResponse = yield (0, resultService_1.createResult)(resultInstance);
+        const data = yield getGamificationData(userID);
+        console.log("from unit la");
+        console.log("quiz is", quizID);
+        console.log(data);
+        try {
+            if (data.lastUnitCompletionDate != null) {
+                const lastUnitDate = new Date(data.lastUnitCompletionDate);
+                const today = new Date();
+                const daysSegment = calculateStreak(lastUnitDate, today);
+                console.log("days segment is", daysSegment);
+                let currentStreak = data.getStreaks();
+                // Check the difference in days to update the streak
+                if (daysSegment == 1) {
+                    // If the difference is 1 day, increment the streak
+                    console.log("diff 1 day, so + 1");
+                    currentStreak += 1;
+                }
+                else if (daysSegment > 1) {
+                    // If the difference is greater than 1 day, reset the streak to 1
+                    console.log("diff > 1 day, so reset to 1");
+                    currentStreak = 1;
+                }
+                const { status, statusText, error } = yield supabaseConfig_1.default
+                    .from("accountsgamification")
+                    .update({
+                    streaks: currentStreak,
+                })
+                    .eq("userID", userID);
+            }
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
+        }
+    });
+}
+// Update user streak for homepage display
+function updateStreaksFromLogin(userID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const data = yield getGamificationData(userID);
+        try {
+            const today = new Date();
+            // Check if the user has logged in today
+            if (data.lastUnitCompletionDate != null) {
+                const lastUnitDate = new Date(data.lastUnitCompletionDate);
+                // Calculate the difference in days between today and the last completion date
+                const daysSegment = calculateStreak(lastUnitDate, today);
+                let currentStreak = data.getStreaks();
+                // If the user has logged in today, do not update the streak
+                if (daysSegment === 0) {
+                    console.log("last unit completion date is today. streak unchanged");
+                }
+                else if (daysSegment > 1) {
+                    // If the difference is greater than 1 day, reset the streak to 0
+                    console.log("last unit completion date v long ago. streak reset");
+                    currentStreak = 0;
+                }
+                else {
+                    console.log("diff is 1 means streak + 1");
+                    currentStreak += 1;
+                }
+                const { status, statusText, error } = yield supabaseConfig_1.default
+                    .from("accountsgamification")
+                    .update({
+                    streaks: currentStreak,
+                })
+                    .eq("userID", userID);
+            }
+        }
+        catch (error) {
+            console.log(error);
+            throw error;
         }
     });
 }
