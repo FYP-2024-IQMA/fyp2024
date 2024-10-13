@@ -14,12 +14,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessage = sendMessage;
 const amqplib_1 = __importDefault(require("amqplib"));
-const aws_sdk_1 = __importDefault(require("aws-sdk"));
-const s3 = new aws_sdk_1.default.S3({
-    region: 'ap-southeast-1',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-});
+// import AWS from "aws-sdk";
+// const s3 = new AWS.S3({
+//     region: 'ap-southeast-1',
+//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+// });
+const awsConfig_1 = require("../config/awsConfig");
 function uploadToS3(queue, newClickstream) {
     return __awaiter(this, void 0, void 0, function* () {
         const key = `${queue}/${newClickstream.userID}.json`;
@@ -29,7 +30,7 @@ function uploadToS3(queue, newClickstream) {
         };
         let existingClickstream = [];
         try {
-            const existingData = yield s3.getObject(params).promise();
+            const existingData = yield awsConfig_1.s3.getObject(params).promise();
             let fileContent = existingData.Body.toString('utf-8');
             existingClickstream = fileContent
                 .split('\n')
@@ -46,7 +47,7 @@ function uploadToS3(queue, newClickstream) {
         }
         existingClickstream.push(newClickstream);
         const lineDelimitedJson = existingClickstream.map(item => JSON.stringify(item)).join('\n');
-        s3.putObject(Object.assign(Object.assign({}, params), { Body: lineDelimitedJson, ContentType: "application/json" })).promise();
+        awsConfig_1.s3.putObject(Object.assign(Object.assign({}, params), { Body: lineDelimitedJson, ContentType: "application/json" })).promise();
     });
 }
 const QUEUE_NAMES = ['timeTaken', 'attemptsTaken'];
