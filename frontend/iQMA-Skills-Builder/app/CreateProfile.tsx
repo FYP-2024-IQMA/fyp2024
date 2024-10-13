@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     },
     defaultOptionText: {
         color: Colors.default.optionText,
-        fontSize: 14,
+        fontSize: Colors.default.optionFontSize,
     },
     errorText: {
         color: Colors.border.wrongColor,

@@ -17,10 +17,24 @@ export const Colors = {
     },
     overviewCard: {
         background: '#EAF1FF',
+        cardTitleFontSize: 14,
+        cardSubtitleFontSize: 12,
+        lineHeight: 20,
     },
     header: {
         background: '#FFFFFF',
         color: '#4143A3',
+        fontSize: 14,
+    },
+    text: {
+        fontSize: 12,
+        lineHeight: 20,
+    },
+    learnerAssessment: {
+        lineHeight: 20,
+    },
+    lessonName: {
+        fontSize: 14,
     },
     profile: {
         inputColor: '#F7F7F7',
@@ -36,6 +50,7 @@ export const Colors = {
         purple500: '#7654F2',
         purple100: '#B199FF',
         optionText: '#5C5776',
+        optionFontSize: 14,
         red: '#E66A63',
         green: '#8CE5CB',
     },

@@ -83,11 +83,12 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.default.red,
     },
     OverviewCardTitle: {
-        fontSize: 14,
+        fontSize: Colors.overviewCard.cardTitleFontSize,
         fontWeight: 'bold',
     },
     OverviewCardSubtitle: {
-        fontSize: 12,
+        fontSize: Colors.overviewCard.cardSubtitleFontSize,
+        lineHeight: Colors.overviewCard.lineHeight,
     },
     OverviewCardSubtitleArr: {
         marginTop: 10,
@@ -99,12 +100,12 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     ScenarioTitle: {
-        fontSize: 14,
+        fontSize: Colors.overviewCard.cardTitleFontSize,
         fontWeight: 'bold',
         marginBottom: 5,
     },
     ScenarioCardSubtitle: {
-        fontSize: 12,
-        lineHeight: 18,
+        fontSize: Colors.overviewCard.cardSubtitleFontSize,
+        lineHeight: Colors.overviewCard.lineHeight,
     },
 });

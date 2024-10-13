@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontWeight: 'bold',
         color: Colors.default.purple500,
-        lineHeight: 20,
+        lineHeight: Colors.learnerAssessment.lineHeight,
     },
     defaultOptionText: {
         color: Colors.default.optionText,

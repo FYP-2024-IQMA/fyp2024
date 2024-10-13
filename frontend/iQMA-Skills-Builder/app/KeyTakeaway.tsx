@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
         color: Colors.header.color,
         marginBottom: 20,
@@ -219,14 +219,14 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         color: Colors.header.color,
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: Colors.header.fontSize,
     },
     takeawayText: {
         marginLeft: 15,
-        fontSize: 12,
-        lineHeight: 25,
+        fontSize: Colors.text.fontSize,
+        lineHeight: 22,
         color: Colors.header.color,
-        marginBottom: 15,
+        marginBottom: 25,
     },
     buttonContainer: {
         alignItems: 'center',
