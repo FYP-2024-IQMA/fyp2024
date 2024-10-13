@@ -66,7 +66,7 @@ def test_langchain_endpoint():
                                               })
     logger.info(f"Response: {response.json()}")
     assert response.status_code == 200, "Langchain endpoint is faulty."
-    assert "42" in response.json()["content"], "Langchain is not generating the correct response."
+    assert "42" in response.json()["content"]["final_answer"]["output"], "Langchain is not generating the correct response."
 
 def test_langchain_endpoint_with_history():
     # Test with history
@@ -79,7 +79,7 @@ def test_langchain_endpoint_with_history():
                                             })
     logger.info(f"Response: {response.json()}")
     assert response.status_code == 200, "Langchain endpoint is faulty."
-    assert "42" in response.json()["content"], "Langchain is not generating the correct response."
+    assert "42" in response.json()["content"]["final_answer"]["output"], "Langchain is not generating the correct response."
 
 def test_langchain_endpoint_invalid_role():
     # Test with missing role

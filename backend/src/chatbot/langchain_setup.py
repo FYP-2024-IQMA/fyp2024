@@ -2,6 +2,9 @@
 
 from dotenv import load_dotenv
 from functools import partial
+from langchain_community.chat_message_histories import ChatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
 from langchain.schema.runnable import RunnableBranch, RunnablePassthrough
 from langchain.schema.runnable.passthrough import RunnableAssign
 from langchain_openai import ChatOpenAI
@@ -10,9 +13,14 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableLambda
 import os
 
-from chroma_setup import agent_executor
 
-# function for seeing runnables
+# dealing with relative / absolute imports
+if __package__ is None or __package__ == '' or __name__ == '__main__':
+    from chroma_setup import agent_executor
+else:
+    from src.chatbot.chroma_setup import agent_executor
+
+# functions for seeing runnables
 def RPrint(preface="State: "):
     def print_and_return(x, preface=""):
         print(f"{preface}{x}")
@@ -24,6 +32,18 @@ def PPrint(preface="State: "):
         print(f"{preface}{x}")
         return x
     return RunnableLambda(partial(print_and_return, preface=preface))
+
+# functions for including memory and branching in chain
+def route(info):
+    if "question" in info["choice"].lower():
+        return agent_executor
+    else:
+        return answer_chain
+    
+def get_session_history(session_id: str) -> BaseChatMessageHistory:
+    if session_id not in store:
+        store[session_id] = ChatMessageHistory()
+    return store[session_id]
 
 # Create chatbot chain for replying user
 answer_prompt = """<system_prompt>
@@ -78,7 +98,10 @@ answer_chain = answer_prompt_template | answer_llm | StrOutputParser()
 
 # create chain for deciding which chain to use
 branch_prompt = """
-You job is to determine if the user is asking a question or looking for a summary. Choose the most likely topic based on the user input. Only one word is needed for the choice, no explanation is needed.\n[Options: question, summary]
+Determine if the user is asking a question or looking for a summary based on the input. Choose the most likely topic based on the user input. Only one word is needed for the choice, no explanation is needed.\n[Available Options: summary, question]
+
+Input:
+{input}
 """
 branch_prompt_template = ChatPromptTemplate.from_template(branch_prompt)
 branch_llm = ChatOpenAI(
@@ -91,6 +114,9 @@ branch_chain = branch_prompt_template | branch_llm | StrOutputParser()
 # create chain for consolidating chain outputs and replying user
 reply_prompt = """
 Your job is to consolidate the outputs from the previous chains and reply to the user. If the choice is "question", compile a response using the input and the final answer from the agent. If the choice is "summary", compile a response using the input and the final answer from the answer chain.
+
+History:
+{history}
 
 Input:
 {input}
@@ -114,20 +140,44 @@ reply_chain = reply_prompt_template | reply_llm | StrOutputParser()
 # branch_chain decides which chain to use
 # if user ask question, use agent to get a final answer
 # if user input, use chat_chain
+
 full_chain = (
     PPrint()
     | RunnableAssign({'choice': branch_chain})
     | PPrint()
-    | RunnableBranch(
-        (lambda x: "question" in x["choice"].lower(), RunnableAssign({'final_answer': agent_executor})),
-        # (lambda x: "summary" in x["choice"].lower(), RunnableAssign({'final_answer': answer_chain})),
-        RunnableAssign({'final_answer': answer_chain})
-    )
+    | RunnableAssign({'final_answer': route})
+    | PPrint()
     | RunnableAssign({'output': reply_chain})
+)
+
+# full_chain = (
+#     PPrint()
+#     | RunnableAssign({'choice': branch_chain})
+#     | PPrint()
+#     | RunnableBranch(
+#         (lambda x: "question" in x["choice"].lower(), RunnableAssign({'final_answer': answer_llm})),
+#         # (lambda x: "summary" in x["choice"].lower(), RunnableAssign({'final_answer': answer_chain})),
+#         RunnableAssign({'final_answer': answer_chain})
+#     )
+#     | PPrint()
+#     | RunnableAssign({'output': reply_chain})
+# )
+
+store = {}
+
+full_chain_w_history = RunnableWithMessageHistory(
+    full_chain,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="history",
 )
 
 if __name__ == "__main__":
     # Test the chain
-    # input = "Why does a leader need to be adaptable?"
-    input = "I'm struggling with delegating tasks to my team because I worry they won't do it as well as I would."
-    output = full_chain.invoke({"input": input})
+    input = "Why does a leader need to be adaptable?"
+    # input = "This is not a question. This is a statement. I want you to summarize what I just said. Do not reply with a question."
+    # output = full_chain.invoke({"input": input})
+    output = full_chain_w_history.invoke(
+        {"ability": "math", "input": input},
+        config={"configurable": {"session_id": "abc123"}},
+    )
