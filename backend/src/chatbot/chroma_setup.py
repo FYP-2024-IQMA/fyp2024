@@ -30,7 +30,7 @@ try:
     vectorstore = ChromaVectorStore.from_params(
         collection_name="iqma_collection",
         embedding_function=embeddings,
-        persist_dir="./src/chatbot/chroma_langchain_db"
+        persist_dir="./chroma_langchain_db"
     )
     print(f"Completed setting up vector store")
 

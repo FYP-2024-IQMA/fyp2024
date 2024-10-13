@@ -11,8 +11,10 @@ from typing import List, Optional
 # dealing with relative / absolute imports
 if __package__ is None or __package__ == '' or __name__ == '__main__':
     from chatgpt import ChatGPT
+    # from chroma_setup import agent_executor
 else:
     from src.chatbot.chatgpt import ChatGPT
+    # from src.chatbot.chroma_setup import agent_executor
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
