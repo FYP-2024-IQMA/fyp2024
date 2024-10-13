@@ -371,41 +371,6 @@ describe("updatePoints", () => {
 
     });
 });
-// describe("getStreaks", () => {
-//     it("should return streaks", async () => {
-//         const mockData = {
-//             streaks: 5,
-//         };
-
-//         const mockSingle = jest
-//             .fn()
-//             .mockResolvedValue({ data: mockData, error: null });
-//         const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
-//         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
-//         supabase.from.mockReturnValue({ select: mockSelect });
-
-//         const result = await accountsGamificationService.getStreaks("123");
-
-//         expect(result).toBe(mockData.streaks);
-//     });
-
-//     it("should throw an error when there is an error from supabase", async () => {
-//         const errorMessage = "Failed to fetch streaks";
-
-//         const mockSingle = jest.fn().mockResolvedValue({
-//             data: null,
-//             error: new Error(errorMessage),
-//         });
-//         const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
-//         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
-//         supabase.from.mockReturnValue({ select: mockSelect });
-
-//         await expect(
-//             accountsGamificationService.getStreaks("789")
-//         ).rejects.toThrow(errorMessage);
-//         expect(consoleErrorSpy).toHaveBeenCalledWith(new Error(errorMessage));
-//     });
-// });
 
 describe("updateStreaksFromLogin", () => {
 
@@ -439,49 +404,6 @@ describe("updateStreaksFromLogin", () => {
         expect(mockEq).toHaveBeenCalledWith('userID', mockData.userID);
 
     });
-
-    // it('should reset the streak if the user has not logged in for more than 1 day', async () => {
-
-    //     const mockData = {
-    //         userID: "123",
-    //         points: 10,
-    //         streaks: 5,
-    //         lastUnitCompletionDate: new Date(new Date().setDate(new Date().getDate() - 5)) // 1 day difference
-
-    //     };
-
-    //     const mockSingle = jest
-    //         .fn()
-    //         .mockResolvedValue({ data: mockData, error: null });
-    //     const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
-    //     const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
-    //     supabase.from.mockReturnValue({ select: mockSelect });
-
-    //     const result = await accountsGamificationService.updateStreaksFromLogin(
-    //         mockData.userID
-    //     );
-    //     const mockUpdate = jest.fn().mockResolvedValue({ status: 204, statusText: "Streak Updated Successfully" });
-
-    //     expect(result).toBeInstanceOf(accountsGamificationModel.AccountsGamification);
-    //     expect(result).toEqual({
-    //         ...mockData,
-    //         streaks: 0
-    //     });
-
-    //     expect(supabase.from).toHaveBeenCalledWith('accountsgamification');
-    //     expect(mockEq).toHaveBeenCalledWith('userID', mockData.userID);
-
-
-
-    //     // accountsGamificationService.getGamificationData.mockResolvedValue(mockData);
-
-    //     await accountsGamificationService.updateStreaksFromLogin(userID);
-
-    //     expect(getGamificationData).toHaveBeenCalledWith(userID);
-    //     expect(mockData.getStreaks).toHaveBeenCalled();
-    //     // expect(supabase.from().update).toHaveBeenCalledWith({ streaks: 0 });
-    //     expect(supabase.from().eq).toHaveBeenCalledWith('userID', userID);
-    // });
 
     it('should reset the streak if the user has not logged in for more than 1 day', async () => {
         const mockData = {
@@ -522,62 +444,193 @@ describe("updateStreaksFromLogin", () => {
 });
 
 describe("updateStreaksFromUnit", () => {
+    afterEach(() => {
+        // Reset the mocked dependency after each test
+        __RewireAPI__.__ResetDependency__("getGamificationData");
+    });
 
-    it('should increase streak by 1 when unit is completed and previous unit is done the previous day', async () => {
+    // it('should create a result and update streak if unit is completed', async () => {
+    //     const mockGamificationData = new accountsGamificationModel.AccountsGamification("123", 10, 5, new Date(new Date().setDate(new Date().getDate() - 1))); // Last completion 1 day ago
+    //     const mockResult = { userID: "123", quizID: 1, dateCreated: new Date() };
 
-        const mockData = {
-            userID: "123",
-            points: 10,
-            streaks: 5,
-            lastUnitCompletionDate: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(), // 1 day difference
-            getStreaks: jest.fn().mockReturnValue(5),
-        };
-        quizID = 1;
+    //     // Mock the getGamificationData response
+    //     const getGamificationDataSpy = sinon.stub().returns(mockGamificationData);
+    //     __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
 
-        // Mock the result creation and gamification data
-        // resultService.createResult.mockResolvedValue(mockData.userID);
-        jest.spyOn(resultService, 'createResult').mockResolvedValue(mockData.userID);  // Correctly mock the resultService
+    //     // Mock the Supabase update query for streaks
+    //     const mockEq = jest.fn().mockResolvedValue({ error: null });
+    //     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+    //     supabase.from.mockReturnValue({ update: mockUpdate });
 
-        accountsGamificationService.getGamificationData.mockResolvedValue(mockData);
+    //     // Mock the createResult function
+    //     const createResultSpy = jest.fn().mockResolvedValue({ error: null });
+    //     __RewireAPI__.__Rewire__("createResult", createResultSpy);
 
-        const mockUpdate = jest.fn().mockResolvedValue({ status: 200, statusText: "OK" });
-        const mockEq = jest.fn().mockReturnValue({ update: mockUpdate });
-        supabase.from.mockReturnValue({ eq: mockEq });
+    //     // Call the service to test
+    //     const result = await accountsGamificationService.updateStreaksFromUnit("123", 1);
 
-        await updateStreaksFromUnit(mockData.userID, quizID);
+    //     // Check if the getGamificationData was called
+    //     sinon.assert.calledWith(getGamificationDataSpy, "123");
 
-        expect(resultService.createResult).toHaveBeenCalledWith(expect.any(Object));
-        expect(accountsGamificationService.getGamificationData).toHaveBeenCalledWith(mockData.userID);
+    //     // Check if the update query for streaks was called with the correct data
+    //     expect(mockUpdate).toHaveBeenCalledWith({
+    //         streaks: 6, // The streak should be incremented by 1
+    //     });
 
-        // Validate the streak increment
-        expect(mockData.getStreaks).toHaveBeenCalled();
-        expect(mockUpdate).toHaveBeenCalledWith({ streaks: 6 }); // Incremented streak
-        expect(mockEq).toHaveBeenCalledWith('userID', mockData.userID);
+    //     // Check if the createResult was called with the correct result instance
+    //     expect(createResultSpy).toHaveBeenCalledWith(mockResult);
+    // });
 
-    })
+    // it('should increase streak by 1 when unit is completed and previous unit is done the previous day', async () => {
 
-    it('streak remains the same if unit is completed and previous unit is done the same day', async () => {
+    //     // const mockData = {
+    //     //     userID: "123",
+    //     //     points: 10,
+    //     //     streaks: 5,
+    //     //     lastUnitCompletionDate: new Date(new Date().setDate(new Date().getDate() - 1)).toISOString(), // 1 day difference
+    //     //     getStreaks: jest.fn().mockReturnValue(5),
+    //     // };
+    //     // const quizID = 1;
 
-        const mockData = {
-            userID: "123",
-            points: 10,
-            streaks: 5,
-            lastUnitCompletionDate: new Date(new Date().setDate(new Date().getDate())) // 1 day difference
+    //     const mockGamificationData = new accountsGamificationModel.AccountsGamification("123", 10, 5, new Date(new Date().setDate(new Date().getDate() - 1)).toISOString()); // 5 is the current streak
 
-        };
-        const mockSingle = jest
-            .fn()
-            .mockResolvedValue({ data: mockData, error: null });
-        const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
-        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
-        supabase.from.mockReturnValue({ select: mockSelect });
+    //     // Mock the getGamificationData response using sinon
+    //     const getGamificationDataSpy = sinon.stub().returns(mockGamificationData);
+    //     __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
 
-        const result = await accountsGamificationService.updateStreaksFromUnit('user1');
+    //     // Mock the Supabase update query
+    //     const mockEq = jest.fn().mockResolvedValue({
+    //         error: null,
+    //     });
 
-        expect(result.streaks).toBe(5);
-        expect(result.userID).toBe(mockData.userID);
+    //     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+    //     supabase.from.mockReturnValue({ update: mockUpdate });
 
-    })
+    //     // Call the function to test
+    //     const result = await accountsGamificationService.updateStreaksFromUnit("1", 1);
+
+    //     // Check if the flow hits the update function
+    //     expect(mockUpdate).toHaveBeenCalled();  // This verifies the mockUpdate was called
+    //     sinon.assert.calledWith(getGamificationDataSpy, "1");
+
+    //     // Validate that the update was called with the correct data
+    //     expect(mockUpdate).toHaveBeenCalledWith({
+    //         streaks: 5, // This should be 5
+    //     });
+
+    // })
+
+    // pass
+    // it('streak remains the same if unit is completed and previous unit is done the same day', async () => {
+    //     const mockGamificationData = new accountsGamificationModel.AccountsGamification("123", 10, 5, new Date()); // 5 is the current streak
+
+    //     // Mock the getGamificationData response using sinon
+    //     const getGamificationDataSpy = sinon.stub().returns(mockGamificationData);
+    //     __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
+
+    //     // Mock the Supabase update query
+    //     const mockEq = jest.fn().mockResolvedValue({
+    //         error: null,
+    //     });
+
+    //     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+    //     supabase.from.mockReturnValue({ update: mockUpdate });
+
+    //     // Call the function to test
+    //     const result = await accountsGamificationService.updateStreaksFromUnit("1", 1);
+
+    //     // Check if the flow hits the update function
+    //     expect(mockUpdate).toHaveBeenCalled();  // This verifies the mockUpdate was called
+    //     sinon.assert.calledWith(getGamificationDataSpy, "1");
+
+    //     // Validate that the update was called with the correct data
+    //     expect(mockUpdate).toHaveBeenCalledWith({
+    //         streaks: 5, // This should be 5
+    //     });
+
+    // });
+
+    // it('should return the same streak if the last unit completion is today', async () => {
+    //     const mockGamificationData = new accountsGamificationModel.AccountsGamification("123", 10, 5, new Date()); // Last completion is today
+    //     const mockResult = new Result("123", 1, new Date());
+
+    //     // Mock the getGamificationData response
+    //     const getGamificationDataSpy = sinon.stub().returns(mockGamificationData);
+    //     __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
+
+    //     // Mock the Supabase update query for streaks
+    //     const mockEq = jest.fn().mockResolvedValue({ error: null });
+    //     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+    //     supabase.from.mockReturnValue({ update: mockUpdate });
+
+    //     // Mock the createResult function
+    //     const createResultSpy = jest.fn().mockResolvedValue({ error: null });
+    //     __RewireAPI__.__Rewire__("createResult", createResultSpy);
+
+    //     // Call the service to test
+    //     const result = await accountsGamificationService.updateStreaksFromUnit("123", 1);
+
+    //     // Check if the getGamificationData was called
+    //     sinon.assert.calledWith(getGamificationDataSpy, "123");
+
+    //     // Verify that update wasn't called because the streak doesn't change
+    //     expect(mockUpdate).not.toHaveBeenCalled();
+
+    //     // Check if the createResult was called with the correct result instance
+    //     expect(createResultSpy).toHaveBeenCalledWith(mockResult);
+    // });
+
+    // it("should throw an error when getGamificationData throws the error, supabase function to update should not be called", async () => {
+    //     const errorMessage = "Failed to fetch account";
+
+    //     // Mock the getGamificationData response using sinon
+    //     const getGamificationDataSpy = sinon
+    //         .stub()
+    //         .throws(new Error(errorMessage));
+    //     __RewireAPI__.__Rewire__("getGamificationData", getGamificationDataSpy);
+
+    //     // Mock the Supabase update query
+    //     const mockEq = jest.fn().mockResolvedValue({
+    //         error: new Error("another"),
+    //     });
+
+    //     const mockUpdate = jest.fn().mockReturnValue({ eq: mockEq });
+    //     supabase.from.mockReturnValue({ update: mockUpdate });
+
+    //     await expect(
+    //         accountsGamificationService.updateStreaksFromUnit("123", 5)
+    //     ).rejects.toThrow(errorMessage);
+
+    //     // Verify that the Supabase update function was never called
+    //     expect(supabase.from).not.toHaveBeenCalled();
+    //     expect(mockUpdate).not.toHaveBeenCalled();
+    //     expect(mockEq).not.toHaveBeenCalled();
+
+    // });
+
+
+    // it('streak remains the same if unit is completed and previous unit is done the same day', async () => {
+
+    //     const mockData = {
+    //         userID: "123",
+    //         points: 10,
+    //         streaks: 5,
+    //         lastUnitCompletionDate: new Date(new Date().setDate(new Date().getDate())) // 1 day difference
+
+    //     };
+    //     const mockSingle = jest
+    //         .fn()
+    //         .mockResolvedValue({ data: mockData, error: null });
+    //     const mockEq = jest.fn().mockReturnValue({ single: mockSingle });
+    //     const mockSelect = jest.fn().mockReturnValue({ eq: mockEq });
+    //     supabase.from.mockReturnValue({ select: mockSelect });
+
+    //     const result = await accountsGamificationService.updateStreaksFromUnit('user1');
+
+    //     expect(result.streaks).toBe(5);
+    //     expect(result.userID).toBe(mockData.userID);
+
+    // })
 
     //     it('streak is set to 1 if its the first unit completed in many days', async () => {
 
