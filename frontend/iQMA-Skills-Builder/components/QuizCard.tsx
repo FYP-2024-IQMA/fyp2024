@@ -80,7 +80,7 @@ export const QuizCard: React.FC<{
                 style={{
                     fontSize: 16,
                     fontWeight: 'bold',
-                    color: '#4143A3',
+                    color: Colors.header.color,
                     marginBottom: 10,
                 }}
             >
@@ -93,7 +93,7 @@ export const QuizCard: React.FC<{
                     labelColor={
                         selectedButton === option1
                             ? Colors.light.background
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     backgroundColor={
                         selectedButton === option1
@@ -103,7 +103,7 @@ export const QuizCard: React.FC<{
                     borderColor={
                         selectedButton === option1
                             ? Colors.default.purple500
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option1', option1)}
                     capitalise={false}
@@ -113,7 +113,7 @@ export const QuizCard: React.FC<{
                     labelColor={
                         selectedButton === option2
                             ? Colors.light.background
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     backgroundColor={
                         selectedButton === option2
@@ -123,7 +123,7 @@ export const QuizCard: React.FC<{
                     borderColor={
                         selectedButton === option2
                             ? Colors.default.purple500
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option2', option2)}
                     capitalise={false}
@@ -133,7 +133,7 @@ export const QuizCard: React.FC<{
                     labelColor={
                         selectedButton === option3
                             ? Colors.light.background
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     backgroundColor={
                         selectedButton === option3
@@ -143,7 +143,7 @@ export const QuizCard: React.FC<{
                     borderColor={
                         selectedButton === option3
                             ? Colors.default.purple500
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option3', option3)}
                     capitalise={false}
@@ -153,7 +153,7 @@ export const QuizCard: React.FC<{
                     labelColor={
                         selectedButton === option4
                             ? Colors.light.background
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     backgroundColor={
                         selectedButton === option4
@@ -163,7 +163,7 @@ export const QuizCard: React.FC<{
                     borderColor={
                         selectedButton === option4
                             ? Colors.default.purple500
-                            : '#5C5776'
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option4', option4)}
                     capitalise={false}
@@ -174,9 +174,15 @@ export const QuizCard: React.FC<{
                         label="check"
                         labelColor="#18113C"
                         backgroundColor={
-                            selectedButton ? '#8CE5CB' : Colors.light.background
+                            selectedButton
+                                ? Colors.default.green
+                                : Colors.light.background
                         }
-                        borderColor={selectedButton ? '#8CE5CB' : '#5C5776'}
+                        borderColor={
+                            selectedButton
+                                ? Colors.default.green
+                                : Colors.default.optionText
+                        }
                         onPressHandler={handleCheck}
                     />
                 </View>
@@ -209,13 +215,15 @@ export const QuizCard: React.FC<{
                                 style={{
                                     fontWeight: 'bold',
                                     fontSize: 16,
-                                    color: isCorrect ? '#1ACB98' : '#E66A63',
+                                    color: isCorrect
+                                        ? '#1ACB98'
+                                        : Colors.default.red,
                                 }}
                             >
                                 {isCorrect ? 'Correct' : 'Incorrect'}
                             </Text>
                         </View>
-                        <Text style={{marginBottom: 10}}>
+                        <Text style={{marginBottom: 10, fontWeight: 'bold'}}>
                             {selectedButton ? selectedButton!.explanation : ''}
                         </Text>
                         <View style={{alignItems: 'center'}}>
@@ -227,9 +235,15 @@ export const QuizCard: React.FC<{
                                         : Colors.light.background
                                 }
                                 backgroundColor={
-                                    isCorrect ? '#8CE5CB' : '#E66A63'
+                                    isCorrect
+                                        ? Colors.default.green
+                                        : Colors.default.red
                                 }
-                                borderColor={isCorrect ? '#8CE5CB' : '#E66A63'}
+                                borderColor={
+                                    isCorrect
+                                        ? Colors.default.green
+                                        : Colors.default.red
+                                }
                                 onPressHandler={handleAnswer}
                             />
                         </View>
@@ -246,7 +260,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#D9D9D9',
+        // backgroundColor: '#D9D9D9',
+        backgroundColor: '#F0F0F0',
         paddingTop: 20,
         paddingBottom: 20,
     },

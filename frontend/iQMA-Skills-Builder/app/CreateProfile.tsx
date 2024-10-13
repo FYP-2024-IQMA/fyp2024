@@ -125,8 +125,10 @@ export default function CreateProfile() {
                     borderWidth: 1,
                     // borderColor: '#E5E5E5',
                     borderColor:
-                        !isContinue && !firstName ? '#ff4c4c' : '#E5E5E5',
-                    backgroundColor: '#F7F7F7',
+                        !isContinue && !firstName
+                            ? Colors.border.wrongColor
+                            : '#E5E5E5',
+                    backgroundColor: Colors.profile.inputColor,
                     borderRadius: 10,
                     padding: 10,
                     width: '100%',
@@ -153,8 +155,10 @@ export default function CreateProfile() {
                     borderWidth: 1,
                     // borderColor: '#E5E5E5',
                     borderColor:
-                        !isContinue && !lastName ? '#ff4c4c' : '#E5E5E5',
-                    backgroundColor: '#F7F7F7',
+                        !isContinue && !lastName
+                            ? Colors.border.wrongColor
+                            : '#E5E5E5',
+                    backgroundColor: Colors.profile.inputColor,
                     borderRadius: 10,
                     padding: 10,
                     width: '100%',
@@ -180,8 +184,11 @@ export default function CreateProfile() {
                 style={{
                     borderWidth: 1,
                     // borderColor: '#E5E5E5',
-                    borderColor: !isContinue && !email ? '#ff4c4c' : '#E5E5E5',
-                    backgroundColor: '#F7F7F7',
+                    borderColor:
+                        !isContinue && !email
+                            ? Colors.border.wrongColor
+                            : '#E5E5E5',
+                    backgroundColor: Colors.profile.inputColor,
                     borderRadius: 10,
                     padding: 10,
                     width: '100%',
@@ -222,8 +229,10 @@ export default function CreateProfile() {
                         borderRadius: 10,
                         // borderColor: '#E5E5E5',
                         borderColor:
-                            !isContinue && !selectedAge ? '#ff4c4c' : '#E5E5E5',
-                        backgroundColor: '#F7F7F7',
+                            !isContinue && !selectedAge
+                                ? Colors.border.wrongColor
+                                : '#E5E5E5',
+                        backgroundColor: Colors.profile.inputColor,
                     }}
                 >
                     <Picker
@@ -273,9 +282,9 @@ export default function CreateProfile() {
                         // borderColor: '#E5E5E5',
                         borderColor:
                             !isContinue && !selectedGender
-                                ? '#ff4c4c'
+                                ? Colors.border.wrongColor
                                 : '#E5E5E5',
-                        backgroundColor: '#F7F7F7',
+                        backgroundColor: Colors.profile.inputColor,
                     }}
                 >
                     <Picker
@@ -356,11 +365,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     defaultOptionText: {
-        color: '#5C5776',
+        color: Colors.default.optionText,
         fontSize: 14,
     },
     errorText: {
-        color: '#ff4c4c',
+        color: Colors.border.wrongColor,
     },
     termsAndConditionView: {
         padding: 10,

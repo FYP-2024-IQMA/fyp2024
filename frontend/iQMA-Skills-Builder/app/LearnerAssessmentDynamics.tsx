@@ -295,10 +295,10 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
     correctBorder: {
-        borderColor: '#9CA3AF',
+        borderColor: Colors.border.correctColor,
     },
     wrongBorder: {
-        borderColor: '#ff4c4c',
+        borderColor: Colors.border.wrongColor,
     },
     textInputStyle: {
         flex: 2.3,
@@ -314,10 +314,10 @@ const styles = StyleSheet.create({
         lineHeight: 20,
     },
     defaultOptionText: {
-        color: '#5C5776',
+        color: Colors.default.optionText,
         fontSize: 14,
     },
     errorText: {
-        color: '#ff4c4c',
+        color: Colors.border.wrongColor,
     },
 });

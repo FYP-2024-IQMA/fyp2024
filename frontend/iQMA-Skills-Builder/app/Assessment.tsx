@@ -179,7 +179,7 @@ export default function Assessment() {
                         <Text
                             style={{
                                 fontSize: 14,
-                                color: '#4143A3',
+                                color: Colors.header.color,
                                 marginBottom: 10,
                             }}
                         >

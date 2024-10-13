@@ -208,7 +208,7 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
                                 bubbleColor={
                                     msg.isUser
                                         ? Colors.default.purple100
-                                        : '#D1D5DB'
+                                        : Colors.chatbot.inputColor
                                 }
                                 textColor={msg.isUser ? '#000000' : '#000000'}
                                 isUser={msg.isUser}
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginRight: 10,
         paddingLeft: 30,
-        backgroundColor: '#D1D5DB',
+        backgroundColor: Colors.chatbot.inputColor,
     },
 });
 

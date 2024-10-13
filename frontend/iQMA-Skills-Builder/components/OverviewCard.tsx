@@ -77,10 +77,10 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     OverviewCard: {
-        backgroundColor: '#EAF1FF',
+        backgroundColor: Colors.overviewCard.background,
     },
     ErrorCard: {
-        backgroundColor: '#E66A63',
+        backgroundColor: Colors.default.red,
     },
     OverviewCardTitle: {
         fontSize: 14,

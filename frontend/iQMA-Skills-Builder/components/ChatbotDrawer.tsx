@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
         width: '90%',
     },
     drawerHeaderText: {
-        color: '#4143A3',
+        color: Colors.header.color,
         fontSize: 18,
         fontWeight: 'bold',
     },

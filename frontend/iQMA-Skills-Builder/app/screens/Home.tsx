@@ -536,11 +536,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#CCC',
         marginVertical: 10,
     },
-    sectionLabel: {
-        textAlign: 'center',
-        color: '#666',
-        marginBottom: 20,
-    },
+
     dividerContainer: {
         flexDirection: 'row',
         alignItems: 'center',

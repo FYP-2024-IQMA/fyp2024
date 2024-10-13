@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 14,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
     },
     buttonContainer: {

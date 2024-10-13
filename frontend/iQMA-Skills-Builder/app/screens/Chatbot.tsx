@@ -211,7 +211,9 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
                         key={index}
                         position={msg.isUser ? 'right' : 'left'}
                         bubbleColor={
-                            msg.isUser ? Colors.default.purple100 : '#D1D5DB'
+                            msg.isUser
+                                ? Colors.default.purple100
+                                : Colors.chatbot.inputColor
                         }
                         textColor={msg.isUser ? '#000000' : '#000000'}
                         isUser={msg.isUser}
@@ -270,7 +272,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginRight: 10,
         paddingLeft: 30,
-        backgroundColor: '#D1D5DB',
+        backgroundColor: Colors.chatbot.inputColor,
     },
     button: {
         justifyContent: 'center',

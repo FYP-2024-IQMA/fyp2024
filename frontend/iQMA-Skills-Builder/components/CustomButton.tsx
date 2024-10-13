@@ -29,7 +29,9 @@ export const CustomButton = ({
                     styles.rounded,
                     styles.shadow,
                     {
-                        backgroundColor: disabled ? '#D1D5DB' : backgroundColor,
+                        backgroundColor: disabled
+                            ? Colors.chatbot.inputColor
+                            : backgroundColor,
                         borderColor: borderColor,
                     },
                 ]}

@@ -11,29 +11,36 @@ export const Colors = {
         text: '#11181C',
         background: '#FFFFFF',
         borderColor: '#CCC',
-        inputBox: '#D1D5DB',
         color: '#4143A3',
         tint: tintColorLight,
-        icon: '#687076',
-        tabIconDefault: '#687076',
         tabIconSelected: tintColorLight,
+    },
+    overviewCard: {
+        background: '#EAF1FF',
     },
     header: {
         background: '#FFFFFF',
         color: '#4143A3',
-        text: '#11181C',
-        icon: '#687076',
+    },
+    profile: {
+        inputColor: '#F7F7F7',
+    },
+    chatbot: {
+        inputColor: '#D1D5DB',
+    },
+    border: {
+        correctColor: '#9CA3AF',
+        wrongColor: '#ff4c4c',
     },
     default: {
         purple500: '#7654F2',
         purple100: '#B199FF',
+        optionText: '#5C5776',
+        red: '#E66A63',
+        green: '#8CE5CB',
     },
     dark: {
-        text: '#ECEDEE',
-        background: '#151718',
         tint: tintColorDark,
-        icon: '#9BA1A6',
-        tabIconDefault: '#9BA1A6',
         tabIconSelected: tintColorDark,
     },
 };

@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginRight: 10,
         paddingLeft: 30,
-        backgroundColor: '#D1D5DB',
+        backgroundColor: Colors.chatbot.inputColor,
     },
     button: {
         justifyContent: 'center',
