@@ -9,7 +9,8 @@ import ProgressBar from '@/components/ProgressBar';
 import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import VideoPlayer from '@/components/VideoPlayer';
 
 // where things show up
 export default function SectionIntroduction() {
@@ -100,12 +101,17 @@ export default function SectionIntroduction() {
                             Section {sectionNumber}: Introduction
                         </Text>
                         {videoId ? (
-                            <YoutubePlayer
-                                height={300}
-                                play={playing}
-                                onChangeState={onStateChange}
-                                videoId={videoId} // YouTube video ID
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
                             />
+                            // <YoutubePlayer
+                            //     height={300}
+                            //     play={playing}
+                            //     onChangeState={onStateChange}
+                            //     videoId={videoId} // YouTube video ID
+                            // />
                         ) : (
                             <OverviewCard
                                 isError={true}
