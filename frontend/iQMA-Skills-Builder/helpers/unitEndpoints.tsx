@@ -10,3 +10,17 @@ export const getUnitDetails = async (sectionID: string, unitID: string) => {
         return;
     }
 };
+
+export const numberOfUnitsPerSection = async (
+    sectionID: string
+): Promise<number> => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/gettotalunit/${sectionID}`;
+        const response = await fetch(url);
+        const unitProgress = await response.json();
+        return unitProgress;
+    } catch (error) {
+        console.error('Error while loading unit progress:', error);
+        return 0;
+    }
+};

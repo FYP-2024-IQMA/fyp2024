@@ -1,13 +1,27 @@
 import {Image, StyleSheet, Text, View, Modal} from 'react-native';
 import React, {useState} from 'react';
 import {CustomButton} from '@/components/CustomButton';
-import { Option, Question } from '@/constants/Quiz';
+import {Option, Question} from '@/constants/Quiz';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => void}> = ({ questionData, onNextQuestion }) => {
-    const { quizID, questionNo, question, option1, option2, option3, option4, answer } = questionData;
-    const [selectedButton, setSelectedButton] = useState<Option | undefined>(undefined);
+export const QuizCard: React.FC<{
+    questionData: Question;
+    onNextQuestion: () => void;
+}> = ({questionData, onNextQuestion}) => {
+    const {
+        quizID,
+        questionNo,
+        question,
+        option1,
+        option2,
+        option3,
+        option4,
+        answer,
+    } = questionData;
+    const [selectedButton, setSelectedButton] = useState<Option | undefined>(
+        undefined
+    );
     const [selectedLabel, setSelectedLabel] = useState<string>('');
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
@@ -23,7 +37,7 @@ export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => 
             if (selectedLabel == answer) {
                 setIsCorrect(true);
             }
-            setCount(count+1);
+            setCount(count + 1);
             setModalVisible(true);
         }
     };
@@ -43,20 +57,20 @@ export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => 
         const userID = await AsyncStorage.getItem('userID');
         try {
             const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`, 
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
                 {
-                    "userID": userID,
-                    "eventType": "attemptsTaken",
-                    "event": `quizID ${quizID}, questionNo ${questionNo}`,
-                    "timestamp": new Date().toISOString(),
-                    "attempts": count
+                    userID: userID,
+                    eventType: 'attemptsTaken',
+                    event: `quizID ${quizID}, questionNo ${questionNo}`,
+                    timestamp: new Date().toISOString(),
+                    attempts: count,
                 }
-            )
-            console.log(response.data)
+            );
+            console.log(response.data);
         } catch (e) {
             console.error(e);
         }
-    }
+    };
 
     return (
         <View>
@@ -178,9 +192,11 @@ export const QuizCard: React.FC<{ questionData: Question, onNextQuestion: () => 
                         </Text>
                         <View style={{alignItems: 'center'}}>
                             <CustomButton
-                                label={isCorrect ? "continue" : "try again"}
-                                labelColor={isCorrect ? "#18113C" : "#FFFFFF"}
-                                backgroundColor={isCorrect ? '#8CE5CB' : '#E66A63'}
+                                label={isCorrect ? 'continue' : 'try again'}
+                                labelColor={isCorrect ? '#18113C' : '#FFFFFF'}
+                                backgroundColor={
+                                    isCorrect ? '#8CE5CB' : '#E66A63'
+                                }
                                 borderColor={isCorrect ? '#8CE5CB' : '#E66A63'}
                                 onPressHandler={handleAnswer}
                             />

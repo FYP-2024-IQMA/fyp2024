@@ -1,6 +1,3 @@
-import * as SplashScreen from 'expo-splash-screen';
-
-import {ActivityIndicator, View} from 'react-native';
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
 
@@ -119,7 +116,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                     // router.replace('Lesson');
                     // router.replace("SectionIntroduction");
                     // router.replace('CheatSheet');
-                    // router.replace('FinalAssessment');
+                    // router.replace('SelfReflection');
+                    // router.replace('Assessment');
+                    // router.replace('AssessmentIntroduction');
+                    // router.replace('KeyTakeaway');
                 } else {
                     router.replace('IntroductionMascot');
                 }

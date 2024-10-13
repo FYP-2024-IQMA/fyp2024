@@ -16,7 +16,7 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
-    const {sectionID, unitID, lessonID} = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -27,18 +27,31 @@ export default function Lesson() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
+
+        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+
         navigation.setOptions({
             headerTitle: () => (
-                <ProgressBar progress={0.25} isQuestionnaire={false} />
+                <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
         });
     }, [navigation]);
 
     const handlePress = () => {
+        setPlaying(false);
         router.push({
             pathname: 'VideoQuiz',
-            params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: lessonID},
+            params: {
+                sectionID,
+                unitID,
+                lessonID,
+                currentLessonIdx,
+                totalLesson,
+                currentUnit,
+                totalUnits,
+                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                totalProgress,
+            },
         });
     };
 
@@ -75,14 +88,11 @@ export default function Lesson() {
     }, [sectionID, unitID]);
 
     const onStateChange = (state: string) => {
-        if (state === 'ended') {
+        if (state === 'ended' || state === 'paused') {
             setPlaying(false);
         }
         if (state === 'playing') {
             setPlaying(true);
-        }
-        if (state === 'paused') {
-            setPlaying(false);
         }
     };
 
@@ -90,7 +100,7 @@ export default function Lesson() {
         <View style={styles.container}>
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
-                    <LoadingIndicator></LoadingIndicator>
+                    <LoadingIndicator />
                 </View>
             ) : (
                 <>
@@ -99,17 +109,7 @@ export default function Lesson() {
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
-                        <Text
-                            style={{
-                                fontSize: 14,
-                                fontWeight: 'bold',
-                                color: '#4143A3',
-                                marginBottom: 20,
-                                marginHorizontal: 10,
-                            }}
-                        >
-                            {lessonName}
-                        </Text>
+                        <Text style={styles.screenTitle}>{lessonName}</Text>
 
                         {lessonDescription ? (
                             <OverviewCard
@@ -136,18 +136,11 @@ export default function Lesson() {
                             />
                         )}
                     </View>
-                    <View
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'flex-end',
-                        }}
-                    >
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </View>
@@ -159,5 +152,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         padding: 20,
         flex: 1,
+    },
+    screenTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#4143A3',
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });
