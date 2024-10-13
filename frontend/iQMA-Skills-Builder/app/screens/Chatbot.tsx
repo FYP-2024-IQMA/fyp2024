@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {ChatBubble} from '@/components/ChatBubble';
 import {ChatDrawerParamList} from '@/components/ChatbotDrawer';
+import {Colors} from '@/constants/Colors';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {Feather} from '@expo/vector-icons';
 import {TextInput} from 'react-native-gesture-handler';
@@ -102,7 +103,7 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
         navigation.getParent()?.setOptions({
             tabBarStyle: {
                 display: isDrawerOpen ? 'none' : 'flex',
-                backgroundColor: '#7654F2',
+                backgroundColor: Colors.default.purple500,
                 justifyContent: 'center',
                 alignItems: 'center',
                 paddingHorizontal: 80,
@@ -209,7 +210,9 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
                     <ChatBubble
                         key={index}
                         position={msg.isUser ? 'right' : 'left'}
-                        bubbleColor={msg.isUser ? '#B199FF' : '#D1D5DB'}
+                        bubbleColor={
+                            msg.isUser ? Colors.default.purple100 : '#D1D5DB'
+                        }
                         textColor={msg.isUser ? '#000000' : '#000000'}
                         isUser={msg.isUser}
                         borderRadius={20}
@@ -247,7 +250,7 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
     },
     chatContainer: {
         padding: 10,
@@ -256,7 +259,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         padding: 10,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
     },
     input: {
         flex: 1,
@@ -284,7 +287,7 @@ const styles = StyleSheet.create({
     sendButtonCircle: {
         width: 40,
         height: 40,
-        backgroundColor: '#B199FF',
+        backgroundColor: Colors.default.purple100,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',

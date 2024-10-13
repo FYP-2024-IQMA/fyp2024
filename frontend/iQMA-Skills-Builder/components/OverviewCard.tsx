@@ -1,5 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 
+import {Colors} from '@/constants/Colors';
+
 export const OverviewCard = ({
     text,
     title,
@@ -41,8 +43,8 @@ export const OverviewCard = ({
                                 isCheatsheetObject
                                     ? styles.OverviewCardSubtitleArr
                                     : index !== 0
-                                      ? {marginTop: 10}
-                                      : {},
+                                    ? {marginTop: 10}
+                                    : {},
                                 isScenario ? styles.ScenarioCardSubtitle : {},
                             ]}
                         >
@@ -92,7 +94,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     ErrorCardSubtitle: {
-        color: '#FFFFFF',
+        color: Colors.light.background,
         fontWeight: 'bold',
         textAlign: 'center',
     },

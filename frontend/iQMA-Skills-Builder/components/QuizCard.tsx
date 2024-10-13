@@ -1,8 +1,10 @@
-import {Image, StyleSheet, Text, View, Modal} from 'react-native';
-import React, {useState} from 'react';
-import {CustomButton} from '@/components/CustomButton';
+import {Image, Modal, StyleSheet, Text, View} from 'react-native';
 import {Option, Question} from '@/constants/Quiz';
+import React, {useState} from 'react';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
 
 export const QuizCard: React.FC<{
@@ -89,13 +91,19 @@ export const QuizCard: React.FC<{
                 <CustomButton
                     label={option1.option}
                     labelColor={
-                        selectedButton === option1 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option1
+                            ? Colors.light.background
+                            : '#5C5776'
                     }
                     backgroundColor={
-                        selectedButton === option1 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option1
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option1 ? '#7654F2' : '#5C5776'
+                        selectedButton === option1
+                            ? Colors.default.purple500
+                            : '#5C5776'
                     }
                     onPressHandler={() => handleButtonPress('option1', option1)}
                     capitalise={false}
@@ -103,13 +111,19 @@ export const QuizCard: React.FC<{
                 <CustomButton
                     label={option2.option}
                     labelColor={
-                        selectedButton === option2 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option2
+                            ? Colors.light.background
+                            : '#5C5776'
                     }
                     backgroundColor={
-                        selectedButton === option2 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option2
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option2 ? '#7654F2' : '#5C5776'
+                        selectedButton === option2
+                            ? Colors.default.purple500
+                            : '#5C5776'
                     }
                     onPressHandler={() => handleButtonPress('option2', option2)}
                     capitalise={false}
@@ -117,13 +131,19 @@ export const QuizCard: React.FC<{
                 <CustomButton
                     label={option3.option}
                     labelColor={
-                        selectedButton === option3 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option3
+                            ? Colors.light.background
+                            : '#5C5776'
                     }
                     backgroundColor={
-                        selectedButton === option3 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option3
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option3 ? '#7654F2' : '#5C5776'
+                        selectedButton === option3
+                            ? Colors.default.purple500
+                            : '#5C5776'
                     }
                     onPressHandler={() => handleButtonPress('option3', option3)}
                     capitalise={false}
@@ -131,13 +151,19 @@ export const QuizCard: React.FC<{
                 <CustomButton
                     label={option4.option}
                     labelColor={
-                        selectedButton === option4 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option4
+                            ? Colors.light.background
+                            : '#5C5776'
                     }
                     backgroundColor={
-                        selectedButton === option4 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option4
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option4 ? '#7654F2' : '#5C5776'
+                        selectedButton === option4
+                            ? Colors.default.purple500
+                            : '#5C5776'
                     }
                     onPressHandler={() => handleButtonPress('option4', option4)}
                     capitalise={false}
@@ -147,7 +173,9 @@ export const QuizCard: React.FC<{
                     <CustomButton
                         label="check"
                         labelColor="#18113C"
-                        backgroundColor={selectedButton ? '#8CE5CB' : '#FFFFFF'}
+                        backgroundColor={
+                            selectedButton ? '#8CE5CB' : Colors.light.background
+                        }
                         borderColor={selectedButton ? '#8CE5CB' : '#5C5776'}
                         onPressHandler={handleCheck}
                     />
@@ -193,7 +221,11 @@ export const QuizCard: React.FC<{
                         <View style={{alignItems: 'center'}}>
                             <CustomButton
                                 label={isCorrect ? 'continue' : 'try again'}
-                                labelColor={isCorrect ? '#18113C' : '#FFFFFF'}
+                                labelColor={
+                                    isCorrect
+                                        ? '#18113C'
+                                        : Colors.light.background
+                                }
                                 backgroundColor={
                                     isCorrect ? '#8CE5CB' : '#E66A63'
                                 }

@@ -6,6 +6,7 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import {AuthContext} from '@/context/AuthContext';
 import {ChatBubble} from '@/components/ChatBubble';
 import ChatInput from '@/components/ChatInput';
+import {Colors} from '@/constants/Colors';
 
 interface QuizItem {
     answer: string | null;
@@ -41,7 +42,11 @@ const reflectionQuestion = async (sectionID: string, unitID: string) => {
     }
 };
 
-const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID, unitID}) => {
+const MiniChatbot: React.FC<MiniChatbotProps> = ({
+    onChatHistoryUpdate,
+    sectionID,
+    unitID,
+}) => {
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
         []
@@ -65,7 +70,7 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID
             const response = await fetch(url);
             const chatHistory = await response.json();
 
-            console.log(chatHistory)
+            console.log(chatHistory);
 
             if (chatHistory.length == 0) {
                 await chatInputFunctions.saveChatHistory(
@@ -200,7 +205,11 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({onChatHistoryUpdate, sectionID
                             <ChatBubble
                                 key={index}
                                 position={msg.isUser ? 'right' : 'left'}
-                                bubbleColor={msg.isUser ? '#B199FF' : '#D1D5DB'}
+                                bubbleColor={
+                                    msg.isUser
+                                        ? Colors.default.purple100
+                                        : '#D1D5DB'
+                                }
                                 textColor={msg.isUser ? '#000000' : '#000000'}
                                 isUser={msg.isUser}
                                 borderRadius={20}
@@ -228,7 +237,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         padding: 10,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
     },
     chatContainer: {
         flexGrow: 1,
@@ -251,7 +260,7 @@ const styles = StyleSheet.create({
     sendButtonCircle: {
         width: 40,
         height: 40,
-        backgroundColor: '#B199FF',
+        backgroundColor: Colors.default.purple100,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',

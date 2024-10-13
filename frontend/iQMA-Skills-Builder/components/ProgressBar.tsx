@@ -1,8 +1,11 @@
-import React from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import * as Progress from 'react-native-progress';
-import {router} from 'expo-router';
+
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+
+import {Colors} from '@/constants/Colors';
 import {Ionicons} from '@expo/vector-icons';
+import React from 'react';
+import {router} from 'expo-router';
 
 interface ProgressBarProps {
     progress: number;
@@ -22,7 +25,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
             <Progress.Bar
                 progress={progress}
                 width={isQuestionnaire ? 300 : 270}
-                color={'#7654F2'}
+                color={Colors.default.purple500}
             />
             {/* need to change to an icon */}
             {!isQuestionnaire && (

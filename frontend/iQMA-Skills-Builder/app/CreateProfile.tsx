@@ -1,22 +1,24 @@
 import {
-    Text,
-    View,
-    Image,
-    TextInput,
-    Button,
-    StyleSheet,
-    Pressable,
     ActivityIndicator,
+    Button,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from 'react-native';
+
+import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
-import {Profile} from '@/components/Profile';
-import {CustomButton} from '@/components/CustomButton';
-import {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
-import {AuthContext} from '@/context/AuthContext';
-import {useContext} from 'react';
+import {Profile} from '@/components/Profile';
 import {router} from 'expo-router';
+import {useContext} from 'react';
+import {useState} from 'react';
 
 export default function CreateProfile() {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -109,7 +111,7 @@ export default function CreateProfile() {
                 flex: 1,
                 // justifyContent: "center",
                 alignItems: 'center',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: Colors.light.background,
                 // backgroundColor: "#ff4500",
                 padding: 20,
                 gap: 20,
@@ -344,12 +346,12 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         height: 40,
         width: '100%',
     },
     buttonText: {
-        color: '#FFFFFF',
+        color: Colors.light.background,
         fontSize: 12,
         fontWeight: 'bold',
     },

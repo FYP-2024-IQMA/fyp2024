@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {Picker} from '@react-native-picker/picker';
 import {router} from 'expo-router';
@@ -354,7 +355,7 @@ export default function LearnerAssessmentExperience() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        color: '#7654F2',
+        color: Colors.default.purple500,
         lineHeight: 20,
     },
     defaultOptionText: {
@@ -412,7 +413,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     checkedCheckbox: {
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         textAlign: 'center',
     },
     checkmark: {

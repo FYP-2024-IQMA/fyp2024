@@ -3,6 +3,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
 
+import {Colors} from '@/constants/Colors';
 import React from 'react';
 
 interface CircularProgressProps {

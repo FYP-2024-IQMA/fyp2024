@@ -1,26 +1,39 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import ProgressBar from '@/components/ProgressBar';
-import {QuizCard} from '@/components/QuizCard';
-import axios from 'axios';
-import {router, useLocalSearchParams} from 'expo-router';
-import {Question} from '@/constants/Quiz';
-import {formatSection} from '@/helpers/formatSectionID';
-import {formatUnit} from '@/helpers/formatUnitID';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
-import { AuthContext } from '@/context/AuthContext';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import {router, useLocalSearchParams} from 'expo-router';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import ProgressBar from '@/components/ProgressBar';
+import {Question} from '@/constants/Quiz';
+import {QuizCard} from '@/components/QuizCard';
+import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
+import {useNavigation} from '@react-navigation/native';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
     const {currentUser, isLoading} = useContext(AuthContext);
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        lessonID,
+        currentLessonIdx,
+        totalLesson,
+        currentUnit,
+        totalUnits,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -44,11 +57,12 @@ export default function VideoQuiz() {
                         unitID as string
                     );
 
-                    const lessonDetails = await lessonEndpoints.getLessonDetails(
-                        sectionID as string,
-                        unitID as string,
-                        lessonID as string
-                    );
+                    const lessonDetails =
+                        await lessonEndpoints.getLessonDetails(
+                            sectionID as string,
+                            unitID as string,
+                            lessonID as string
+                        );
 
                     const getAllLessons = await lessonEndpoints.getAllLesson(
                         sectionID as string,
@@ -84,8 +98,9 @@ export default function VideoQuiz() {
     }, [sectionID, unitID, lessonID, nextLessonID]);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
             headerTitle: () => (
@@ -101,7 +116,10 @@ export default function VideoQuiz() {
             setCurrentQnsIdx(newIdx);
         } else {
             try {
-                const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(currentUser.sub, questions[currentQnsIdx].quizID);
+                const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(
+                    currentUser.sub,
+                    questions[currentQnsIdx].quizID
+                );
 
                 if (!ifCompleted) {
                     await resultEndpoints.createResult(
@@ -115,7 +133,7 @@ export default function VideoQuiz() {
                 let currLessonIdx = parseInt(currentLessonIdx as string);
 
                 console.log('nextLessonID:', nextLessonID);
-                
+
                 // if nextlessonID have "." then route back to Lesson page
                 if (nextLessonID.includes('.')) {
                     pathName = 'Lesson';
@@ -133,7 +151,9 @@ export default function VideoQuiz() {
                         totalLesson,
                         currentUnit,
                         totalUnits,
-                        currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                        currentProgress: (
+                            parseInt(currentProgress as string) + 1
+                        ).toString(),
                         totalProgress,
                     },
                 });
@@ -197,7 +217,7 @@ export default function VideoQuiz() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
