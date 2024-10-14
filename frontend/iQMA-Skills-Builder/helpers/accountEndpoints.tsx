@@ -41,6 +41,7 @@ export const editUserDetails = async (userDetails: userDetails) => {
             body: JSON.stringify(userDetails)
         });
         const updatedUserDetails = await response.json();
+        console.log("Updated user details:", response.status);
         return updatedUserDetails;
     } catch (error) {
         console.error('Error updating userDetails:', error);

@@ -2,65 +2,59 @@ import {
   Text,
   View,
   TextInput,
-  ActivityIndicator,
   TouchableOpacity,
   StyleSheet,
   Alert,
 } from 'react-native';
 import {useState, useContext, useEffect} from 'react';
-import axios from 'axios';
-import {AuthContext} from '@/context/AuthContext';
+import { AuthContext } from '@/context/AuthContext';
+import * as accountEndpoints from '@/helpers/accountEndpoints';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 
 export default function EditProfile() {
   const {currentUser, isLoading} = useContext(AuthContext);
-
   const [firstName, setFirstName] = useState<string>('');
   const [lastName, setLastName] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
-
-  const fetchUserData = async () => {
-      try {
-          const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${currentUser.sub}`;
-          const response = await axios.get(url);
-          const userData = response.data;
-          setFirstName(userData.firstName);
-          setLastName(userData.lastName);
-      } catch (error) {
-          console.error('Failed to fetch user data:', error);
-      } finally {
-          setLoading(false); // Ensure loading state is reset
-      }
-  };
   
   const handleSave = async () => {
-      const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updateaccount`;
       try {
-          await axios.patch(
-              url, 
-              {
-                  "userID": `${currentUser.sub}`,
-                  "firstName": `${firstName}`,
-                  "lastName": `${lastName}`
-              },
-          );
+          
+          const userDetails = {
+                "userID": `${currentUser.sub}`,
+                "firstName": `${firstName}`,
+                "lastName": `${lastName}`
+          }
+          
+          await accountEndpoints.editUserDetails(userDetails);
           Alert.alert('Success', 'Profile updated successfully.');
       } catch (error) {
           console.error('Failed to update profile:', error);
           Alert.alert('Error', 'Failed to update profile. Please try again.');
       }
-  };
+    };
+    
+    useEffect(() => {
+        (async () => {
+            try {
+                const userDetails = await accountEndpoints.getUserDetails(
+                    currentUser.sub
+                );
+                console.log('userDetails:', userDetails);
+                setFirstName(userDetails.firstName);
+                setLastName(userDetails.lastName);
 
-  useEffect(() => {
-      if (currentUser) {
-          fetchUserData();
-      }
-  }, [currentUser]);
+            } catch (error) {
+                console.error('Error fetching user details:', error);
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, []);
 
   if (isLoading || loading) {
       return (
-          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <ActivityIndicator size="large" color="#8A2BE2" />
-          </View>
+          <LoadingIndicator />
       );
   }
 
