@@ -39,37 +39,6 @@ exports.getAllSections = getAllSections;
 exports.getSectionDetails = getSectionDetails;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 const videoService = __importStar(require("./videoService"));
-// import { s3 } from "../config/awsConfig";
-// /* Utility function to extract the YouTube video ID */
-// function extractYouTubeID(url: string) {
-//     const regex =
-//         /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
-//     const matches = url.match(regex);
-//     return matches ? matches[1] : null;
-// }
-// async function retrieveVideoFromS3(sectionID: string, lessonID?: string) {
-//     let videoKey = `${sectionID}/${sectionID}.mp4`;
-//     if (lessonID) {
-//         videoKey = `${sectionID}/${lessonID}.mp4`;
-//     }
-//     const params = {
-//         Bucket: "vid-content",
-//         Key: videoKey,
-//     }
-//     try {
-//         await s3.headObject(params).promise();
-//         // If successful, the object exists
-//         const signedUrl = await s3.getSignedUrlPromise("getObject", params);
-//         return signedUrl;
-//     } catch (error: any) {
-//         if (error.code === "NotFound" || error.code === "NoSuchKey") {
-//             console.error("The specified file does not exist.");
-//         } else {
-//             console.error("An error occurred:", error);
-//         }
-//         return null;
-//     }
-// }
 /* READ */
 function getAllSections() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -109,14 +78,6 @@ function getSectionDetails(sectionID) {
             throw error;
         }
         else {
-            // const signedUrl = await videoService.retrieveVideoFromS3(sectionID);
-            // if (signedUrl) {
-            //     data.introductionURL = signedUrl;
-            // } else {
-            //     if (data.introductionURL) {
-            //         data.introductionURL = videoService.extractYouTubeID(data.introductionURL);
-            //     }
-            // }
             if (data.introductionURL) {
                 data.introductionURL = yield videoService.formatVideoUrl(data.introductionURL, sectionID);
             }

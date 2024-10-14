@@ -40,15 +40,6 @@ exports.getLesson = getLesson;
 exports.getAllLessons = getAllLessons;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 const videoService = __importStar(require("./videoService"));
-// function extractYouTubeID(url: string | null) {
-// 	if (url === null) {
-// 		return "";
-// 	}
-// 	const regex =
-// 		/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
-// 	const matches = url.match(regex);
-// 	return matches ? matches[1] : "";
-// }
 /* READ */
 // get all lessons in the specific unit
 function getNoOfLessonPerUnit(sectionID, unitID) {
@@ -85,8 +76,6 @@ function getLesson(sectionID, unitID, lessonID) {
             if (formattedLessonURL) {
                 formattedLessonURL = yield videoService.formatVideoUrl(formattedLessonURL, sectionID, lessonID);
             }
-            // let formattedLessonURL =
-            // 	extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
             let description = data[0].lessonDescription;
             let formattedDescription = description
                 ? description.split(/\r?\n/)
@@ -208,106 +197,6 @@ function getAllLessons(sectionID, unitID) {
                 }
                 return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: [] });
             })));
-            // data.map(async (lesson: any) => {
-            // 	let formattedLessonURL = lesson.lessonURL;
-            // 	if (formattedLessonURL) {
-            //         formattedLessonURL = await videoService.formatVideoUrl(
-            //             lesson.lessonURL,
-            //             sectionID,
-            //             lesson.lessonID
-            //         );
-            // 	}
-            // 	return {
-            // 		...lesson,
-            // 		lessonURL: formattedLessonURL,
-            // 	}
-            // });
-            // const formattedLessons = data.map((lesson: any) => {
-            // 	// let formattedLessonURL =
-            // 	// 	videoService.extractYouTubeID(lesson.lessonURL) || lesson.lessonURL;
-            // 	console.log(lesson.lessonURL);
-            // 	let description = lesson.lessonDescription;
-            // 	// console.log(description);
-            // 	let formattedDescription: string[] | null = description
-            // 		? description.split(/\r?\n/)
-            // 		: null;
-            // 	let takeaway = lesson.lessonKeyTakeaway;
-            // 	let formattedTakeaway: string[] | null = takeaway
-            // 		? takeaway.split(/\r?\n/)
-            // 		: null;
-            // 	const text = lesson.lessonCheatSheet;
-            // 	// when there are headers with emojis
-            // 	const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
-            // 	const headers = text ? text.match(regex) : null;
-            // 	if (headers != null) {
-            // 		const sections = text ? text.split(regex) : null;
-            // 		sections?.shift();
-            // 		const formattedCheatSheet = headers.reduce(
-            // 			(acc: Record<string, string[]>, header: string, index: number) => {
-            // 				if (sections != null) {
-            // 					acc[header.trim()] = sections[index]
-            // 						.trim()
-            // 						.split(/\r?\n/)
-            // 						.map((sentence: string) => sentence.trim());
-            // 				}
-            // 				return acc;
-            // 			},
-            // 			{}
-            // 		);
-            // 		return {
-            // 			...lesson,
-            // 			// lessonURL: lesson.les,
-            // 			lessonDescription: formattedDescription,
-            // 			lessonKeyTakeaway: formattedTakeaway,
-            // 			lessonCheatSheet: formattedCheatSheet,
-            // 		};
-            // 	}
-            // 	// when there are no emojis in the headers
-            // 	const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
-            // 	const headers2 = text ? text.match(regex2) : null;
-            // 	if (headers2 != null) {
-            // 		const sections = text?.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
-            // 		sections?.shift();
-            // 		const formattedCheatSheet = headers2.reduce(
-            // 			(acc: Record<string, string[]>, header: string, index: number) => {
-            // 				if (sections != null) {
-            // 					acc[header.trim()] = sections[index]
-            // 						.trim()
-            // 						.split(/:?\r?\n/)
-            // 						.map((sentence: string) => sentence.trim())
-            // 						.filter((sentence: string) => sentence !== "");
-            // 				}
-            // 				return acc;
-            // 			},
-            // 			{}
-            // 		);
-            // 		return {
-            // 			...lesson,
-            // 			// lessonURL: formattedLessonURL,
-            // 			lessonDescription: formattedDescription,
-            // 			lessonKeyTakeaway: formattedTakeaway,
-            // 			lessonCheatSheet: formattedCheatSheet,
-            // 		};
-            // 	}
-            // 	// when there are no headers
-            // 	const sentences = text?.split(/\r?\n/);
-            // 	if (sentences != null) {
-            // 		return {
-            // 			...lesson,
-            // 			// lessonURL: formattedLessonURL,
-            // 			lessonDescription: formattedDescription,
-            // 			lessonKeyTakeaway: formattedTakeaway,
-            // 			lessonCheatSheet: sentences,
-            // 		};
-            // 	}
-            // 	return {
-            // 		...lesson,
-            // 		// lessonURL: formattedLessonURL,
-            // 		lessonDescription: formattedDescription,
-            // 		lessonKeyTakeaway: formattedTakeaway,
-            // 		lessonCheatSheet: [],
-            // 	};
-            // });
             return formattedLessons;
         }
     });

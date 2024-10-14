@@ -12,7 +12,7 @@ interface VideoPlayerProps {
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateChange }) => {
 
-    
+    const { height: screenHeight } = Dimensions.get('window'); // get device height
     const test = '2VpG0WS4uCo';
 
     const videoRef = useRef(null);
@@ -29,7 +29,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateCha
                 resizeMode={ResizeMode.CONTAIN} // choose ResizeMode.STRETCH or ResizeMode.COVER
                 shouldPlay={playing}
                 // isLooping
-                style={styles.video}
+                style={[styles.video, { height: screenHeight * 0.76 }]}
                 onPlaybackStatusUpdate={(status) => setStatus(() => status)}
             />
             //</View>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
         // flex: 1,
         // alignSelf: 'stretch',
         width: '100%',
-        height: '83%',
+        // height: '83%',
     },
 });
 

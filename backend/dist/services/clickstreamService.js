@@ -14,12 +14,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendMessage = sendMessage;
 const amqplib_1 = __importDefault(require("amqplib"));
-// import AWS from "aws-sdk";
-// const s3 = new AWS.S3({
-//     region: 'ap-southeast-1',
-//     accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-//     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-// });
 const awsConfig_1 = require("../config/awsConfig");
 function uploadToS3(queue, newClickstream) {
     return __awaiter(this, void 0, void 0, function* () {

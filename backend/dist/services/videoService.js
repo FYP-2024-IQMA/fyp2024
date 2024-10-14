@@ -9,8 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractYouTubeID = extractYouTubeID;
-exports.retrieveVideoFromS3 = retrieveVideoFromS3;
 exports.formatVideoUrl = formatVideoUrl;
 const awsConfig_1 = require("../config/awsConfig");
 /* Utility function to extract the YouTube video ID */
