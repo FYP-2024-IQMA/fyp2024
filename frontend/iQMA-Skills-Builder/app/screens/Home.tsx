@@ -194,8 +194,6 @@ const HomeScreen: React.FC = () => {
         sectionID: string,
         circularProgress: number,
         completedUnits: number,
-        totalLesson: number,
-        completedLessons: number,
         isLastUnit: boolean
     ) => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
@@ -217,6 +215,21 @@ const HomeScreen: React.FC = () => {
             let routerName = 'UnitIntroduction';
             const unitID = `UNIT${(i + 1).toString().padStart(4, '0')}`;
             // console.log('Unit ID:', unitID);
+
+            const completedLessons =
+                await resultEndpoints.numberOfCompletedLessonsPerUnit(
+                    currentUser.sub,
+                    sectionID,
+                    unitID
+                );
+            const totalLesson = await lessonEndpoints.getNumofLessonsPerUnit(
+                sectionID,
+                unitID
+            );
+
+            // console.log("sectionID", sectionID)
+            // console.log("unitID", unitID)
+            // console.log("totalLesson", totalLesson)
 
             let getAllLessons: any[] = [];
             try {
@@ -339,17 +352,6 @@ const HomeScreen: React.FC = () => {
 
         const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
 
-        const completedLessons =
-            await resultEndpoints.numberOfCompletedLessonsPerUnit(
-                currentUser.sub,
-                sectionID,
-                unitID
-            );
-        const totalLesson = await lessonEndpoints.getNumofLessonsPerUnit(
-            sectionID,
-            unitID
-        );
-
         // circular progress is set inside here
         loadUnitCircularProgress(
             currentUser.sub,
@@ -362,8 +364,6 @@ const HomeScreen: React.FC = () => {
             sectionID,
             circularProgress,
             completedUnits,
-            totalLesson,
-            completedLessons,
             isLastUnit
         );
 
