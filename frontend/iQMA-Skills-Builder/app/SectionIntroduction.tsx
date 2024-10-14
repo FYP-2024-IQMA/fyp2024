@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect, useEffect} from 'react';
+import React, {useState, useLayoutEffect, useEffect, useRef} from 'react';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
 import {router, useLocalSearchParams} from 'expo-router';
@@ -10,6 +10,9 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {OverviewCard} from '@/components/OverviewCard';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 // where things show up
 export default function SectionIntroduction() {
@@ -22,6 +25,7 @@ export default function SectionIntroduction() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} Introduction`);
 
     useLayoutEffect(() => {
 
@@ -35,6 +39,7 @@ export default function SectionIntroduction() {
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID) {
             (async () => {
                 try {
@@ -47,6 +52,7 @@ export default function SectionIntroduction() {
                     setSectionName(sectionDetails.sectionName);
 
                     setSectionNumber(formatSection(sectionID as string));
+                    await AsyncStorage.setItem('section', sectionDetails.sectionName);
                 } catch (error) {
                     console.error('Error fetching Lesson details:', error);
                 } finally {
@@ -56,7 +62,7 @@ export default function SectionIntroduction() {
         }
     }, [sectionID]);
 
-    const handlePress = () => {
+    const handlePress = async () => {
         setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
@@ -72,6 +78,7 @@ export default function SectionIntroduction() {
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     const onStateChange = (state: string) => {

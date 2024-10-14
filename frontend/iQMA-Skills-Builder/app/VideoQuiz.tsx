@@ -5,7 +5,6 @@ import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import ProgressBar from '@/components/ProgressBar';
 import {QuizCard} from '@/components/QuizCard';
-import axios from 'axios';
 import {router, useLocalSearchParams} from 'expo-router';
 import {Question} from '@/constants/Quiz';
 import {formatSection} from '@/helpers/formatSectionID';
@@ -16,6 +15,7 @@ import * as quizEndpoints from '@/helpers/quizEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import { AuthContext } from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -29,6 +29,7 @@ export default function VideoQuiz() {
     const [lessonName, setLessonName] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
     const [nextLessonID, setnextLessonID] = useState<string>('');
+    // const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Video Quiz`);
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -36,6 +37,7 @@ export default function VideoQuiz() {
     // const lessonID = "1a";
 
     useEffect(() => {
+        // startTimer();
         if (sectionID && unitID && lessonID) {
             (async () => {
                 try {
@@ -137,6 +139,7 @@ export default function VideoQuiz() {
                         totalProgress,
                     },
                 });
+                // stopTimer();
             } catch (e) {
                 console.error('Error in Video Quiz', e);
             }

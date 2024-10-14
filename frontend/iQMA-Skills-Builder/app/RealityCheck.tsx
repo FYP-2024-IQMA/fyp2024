@@ -10,6 +10,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
 
 // where things show up
 export default function RealityCheck() {
@@ -24,8 +25,7 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    useEffect(() => {}, []);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Reality Check`);
 
     useLayoutEffect(() => {
 
@@ -39,6 +39,7 @@ export default function RealityCheck() {
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -76,6 +77,7 @@ export default function RealityCheck() {
                 totalProgress
             },
         });
+        stopTimer();
     };
 
     return (

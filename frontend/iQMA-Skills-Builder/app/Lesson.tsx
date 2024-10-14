@@ -12,6 +12,7 @@ import {router, useLocalSearchParams} from 'expo-router';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
 
 // where things show up
 export default function Lesson() {
@@ -25,11 +26,10 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Lesson`);
 
     useLayoutEffect(() => {
-
         const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
-
         navigation.setOptions({
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
@@ -53,9 +53,11 @@ export default function Lesson() {
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID && lessonID) {
             (async () => {
                 try {

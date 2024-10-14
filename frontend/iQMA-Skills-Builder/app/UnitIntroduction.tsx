@@ -9,9 +9,8 @@ import {OverviewCard} from '@/components/OverviewCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
 
 // where things show up
 export default function UnitIntroduction() {
@@ -22,35 +21,8 @@ export default function UnitIntroduction() {
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [unitDescription, setUnitDescription] = useState<string[]>([]);
-
-    const [seconds, setSeconds] = useState<number>(0);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const startTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-        timerRef.current = setInterval(() => {
-            setSeconds((prevSeconds) => prevSeconds + 1);
-        }, 1000);
-    };
-
-    const stopTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-    };
-
-    useEffect(() => {
-        startTimer();
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
-    }, []);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Introduction`);
 
     useLayoutEffect(() => {
 
@@ -64,6 +36,7 @@ export default function UnitIntroduction() {
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -103,23 +76,6 @@ export default function UnitIntroduction() {
             },
         });
         stopTimer();
-        const userID = await AsyncStorage.getItem('userID');
-        try {
-            const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
-                {
-                    userID: userID,
-                    eventType: 'timeTaken',
-                    event: `unitID ${unitID}`,
-                    timestamp: new Date().toISOString(),
-                    time: `${seconds}`,
-                }
-            );
-            console.log(response.data);
-        } catch (e) {
-            console.error(e);
-        }
-        setSeconds(0);
     };
 
     return (

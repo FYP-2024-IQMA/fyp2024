@@ -5,16 +5,15 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CustomButton} from '@/components/CustomButton';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
-import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
 
 export default function AssessmentIntroduction() {
     const navigation = useNavigation();
@@ -33,22 +32,7 @@ export default function AssessmentIntroduction() {
     const [introDetails, setIntroDetails] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-
-    const startTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-        timerRef.current = setInterval(() => {
-            setSeconds((prevSeconds) => prevSeconds + 1);
-        }, 1000);
-    };
-
-    const stopTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-    };
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment Introduction`);
 
     useEffect(() => {
         startTimer();
@@ -126,22 +110,6 @@ export default function AssessmentIntroduction() {
             },
         });
         stopTimer();
-        const userID = await AsyncStorage.getItem('userID');
-        try {
-            const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
-                {
-                    userID: userID,
-                    eventType: 'timeTaken',
-                    event: `unitID ${unitID}`,
-                    timestamp: new Date().toISOString(),
-                    time: `${seconds}`,
-                }
-            );
-        } catch (e) {
-            console.error(e);
-        }
-        setSeconds(0);
     };
 
     return (
