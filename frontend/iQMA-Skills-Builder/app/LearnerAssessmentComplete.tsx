@@ -86,11 +86,6 @@ export default function LearnerAssessmentComplete() {
 
             const accountResponse = await accountEndpoints.editUserDetails(account);
 
-            // const accountResponse = await axios.patch(
-            //     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updateaccount`,
-            //     account
-            // );
-
             console.log(
                 'Account Demographics created successfully: ',
                 demographicsResponse.data

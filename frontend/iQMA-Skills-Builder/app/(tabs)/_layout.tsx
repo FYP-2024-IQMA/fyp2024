@@ -69,7 +69,7 @@ export default function AppTabs() {
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="person" size={size} color={color} />
                     ),
-                    headerTintColor: '#fff'
+                    headerTintColor: '#fff',
                 }}
             />
             <Tab.Screen
@@ -79,7 +79,7 @@ export default function AppTabs() {
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="settings" size={size} color={color} />
                     ),
-                    headerTintColor: '#fff'
+                    headerTintColor: '#fff',
                 }}
             />
         </Tab.Navigator>
