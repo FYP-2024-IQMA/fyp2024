@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View ,Button,Alert} from 'react-native';
 import React, { useContext, useEffect, useState } from 'react';
 import CustomSwitch from '@/components/CustomSwitch';
 import { CustomButton } from '@/components/CustomButton';
 import { AuthContext } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {router}from 'expo-router';
 
 export default function Settings() {
     const { logOut } = useContext(AuthContext);
@@ -78,6 +79,10 @@ export default function Settings() {
                 <Text style={styles.label}>All Notifications</Text>
                 <CustomSwitch isEnabled={isNotificationsEnabled} onToggle={toggleNotifications} />
             </View>
+            <Button
+        title="Press Me"
+        onPress={() => router.push('EditProfile')}
+      />
 
             <CustomButton
                 label="Log out"
