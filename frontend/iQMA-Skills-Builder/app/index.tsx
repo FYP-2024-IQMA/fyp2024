@@ -1,13 +1,14 @@
 import {ActivityIndicator, Image, Text, View} from 'react-native';
+import {useContext, useEffect, useState} from 'react';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
 import {LogoutButton} from '@/components/LogoutButton';
 import {Profile} from '@/components/Profile';
-import {useContext, useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
 
 // where things show upp
 export default function Index() {
@@ -38,7 +39,7 @@ export default function Index() {
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: Colors.light.background,
                     }}
                 ></View>
             </>
@@ -54,7 +55,7 @@ export default function Index() {
                         flex: 1,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        backgroundColor: '#FFFFFF',
+                        backgroundColor: Colors.light.background,
                     }}
                 ></View>
             ) : (

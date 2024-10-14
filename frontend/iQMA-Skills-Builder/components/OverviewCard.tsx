@@ -1,5 +1,7 @@
 import {StyleSheet, Text, View} from 'react-native';
 
+import {Colors} from '@/constants/Colors';
+
 export const OverviewCard = ({
     text,
     title,
@@ -37,12 +39,13 @@ export const OverviewCard = ({
                         <Text
                             key={index}
                             style={[
+                                index !== 0 ? {paddingTop: 10} : {},
                                 styles.OverviewCardSubtitle,
                                 isCheatsheetObject
                                     ? styles.OverviewCardSubtitleArr
                                     : index !== 0
-                                      ? {marginTop: 10}
-                                      : {},
+                                    ? {marginTop: 10}
+                                    : {},
                                 isScenario ? styles.ScenarioCardSubtitle : {},
                             ]}
                         >
@@ -75,34 +78,35 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     OverviewCard: {
-        backgroundColor: '#EAF1FF',
+        backgroundColor: Colors.overviewCard.background,
     },
     ErrorCard: {
-        backgroundColor: '#E66A63',
+        backgroundColor: Colors.default.red,
     },
     OverviewCardTitle: {
-        fontSize: 14,
+        fontSize: Colors.overviewCard.cardTitleFontSize,
         fontWeight: 'bold',
     },
     OverviewCardSubtitle: {
-        fontSize: 12,
+        fontSize: Colors.overviewCard.cardSubtitleFontSize,
+        lineHeight: Colors.overviewCard.lineHeight,
     },
     OverviewCardSubtitleArr: {
         marginTop: 10,
         marginLeft: 20,
     },
     ErrorCardSubtitle: {
-        color: '#FFFFFF',
+        color: Colors.light.background,
         fontWeight: 'bold',
         textAlign: 'center',
     },
     ScenarioTitle: {
-        fontSize: 14,
+        fontSize: Colors.overviewCard.cardTitleFontSize,
         fontWeight: 'bold',
         marginBottom: 5,
     },
     ScenarioCardSubtitle: {
-        fontSize: 12,
-        lineHeight: 18,
+        fontSize: Colors.overviewCard.cardSubtitleFontSize,
+        lineHeight: Colors.overviewCard.lineHeight,
     },
 });

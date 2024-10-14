@@ -1,5 +1,7 @@
 import {ActivityIndicator, Image, Text, View} from 'react-native';
 
+import {Colors} from '@/constants/Colors';
+
 export const LoadingIndicator = () => {
     return (
         <>
@@ -8,7 +10,7 @@ export const LoadingIndicator = () => {
                     flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
-                    backgroundColor: '#FFFFFF',
+                    backgroundColor: Colors.light.background,
                 }}
             >
                 <Image

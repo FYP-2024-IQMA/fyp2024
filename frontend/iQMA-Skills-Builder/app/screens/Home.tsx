@@ -19,6 +19,7 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
 import {Ionicons} from '@expo/vector-icons';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -194,8 +195,6 @@ const HomeScreen: React.FC = () => {
         sectionID: string,
         circularProgress: number,
         completedUnits: number,
-        totalLesson: number,
-        completedLessons: number,
         isLastUnit: boolean
     ) => {
         const iconTypes = ['Trophy', 'staro', 'key', 'book'];
@@ -217,6 +216,21 @@ const HomeScreen: React.FC = () => {
             let routerName = 'UnitIntroduction';
             const unitID = `UNIT${(i + 1).toString().padStart(4, '0')}`;
             // console.log('Unit ID:', unitID);
+
+            const completedLessons =
+                await resultEndpoints.numberOfCompletedLessonsPerUnit(
+                    currentUser.sub,
+                    sectionID,
+                    unitID
+                );
+            const totalLesson = await lessonEndpoints.getNumofLessonsPerUnit(
+                sectionID,
+                unitID
+            );
+
+            // console.log("sectionID", sectionID)
+            // console.log("unitID", unitID)
+            // console.log("totalLesson", totalLesson)
 
             let getAllLessons: any[] = [];
             try {
@@ -339,17 +353,6 @@ const HomeScreen: React.FC = () => {
 
         const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
 
-        const completedLessons =
-            await resultEndpoints.numberOfCompletedLessonsPerUnit(
-                currentUser.sub,
-                sectionID,
-                unitID
-            );
-        const totalLesson = await lessonEndpoints.getNumofLessonsPerUnit(
-            sectionID,
-            unitID
-        );
-
         // circular progress is set inside here
         loadUnitCircularProgress(
             currentUser.sub,
@@ -362,8 +365,6 @@ const HomeScreen: React.FC = () => {
             sectionID,
             circularProgress,
             completedUnits,
-            totalLesson,
-            completedLessons,
             isLastUnit
         );
 
@@ -535,11 +536,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#CCC',
         marginVertical: 10,
     },
-    sectionLabel: {
-        textAlign: 'center',
-        color: '#666',
-        marginBottom: 20,
-    },
+
     dividerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -559,7 +556,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#B199FF',
+        backgroundColor: Colors.default.purple100,
         borderRadius: 10,
         width: 50,
         height: 50,
