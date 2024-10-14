@@ -2,6 +2,7 @@
 
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
+import {Colors} from '@/constants/Colors';
 import {Ionicons} from '@expo/vector-icons';
 import React from 'react';
 
@@ -30,7 +31,7 @@ const SectionCard: React.FC<SectionCardProps> = ({title, subtitle}) => {
 
 const styles = StyleSheet.create({
     sectionCard: {
-        backgroundColor: '#B199FF',
+        backgroundColor: Colors.default.purple100,
         padding: 25,
         borderRadius: 15,
         marginBottom: 20,
@@ -48,7 +49,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
     },
     sectionButton: {
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         padding: 10,
         borderRadius: 10,
         borderColor: '#5E43C2',
