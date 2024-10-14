@@ -1,22 +1,33 @@
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
 import {Image, StyleSheet, Text, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect, useEffect, useRef} from 'react';
-import {CustomButton} from '@/components/CustomButton';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
-import {useNavigation} from '@react-navigation/native';
-import ProgressBar from '@/components/ProgressBar';
+
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
+import ProgressBar from '@/components/ProgressBar';
+import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {useNavigation} from '@react-navigation/native';
 
 // where things show up
 export default function RealityCheck() {
     const navigation = useNavigation();
 
     // Use this for Routing
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        currentUnit,
+        totalUnits,
+        isFinal,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -28,8 +39,9 @@ export default function RealityCheck() {
     useEffect(() => {}, []);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
             headerTitle: () => (
@@ -72,8 +84,10 @@ export default function RealityCheck() {
                 currentUnit,
                 totalUnits,
                 isFinal,
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
-                totalProgress
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
+                totalProgress,
             },
         });
     };
@@ -135,14 +149,14 @@ export default function RealityCheck() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
     },

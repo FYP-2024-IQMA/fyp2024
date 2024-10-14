@@ -5,10 +5,11 @@ import { CustomButton } from '@/components/CustomButton';
 import { AuthContext } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
-import {router}from 'expo-router';
+import { router } from 'expo-router';
+import { Colors } from '@/constants/Colors';
 
 export default function Settings() {
-    const { logOut } = useContext(AuthContext);
+    const {logOut} = useContext(AuthContext);
 
     const [isSoundEffectsEnabled, setIsSoundEffectsEnabled] = useState(false);
     const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
@@ -71,13 +72,19 @@ export default function Settings() {
             <Text style={styles.textHeading}>GENERAL</Text>
             <View style={styles.switchContainer}>
                 <Text style={styles.label}>Sound Effects</Text>
-                <CustomSwitch isEnabled={isSoundEffectsEnabled} onToggle={toggleSoundEffects} />
+                <CustomSwitch
+                    isEnabled={isSoundEffectsEnabled}
+                    onToggle={toggleSoundEffects}
+                />
             </View>
 
             <Text style={styles.textHeading}>NOTIFICATIONS</Text>
             <View style={styles.switchContainer}>
                 <Text style={styles.label}>All Notifications</Text>
-                <CustomSwitch isEnabled={isNotificationsEnabled} onToggle={toggleNotifications} />
+                <CustomSwitch
+                    isEnabled={isNotificationsEnabled}
+                    onToggle={toggleNotifications}
+                />
             </View>
             <Button
         title="Press Me"
@@ -99,7 +106,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     textHeading: {
-        color: '#7654F2',
+        color: Colors.default.purple500,
         fontWeight: 'bold',
     },
     switchContainer: {

@@ -1,6 +1,7 @@
-import {StyleSheet, Image, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View} from 'react-native';
 
 import {ChatBubble} from '@/components/ChatBubble';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {router} from 'expo-router';
 
@@ -33,7 +34,7 @@ export default function IntroductionSegment() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
