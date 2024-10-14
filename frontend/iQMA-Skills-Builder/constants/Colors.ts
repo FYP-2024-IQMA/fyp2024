@@ -18,7 +18,7 @@ export const Colors = {
     overviewCard: {
         background: '#EAF1FF',
         cardTitleFontSize: 14,
-        cardSubtitleFontSize: 12,
+        cardSubtitleFontSize: 13,
         lineHeight: 20,
     },
     header: {
@@ -27,7 +27,7 @@ export const Colors = {
         fontSize: 14,
     },
     text: {
-        fontSize: 12,
+        fontSize: 13,
         lineHeight: 20,
     },
     learnerAssessment: {
