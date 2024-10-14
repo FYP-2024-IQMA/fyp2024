@@ -1,7 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import SectionCard from '@/components/SectionCard';
 import React, {useState, useLayoutEffect, useEffect} from 'react';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import {CustomButton} from '@/components/CustomButton';
 import ProgressBar from '@/components/ProgressBar';
 import {useNavigation} from '@react-navigation/native';
@@ -11,7 +10,8 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {router, useLocalSearchParams} from 'expo-router';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import VideoPlayer from '@/components/VideoPlayer';
 
 // where things show up
 export default function Lesson() {
@@ -97,15 +97,16 @@ export default function Lesson() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
-                <View style={{flexGrow: 1}}>
-                    <LoadingIndicator />
-                </View>
+                <LoadingIndicator />
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
-                        <SectionCard
+                    <View>
+                         <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
@@ -121,14 +122,12 @@ export default function Lesson() {
                                 text="Lesson Description is not available. Please check with your administrator."
                             />
                         )}
-
                         {videoId ? (
-                            <YoutubePlayer
-                                height={300}
-                                play={playing}
-                                onChangeState={onStateChange}
-                                videoId={videoId} // YouTube video ID
-                            />
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
+                                />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -136,14 +135,66 @@ export default function Lesson() {
                             />
                         )}
                     </View>
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                    <View style={{marginBottom: 40}}>
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
+                    </View>
                 </>
             )}
-        </View>
+        </ScrollView>
+
+
+
+        // <View style={styles.container}>
+        //     {isLoading ? (
+        //         <View style={{flexGrow: 1}}>
+        //             <LoadingIndicator />
+        //         </View>
+        //     ) : (
+        //         <>
+        //             <View style={{flexGrow: 1}}>
+        //                 <SectionCard
+        //                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+        //                     subtitle={unitName}
+        //                 />
+        //                 <Text style={styles.screenTitle}>{lessonName}</Text>
+
+        //                 {lessonDescription ? (
+        //                     <OverviewCard
+        //                         text={lessonDescription!}
+        //                     ></OverviewCard>
+        //                 ) : (
+        //                     <OverviewCard
+        //                         // isError={true}
+        //                         text="Lesson Description is not available. Please check with your administrator."
+        //                     />
+        //                 )}
+
+        //                 {videoId ? (
+        //                     <YoutubePlayer
+        //                         height={300}
+        //                         play={playing}
+        //                         onChangeState={onStateChange}
+        //                         videoId={videoId} // YouTube video ID
+        //                     />
+        //                 ) : (
+        //                     <OverviewCard
+        //                         isError={true}
+        //                         text="Video is not available. Please check with your administrator."
+        //                     />
+        //                 )}
+        //             </View>
+        //             <CustomButton
+        //                 label="continue"
+        //                 backgroundColor="white"
+        //                 onPressHandler={handlePress}
+        //             />
+        //         </>
+        //     )}
+        // </View>
     );
 }
 

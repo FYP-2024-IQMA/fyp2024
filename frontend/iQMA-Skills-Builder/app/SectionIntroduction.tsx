@@ -124,50 +124,6 @@ export default function SectionIntroduction() {
                 </>
             )}
         </ScrollView>
-
-        // <View style={styles.container}>
-        //     {isLoading ? (
-        //         <View style={{flexGrow: 1}}>
-        //             <LoadingIndicator />
-        //         </View>
-        //     ) : (
-        //         <>
-        //             <View style={{flexGrow: 1}}>
-        //                 <SectionCard
-        //                     title={`SECTION ${sectionNumber}`}
-        //                     subtitle={sectionName}
-        //                 />
-        //                 <Text style={styles.screenTitle}>
-        //                     Section {sectionNumber}: Introduction
-        //                 </Text>
-        //                 {videoId ? (
-        //                     <VideoPlayer
-        //                         videoUrl={videoId}
-        //                         playing={playing}
-        //                         onStateChange={onStateChange}
-        //                     />
-        //                 ) : (
-        //                     // <YoutubePlayer
-        //                     //     height={300}
-        //                     //     play={playing}
-        //                     //     onChangeState={onStateChange}
-        //                     //     videoId={videoId} // YouTube video ID
-        //                     // />
-        //                     <OverviewCard
-        //                         isError={true}
-        //                         text="Video is not available. Please check with your administrator."
-        //                     />
-        //                 )}
-        //             </View>
-
-        //             <CustomButton
-        //                 label="continue"
-        //                 backgroundColor="white"
-        //                 onPressHandler={handlePress}
-        //             />
-        //         </>
-        //     )}
-        // </View>
     );
 }
 

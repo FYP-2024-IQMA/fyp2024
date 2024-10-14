@@ -1,5 +1,4 @@
 import YoutubePlayer from 'react-native-youtube-iframe';
-// import Video, { VideoRef } from 'react-native-video';
 import React, { useRef, useState } from 'react';
 import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
@@ -11,16 +10,26 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateChange }) => {
+    const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
+    // const { height: screenHeight } = Dimensions.get('window'); // get device height
+    const [videoHeight, setVideoHeight] = useState(screenHeight * 0.75); // Default initial height
+    const [isLoading, setIsLoading] = useState(true); // Loading state
 
-    const { height: screenHeight } = Dimensions.get('window'); // get device height
-    const test = '2VpG0WS4uCo';
+    // const onVideoReadyForDisplay = (vidData: any) => {
+    //     const {width, height} = vidData.naturalSize;
+    //     if (width && height) {
+    //         const aspectRatio = height / width;
+    //         // console.log('aspectRatio:', aspectRatio);
+    //         const calculatedHeight = screenWidth * aspectRatio * 0.9; // Calculate height based on aspect ratio
+    //         setVideoHeight(calculatedHeight); // Update state with dynamic height
+    //     }
+    // };
 
     const videoRef = useRef(null);
     const [status, setStatus] = useState({});
 
     if (videoUrl.includes('.mp4')) {
         return (
-            //<View style={styles.container}>
             <Video
                 ref={videoRef}
                 source={{uri: videoUrl}}
@@ -29,10 +38,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateCha
                 resizeMode={ResizeMode.CONTAIN} // choose ResizeMode.STRETCH or ResizeMode.COVER
                 shouldPlay={playing}
                 // isLooping
-                style={[styles.video, { height: screenHeight * 0.76 }]}
+                style={[styles.video, {height: videoHeight}]}
                 onPlaybackStatusUpdate={(status) => setStatus(() => status)}
+                // onReadyForDisplay={onVideoReadyForDisplay}
             />
-            //</View>
         );
     }
 
@@ -47,24 +56,10 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateCha
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        // height: '45%', // Adjust as needed for your app's design
-        // flexGrow: 1
-    },
-    // video: {
-    //     backgroundColor: 'black', // Optional: set a background color
-    //     alignSelf: 'auto', // 'auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
-    //     flex: 1,
-    //     // width: 300, // Set the desired width
-    //     // height: 200, // Set the desired height
-    // },
     video: {
         backgroundColor: 'black',
-        // flex: 1,
-        // alignSelf: 'stretch',
         width: '100%',
-        // height: '83%',
+        marginBottom: 20
     },
 });
 
