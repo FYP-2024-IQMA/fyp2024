@@ -39,6 +39,7 @@ export const OverviewCard = ({
                         <Text
                             key={index}
                             style={[
+                                index !== 0 ? {paddingTop: 10} : {},
                                 styles.OverviewCardSubtitle,
                                 isCheatsheetObject
                                     ? styles.OverviewCardSubtitleArr

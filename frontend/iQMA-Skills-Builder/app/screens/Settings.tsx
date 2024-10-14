@@ -5,7 +5,8 @@ import { CustomButton } from '@/components/CustomButton';
 import { AuthContext } from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
-import {router}from 'expo-router';
+import { router } from 'expo-router';
+import { Colors } from '@/constants/Colors';
 
 export default function Settings() {
     const {logOut} = useContext(AuthContext);
