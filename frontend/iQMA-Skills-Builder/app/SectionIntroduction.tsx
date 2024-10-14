@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
 import SectionCard from '@/components/SectionCard';
 import React, {useState, useLayoutEffect, useEffect} from 'react';
 import YoutubePlayer from 'react-native-youtube-iframe';
@@ -85,14 +85,15 @@ export default function SectionIntroduction() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
-                <View style={{flexGrow: 1}}>
-                    <LoadingIndicator />
-                </View>
+                <LoadingIndicator />
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
+                    <View>
                         <SectionCard
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
@@ -105,13 +106,7 @@ export default function SectionIntroduction() {
                                 videoUrl={videoId}
                                 playing={playing}
                                 onStateChange={onStateChange}
-                            />
-                            // <YoutubePlayer
-                            //     height={300}
-                            //     play={playing}
-                            //     onChangeState={onStateChange}
-                            //     videoId={videoId} // YouTube video ID
-                            // />
+                                />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -119,15 +114,60 @@ export default function SectionIntroduction() {
                             />
                         )}
                     </View>
-
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                    <View style={{marginBottom: 40}}>
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
+                    </View>
                 </>
             )}
-        </View>
+        </ScrollView>
+
+        // <View style={styles.container}>
+        //     {isLoading ? (
+        //         <View style={{flexGrow: 1}}>
+        //             <LoadingIndicator />
+        //         </View>
+        //     ) : (
+        //         <>
+        //             <View style={{flexGrow: 1}}>
+        //                 <SectionCard
+        //                     title={`SECTION ${sectionNumber}`}
+        //                     subtitle={sectionName}
+        //                 />
+        //                 <Text style={styles.screenTitle}>
+        //                     Section {sectionNumber}: Introduction
+        //                 </Text>
+        //                 {videoId ? (
+        //                     <VideoPlayer
+        //                         videoUrl={videoId}
+        //                         playing={playing}
+        //                         onStateChange={onStateChange}
+        //                     />
+        //                 ) : (
+        //                     // <YoutubePlayer
+        //                     //     height={300}
+        //                     //     play={playing}
+        //                     //     onChangeState={onStateChange}
+        //                     //     videoId={videoId} // YouTube video ID
+        //                     // />
+        //                     <OverviewCard
+        //                         isError={true}
+        //                         text="Video is not available. Please check with your administrator."
+        //                     />
+        //                 )}
+        //             </View>
+
+        //             <CustomButton
+        //                 label="continue"
+        //                 backgroundColor="white"
+        //                 onPressHandler={handlePress}
+        //             />
+        //         </>
+        //     )}
+        // </View>
     );
 }
 
@@ -135,7 +175,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#FFFFFF',
         padding: 20,
-        flex: 1,
+        // flex: 1,
     },
     screenTitle: {
         fontSize: 14,

@@ -1,7 +1,7 @@
 import YoutubePlayer from 'react-native-youtube-iframe';
 // import Video, { VideoRef } from 'react-native-video';
 import React, { useRef, useState } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, ScrollView } from 'react-native';
 import { Video, ResizeMode } from 'expo-av';
 
 interface VideoPlayerProps {
@@ -11,23 +11,16 @@ interface VideoPlayerProps {
 }
 
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateChange }) => {
+
     
+    const test = '2VpG0WS4uCo';
+
     const videoRef = useRef(null);
     const [status, setStatus] = useState({});
 
-    if (videoUrl.includes('youtube')) {
+    if (videoUrl.includes('.mp4')) {
         return (
-            <YoutubePlayer
-                height={300}
-                play={playing}
-                onChangeState={onStateChange}
-                videoId={videoUrl} // YouTube video ID
-            />
-        );
-    }
-
-    return (
-        <View style={styles.container}>
+            //<View style={styles.container}>
             <Video
                 ref={videoRef}
                 source={{uri: videoUrl}}
@@ -39,43 +32,40 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateCha
                 style={styles.video}
                 onPlaybackStatusUpdate={(status) => setStatus(() => status)}
             />
-        </View>
+            //</View>
+        );
+    }
+
+    return (
+        <YoutubePlayer
+            height={300}
+            play={playing}
+            onChangeState={onStateChange}
+            videoId={videoUrl} // YouTube video ID
+        />
     );
 };
 
 const styles = StyleSheet.create({
-
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        // height: '45%', // Adjust as needed for your app's design
+        // flexGrow: 1
     },
+    // video: {
+    //     backgroundColor: 'black', // Optional: set a background color
+    //     alignSelf: 'auto', // 'auto', 'flex-start', 'flex-end', 'center', 'stretch', 'baseline'
+    //     flex: 1,
+    //     // width: 300, // Set the desired width
+    //     // height: 200, // Set the desired height
+    // },
     video: {
-        flex: 1,
-        alignSelf: 'stretch',
-    }
-
-    // fullScreen: {
-    //     position: 'relative',
-    // },
-    // backgroundVideo: {
-    //     position: 'absolute',
-    //     top: 0,
-    //     left: 0,
-    //     bottom: 0,
-    //     right: 0,
-    // },
-    // // });
-    // videoContainer: {
-    //     width: '100%',
-    //     height: 250, // Adjust as needed for your app's design
-    //     backgroundColor: 'black',
-    //     position: 'relative',
-    // },
-    // backgroundVideo: {
-    //     width: '100%',
-    //     height: '100%',
-    // },
+        backgroundColor: 'black',
+        // flex: 1,
+        // alignSelf: 'stretch',
+        width: '100%',
+        height: '83%',
+    },
 });
 
 export default VideoPlayer;
