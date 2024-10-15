@@ -6,14 +6,15 @@ import {
     DrawerItemList,
     createDrawerNavigator,
 } from '@react-navigation/drawer';
+import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {useContext, useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '@/context/AuthContext';
 import ChatbotScreen from '../app/screens/Chatbot';
+import {Colors} from '@/constants/Colors';
 import CustomLabel from './CustomLabel';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import {useEffect, useContext, useState} from 'react';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {AuthContext} from '@/context/AuthContext';
 
 type SectionData = {
     sectionID: string;
@@ -136,12 +137,12 @@ const ChatbotDrawer: React.FC<any> = ({navigation}) => {
     return (
         <Drawer.Navigator
             screenOptions={{
-                drawerActiveTintColor: '#ffffff',
+                drawerActiveTintColor: Colors.light.background,
                 drawerInactiveTintColor: '#000000',
                 drawerActiveBackgroundColor: '#C3B1FF',
                 drawerLabelStyle: styles.labelItem,
-                headerTintColor: '#ffffff',
-                headerStyle: {backgroundColor: '#B199FF'},
+                headerTintColor: Colors.light.background,
+                headerStyle: {backgroundColor: Colors.default.purple100},
                 headerTitleAlign: 'center',
                 headerTitleStyle: {fontSize: 18, fontWeight: 'bold'},
                 drawerItemStyle: {
@@ -237,7 +238,7 @@ const styles = StyleSheet.create({
         width: '90%',
     },
     drawerHeaderText: {
-        color: '#4143A3',
+        color: Colors.header.color,
         fontSize: 18,
         fontWeight: 'bold',
     },

@@ -1,22 +1,25 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import ProgressBar from '@/components/ProgressBar';
-import {QuizCard} from '@/components/QuizCard';
-import {router, useLocalSearchParams} from 'expo-router';
-import {Question} from '@/constants/Quiz';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
-import {formatUnit} from '@/helpers/formatUnitID';
-import {formatSection} from '@/helpers/formatSectionID';
-import {OverviewCard} from '@/components/OverviewCard';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import {router, useLocalSearchParams} from 'expo-router';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import { useTimer } from '@/helpers/useTimer';
+import {Colors} from '@/constants/Colors';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {OverviewCard} from '@/components/OverviewCard';
+import ProgressBar from '@/components/ProgressBar';
+import {Question} from '@/constants/Quiz';
+import {QuizCard} from '@/components/QuizCard';
+import SectionCard from '@/components/SectionCard';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
+import {useNavigation} from '@react-navigation/native';
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -29,7 +32,15 @@ export default function Assessment() {
     const [sectionName, setSectionName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        currentUnit,
+        totalUnits,
+        isFinal,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
     const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment`);
@@ -94,8 +105,10 @@ export default function Assessment() {
     }, [sectionID, unitID, checkFinal]);
 
     useLayoutEffect(() => {
-
-        let progress = checkFinal ? 1 : parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        let progress = checkFinal
+            ? 1
+            : parseInt(currentProgress as string) /
+              parseInt(totalProgress as string);
 
         navigation.setOptions({
             headerTitle: () => (
@@ -110,7 +123,6 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
-
             if (checkFinal) {
                 // final assessment don't have self-reflection
                 try {
@@ -143,7 +155,7 @@ export default function Assessment() {
                         isFinal,
                         currentProgress,
                         totalProgress,
-                    }
+                    },
                 });
             }
             stopTimer();
@@ -171,7 +183,7 @@ export default function Assessment() {
                         <Text
                             style={{
                                 fontSize: 14,
-                                color: '#4143A3',
+                                color: Colors.header.color,
                                 marginBottom: 10,
                             }}
                         >
@@ -214,7 +226,7 @@ export default function Assessment() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },

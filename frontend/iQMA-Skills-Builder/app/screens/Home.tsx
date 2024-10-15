@@ -19,6 +19,7 @@ import React, {useEffect, useRef, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
 import {Ionicons} from '@expo/vector-icons';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -535,11 +536,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#CCC',
         marginVertical: 10,
     },
-    sectionLabel: {
-        textAlign: 'center',
-        color: '#666',
-        marginBottom: 20,
-    },
+
     dividerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -559,7 +556,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 20,
         right: 20,
-        backgroundColor: '#B199FF',
+        backgroundColor: Colors.default.purple100,
         borderRadius: 10,
         width: 50,
         height: 50,

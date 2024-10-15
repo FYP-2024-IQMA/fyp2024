@@ -5,14 +5,16 @@ import {Image, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
 import { useTimer } from '@/helpers/useTimer';
 
 export default function AssessmentIntroduction() {
@@ -23,7 +25,15 @@ export default function AssessmentIntroduction() {
     // const unitID = 'UNIT0001';
     // const currentUnit = "1";
     // const totalUnits = "1"
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        currentUnit,
+        totalUnits,
+        isFinal,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [seconds, setSeconds] = useState<number>(0);
@@ -44,8 +54,9 @@ export default function AssessmentIntroduction() {
     }, []);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
             headerTitle: () => (
@@ -105,8 +116,10 @@ export default function AssessmentIntroduction() {
                 currentUnit,
                 totalUnits,
                 isFinal,
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
-                totalProgress
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
+                totalProgress,
             },
         });
         stopTimer();
@@ -133,7 +146,7 @@ export default function AssessmentIntroduction() {
                             style={{
                                 fontSize: 14,
                                 fontWeight: 'bold',
-                                color: '#4143A3',
+                                color: Colors.header.color,
                                 marginBottom: 20,
                                 marginHorizontal: 10,
                             }}
@@ -195,7 +208,7 @@ export default function AssessmentIntroduction() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },

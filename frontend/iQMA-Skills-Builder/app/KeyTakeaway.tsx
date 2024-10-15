@@ -1,18 +1,19 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {ScrollView, Image, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
 import { useTimer } from '@/helpers/useTimer';
 
 export default function KeyTakeaway() {
@@ -20,8 +21,9 @@ export default function KeyTakeaway() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
             headerTitle: () => (
@@ -31,7 +33,6 @@ export default function KeyTakeaway() {
     }, [navigation]);
 
     const handlePress = () => {
-
         let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
         let pathName = 'Lesson';
 
@@ -56,7 +57,9 @@ export default function KeyTakeaway() {
                 currentUnit,
                 totalUnits,
                 isFinal: 'false',
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
                 totalProgress,
             },
         });
@@ -70,7 +73,17 @@ export default function KeyTakeaway() {
     // const totalLesson = '3';
     // const currentUnit = '3';
     // const totalUnits = '3';
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        lessonID,
+        currentLessonIdx,
+        totalLesson,
+        currentUnit,
+        totalUnits,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -81,7 +94,13 @@ export default function KeyTakeaway() {
 
     useEffect(() => {
         startTimer();
-        if (sectionID && unitID && lessonID && currentLessonIdx && totalLesson) {
+        if (
+            sectionID &&
+            unitID &&
+            lessonID &&
+            currentLessonIdx &&
+            totalLesson
+        ) {
             (async () => {
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
@@ -102,13 +121,14 @@ export default function KeyTakeaway() {
                     );
 
                     let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
-                    
+
                     if (nxtLessonIdx === parseInt(totalLesson as string)) {
                         nxtLessonIdx = 0;
                     }
 
-                    if (lessonID.includes(".")) {
-                        lessonDetails.lessonName = lessonDetails.lessonName.replace(/\.\d+/, '');
+                    if (lessonID.includes('.')) {
+                        lessonDetails.lessonName =
+                            lessonDetails.lessonName.replace(/\.\d+/, '');
                     }
 
                     setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
@@ -187,30 +207,30 @@ export default function KeyTakeaway() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
     },
     takeawayHeader: {
         marginBottom: 10,
         marginLeft: 15,
-        color: '#4143A3',
+        color: Colors.header.color,
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: Colors.header.fontSize,
     },
     takeawayText: {
         marginLeft: 15,
-        fontSize: 12,
-        lineHeight: 25,
-        color: '#4143A3',
-        marginBottom: 15,
+        fontSize: Colors.text.fontSize,
+        lineHeight: 22,
+        color: Colors.header.color,
+        marginBottom: 25,
     },
     buttonContainer: {
         alignItems: 'center',
