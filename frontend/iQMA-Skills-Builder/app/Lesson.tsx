@@ -1,9 +1,9 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import {router, useLocalSearchParams} from 'expo-router';
+import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -68,7 +68,17 @@ export default function Lesson() {
                 totalProgress,
             },
         });
+        console.log("ISPLAYING: " + playing)
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
 
     useEffect(() => {
         if (sectionID && unitID && lessonID) {

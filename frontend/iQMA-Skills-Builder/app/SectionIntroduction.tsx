@@ -1,6 +1,6 @@
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {StyleSheet, Text, View, ScrollView} from 'react-native';
-import {router, useLocalSearchParams} from 'expo-router';
+import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -48,6 +48,15 @@ export default function SectionIntroduction() {
         });
     }, [navigation]);
 
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
+
     useEffect(() => {
         if (sectionID) {
             (async () => {
@@ -88,6 +97,7 @@ export default function SectionIntroduction() {
                 totalProgress,
             },
         });
+        // console.log("STATE: " + playing)
     };
 
     const onStateChange = (state: string) => {
