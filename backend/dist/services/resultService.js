@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createResult = createResult;
 exports.getAllResults = getAllResults;
 exports.checkIfCompletedQuiz = checkIfCompletedQuiz;
+exports.checkIfCompletedSection = checkIfCompletedSection;
 exports.getUserProgress = getUserProgress;
 exports.getNoOfCompletedLesson = getNoOfCompletedLesson;
 exports.getNoOfCompletedUnit = getNoOfCompletedUnit;
@@ -60,6 +61,23 @@ function checkIfCompletedQuiz(userID, quizID) {
             .select("*", { count: "exact" })
             .eq("userID", userID)
             .eq("quizID", quizID);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        else {
+            return count > 0;
+        }
+    });
+}
+function checkIfCompletedSection(userID, sectionID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { count, error } = yield supabaseConfig_1.default
+            .from("result")
+            .select("quizID, quiz!inner(quizID)", { count: "exact" })
+            .eq("userID", userID)
+            .eq("quiz.sectionID", sectionID)
+            .eq("quiz.quizType", "section");
         if (error) {
             console.error(error);
             throw error;

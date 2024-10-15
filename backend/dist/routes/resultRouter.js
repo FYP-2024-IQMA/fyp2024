@@ -35,6 +35,7 @@ router.post("/createresult", authMiddleware_1.default, resultController.createRe
 /* READ */
 router.get("/getallresults", authMiddleware_1.default, resultController.getAllResults);
 router.get("/checkifcompletedquiz/:userid/:quizid", authMiddleware_1.default, resultController.checkIfCompletedQuiz);
+router.get("/checkifcompletedsection/:userid/:sectionid", authMiddleware_1.default, resultController.checkIfCompletedSection);
 router.get("/getuserprogress/:userid/:sectionid?", authMiddleware_1.default, resultController.getUserProgress);
 router.get("/getcircularprogress/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getCircularProgress);
 router.get("/getnoofcompletedlessons/:userid/:sectionid/:unitid", authMiddleware_1.default, resultController.getNoOfCompletedLesson);

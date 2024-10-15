@@ -53,6 +53,21 @@ export const checkIfCompletedQuiz = async (req: Request, res: Response) => {
     }
 };
 
+export const checkIfCompletedSection = async (req: Request, res: Response) => {
+    try {
+        const result = await resultService.checkIfCompletedSection(
+            req.params.userid,
+            req.params.sectionid
+        );
+        res.status(200).json(result);
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+};
+
 export const getUserProgress = async (req: Request, res: Response) => {
     try {
         const userProgress = await resultService.getUserProgress(
