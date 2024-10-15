@@ -21,6 +21,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {AuthContext} from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import SectionCard from '@/components/SectionCard';
+import SectionProfile from '@/components/SectionProfile';
 import {router} from 'expo-router';
 import {useContext} from 'react';
 
@@ -62,6 +63,19 @@ const ProfilePage: React.FC = () => {
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <View style={styles.container}>
                 <Text>Profile Screen</Text>
+                {allSectionDetails.length > 0 ? (
+                    allSectionDetails.map((sectionDetail, index) => (
+                        <View key={index}>
+                            <SectionProfile
+                                sectionID={sectionDetail.sectionID}
+                                sectionName={sectionDetail.sectionName}
+                                sectionDuration={sectionDetail.sectionDuration}
+                            />
+                        </View>
+                    ))
+                ) : (
+                    <Text>No sections available</Text>
+                )}
             </View>
         </ScrollView>
     );
