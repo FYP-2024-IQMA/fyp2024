@@ -592,7 +592,15 @@ resource "aws_glue_catalog_table" "athena_table_attempts" {
       type = "string"
     }
     columns {
+      name = "age"
+      type = "string"
+    }
+    columns {
       name = "eventType"
+      type = "string"
+    }
+    columns {
+      name = "section"
       type = "string"
     }
     columns {
