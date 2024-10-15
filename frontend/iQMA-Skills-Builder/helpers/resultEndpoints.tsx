@@ -68,6 +68,21 @@ export const checkIfCompletedQuiz = async(
     }
 }
 
+export const checkIfCompletedSection = async (
+    userID: string,
+    sectionID: string
+) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/checkifcompletedsection/${userID}/${sectionID}`;
+        const response = await fetch(url);
+        const completedSection = await response.json();
+        return completedSection;
+    } catch (error) {
+        console.error('Error while loading current section:', error);
+        return false;
+    }
+};
+
 export const getCurrentSection = async (userID: string): Promise<number> => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${userID}`;

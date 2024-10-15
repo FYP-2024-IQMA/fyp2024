@@ -17,11 +17,11 @@ export const getAllSectionDetails = async () => {
         const response = await fetch(url);
         const sectionDetails = await response.json();
         // Testing
-        sectionDetails.push({
-            sectionID: 'SEC0002',
-            sectionName: 'Decision Making',
-            sectionDuration: '160',
-        });
+        // sectionDetails.push({
+        //     sectionID: 'SEC0002',
+        //     sectionName: 'Decision Making',
+        //     sectionDuration: '160',
+        // });
         // console.log(sectionDetails);
         return sectionDetails;
     } catch (error) {
