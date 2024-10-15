@@ -1,8 +1,9 @@
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {router} from 'expo-router';
+import messaging from '@react-native-firebase/messaging';
+import { PermissionsAndroid } from 'react-native';
 
 export const AuthContext = createContext<any>(null);
 
@@ -12,9 +13,34 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [token, setToken] = useState<string | null>(null); // Store Access Token of current User
     const [isLoading, setIsLoading] = useState(true);
 
+    const requestUserPermission = async () => {
+        try {
+            const permission = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+            );
+            if (permission === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("Notification permission granted");
+            }
+            else {
+                console.log("Notification permission denied");
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    const getToken = async () => {
+        const token = await messaging().getToken();
+        console.log("Token = ", token);
+    }
+
+    useEffect(() => {
+        requestUserPermission();
+        getToken();
+    })
+
     useEffect(() => {
         watchUserSession();
-
         // checkFirstLogin();
     }, [user]);
 
