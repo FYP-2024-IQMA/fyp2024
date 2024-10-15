@@ -1,6 +1,8 @@
 export interface Clickstream {
     userID: string;
+    age: string,
     eventType: "timeTaken" | "attemptsTaken";
+    section: string,
     event: string;
     timestamp: Date;
 }

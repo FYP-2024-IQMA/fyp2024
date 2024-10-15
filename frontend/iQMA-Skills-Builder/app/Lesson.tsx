@@ -15,6 +15,7 @@ import YoutubePlayer from 'react-native-youtube-iframe';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import { useTimer } from '@/helpers/useTimer';
 
 // where things show up
 export default function Lesson() {
@@ -38,6 +39,7 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Lesson`);
 
     useLayoutEffect(() => {
         const progress =
@@ -69,9 +71,11 @@ export default function Lesson() {
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID && lessonID) {
             (async () => {
                 try {

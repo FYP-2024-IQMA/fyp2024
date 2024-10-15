@@ -14,6 +14,7 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import { useTimer } from '@/helpers/useTimer';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
@@ -62,6 +63,7 @@ export default function KeyTakeaway() {
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     // const sectionID = 'SEC0001';
@@ -88,8 +90,10 @@ export default function KeyTakeaway() {
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
     const [nextLessonID, setnextLessonID] = useState<string>('');
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Key Takeaway`);
 
     useEffect(() => {
+        startTimer();
         if (
             sectionID &&
             unitID &&

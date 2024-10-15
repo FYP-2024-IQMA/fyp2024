@@ -57,20 +57,37 @@ export const QuizCard: React.FC<{
 
     const sendMessage = async () => {
         const userID = await AsyncStorage.getItem('userID');
-        try {
-            const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
-                {
-                    userID: userID,
-                    eventType: 'attemptsTaken',
-                    event: `quizID ${quizID}, questionNo ${questionNo}`,
-                    timestamp: new Date().toISOString(),
-                    attempts: count,
-                }
-            );
-            console.log(response.data);
-        } catch (e) {
-            console.error(e);
+        let age = await AsyncStorage.getItem('age');
+        const section = await AsyncStorage.getItem('section');
+
+        if (age === null) {
+            try {
+                const ageResponse = await axios.get(
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${userID}`
+                );
+                await AsyncStorage.setItem('age', ageResponse.data['age']);
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        else {
+            try {
+                const response = await axios.post(
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
+                    {
+                        userID: userID,
+                        age: age,
+                        eventType: 'attemptsTaken',
+                        section: section,
+                        event: `quizID ${quizID}, questionNo ${questionNo}`,
+                        timestamp: new Date().toISOString(),
+                        attempts: count,
+                    }
+                );
+                console.log(response.data);
+            } catch (e) {
+                console.error(e);
+            }
         }
     };
 

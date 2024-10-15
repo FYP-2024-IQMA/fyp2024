@@ -7,6 +7,7 @@ import {router, useLocalSearchParams} from 'expo-router';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import {formatUnit} from '@/helpers/formatUnitID';
@@ -60,6 +61,7 @@ export default function CheatSheet() {
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} Cheat Sheet`);
 
     useLayoutEffect(() => {
         const progress =
@@ -74,6 +76,7 @@ export default function CheatSheet() {
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -120,6 +123,7 @@ export default function CheatSheet() {
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     return (
