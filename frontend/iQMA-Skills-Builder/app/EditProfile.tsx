@@ -11,6 +11,7 @@ import {useState, useContext, useEffect} from 'react';
 import {AuthContext} from '@/context/AuthContext';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { router } from 'expo-router';
 // import { ScrollView } from 'react-native-gesture-handler';
 
 export default function EditProfile() {

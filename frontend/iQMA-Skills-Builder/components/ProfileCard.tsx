@@ -69,7 +69,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) => {
                 >
                     <View style={styles.userProfileContainer}>
                         <Text style={styles.name}>
-                            {userDetails.lastName + ' ' + userDetails.firstName}
+                            {userDetails.firstName + ' ' + userDetails.lastName}
                         </Text>
                         <Text style={styles.subText}>
                             {'Joined ' + userDetails.dateCreated}

@@ -8,12 +8,17 @@ import {
     FlatList,
 } from 'react-native';
 
-export const Achievements = () => {
-    const achievements = [
-        'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge3.png',
-        'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge1.png',
-        // 'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge2.png',
-    ];
+interface AchievementsProps {
+    achievements: string[];
+}
+
+export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
+    
+    // const achievements = [
+    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge3.png',
+    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge1.png',
+    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge2.png',
+    // ];
 
     const displayAchievements = [...achievements];
     // const placeholderUri =

@@ -14,14 +14,14 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import {AuthContext} from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import SectionCard from '@/components/SectionCard';
 import SectionProfile from '@/components/SectionProfile';
 import ProfileCard from '@/components/ProfileCard';
-import {router} from 'expo-router';
+import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
 import { Achievements } from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
@@ -34,27 +34,39 @@ const ProfilePage: React.FC = () => {
     const [badges, setBadges] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
 
+    const fetchProfileData = async () => {
+        
+        try {
+            const sectionDetails = await sectionEndpoints.getAllSectionDetails();
+            const userDetails = await accountEndpoints.getUserDetails(currentUser.sub);
+            const badges = await gamificationEndpoints.getBadges(currentUser.sub);
+
+            console.log('sectionDetails:', sectionDetails);
+            console.log('userDetails:', userDetails);
+            console.log('badges:', badges);
+
+            setAllSectionDetails(sectionDetails);
+            setUserDetails(userDetails);
+            setBadges(badges);
+        } catch (error) {
+            console.error('Error fetching Section details:', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
     useEffect(() => {
-        (async () => {
-            try {
-                const sectionDetails = await sectionEndpoints.getAllSectionDetails();
-                const userDetails = await accountEndpoints.getUserDetails(currentUser.sub);
-                const badges = await gamificationEndpoints.getBadges(currentUser.sub);
-
-                console.log('sectionDetails:', sectionDetails);
-                console.log('userDetails:', userDetails);
-                console.log('badges:', badges);
-
-                setAllSectionDetails(sectionDetails);
-                setUserDetails(userDetails);
-                setBadges(badges);
-            } catch (error) {
-                console.error('Error fetching Section details:', error);
-            } finally {
-                setLoading(false);
-            }
-        })();
+        setLoading(true);
+        fetchProfileData();
     }, [])
+
+    // Fetch data when navigating back
+    useFocusEffect(
+        useCallback(() => {
+            fetchProfileData();
+        }, [])
+    );
+
 
     if (isLoading || !userDetails) {
         return <LoadingIndicator />;
@@ -65,7 +77,7 @@ const ProfilePage: React.FC = () => {
             <View style={styles.container}>
                 <ProfileCard userDetails={userDetails}/>
 
-                <Achievements/>
+                <Achievements achievements={badges}/>
                 <CertificationsList/>
                 
                 {allSectionDetails.length > 0 ? (
