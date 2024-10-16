@@ -10,7 +10,8 @@ import axios from 'axios';
 export const QuizCard: React.FC<{
     questionData: Question;
     onNextQuestion: () => void;
-}> = ({questionData, onNextQuestion}) => {
+    onTotalPoints: (points: number) => void;
+}> = ({questionData, onNextQuestion, onTotalPoints}) => {
     const {
         quizID,
         questionNo,
@@ -28,6 +29,8 @@ export const QuizCard: React.FC<{
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
     const [count, setCount] = useState<number>(0);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+    const [currentPoints, setCurrentPoints] = useState<number>(0);
 
     const handleButtonPress = (label: string, option: Option) => {
         setSelectedButton(option);
@@ -37,16 +40,39 @@ export const QuizCard: React.FC<{
     const handleCheck = () => {
         if (selectedButton) {
             if (selectedLabel == answer) {
+                let points = 0;
+
+                console.log('my count in handle answer is ');
+                if (count == 0) {
+                    console.log('first try');
+                    points = 100; // First try
+                } else if (count == 1) {
+                    console.log('second try');
+                    points = 50; // Second try
+                } else {
+                    console.log('third onwards');
+                    points = 25; // Third or more tries
+                }
+
+                setCurrentPoints(points);
                 setIsCorrect(true);
             }
-            setCount(count + 1);
+            setCount((prevCount) => prevCount + 1);
+            console.log('count is ' + count);
             setModalVisible(true);
         }
     };
 
     const handleAnswer = () => {
         if (isCorrect) {
-            sendMessage();
+            // Accumulate total points
+            setTotalPoints((prevPoints) => prevPoints + currentPoints);
+
+            // Pass points back to the parent component
+            onTotalPoints(totalPoints);
+            console.log('points ' + currentPoints);
+            console.log('total points' + totalPoints);
+
             onNextQuestion();
             setCount(0);
         }
@@ -67,10 +93,9 @@ export const QuizCard: React.FC<{
                 );
                 await AsyncStorage.setItem('age', ageResponse.data['age']);
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
-        }
-        else {
+        } else {
             try {
                 const response = await axios.post(
                     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
@@ -222,27 +247,58 @@ export const QuizCard: React.FC<{
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 marginBottom: 10,
+                                justifyContent: 'space-between',
                             }}
                         >
-                            <Image
-                                source={
-                                    isCorrect
-                                        ? require('@/assets/images/correct.png')
-                                        : require('@/assets/images/incorrect.png')
-                                }
-                                style={{marginRight: 8}}
-                            />
-                            <Text
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    fontSize: 16,
-                                    color: isCorrect
-                                        ? '#1ACB98'
-                                        : Colors.default.red,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
                                 }}
                             >
-                                {isCorrect ? 'Correct' : 'Incorrect'}
-                            </Text>
+                                <Image
+                                    source={
+                                        isCorrect
+                                            ? require('@/assets/images/correct.png')
+                                            : require('@/assets/images/incorrect.png')
+                                    }
+                                    style={{marginRight: 8}}
+                                />
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                        fontSize: 16,
+                                        color: isCorrect
+                                            ? '#1ACB98'
+                                            : Colors.default.red,
+                                    }}
+                                >
+                                    {isCorrect ? 'Correct' : 'Incorrect'}
+                                </Text>
+                            </View>
+                            {isCorrect && (
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 16,
+                                            fontWeight: 'bold',
+                                            color: '#1ACB98',
+                                            marginRight: 8,
+                                        }}
+                                    >
+                                        +{currentPoints} XP
+                                    </Text>
+                                    <Image
+                                        source={require('@/assets/images/grey_xp.png')}
+                                        style={{width: 24, height: 24}}
+                                    />
+                                </View>
+                            )}
                         </View>
                         <Text style={{marginBottom: 10, fontWeight: 'bold'}}>
                             {selectedButton ? selectedButton!.explanation : ''}
@@ -282,7 +338,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         // backgroundColor: '#D9D9D9',
-        backgroundColor: '#F0F0F0',
+        backgroundColor: '#ECEBEB',
         paddingTop: 20,
         paddingBottom: 20,
     },
