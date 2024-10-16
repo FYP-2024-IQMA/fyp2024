@@ -10,6 +10,7 @@ import {useState, useContext, useEffect} from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { ScrollView } from 'react-native-gesture-handler';
 
 export default function EditProfile() {
   const {currentUser, isLoading} = useContext(AuthContext);
@@ -59,7 +60,7 @@ export default function EditProfile() {
   }
 
   return (
-      <View style={styles.container}>
+      <ScrollView style={styles.container} contentContainerStyle={{flexGrow: 1}}>
           <View style={styles.header}>
               <Text style={styles.headerTitle}>Edit Profile</Text>
           </View>
@@ -80,7 +81,7 @@ export default function EditProfile() {
                   <Text style={styles.buttonText}>SAVE</Text>
               </TouchableOpacity>
           </View>
-      </View>
+      </ScrollView>
   );
 }
 

@@ -1,5 +1,3 @@
-// app/Profile.tsx
-
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
@@ -22,6 +20,7 @@ import {AuthContext} from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import SectionCard from '@/components/SectionCard';
 import SectionProfile from '@/components/SectionProfile';
+import ProfileCard from '@/components/ProfileCard';
 import {router} from 'expo-router';
 import {useContext} from 'react';
 
@@ -60,9 +59,10 @@ const ProfilePage: React.FC = () => {
     }
 
     return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.container}>
-                <Text>Profile Screen</Text>
+                <ProfileCard/>
+                
                 {allSectionDetails.length > 0 ? (
                     allSectionDetails.map((sectionDetail, index) => (
                         <View key={index}>
@@ -83,9 +83,13 @@ const ProfilePage: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
+    scrollView: {
+        flexGrow: 1,
+        backgroundColor: '#fff', // Ensure background color is white
+    },
     container: {
-        padding: 20,
-        backgroundColor: '#F5F5F5',
+    
+        backgroundColor: '#fff', // Container also white
     },
 });
 
