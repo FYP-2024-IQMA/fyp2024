@@ -1,14 +1,15 @@
 import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
 
+import {Colors} from '@/constants/Colors';
 import React from 'react';
 
 const screenWidth = Dimensions.get('window').width;
 
 export const CustomButton = ({
     label = '',
-    labelColor = '#7654F2',
-    backgroundColor = '#7654F2',
-    borderColor = '#7654F2',
+    labelColor = Colors.default.purple500,
+    backgroundColor = Colors.default.purple500,
+    borderColor = Colors.default.purple500,
     onPressHandler = () => {},
     capitalise = true,
     disabled = false,
@@ -29,7 +30,9 @@ export const CustomButton = ({
                     styles.rounded,
                     styles.shadow,
                     {
-                        backgroundColor: disabled ? '#D1D5DB' : backgroundColor,
+                        backgroundColor: disabled
+                            ? Colors.chatbot.inputColor
+                            : backgroundColor,
                         borderColor: borderColor,
                         paddingHorizontal: isOption ? 25 : undefined,
                         alignItems: isOption ? undefined : 'center',
