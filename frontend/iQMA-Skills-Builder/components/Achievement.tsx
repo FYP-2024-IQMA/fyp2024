@@ -1,120 +1,91 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import React, {useState} from 'react';
+import {
+    View,
+    Text,
+    Image,
+    TouchableOpacity,
+    StyleSheet,
+    FlatList,
+} from 'react-native';
 
 export const Achievements = () => {
-  const [expanded, setExpanded] = useState(false);
+    const achievements = [
+        'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge3.png',
+        'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge1.png',
+        // 'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge2.png',
+    ];
 
-  const achievements = [
-    { id: '1', source: require('../assets/images/badge1.png') },
-    { id: '1', source: require('../assets/images/badge2.png') },
-    { id: '1', source: require('../assets/images/badge1.png') },
-   
-  ];
+    const displayAchievements = [...achievements];
+    // const placeholderUri =
+    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/placeholder.png';
 
-  const visibleAchievements = expanded ? achievements : achievements.slice(0, 3);
+    const lockedBadge = require('../assets/images/lockedbadge.png');
 
-  const handleViewMore = () => {
-    setExpanded(!expanded);
-  };
+    while (displayAchievements.length < 3) {
+        displayAchievements.push(lockedBadge);
+    }
 
-  return (
-    <View style ={styles.topContainer}>
-    <Text style={styles.header}>Achievements</Text>
-    <View style={styles.container}>
-      
-      <View style={styles.achievementContainer}>
-        <FlatList
-          data={visibleAchievements}
-          keyExtractor={(item) => item.id}
-          horizontal
-          style={styles.flatlist}
-          renderItem={({ item }) => (
-            <View style={styles.achievementItem}>
-              <Image source={item.source} style={styles.achievementImage} />
+    return (
+        <View style={styles.outerContainer}>
+            <Text style={styles.achievementsHeader}>Achievements</Text>
+            <View style={styles.achievementsContainer}>
+                {displayAchievements
+                    .slice(0, 3)
+                    .map((achievementUri, index) => (
+                        <View
+                            key={index}
+                            style={[
+                                styles.achievementImageContainer,
+                                index === 1 && styles.middleItemBorder,
+                            ]}
+                        >
+                            <Image
+                                style={styles.achievementImage}
+                                source={
+                                    typeof achievementUri === 'string'
+                                        ? {uri: achievementUri}
+                                        : achievementUri
+                                }
+                            />
+                        </View>
+                    ))}
             </View>
-          )}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
-          contentContainerStyle={styles.listContainer} // Apply styling to the content container
-        />
-      </View>
-      
-      {/* Separate View for View More button */}
-      {/* <TouchableOpacity onPress={handleViewMore}>
-        <Text style={styles.viewMore}>
-          {expanded ? 'View Less' : `View ${achievements.length - 3} more`}
-        </Text>
-      </TouchableOpacity> */}
-    </View>
-    </View>
-  );
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-    topContainer:{
-        padding:16,
-        flex:1,
+    outerContainer: {
+        paddingHorizontal: 20,
+        marginTop: 20,
     },
-  container: {
-    
-    borderWidth: 2,
-    borderColor: '#9CA3AF',
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    marginBottom:10,
-    flex: 1,
-  },
-  flatlist:{
-    flex:1,
-    
-
-  },
-  header: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color:'#18113C',
-  },
-  achievementContainer: {
-    
-     borderBottomWidth: 2,         // Add border bottom width
-  borderBottomColor: '#9CA3AF',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    flex:1,
-    paddingLeft:10,
-     // Added padding for better spacing
-  },
-  achievementItem: {
-    flex:1,
-    width:80,
-    height:80,
-   
-    borderRightWidth:2,
-    borderRightColor: '#9CA3AF',
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    
-  },
-  achievementImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'contain',
-  },
-  separator: {
-    width: 10,
-  },
-  viewMore: {
-    color: '#333399',
-    textDecorationLine: 'underline',
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom:20,
-    marginLeft:10,
-     // Center the text
-  },
-  listContainer: {
-    justifyContent: 'space-between', // Ensure space between items
-  },
+    achievementsHeader: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#18113C',
+    },
+    achievementsContainer: {
+        flexDirection: 'row',
+        borderWidth: 1,
+        borderColor: '#5C5776',
+        borderRadius: 10,
+        marginTop: 10,
+    },
+    achievementImageContainer: {
+        flex: 1,
+        alignItems: 'center',
+        padding: 5,
+    },
+    middleItemBorder: {
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderColor: '#5C5776',
+    },
+    achievementImage: {
+        width: '100%',
+        aspectRatio: 1,
+        resizeMode: 'contain',
+    },
 });
 
 export default Achievements;

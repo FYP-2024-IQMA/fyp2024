@@ -56,7 +56,7 @@ const ProfilePage: React.FC = () => {
         })();
     }, [])
 
-    if (isLoading) {
+    if (isLoading || !userDetails) {
         return <LoadingIndicator />;
     }
 
