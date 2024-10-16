@@ -15,6 +15,8 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import VideoPlayer from '@/components/VideoPlayer';
+import { useTimer } from '@/helpers/useTimer';
+
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
@@ -37,6 +39,7 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Lesson`);
 
     useLayoutEffect(() => {
         const progress =
@@ -69,6 +72,7 @@ export default function Lesson() {
             },
         });
         console.log("ISPLAYING: " + playing)
+        stopTimer();
     };
 
     useFocusEffect(
@@ -81,6 +85,7 @@ export default function Lesson() {
     );
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID && lessonID) {
             (async () => {
                 try {

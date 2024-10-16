@@ -5,6 +5,8 @@ import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
@@ -35,6 +37,7 @@ export default function SectionIntroduction() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} Introduction`);
 
     useLayoutEffect(() => {
         const progress =
@@ -58,6 +61,7 @@ export default function SectionIntroduction() {
     );
 
     useEffect(() => {
+        startTimer();
         if (sectionID) {
             (async () => {
                 try {
@@ -70,6 +74,7 @@ export default function SectionIntroduction() {
                     setSectionName(sectionDetails.sectionName);
 
                     setSectionNumber(formatSection(sectionID as string));
+                    await AsyncStorage.setItem('section', sectionDetails.sectionName);
                 } catch (error) {
                     console.error('Error fetching Lesson details:', error);
                 } finally {
@@ -79,7 +84,7 @@ export default function SectionIntroduction() {
         }
     }, [sectionID]);
 
-    const handlePress = () => {
+    const handlePress = async () => {
         setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
@@ -98,6 +103,7 @@ export default function SectionIntroduction() {
             },
         });
         // console.log("STATE: " + playing)
+        stopTimer();
     };
 
     const onStateChange = (state: string) => {
