@@ -30,15 +30,15 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
     const [sectionCircularProgress, setSectionCircularProgress] =
         useState<number>(0);
     const [status, setStatus] = useState<string>('in-progress');
-    const [completedFinals, setCompletedFinals] = useState<boolean>(false);
+    // const [completedFinals, setCompletedFinals] = useState<boolean>(false);
     const [handlePressParams, setHandlePressParams] = useState<any>();
 
     const loadUnitCircularProgress = async (
         userID: string,
         sectionID: string,
         unitID: string,
-        isLastUnit: boolean
-        // completedFinals?: boolean
+        isLastUnit: boolean,
+        completedFinals: boolean
     ) => {
         // console.log('LOAD UNIT CIRCULAR PROGRESS IN PROFILE PAGE');
         // console.log(userID, sectionID, unitID, isLastUnit);
@@ -77,7 +77,8 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
         totalUnits: number,
         unitIdx: number,
         circularProgress: number,
-        sectionCircularProgress: number
+        sectionCircularProgress: number,
+        completedFinals?: boolean
     ) => {
         console.log('Section ID IN TESTING:', sectionID);
         let routerName = 'UnitIntroduction';
@@ -167,6 +168,10 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
             }
         }
 
+        if (completedFinals) {
+            routerName = 'SectionIntroduction';
+        }
+
         const iconStatus = {
             status,
             routerName,
@@ -223,12 +228,14 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
                         sectionID
                     );
 
-                setCompletedFinals(completedSection);
+                let sectionCirProgress = sectionProgress / (totalUnits + 1);
 
                 if (completedSection) {
                     setSectionCircularProgress(
                         () => (sectionProgress + 1) / (totalUnits + 1)
                     );
+                    sectionCirProgress =
+                        (sectionProgress + 1) / (totalUnits + 1);
                 } else {
                     setSectionCircularProgress(
                         () => sectionProgress / (totalUnits + 1)
@@ -241,7 +248,8 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
                     currentUser.sub,
                     sectionID,
                     unitID,
-                    isLastUnit
+                    isLastUnit,
+                    completedSection
                 );
 
                 // userID: string,
@@ -261,18 +269,19 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
                     totalUnits,
                     lightedUnit - 1,
                     circularProgress!,
-                    sectionCircularProgress * 100
+                    sectionCirProgress * 100,
+                    completedSection
                 );
 
                 setHandlePressParams(iconStatus);
             }
         })();
-    }, [sectionCircularProgress, completedFinals]);
+    }, [sectionCircularProgress]);
 
     useEffect(() => {
         if (handlePressParams) {
             console.log('STATUS:', handlePressParams.status);
-            setStatus(handlePressParams.status);
+            setStatus(() => handlePressParams.status);
         }
     }, [handlePressParams]);
 
