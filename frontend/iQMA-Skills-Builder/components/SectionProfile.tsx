@@ -1,6 +1,6 @@
 // components/SectionProfile.tsx
 
-import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
 
 import {Colors} from '@/constants/Colors';
 import React, { useEffect, useRef, useState, useContext } from 'react';
@@ -320,45 +320,70 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
     };
 
     return (
+        <View style={styles.main}>
         <TouchableOpacity
             style={[styles.sectionCard, status === 'not-started' && styles.disabledSectionCard]}
             onPress={handlePress}
             disabled={status === 'not-started'}
         >
+             <Image
+  source={require('../assets/images/communication.jpg')} style={styles.image} />
             <View style={styles.textContainer}>
-                <Text style={styles.sectionCardTitle}>SECTION {sectionNumber}</Text>
+           
+
+                <Text style={styles.sectionTitle}>SECTION {sectionNumber}</Text>
                 <Text style={styles.sectionCardTitle}>{sectionName}</Text>
+                
+                <ProgressBar progress={sectionCircularProgress} isQuestionnaire={true}  />
                 <Text style={styles.sectionCardSubtitle}>
-                    {sectionDuration}
+                    {sectionDuration + "m"}
                 </Text>
-                <ProgressBar progress={sectionCircularProgress} isQuestionnaire={true} />
             </View>
         </TouchableOpacity>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    main:{
+        padding:20,
+    },
+    image: {
+        width: '100%',
+        height: 150, // Adjust the height to whatever size you'd like the image to be
+        resizeMode: 'cover',
+        justifyContent: 'flex-start',
+    },
     sectionCard: {
-        backgroundColor: Colors.default.purple100,
-        padding: 25,
+        backgroundColor: '#fff',
         borderRadius: 15,
         marginBottom: 20,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        borderWidth: 1,
+        overflow: 'hidden', // Makes sure image edges are rounded with the sectionCard
     },
     disabledSectionCard: {
         backgroundColor: 'gray', // or any color to indicate disabled state
-        // other styles to indicate disabled state
+    },
+    sectionTitle: {
+        color: '#18113C',
+        fontSize: 16,
+        marginTop:"2%"
     },
     sectionCardTitle: {
-        color: 'white',
+        color: '#18113C',
         fontSize: 16,
         fontWeight: 'bold',
+        marginBottom:'2%'
+
     },
     sectionCardSubtitle: {
-        color: 'white',
+        color: '#5C5776',
         fontSize: 14,
+        marginLeft:"83%",
+        marginTop:"5%",
+        
+    
     },
     sectionButton: {
         backgroundColor: Colors.default.purple500,
@@ -366,10 +391,19 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: '#5E43C2',
         borderWidth: 2,
+    
     },
     textContainer: {
-        maxWidth: '80%',
+        width: '100%', // Ensures the text container takes up the full width of the card
+        padding: 10, // Adds spacing for text inside the card
+        backgroundColor: '#fff',
+        paddingLeft:40,
+        flex:1,
+        
     },
+    progressBar:{
+        paddingLeft:20,
+    }
 });
 
 export default SectionProfile;

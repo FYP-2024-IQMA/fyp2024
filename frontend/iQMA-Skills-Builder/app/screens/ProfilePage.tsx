@@ -23,6 +23,8 @@ import SectionProfile from '@/components/SectionProfile';
 import ProfileCard from '@/components/ProfileCard';
 import {router} from 'expo-router';
 import {useContext} from 'react';
+import { Achievements } from '@/components/Achievement';
+import CertificationsList from '@/components/Certification';
 
 const ProfilePage: React.FC = () => {
 
@@ -61,7 +63,10 @@ const ProfilePage: React.FC = () => {
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.container}>
-                <ProfileCard/>
+                <ProfileCard userDetails={userDetails}/>
+
+                <Achievements/>
+                <CertificationsList/>
                 
                 {allSectionDetails.length > 0 ? (
                     allSectionDetails.map((sectionDetail, index) => (
@@ -76,6 +81,7 @@ const ProfilePage: React.FC = () => {
                 ) : (
                     <Text>No sections available</Text>
                 )}
+
             </View>
         </ScrollView>
     );

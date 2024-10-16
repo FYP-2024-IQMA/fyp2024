@@ -3,12 +3,36 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, Button, Share, StyleSheet } from 'react-native';
 import {AuthContext} from '@/context/AuthContext';
 import {useContext} from 'react';
-const ProfileCard = () => {
+import { LoadingIndicator } from './LoadingIndicator';
+
+interface ProfileCardProps{
+  userDetails: {
+    age: String
+    dateCreated : String,
+    email : String,
+    firstName: String,
+    gender: String,
+    hasOnboarder: boolean,
+    lastName : String,
+    role: String,
+    userId: String
+
+  }
+}
+
+const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) =>{
     const {currentUser} = useContext(AuthContext);
+    if (!userDetails) {
+      
+        return <LoadingIndicator />;
+    
+
+    }
+    
   const handleShare = async () => {
     try {
       const result = await Share.share({
-        message: 'Check out my profile on this awesome app!',
+        message: 'Join me on my iQMA Learning Adventure !',
         url: 'https://example.com/my-profile', // Add your profile URL here
         title: 'Yi Peng Tan Profile'
       });
@@ -35,9 +59,9 @@ const ProfileCard = () => {
       <View style={styles.profileCard}>
         <View style ={styles.mainContainer}>
         <View  style={styles.textContainer}>
-        <Text style={styles.name}>{currentUser.givenName}</Text>
-        <Text style={styles.info}>Joined May 2024</Text>
-        <Text style={styles.info}>Archetype: Gen Z</Text>
+        <Text style={styles.name}>{userDetails.lastName + " " + userDetails.firstName}</Text>
+        <Text style={styles.info}>{"Joined " + userDetails.dateCreated}</Text>
+        <Text style={styles.info}>{"Archetype: " + userDetails.age}</Text>
         <View style ={styles.buttons}>
         <TouchableOpacity style={styles.editButton}>
             <Text style={styles.buttonText}>Edit Profile</Text>
@@ -79,14 +103,15 @@ const styles = StyleSheet.create({
       shadowRadius: 2,
       borderBottomWidth: 2,  // Add a border only at the bottom
       borderColor: '#808080',   // Define the color of the bottom border
-      paddingHorizontal: 15,
+      paddingHorizontal: 20,
       paddingBottom:15,
       marginBottom:20, // Optional: Adjust padding as needed
     },
     textContainer:{
         
-        paddingTop:30,
+        paddingTop:10,
         marginLeft:40,
+    
 
     
 
@@ -94,6 +119,7 @@ const styles = StyleSheet.create({
 
     },
     buttons:{
+        marginTop: 10,
         flexDirection:"row"
     },
     mainContainer:{
@@ -120,12 +146,15 @@ const styles = StyleSheet.create({
     
     },
     share:{
+      height:24,
+      width:24,
+
         
 
     },
     buttonContainer: {
       flexDirection: 'row',
-      marginTop: 20,
+      marginTop: 5,
     },
     editButton: {
       backgroundColor: '#fff',
@@ -144,19 +173,20 @@ const styles = StyleSheet.create({
     },
     shareButton: {
       backgroundColor: '#fff',
-      padding: 10,
+      paddingHorizontal:5,
+      paddingTop:4,
       borderRadius: 5,
       borderColor:'9CA3AF',
       borderWidth:1,
-      elevation:5
+      elevation:5,
+      height:40,
+     marginTop:5,
     },
     buttonText: {
       color: '#5C5776',
       fontWeight: 'bold',
     },
-    shareIcon: {
-      fontSize: 18,
-    },
+  
   });
   
 
