@@ -1,19 +1,18 @@
 // components/SectionProfile.tsx
 
-import {StyleSheet, Text, TouchableOpacity, View,Image} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
 
 import {Colors} from '@/constants/Colors';
-import React, { useEffect, useRef, useState, useContext } from 'react';
+import React, {useEffect, useRef, useState, useContext} from 'react';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { formatSection } from '@/helpers/formatSectionID';
+import {formatSection} from '@/helpers/formatSectionID';
 import ProgressBar from '@/components/ProgressBar';
-import { AuthContext } from '@/context/AuthContext';
-import { router, useLocalSearchParams } from 'expo-router';
+import {AuthContext} from '@/context/AuthContext';
+import {router, useLocalSearchParams} from 'expo-router';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
-import * as lessonEndpoints from '@/helpers/lessonEndpoints';   
-
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 
 interface SectionProfileProps {
     sectionID: string;
@@ -21,11 +20,15 @@ interface SectionProfileProps {
     sectionDuration: string;
 }
 
-const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName, sectionDuration }) => {
-
+const SectionProfile: React.FC<SectionProfileProps> = ({
+    sectionID,
+    sectionName,
+    sectionDuration,
+}) => {
     const {currentUser, isLoading} = useContext(AuthContext);
     const [sectionNumber, setSectionNumber] = useState<string>('');
-    const [sectionCircularProgress, setSectionCircularProgress] = useState<number>(0);
+    const [sectionCircularProgress, setSectionCircularProgress] =
+        useState<number>(0);
     const [status, setStatus] = useState<string>('in-progress');
     const [completedFinals, setCompletedFinals] = useState<boolean>(false);
     const [handlePressParams, setHandlePressParams] = useState<any>();
@@ -34,7 +37,7 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
         userID: string,
         sectionID: string,
         unitID: string,
-        isLastUnit: boolean,
+        isLastUnit: boolean
         // completedFinals?: boolean
     ) => {
         // console.log('LOAD UNIT CIRCULAR PROGRESS IN PROFILE PAGE');
@@ -74,7 +77,7 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
         totalUnits: number,
         unitIdx: number,
         circularProgress: number,
-        sectionCircularProgress: number,
+        sectionCircularProgress: number
     ) => {
         console.log('Section ID IN TESTING:', sectionID);
         let routerName = 'UnitIntroduction';
@@ -97,7 +100,10 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
             unitID
         );
 
-        const getAllLessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
+        const getAllLessons = await lessonEndpoints.getAllLesson(
+            sectionID,
+            unitID
+        );
 
         if (getAllLessons.length === 0) {
             return;
@@ -140,7 +146,6 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
                     currentProgress = totalProgress - 1;
                 }
             } else {
-
                 if (getAllLessons[completedLessons]) {
                     currentLessonId = getAllLessons[completedLessons].lessonID;
                 }
@@ -182,13 +187,13 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
 
     useEffect(() => {
         (async () => {
-
             // KIV: if no check sectionProgress and noOfUnits to see if user is in the middle of the section
 
-            let sectionProgress = await resultEndpoints.numberOfCompletedUnitsPerSection(
-                currentUser.sub,
-                sectionID
-            );
+            let sectionProgress =
+                await resultEndpoints.numberOfCompletedUnitsPerSection(
+                    currentUser.sub,
+                    sectionID
+                );
 
             const totalUnits = await unitEndpoints.numberOfUnitsPerSection(
                 sectionID
@@ -204,7 +209,6 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
             if (parseInt(sectionParam) > parseInt(currentSection!)) {
                 setStatus('not-started');
             } else {
-
                 let lightedUnit = sectionProgress + 1;
                 let isLastUnit = false;
 
@@ -218,7 +222,7 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
                         currentUser.sub,
                         sectionID
                     );
-                
+
                 setCompletedFinals(completedSection);
 
                 if (completedSection) {
@@ -261,19 +265,16 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
                 );
 
                 setHandlePressParams(iconStatus);
-
             }
-
         })();
     }, [sectionCircularProgress, completedFinals]);
 
     useEffect(() => {
         if (handlePressParams) {
-            console.log("STATUS:", handlePressParams.status);
+            console.log('STATUS:', handlePressParams.status);
             setStatus(handlePressParams.status);
         }
     }, [handlePressParams]);
-
 
     const handlePress = () => {
         console.log('Pressed in SECTION PROFILE');
@@ -298,7 +299,7 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
 
         let pathName = handlePressParams.routerName;
 
-        if (handlePressParams.status === "completed") {
+        if (handlePressParams.status === 'completed') {
             pathName = 'SectionIntroduction';
         }
 
@@ -321,32 +322,40 @@ const SectionProfile: React.FC<SectionProfileProps> = ({ sectionID, sectionName,
 
     return (
         <View style={styles.main}>
-        <TouchableOpacity
-            style={[styles.sectionCard, status === 'not-started' && styles.disabledSectionCard]}
-            onPress={handlePress}
-            disabled={status === 'not-started'}
-        >
-             <Image
-  source={require('../assets/images/communication.jpg')} style={styles.image} />
-            <View style={styles.textContainer}>
-           
+            <TouchableOpacity
+                style={[
+                    styles.sectionCard,
+                    status === 'not-started' && styles.disabledSectionCard,
+                ]}
+                onPress={handlePress}
+                disabled={status === 'not-started'}
+            >
+                <Image
+                    source={require('../assets/images/communication.jpg')}
+                    style={styles.image}
+                />
+                <View style={styles.textContainer}>
+                    <Text style={styles.sectionTitle}>
+                        SECTION {sectionNumber}
+                    </Text>
+                    <Text style={styles.sectionCardTitle}>{sectionName}</Text>
 
-                <Text style={styles.sectionTitle}>SECTION {sectionNumber}</Text>
-                <Text style={styles.sectionCardTitle}>{sectionName}</Text>
-                
-                <ProgressBar progress={sectionCircularProgress} isQuestionnaire={true}  />
-                <Text style={styles.sectionCardSubtitle}>
-                    {sectionDuration + "m"}
-                </Text>
-            </View>
-        </TouchableOpacity>
+                    <ProgressBar
+                        progress={sectionCircularProgress}
+                        isQuestionnaire={true}
+                    />
+                    <Text style={styles.sectionCardSubtitle}>
+                        {sectionDuration + 'm'}
+                    </Text>
+                </View>
+            </TouchableOpacity>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    main:{
-        padding:20,
+    main: {
+        padding: 20,
     },
     image: {
         width: '100%',
@@ -358,6 +367,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 15,
         marginBottom: 20,
+        borderColor: '#D1D5DB',
         alignItems: 'center',
         borderWidth: 1,
         overflow: 'hidden', // Makes sure image edges are rounded with the sectionCard
@@ -368,22 +378,19 @@ const styles = StyleSheet.create({
     sectionTitle: {
         color: '#18113C',
         fontSize: 16,
-        marginTop:"2%"
+        marginTop: '2%',
     },
     sectionCardTitle: {
         color: '#18113C',
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom:'2%'
-
+        marginBottom: '2%',
     },
     sectionCardSubtitle: {
         color: '#5C5776',
         fontSize: 14,
-        marginLeft:"83%",
-        marginTop:"5%",
-        
-    
+        marginLeft: '83%',
+        marginTop: '5%',
     },
     sectionButton: {
         backgroundColor: Colors.default.purple500,
@@ -391,21 +398,17 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: '#5E43C2',
         borderWidth: 2,
-    
     },
     textContainer: {
         width: '100%', // Ensures the text container takes up the full width of the card
         padding: 10, // Adds spacing for text inside the card
         backgroundColor: '#fff',
-        paddingLeft:40,
-        flex:1,
-        
+        paddingLeft: 40,
+        flex: 1,
     },
-    progressBar:{
-        paddingLeft:20,
-    }
+    progressBar: {
+        paddingLeft: 20,
+    },
 });
 
 export default SectionProfile;
-
-

@@ -57,6 +57,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) => {
         }
     };
 
+    const handleEditProfile = () => {
+      router.push("EditProfile");
+    }
+
     return (
         <View style={styles.profileCard}>
             <View style={styles.innerContainer}>
@@ -75,7 +79,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) => {
                         </Text>
                     </View>
                     <View style={styles.buttonsContainer}>
-                        <TouchableOpacity style={styles.editButton}>
+                        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
                             <Text style={styles.editText}>Edit Profile</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
