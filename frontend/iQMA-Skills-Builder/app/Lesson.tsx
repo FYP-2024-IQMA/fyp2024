@@ -170,56 +170,6 @@ export default function Lesson() {
                 </>
             )}
         </ScrollView>
-
-
-
-        // <View style={styles.container}>
-        //     {isLoading ? (
-        //         <View style={{flexGrow: 1}}>
-        //             <LoadingIndicator />
-        //         </View>
-        //     ) : (
-        //         <>
-        //             <View style={{flexGrow: 1}}>
-        //                 <SectionCard
-        //                     title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-        //                     subtitle={unitName}
-        //                 />
-        //                 <Text style={styles.screenTitle}>{lessonName}</Text>
-
-        //                 {lessonDescription ? (
-        //                     <OverviewCard
-        //                         text={lessonDescription!}
-        //                     ></OverviewCard>
-        //                 ) : (
-        //                     <OverviewCard
-        //                         // isError={true}
-        //                         text="Lesson Description is not available. Please check with your administrator."
-        //                     />
-        //                 )}
-
-        //                 {videoId ? (
-        //                     <YoutubePlayer
-        //                         height={300}
-        //                         play={playing}
-        //                         onChangeState={onStateChange}
-        //                         videoId={videoId} // YouTube video ID
-        //                     />
-        //                 ) : (
-        //                     <OverviewCard
-        //                         isError={true}
-        //                         text="Video is not available. Please check with your administrator."
-        //                     />
-        //                 )}
-        //             </View>
-        //             <CustomButton
-        //                 label="continue"
-        //                 backgroundColor="white"
-        //                 onPressHandler={handlePress}
-        //             />
-        //         </>
-        //     )}
-        // </View>
     );
 }
 
