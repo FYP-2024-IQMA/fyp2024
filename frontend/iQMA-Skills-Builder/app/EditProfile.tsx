@@ -59,7 +59,6 @@ export default function EditProfile() {
     return (
         <ScrollView
             style={styles.container}
-            contentContainerStyle={{flexGrow: 1}}
         >
             <View style={styles.form}>
                 <Text style={styles.label}>FIRST NAME</Text>
@@ -85,25 +84,14 @@ export default function EditProfile() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#ffffff',
-    },
-    header: {
-        backgroundColor: '#c1a5ff',
-        paddingVertical: 15,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    headerTitle: {
-        color: '#ffffff',
-        fontSize: 18,
-        fontWeight: 'bold',
+        backgroundColor: '#FFF',
     },
     form: {
         padding: 20,
     },
     label: {
-        color: '#6a51b2',
-        fontSize: 12,
+        color: '#7654F2',
+        fontSize: 14,
         fontWeight: 'bold',
         marginBottom: 5,
     },
@@ -118,14 +106,14 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#ffffff',
         borderRadius: 10,
-        borderColor: '#6a51b2',
+        borderColor: '#9C81FF',
         borderWidth: 1,
-        paddingVertical: 10,
+        padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
     buttonText: {
-        color: '#6a51b2',
+        color: '#7654F2',
         fontSize: 16,
         fontWeight: 'bold',
     },
