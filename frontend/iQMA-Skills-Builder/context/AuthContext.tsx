@@ -3,7 +3,7 @@ import {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {router} from 'expo-router';
 import messaging from '@react-native-firebase/messaging';
-import { PermissionsAndroid } from 'react-native';
+import { AppRegistry, PermissionsAndroid } from 'react-native';
 
 export const AuthContext = createContext<any>(null);
 
@@ -12,6 +12,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null); // Store current User object
     const [token, setToken] = useState<string | null>(null); // Store Access Token of current User
     const [isLoading, setIsLoading] = useState(true);
+
+    messaging().setBackgroundMessageHandler(async remoteMessage => {
+        console.log('Message handled in the background!', remoteMessage);
+    });
 
     const requestUserPermission = async () => {
         try {
@@ -95,6 +99,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const logIn = async () => {
         try {
             await authorize();
+            AppRegistry.registerHeadlessTask('ReactNativeFirebaseMessagingHeadlessTask', () => async (remoteMessage) => {
+                console.log('Message handled in the background (Headless Task):', remoteMessage);
+            });              
         } catch (e) {
             console.log(e);
         }
