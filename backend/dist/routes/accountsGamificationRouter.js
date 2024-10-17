@@ -31,9 +31,11 @@ const express_1 = require("express");
 const authMiddleware_1 = __importDefault(require("../middleware/authMiddleware"));
 const router = (0, express_1.Router)();
 /* READ */
-router.get('/gamificationdata/:userid', authMiddleware_1.default, accountsGamificationController.getGamificationData);
+router.get("/gamificationdata/:userid", authMiddleware_1.default, accountsGamificationController.getGamificationData);
 router.get("/leaderboard/:userid", authMiddleware_1.default, accountsGamificationController.getTop5Accounts);
 router.get("/badges/:userid", authMiddleware_1.default, accountsGamificationController.getBadges);
 /* UPDATE */
-router.patch('/updatepoints', authMiddleware_1.default, accountsGamificationController.updatePoints);
+router.patch("/updatepoints", authMiddleware_1.default, accountsGamificationController.updatePoints);
+router.patch("/updateloginstreaks/:userid", authMiddleware_1.default, accountsGamificationController.updateStreaksFromLogin);
+router.patch("/updateunitstreaks/:userid/:quizid", authMiddleware_1.default, accountsGamificationController.updateStreaksFromUnit);
 exports.default = router;
