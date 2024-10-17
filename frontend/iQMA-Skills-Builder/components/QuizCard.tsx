@@ -59,18 +59,12 @@ export const QuizCard: React.FC<{
         }
     };
 
-    const handleAnswer = () => {
+    const handleAnswer = async () => {
         if (isCorrect) {
             // Accumulate total points
             const newTotalPoints = totalPoints + currentPoints;
             setTotalPoints(newTotalPoints);
-            storeTotalPoints();
-
-            // Pass points back to the parent component
-            // onTotalPoints(newTotalPoints);
-            console.log('in handle ans in quiz card');
-            console.log('points ' + currentPoints);
-            console.log('total points' + newTotalPoints);
+            await storeTotalPoints();
 
             onNextQuestion();
             setCount(0);
@@ -84,19 +78,21 @@ export const QuizCard: React.FC<{
         try {
             let storedPoints = await AsyncStorage.getItem('totalPoints');
             if (storedPoints !== null) {
-                console.log('stored points' + storedPoints);
+                console.log('stored points in STP: ' + storedPoints);
                 let storedPointsInNum = parseInt(storedPoints);
+                console.log('the current points IN STP: ' + currentPoints);
                 storedPointsInNum += currentPoints;
+
                 await AsyncStorage.setItem(
                     'totalPoints',
                     storedPointsInNum.toString()
                 );
-                console.log(
-                    'in the if statement in line 94' + storedPointsInNum
+            } else {
+                await AsyncStorage.setItem(
+                    'totalPoints',
+                    currentPoints.toString()
                 );
             }
-            console.log('total points in line 98' + currentPoints);
-            await AsyncStorage.setItem('totalPoints', currentPoints.toString());
         } catch (e) {
             console.error(e);
         }

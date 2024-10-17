@@ -374,6 +374,10 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         (async () => {
             try {
+                AsyncStorage.setItem('totalPoints', '0');
+
+                const pt = AsyncStorage.getItem('totalPoints');
+
                 const sectionDetails =
                     await sectionEndpoints.getAllSectionDetails();
                 let currentSection = await getCurrentSection();

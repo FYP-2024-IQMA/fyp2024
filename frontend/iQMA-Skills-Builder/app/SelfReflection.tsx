@@ -5,6 +5,7 @@ import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -61,23 +62,23 @@ export default function SelfReflection() {
             (async () => {
                 try {
                     const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                    let points = await AsyncStorage.getItem('totalPoints');
+                    const numPoints = parseInt(points as string);
+
                     const data = {
                         userID: currentUser.sub,
-                        points: totalPoints,
+                        points: numPoints,
                     };
 
-                    console.log(data);
-
                     const response = await axios.patch(url, data);
-                    const result = await response.data;
-                    console.log('Points successfully updated:', result);
-                    return result;
+
+                    AsyncStorage.setItem('totalPoints', '0');
                 } catch (error: any) {
                     console.error(
                         'Error updating points:',
                         error.response.data
                     );
-                    return;
                 }
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
