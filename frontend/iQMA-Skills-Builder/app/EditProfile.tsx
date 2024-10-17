@@ -53,7 +53,7 @@ export default function EditProfile() {
         })();
     }, []);
 
-    if (isLoading || loading) {
+    if (loading) {
         return <LoadingIndicator />;
     }
 
