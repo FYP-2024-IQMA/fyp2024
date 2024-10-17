@@ -15,7 +15,10 @@ class AccountsGamification {
         return this.streaks;
     }
     getLastUnitCompletionDate() {
-        return this.lastUnitCompletionDate;
+        if (this.lastUnitCompletionDate === null) {
+            return null;
+        }
+        return new Date(this.lastUnitCompletionDate);
     }
 }
 exports.AccountsGamification = AccountsGamification;

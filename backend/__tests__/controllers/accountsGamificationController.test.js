@@ -179,3 +179,109 @@ describe("PATCH /accounts/updatepoints", () => {
         );
     });
 });
+
+describe("PATCH /accounts/updatestreaksfromlogin", () => {
+    const mockAccounts = {
+        userID: "2",
+        points: 0,
+        streaks: 0,
+        lastUnitCompletionDate: expect.anything(),
+    };
+
+    it("should update an account and return 204 on success", async () => {
+        const mockResponse = { status: 204, statusText: "OK" };
+
+        accountsGamificationService.updateStreaksFromLogin.mockResolvedValue(mockResponse);
+
+        const response = await request(app)
+            .patch(`/accounts/updatestreaksfromlogin/${mockAccounts.userID}`)
+            .send(mockAccount);
+
+        expect(response.status).toBe(200);
+        expect(response.body.statusText).toBe("Streaks Updated Successfully");
+        expect(accountsGamificationService.updateStreaksFromLogin).toHaveBeenCalledTimes(1);
+        expect(accountsGamificationService.updateStreaksFromLogin).toHaveBeenCalledWith(
+            mockAccount.userID,
+            mockAccount.lastUnitCompletionDate
+        );
+    });
+
+    it("should return 500 and an error message on failure", async () => {
+        const mockError = new Error("Database error");
+
+        accountsGamificationService.updateStreaksFromLogin.mockRejectedValue(mockError);
+
+        const response = await request(app)
+            .patch(`/accounts/updatestreaksfromlogin/${mockAccounts.userID}`)
+            .send(mockAccount);
+
+        expect(response.status).toBe(500);
+        expect(accountsGamificationService.updateStreaksFromLogin).toHaveBeenCalledTimes(1);
+        expect(accountsGamificationService.updateStreaksFromLogin).toHaveBeenCalledWith(
+            mockAccount.userID,
+            mockAccount.lastUnitCompletionDate
+        );
+    });
+});
+
+describe("PATCH /accounts/updatestreaksfromunit", () => {
+    const mockAccounts = {
+        userID: "2",
+        points: 0,
+        streaks: 0,
+        lastUnitCompletionDate: expect.anything(),
+    };
+
+    it("should update if it is a quiz and return 204 on success", async () => {
+        const mockResponse = { status: 204, statusText: "OK" };
+
+        accountsGamificationService.updateStreaksFromUnit.mockResolvedValue(mockResponse);
+
+        const response = await request(app)
+            .patch(`/accounts/updatestreaksfromunit/${mockAccounts.userID}/quiz}`)
+            .send(mockAccount);
+
+        expect(response.status).toBe(200);
+        expect(response.body.statusText).toBe("Streaks Updated Successfully");
+        expect(accountsGamificationService.updateStreaksFromUnit).toHaveBeenCalledTimes(1);
+        expect(accountsGamificationService.updateStreaksFromUnit).toHaveBeenCalledWith(
+            mockAccount.userID,
+            mockAccount.lastUnitCompletionDate
+        );
+    });
+
+    it("should not update if it is not a quiz and return 204 on success", async () => {
+        const mockResponse = { status: 204, statusText: "OK" };
+
+        accountsGamificationService.updateStreaksFromUnit.mockResolvedValue(mockResponse);
+
+        const response = await request(app)
+            .patch(`/accounts/updatestreaksfromunit/${mockAccounts.userID}/lesson}`)
+            .send(mockAccount);
+
+        expect(response.status).toBe(200);
+        expect(response.body.statusText).toBe("Streaks Updated Successfully");
+        expect(accountsGamificationService.updateStreaksFromUnit).toHaveBeenCalledTimes(1);
+        expect(accountsGamificationService.updateStreaksFromUnit).toHaveBeenCalledWith(
+            mockAccount.userID,
+            mockAccount.lastUnitCompletionDate
+        );
+    });
+
+    it("should return 500 and an error message on failure", async () => {
+        const mockError = new Error("Database error");
+
+        accountsGamificationService.updateStreaksFromUnit.mockRejectedValue(mockError);
+
+        const response = await request(app)
+            .patch("/accounts/updatestreaksfromunit")
+            .send(mockAccount);
+
+        expect(response.status).toBe(500);
+        expect(accountsGamificationService.updateStreaksFromUnit).toHaveBeenCalledTimes(1);
+        expect(accountsGamificationService.updateStreaksFromUnit).toHaveBeenCalledWith(
+            mockAccount.userID,
+            mockAccount.lastUnitCompletionDate
+        );
+    });
+});

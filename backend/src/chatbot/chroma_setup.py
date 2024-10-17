@@ -20,6 +20,8 @@ from uuid import uuid4
 load_dotenv()
 nest_asyncio.apply()
 
+persist_dir = "./chroma_langchain_db"
+
 # attempt to load documents from persistent storage
 try:
     print(f"Attempting to load documents from persistent storage")
@@ -30,7 +32,7 @@ try:
     vectorstore = ChromaVectorStore.from_params(
         collection_name="iqma_collection",
         embedding_function=embeddings,
-        persist_dir="./src/chatbot/chroma_langchain_db"
+        persist_dir=persist_dir,
     )
     print(f"Completed setting up vector store")
 
@@ -46,6 +48,7 @@ except:
 
 # load, process and store documents in persistent storage if not existent
 if not index_loaded:
+    print(f"Loading documents from docs folder")
     # set up parser
     parser = LlamaParse(
         result_type="text",
@@ -58,7 +61,7 @@ if not index_loaded:
     documents = document_reader.load_data()
 
     # set up chromadb
-    db = chromadb.PersistentClient(path="./src/chatbot/chroma_langchain_db")
+    db = chromadb.PersistentClient(path=persist_dir)
     chroma_collection = db.get_or_create_collection("iqma_collection")
 
     # create vector store
