@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,14 +39,7 @@ exports.getNoOfLessonPerUnit = getNoOfLessonPerUnit;
 exports.getLesson = getLesson;
 exports.getAllLessons = getAllLessons;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
-function extractYouTubeID(url) {
-    if (url === null) {
-        return "";
-    }
-    const regex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
-    const matches = url.match(regex);
-    return matches ? matches[1] : "";
-}
+const videoService = __importStar(require("./videoService"));
 /* READ */
 // get all lessons in the specific unit
 function getNoOfLessonPerUnit(sectionID, unitID) {
@@ -56,7 +72,10 @@ function getLesson(sectionID, unitID, lessonID) {
             throw error;
         }
         else {
-            let formattedLessonURL = extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
+            let formattedLessonURL = data[0].lessonURL;
+            if (formattedLessonURL) {
+                formattedLessonURL = yield videoService.formatVideoUrl(formattedLessonURL, sectionID, lessonID);
+            }
             let description = data[0].lessonDescription;
             let formattedDescription = description
                 ? description.split(/\r?\n/)
@@ -122,11 +141,12 @@ function getAllLessons(sectionID, unitID) {
             throw error;
         }
         else {
-            const formattedLessons = data.map((lesson) => {
-                let formattedLessonURL = extractYouTubeID(lesson.lessonURL) || lesson.lessonURL;
-                // console.log(formattedLessonURL);
+            const formattedLessons = yield Promise.all(data.map((lesson) => __awaiter(this, void 0, void 0, function* () {
+                let formattedLessonURL = lesson.lessonURL;
+                if (formattedLessonURL) {
+                    formattedLessonURL = yield videoService.formatVideoUrl(lesson.lessonURL, sectionID, lesson.lessonID);
+                }
                 let description = lesson.lessonDescription;
-                // console.log(description);
                 let formattedDescription = description
                     ? description.split(/\r?\n/)
                     : null;
@@ -176,7 +196,7 @@ function getAllLessons(sectionID, unitID) {
                     return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
                 }
                 return Object.assign(Object.assign({}, lesson), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: [] });
-            });
+            })));
             return formattedLessons;
         }
     });

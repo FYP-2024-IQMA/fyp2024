@@ -15,6 +15,7 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import { useTimer } from '@/helpers/useTimer';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -37,6 +38,8 @@ export default function SelfReflection() {
         setChatHistoryLength(length);
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Self Reflection`);
+
     useLayoutEffect(() => {
         const progress =
             parseInt(currentProgress as string) /
@@ -50,6 +53,7 @@ export default function SelfReflection() {
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -117,6 +121,7 @@ export default function SelfReflection() {
             // after self-reflection navigate back to home for next unit
             router.replace('Home');
         }
+        stopTimer();
     };
 
     return (

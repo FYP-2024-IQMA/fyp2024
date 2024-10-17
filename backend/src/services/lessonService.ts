@@ -1,14 +1,5 @@
 import supabase from "../config/supabaseConfig";
-
-function extractYouTubeID(url: string | null) {
-	if (url === null) {
-		return "";
-	}
-	const regex =
-		/(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
-	const matches = url.match(regex);
-	return matches ? matches[1] : "";
-}
+import * as videoService from "./videoService";
 
 /* READ */
 
@@ -48,8 +39,12 @@ export async function getLesson(
 		console.error(error);
 		throw error;
 	} else {
-		let formattedLessonURL =
-			extractYouTubeID(data[0].lessonURL) || data[0].lessonURL;
+
+		let formattedLessonURL = data[0].lessonURL
+
+		if (formattedLessonURL) {
+			formattedLessonURL = await videoService.formatVideoUrl(formattedLessonURL, sectionID, lessonID);
+		}
 
 		let description = data[0].lessonDescription;
 		let formattedDescription: string[] | null = description
@@ -153,101 +148,120 @@ export async function getAllLessons(sectionID: string, unitID: string) {
 		console.error(error);
 		throw error;
 	} else {
-		const formattedLessons = data.map((lesson: any) => {
-			let formattedLessonURL =
-				extractYouTubeID(lesson.lessonURL) || lesson.lessonURL;
-			// console.log(formattedLessonURL);
-			let description = lesson.lessonDescription;
-			// console.log(description);
-			let formattedDescription: string[] | null = description
-				? description.split(/\r?\n/)
-				: null;
-			let takeaway = lesson.lessonKeyTakeaway;
-			let formattedTakeaway: string[] | null = takeaway
-				? takeaway.split(/\r?\n/)
-				: null;
-			const text = lesson.lessonCheatSheet;
 
-			// when there are headers with emojis
-			const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
-			const headers = text ? text.match(regex) : null;
+		const formattedLessons = await Promise.all(
+            data.map(async (lesson: any) => {
+                let formattedLessonURL = lesson.lessonURL;
 
-			if (headers != null) {
-				const sections = text ? text.split(regex) : null;
-				sections?.shift();
-				const formattedCheatSheet = headers.reduce(
-					(acc: Record<string, string[]>, header: string, index: number) => {
-						if (sections != null) {
-							acc[header.trim()] = sections[index]
-								.trim()
-								.split(/\r?\n/)
-								.map((sentence: string) => sentence.trim());
-						}
-						return acc;
-					},
-					{}
-				);
+                if (formattedLessonURL) {
+                    formattedLessonURL = await videoService.formatVideoUrl(
+                        lesson.lessonURL,
+                        sectionID,
+                        lesson.lessonID
+                    );
+                }
 
-				return {
-					...lesson,
-					lessonURL: formattedLessonURL,
-					lessonDescription: formattedDescription,
-					lessonKeyTakeaway: formattedTakeaway,
-					lessonCheatSheet: formattedCheatSheet,
-				};
-			}
+                let description = lesson.lessonDescription;
+                let formattedDescription: string[] | null = description
+                    ? description.split(/\r?\n/)
+                    : null;
+                let takeaway = lesson.lessonKeyTakeaway;
+                let formattedTakeaway: string[] | null = takeaway
+                    ? takeaway.split(/\r?\n/)
+                    : null;
+                const text = lesson.lessonCheatSheet;
 
-			// when there are no emojis in the headers
-			const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
-			const headers2 = text ? text.match(regex2) : null;
+                // when there are headers with emojis
+                const regex = /^(?:\p{Emoji}|\p{So})[^\n]*:$/gmu;
+                const headers = text ? text.match(regex) : null;
 
-			if (headers2 != null) {
-				const sections = text?.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
-				sections?.shift();
+                if (headers != null) {
+                    const sections = text ? text.split(regex) : null;
+                    sections?.shift();
+                    const formattedCheatSheet = headers.reduce(
+                        (
+                            acc: Record<string, string[]>,
+                            header: string,
+                            index: number
+                        ) => {
+                            if (sections != null) {
+                                acc[header.trim()] = sections[index]
+                                    .trim()
+                                    .split(/\r?\n/)
+                                    .map((sentence: string) => sentence.trim());
+                            }
+                            return acc;
+                        },
+                        {}
+                    );
 
-				const formattedCheatSheet = headers2.reduce(
-					(acc: Record<string, string[]>, header: string, index: number) => {
-						if (sections != null) {
-							acc[header.trim()] = sections[index]
-								.trim()
-								.split(/:?\r?\n/)
-								.map((sentence: string) => sentence.trim())
-								.filter((sentence: string) => sentence !== "");
-						}
-						return acc;
-					},
-					{}
-				);
+                    return {
+                        ...lesson,
+                        lessonURL: formattedLessonURL,
+                        lessonDescription: formattedDescription,
+                        lessonKeyTakeaway: formattedTakeaway,
+                        lessonCheatSheet: formattedCheatSheet,
+                    };
+                }
 
-				return {
-					...lesson,
-					lessonURL: formattedLessonURL,
-					lessonDescription: formattedDescription,
-					lessonKeyTakeaway: formattedTakeaway,
-					lessonCheatSheet: formattedCheatSheet,
-				};
-			}
+                // when there are no emojis in the headers
+                const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
+                const headers2 = text ? text.match(regex2) : null;
 
-			// when there are no headers
-			const sentences = text?.split(/\r?\n/);
-			if (sentences != null) {
-				return {
-					...lesson,
-					lessonURL: formattedLessonURL,
-					lessonDescription: formattedDescription,
-					lessonKeyTakeaway: formattedTakeaway,
-					lessonCheatSheet: sentences,
-				};
-			}
+                if (headers2 != null) {
+                    const sections = text?.split(/^(?:.*?)(?=\s*:\s*$)/gmu);
+                    sections?.shift();
 
-			return {
-				...lesson,
-				lessonURL: formattedLessonURL,
-				lessonDescription: formattedDescription,
-				lessonKeyTakeaway: formattedTakeaway,
-				lessonCheatSheet: [],
-			};
-		});
+                    const formattedCheatSheet = headers2.reduce(
+                        (
+                            acc: Record<string, string[]>,
+                            header: string,
+                            index: number
+                        ) => {
+                            if (sections != null) {
+                                acc[header.trim()] = sections[index]
+                                    .trim()
+                                    .split(/:?\r?\n/)
+                                    .map((sentence: string) => sentence.trim())
+                                    .filter(
+                                        (sentence: string) => sentence !== ""
+                                    );
+                            }
+                            return acc;
+                        },
+                        {}
+                    );
+
+                    return {
+                        ...lesson,
+                        lessonURL: formattedLessonURL,
+                        lessonDescription: formattedDescription,
+                        lessonKeyTakeaway: formattedTakeaway,
+                        lessonCheatSheet: formattedCheatSheet,
+                    };
+                }
+
+                // when there are no headers
+                const sentences = text?.split(/\r?\n/);
+                if (sentences != null) {
+                    return {
+                        ...lesson,
+                        lessonURL: formattedLessonURL,
+                        lessonDescription: formattedDescription,
+                        lessonKeyTakeaway: formattedTakeaway,
+                        lessonCheatSheet: sentences,
+                    };
+                }
+
+                return {
+                    ...lesson,
+                    lessonURL: formattedLessonURL,
+                    lessonDescription: formattedDescription,
+                    lessonKeyTakeaway: formattedTakeaway,
+                    lessonCheatSheet: [],
+                };
+            })
+        );
 
 		return formattedLessons;
 	}

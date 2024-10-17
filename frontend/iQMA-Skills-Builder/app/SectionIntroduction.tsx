@@ -1,18 +1,20 @@
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {router, useLocalSearchParams} from 'expo-router';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { useTimer } from '@/helpers/useTimer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {formatSection} from '@/helpers/formatSectionID';
 import {useNavigation} from '@react-navigation/native';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import VideoPlayer from '@/components/VideoPlayer';
 
 // where things show up
 export default function SectionIntroduction() {
@@ -35,6 +37,7 @@ export default function SectionIntroduction() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} Introduction`);
 
     useLayoutEffect(() => {
         const progress =
@@ -48,7 +51,17 @@ export default function SectionIntroduction() {
         });
     }, [navigation]);
 
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
+
     useEffect(() => {
+        startTimer();
         if (sectionID) {
             (async () => {
                 try {
@@ -61,6 +74,7 @@ export default function SectionIntroduction() {
                     setSectionName(sectionDetails.sectionName);
 
                     setSectionNumber(formatSection(sectionID as string));
+                    await AsyncStorage.setItem('section', sectionDetails.sectionName);
                 } catch (error) {
                     console.error('Error fetching Lesson details:', error);
                 } finally {
@@ -70,7 +84,7 @@ export default function SectionIntroduction() {
         }
     }, [sectionID]);
 
-    const handlePress = () => {
+    const handlePress = async () => {
         setPlaying(false);
         router.push({
             pathname: 'UnitIntroduction',
@@ -88,6 +102,8 @@ export default function SectionIntroduction() {
                 totalProgress,
             },
         });
+        // console.log("STATE: " + playing)
+        stopTimer();
     };
 
     const onStateChange = (state: string) => {
@@ -100,14 +116,15 @@ export default function SectionIntroduction() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
-                <View style={{flexGrow: 1}}>
-                    <LoadingIndicator />
-                </View>
+                <LoadingIndicator />
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
+                    <View>
                         <SectionCard
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
@@ -116,12 +133,11 @@ export default function SectionIntroduction() {
                             Section {sectionNumber}: Introduction
                         </Text>
                         {videoId ? (
-                            <YoutubePlayer
-                                height={300}
-                                play={playing}
-                                onChangeState={onStateChange}
-                                videoId={videoId} // YouTube video ID
-                            />
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
+                                />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -129,15 +145,16 @@ export default function SectionIntroduction() {
                             />
                         )}
                     </View>
-
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                    <View style={{marginBottom: 40}}>
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
+                    </View>
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
@@ -145,7 +162,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
         padding: 20,
-        flex: 1,
+        // flex: 1,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,

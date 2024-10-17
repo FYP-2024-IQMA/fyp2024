@@ -13,6 +13,7 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import { useTimer } from '@/helpers/useTimer';
 
 // where things show up
 export default function RealityCheck() {
@@ -35,8 +36,7 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    useEffect(() => {}, []);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Reality Check`);
 
     useLayoutEffect(() => {
         const progress =
@@ -51,6 +51,7 @@ export default function RealityCheck() {
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -90,6 +91,7 @@ export default function RealityCheck() {
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     return (

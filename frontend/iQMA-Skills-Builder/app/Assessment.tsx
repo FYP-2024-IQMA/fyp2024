@@ -9,6 +9,7 @@ import {router, useLocalSearchParams} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
+import { useTimer } from '@/helpers/useTimer';
 import {Colors} from '@/constants/Colors';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
@@ -42,13 +43,15 @@ export default function Assessment() {
     } = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment`);
+ 
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
 
     useEffect(() => {
+        startTimer();
         if (isFinal === 'true') {
             (async () => {
                 try {
@@ -155,6 +158,7 @@ export default function Assessment() {
                     },
                 });
             }
+            stopTimer();
         }
     };
 

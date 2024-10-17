@@ -1,12 +1,6 @@
 import supabase from "../config/supabaseConfig";
+import * as videoService from "./videoService"
 
-/* Utility function to extract the YouTube video ID */
-function extractYouTubeID(url: string) {
-    const regex =
-        /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/|shorts\/)([a-zA-Z0-9_-]{11})/;
-    const matches = url.match(regex);
-    return matches ? matches[1] : null;
-}
 
 const getSectionDuration = async (sectionID: string) => {
     const { data, error } = await supabase
@@ -70,9 +64,11 @@ export async function getSectionDetails(sectionID: string) {
         console.error(error);
         throw error;
     } else {
+
         if (data.introductionURL) {
-            data.introductionURL = extractYouTubeID(data.introductionURL);
+            data.introductionURL = await videoService.formatVideoUrl(data.introductionURL, sectionID);
         }
+
         return {
             ...data,
             finalAssessmentIntro: data.finalAssessmentIntro

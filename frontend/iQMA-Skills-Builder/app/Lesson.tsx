@@ -1,9 +1,9 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {router, useLocalSearchParams} from 'expo-router';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -11,10 +11,11 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import VideoPlayer from '@/components/VideoPlayer';
+import { useTimer } from '@/helpers/useTimer';
 
 // where things show up
 export default function Lesson() {
@@ -38,6 +39,7 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Lesson`);
 
     useLayoutEffect(() => {
         const progress =
@@ -69,9 +71,21 @@ export default function Lesson() {
                 totalProgress,
             },
         });
+        console.log("ISPLAYING: " + playing)
+        stopTimer();
     };
 
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
+
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID && lessonID) {
             (async () => {
                 try {
@@ -113,15 +127,16 @@ export default function Lesson() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
-                <View style={{flexGrow: 1}}>
-                    <LoadingIndicator />
-                </View>
+                <LoadingIndicator />
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
-                        <SectionCard
+                    <View>
+                         <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
@@ -137,14 +152,12 @@ export default function Lesson() {
                                 text="Lesson Description is not available. Please check with your administrator."
                             />
                         )}
-
                         {videoId ? (
-                            <YoutubePlayer
-                                height={300}
-                                play={playing}
-                                onChangeState={onStateChange}
-                                videoId={videoId} // YouTube video ID
-                            />
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
+                                />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -152,14 +165,16 @@ export default function Lesson() {
                             />
                         )}
                     </View>
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                    <View style={{marginBottom: 40}}>
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
+                    </View>
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
