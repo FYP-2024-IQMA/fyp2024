@@ -1,8 +1,6 @@
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
-
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
-import {router, useLocalSearchParams} from 'expo-router';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -15,6 +13,8 @@ import SectionCard from '@/components/SectionCard';
 import YoutubePlayer from 'react-native-youtube-iframe';
 import {formatSection} from '@/helpers/formatSectionID';
 import {useNavigation} from '@react-navigation/native';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import VideoPlayer from '@/components/VideoPlayer';
 
 // where things show up
 export default function SectionIntroduction() {
@@ -50,6 +50,15 @@ export default function SectionIntroduction() {
             ),
         });
     }, [navigation]);
+
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
 
     useEffect(() => {
         startTimer();
@@ -93,6 +102,7 @@ export default function SectionIntroduction() {
                 totalProgress,
             },
         });
+        // console.log("STATE: " + playing)
         stopTimer();
     };
 
@@ -106,14 +116,15 @@ export default function SectionIntroduction() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
-                <View style={{flexGrow: 1}}>
-                    <LoadingIndicator />
-                </View>
+                <LoadingIndicator />
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
+                    <View>
                         <SectionCard
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
@@ -122,12 +133,11 @@ export default function SectionIntroduction() {
                             Section {sectionNumber}: Introduction
                         </Text>
                         {videoId ? (
-                            <YoutubePlayer
-                                height={300}
-                                play={playing}
-                                onChangeState={onStateChange}
-                                videoId={videoId} // YouTube video ID
-                            />
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
+                                />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -135,15 +145,16 @@ export default function SectionIntroduction() {
                             />
                         )}
                     </View>
-
-                    <CustomButton
-                        label="continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
+                    <View style={{marginBottom: 40}}>
+                        <CustomButton
+                            label="continue"
+                            backgroundColor="white"
+                            onPressHandler={handlePress}
+                        />
+                    </View>
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
@@ -151,7 +162,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
         padding: 20,
-        flex: 1,
+        // flex: 1,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,

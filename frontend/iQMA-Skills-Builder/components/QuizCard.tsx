@@ -124,6 +124,7 @@ export const QuizCard: React.FC<{
                     }
                     onPressHandler={() => handleButtonPress('option1', option1)}
                     capitalise={false}
+                    isOption={true}
                 />
                 <CustomButton
                     label={option2.option}
@@ -144,6 +145,7 @@ export const QuizCard: React.FC<{
                     }
                     onPressHandler={() => handleButtonPress('option2', option2)}
                     capitalise={false}
+                    isOption={true}
                 />
                 <CustomButton
                     label={option3.option}
@@ -164,6 +166,7 @@ export const QuizCard: React.FC<{
                     }
                     onPressHandler={() => handleButtonPress('option3', option3)}
                     capitalise={false}
+                    isOption={true}
                 />
                 <CustomButton
                     label={option4.option}
@@ -184,6 +187,7 @@ export const QuizCard: React.FC<{
                     }
                     onPressHandler={() => handleButtonPress('option4', option4)}
                     capitalise={false}
+                    isOption={true}
                 />
 
                 <View style={{marginTop: 50, marginBottom: 50}}>

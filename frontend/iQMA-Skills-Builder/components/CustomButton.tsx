@@ -13,6 +13,7 @@ export const CustomButton = ({
     onPressHandler = () => {},
     capitalise = true,
     disabled = false,
+    isOption = false,
 }) => {
     const textStyle = capitalise ? 'uppercase' : 'none';
 
@@ -33,6 +34,8 @@ export const CustomButton = ({
                             ? Colors.chatbot.inputColor
                             : backgroundColor,
                         borderColor: borderColor,
+                        paddingHorizontal: isOption ? 25 : undefined,
+                        alignItems: isOption ? undefined : 'center',
                     },
                 ]}
                 onPress={onPressHandler}
@@ -60,8 +63,6 @@ const styles = StyleSheet.create({
     buttonContainer: {
         alignItems: 'center',
         justifyContent: 'flex-end',
-        // bottom: 20,
-        // paddingBottom: 20,
     },
     button: {
         width: screenWidth * 0.9,
@@ -70,7 +71,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 2,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     rounded: {
         borderRadius: 10,
