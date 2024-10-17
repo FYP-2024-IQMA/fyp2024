@@ -1,8 +1,8 @@
 import supabase from "../config/supabaseConfig";
-import {
-    AccountsGamification
-} from "../models/accountsGamificationModel";
+import { AccountsGamification } from "../models/accountsGamificationModel";
 import * as resultService from "../services/resultService";
+import * as unitService from "../services/unitService";
+import * as sectionService from "../services/sectionService";
 
 /* READ */
 export async function getTop5Accounts(userID: string) {
@@ -74,14 +74,10 @@ export async function getGamificationData(userID: string) {
 
 export async function getBadges(userID: string) {
 
-    const completedUnit = await resultService.getNoOfCompletedUnit(userID);
-
-    let badges = [];
-
     const { data: storageBadges, error } = await supabase.storage
         .from("badges")
         .list();
-    
+
     if (error) {
         console.error(error);
         throw error;
@@ -90,32 +86,80 @@ export async function getBadges(userID: string) {
     if (storageBadges.length === 0) {
         throw new Error("Badge Not Found");
     }
-    
-    const designed = storageBadges
-        .map((badge) => badge.name)
-        .filter((badge) => badge.includes("badge"));
-    
-    const withoutBadge = Math.max(0, completedUnit - designed.length);
-    const minBadges = completedUnit - withoutBadge;
 
-    for (let i = 0; i < withoutBadge; i++) {
-        const { data: publicUrlData } = await supabase.storage
-            .from("badges")
-            .getPublicUrl(`placeholder.png`);
+    const totalSection = await sectionService.getAllSections();
 
-        if (publicUrlData) {
-            badges.push(publicUrlData.publicUrl);
+    let badges = [];
+
+    for (let i = totalSection.length - 1; i >= 0; i--) {
+
+        const section = totalSection[i];
+        let unitBadges = [];
+
+        const totalUnit = await unitService.getAllUnitsBySection(
+            section.sectionID
+        );
+
+        const completedUnit = await resultService.getUserProgress(
+            userID,
+            section.sectionID
+        );
+
+        const lockedUnit = Math.max(totalUnit.length - completedUnit, 0);
+
+        for (let i = 0; i < lockedUnit; i++) {
+            const { data: publicUrlData } = await supabase.storage
+                .from("badges")
+                .getPublicUrl(`locked.png`);
+
+            if (publicUrlData) {
+                unitBadges.push({
+                    unitName: "LOCKED",
+                    badgeUrl: publicUrlData.publicUrl
+                });
+            }
         }
-    }
 
-    for (let i = minBadges; i > 0; i--) {
-        const { data: publicUrlData } = await supabase.storage
-            .from("badges")
-            .getPublicUrl(`badge${i}.png`);
+        const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+        const minBadges = completedUnit - withoutBadge;
+
+        for (let i = 0; i < withoutBadge; i++) {
+            const { data: publicUrlData } = await supabase.storage
+                .from("badges")
+                .getPublicUrl(`placeholder.png`);
+
+            if (publicUrlData) {
+                unitBadges.push({
+                    unitName: "PLACEHOLDER",
+                    badgeUrl: publicUrlData.publicUrl,
+                });
+            }
+        }
+
+        for (let i = minBadges; i > 0; i--) {
+            const { data: publicUrlData } = await supabase.storage
+                .from("badges")
+                .getPublicUrl(`${section.sectionID}/unit${i}.png`);
+
+            if (publicUrlData) {
+                unitBadges.push({
+                    unitName: "UNIT",
+                    badgeUrl: publicUrlData.publicUrl,
+                });
+            }
+        }
+
+        for (let i = totalUnit.length - 1; i >= 0; i--) {
+            const unit = totalUnit[i];
+            unitBadges[i].unitName = unit.unitName;
+        }
+
+
+        badges.push({
+            sectionID: section.sectionID,
+            badges: unitBadges,
+        });
         
-        if (publicUrlData) {
-            badges.push(publicUrlData.publicUrl);
-        }
     }
     
     return badges;
