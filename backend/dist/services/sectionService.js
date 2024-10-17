@@ -39,6 +39,17 @@ exports.getAllSections = getAllSections;
 exports.getSectionDetails = getSectionDetails;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
 const videoService = __importStar(require("./videoService"));
+const getSectionDuration = (sectionID) => __awaiter(void 0, void 0, void 0, function* () {
+    const { data, error } = yield supabaseConfig_1.default
+        .from("lesson")
+        .select("lessonDuration")
+        .eq("sectionID", sectionID);
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    return Math.ceil(data.reduce((acc, curr) => acc + curr.lessonDuration, 0));
+});
 /* READ */
 function getAllSections() {
     return __awaiter(this, void 0, void 0, function* () {

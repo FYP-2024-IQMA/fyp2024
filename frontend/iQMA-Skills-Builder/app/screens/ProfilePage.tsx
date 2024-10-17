@@ -46,7 +46,7 @@ const ProfilePage: React.FC = () => {
 
             console.log('sectionDetails:', sectionDetails);
             console.log('userDetails:', userDetails);
-            // console.log('badges:', badges);
+            console.log('badges:', badges);
 
             setAllSectionDetails(sectionDetails);
             // Testing
