@@ -9,8 +9,8 @@ export const getLessonDetails = async (
         const lessonDetails = await response.json();
         // console.log(lessonDetails);
         return lessonDetails;
-    } catch (error) {
-        console.error('Error fetching lessonDetails:', error);
+    } catch (error: any) {
+        console.error('Error fetching lessonDetails:', error.response.data);
         return;
     }
 };
@@ -22,8 +22,8 @@ export const getAllLesson = async (sectionID: string, unitID: string) => {
         const lessonDetails = await response.json();
         // console.log(lessonDetails);
         return lessonDetails;
-    } catch (error) {
-        console.error('Error fetching lessonDetails:', error);
+    } catch (error: any) {
+        console.error('Error fetching lessonDetails:', error.response.data);
         return;
     }
 };
@@ -37,8 +37,11 @@ export const getNumofLessonsPerUnit = async (
         const response = await fetch(url);
         const lessonProgress = await response.json();
         return lessonProgress;
-    } catch (error) {
-        console.error('Error while loading lesson progress:', error);
+    } catch (error: any) {
+        console.error(
+            'Error while loading lesson progress:',
+            error.response.data
+        );
         return 0;
     }
 };

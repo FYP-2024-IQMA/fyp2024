@@ -9,8 +9,8 @@ export const getQuizzes = async (
         const quizzes = await response.json();
 
         return quizzes;
-    } catch (error) {
-        console.error('Error fetching Quizzes:', error);
+    } catch (error: any) {
+        console.error('Error fetching Quizzes:', error.response.data);
         return;
     }
 };
@@ -29,23 +29,27 @@ export const getAssessmentQuestions = async (
         ); // only return questions that are not Self Reflection
 
         return filteredQuestions;
-    } catch (error) {
-        console.error('Error fetching Assessment Questions:', error);
+    } catch (error: any) {
+        console.error(
+            'Error fetching Assessment Questions:',
+            error.response.data
+        );
         return;
     }
 };
 
-export const getFinalAssessmentQuestions = async (
-    sectionID: string,
-) => {
+export const getFinalAssessmentQuestions = async (sectionID: string) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}`;
         const response = await fetch(url);
         const assessmentQuestions = await response.json();
 
         return assessmentQuestions;
-    } catch (error) {
-        console.error('Error fetching Final Assessment Questions:', error);
+    } catch (error: any) {
+        console.error(
+            'Error fetching Final Assessment Questions:',
+            error.response.data
+        );
         return;
     }
 };

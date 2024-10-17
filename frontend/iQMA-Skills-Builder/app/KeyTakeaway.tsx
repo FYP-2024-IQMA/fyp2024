@@ -2,23 +2,27 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const {currentUser, _} = useContext(AuthContext);
 
     useLayoutEffect(() => {
         const progress =
@@ -90,7 +94,9 @@ export default function KeyTakeaway() {
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Key Takeaway`);
+    const {startTimer, stopTimer} = useTimer(
+        `${sectionID} ${unitID} ${lessonID} Key Takeaway`
+    );
 
     useEffect(() => {
         startTimer();
@@ -102,6 +108,27 @@ export default function KeyTakeaway() {
             totalLesson
         ) {
             (async () => {
+                try {
+                    const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                    let points = await AsyncStorage.getItem('totalPoints');
+                    const numPoints = parseInt(points as string);
+
+                    const data = {
+                        userID: currentUser.sub,
+                        points: numPoints,
+                    };
+
+                    const response = await axios.patch(url, data);
+                    const result = await response.data;
+                    console.log('Points successfully updated:', result);
+                    AsyncStorage.setItem('totalPoints', '0');
+                } catch (error: any) {
+                    console.error(
+                        'Error updating points:',
+                        error.response.data
+                    );
+                }
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,

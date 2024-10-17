@@ -5,8 +5,8 @@ export const getUnitDetails = async (sectionID: string, unitID: string) => {
         const unitDetails = await response.json();
         // console.log(unitDetails);
         return unitDetails;
-    } catch (error) {
-        console.error('Error fetching unitDetails:', error);
+    } catch (error: any) {
+        console.error('Error fetching unitDetails:', error.response.data);
         return;
     }
 };
@@ -19,8 +19,11 @@ export const numberOfUnitsPerSection = async (
         const response = await fetch(url);
         const unitProgress = await response.json();
         return unitProgress;
-    } catch (error) {
-        console.error('Error while loading unit progress:', error);
+    } catch (error: any) {
+        console.error(
+            'Error while loading unit progress:',
+            error.response.data
+        );
         return 0;
     }
 };
