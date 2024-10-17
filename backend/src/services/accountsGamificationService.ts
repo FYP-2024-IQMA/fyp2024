@@ -1,3 +1,5 @@
+import * as resultService from "../services/resultService";
+
 import { AccountsGamification } from "../models/accountsGamificationModel";
 import { Result } from "../models/resultModel";
 import { createResult } from "./resultService";
@@ -68,6 +70,54 @@ export async function getGamificationData(userID: string) {
 			new Date(data.lastUnitCompletionDate)
 		);
 	}
+}
+
+export async function getBadges(userID: string) {
+	const completedUnit = await resultService.getNoOfCompletedUnit(userID);
+
+	let badges = [];
+
+	const { data: storageBadges, error } = await supabase.storage
+		.from("badges")
+		.list();
+
+	if (error) {
+		console.error(error);
+		throw error;
+	}
+
+	if (storageBadges.length === 0) {
+		throw new Error("Badge Not Found");
+	}
+
+	const designed = storageBadges
+		.map((badge) => badge.name)
+		.filter((badge) => badge.includes("badge"));
+
+	const withoutBadge = Math.max(0, completedUnit - designed.length);
+	const minBadges = completedUnit - withoutBadge;
+
+	for (let i = 0; i < withoutBadge; i++) {
+		const { data: publicUrlData } = await supabase.storage
+			.from("badges")
+			.getPublicUrl(`placeholder.png`);
+
+		if (publicUrlData) {
+			badges.push(publicUrlData.publicUrl);
+		}
+	}
+
+	for (let i = minBadges; i > 0; i--) {
+		const { data: publicUrlData } = await supabase.storage
+			.from("badges")
+			.getPublicUrl(`badge${i}.png`);
+
+		if (publicUrlData) {
+			badges.push(publicUrlData.publicUrl);
+		}
+	}
+
+	return badges;
 }
 
 /* UPDATE */

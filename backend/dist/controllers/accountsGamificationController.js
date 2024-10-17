@@ -1,18 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
+        desc = { enumerable: true, get: function () { return m[k]; } };
     }
     Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
+}) : (function (o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
+}) : function (o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -36,6 +36,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateStreaksFromUnit = exports.updateStreaksFromLogin = exports.updatePoints = exports.getGamificationData = exports.getTop5Accounts = void 0;
+exports.updatePoints = exports.getBadges = exports.getGamificationData = exports.getTop5Accounts = void 0;
 const accountsGamificationService = __importStar(require("../services/accountsGamificationService"));
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
@@ -65,6 +66,19 @@ const getGamificationData = (req, res) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.getGamificationData = getGamificationData;
+const getBadges = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const badges = yield accountsGamificationService.getBadges(req.params.userid);
+        res.status(200).json(badges);
+    }
+    catch (error) {
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+});
+exports.getBadges = getBadges;
 /* UPDATE */
 const updatePoints = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userID, points } = req.body;

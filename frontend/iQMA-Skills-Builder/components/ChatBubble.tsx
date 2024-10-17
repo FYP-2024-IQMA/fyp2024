@@ -1,6 +1,8 @@
 import {Image, StyleSheet, Text, View, ViewStyle} from 'react-native';
 import React, {ReactNode} from 'react';
 
+import {Colors} from '@/constants/Colors';
+
 interface ChatBubbleProps {
     children: ReactNode;
     position: 'left' | 'right' | 'top';
@@ -15,7 +17,7 @@ interface ChatBubbleProps {
 export const ChatBubble: React.FC<ChatBubbleProps> = ({
     children,
     position,
-    bubbleColor = '#7654F2',
+    bubbleColor = Colors.default.purple500,
     textColor = 'white',
     isUser,
     borderRadius = 10,
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
     bubble: {
         maxWidth: '80%',
         position: 'relative',
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         padding: 20,
         borderRadius: 10,
         shadowColor: 'black',
@@ -130,7 +132,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 10,
         borderLeftColor: 'transparent',
         borderRightColor: 'transparent',
-        borderBottomColor: '#7654F2',
+        borderBottomColor: Colors.default.purple500,
         marginBottom: -2,
         position: 'absolute',
     },

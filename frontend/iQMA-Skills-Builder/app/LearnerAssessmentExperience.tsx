@@ -3,6 +3,7 @@ import React, {useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {Picker} from '@react-native-picker/picker';
 import {router} from 'expo-router';
@@ -354,7 +355,7 @@ export default function LearnerAssessmentExperience() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
@@ -375,10 +376,10 @@ const styles = StyleSheet.create({
         marginTop: 12,
     },
     correctBorder: {
-        borderColor: '#9CA3AF',
+        borderColor: Colors.border.correctColor,
     },
     wrongBorder: {
-        borderColor: '#ff4c4c',
+        borderColor: Colors.border.wrongColor,
     },
     textInputStyle: {
         flex: 2.3,
@@ -390,12 +391,12 @@ const styles = StyleSheet.create({
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
-        color: '#7654F2',
-        lineHeight: 20,
+        color: Colors.default.purple500,
+        lineHeight: Colors.learnerAssessment.lineHeight,
     },
     defaultOptionText: {
-        color: '#5C5776',
-        fontSize: 14,
+        color: Colors.default.optionText,
+        fontSize: Colors.default.optionFontSize,
     },
     checkboxContainer: {
         flexDirection: 'row',
@@ -412,13 +413,13 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     checkedCheckbox: {
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         textAlign: 'center',
     },
     checkmark: {
         color: 'white',
     },
     errorText: {
-        color: '#ff4c4c',
+        color: Colors.border.wrongColor,
     },
 });

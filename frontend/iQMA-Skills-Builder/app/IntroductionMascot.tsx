@@ -1,6 +1,7 @@
-import {StyleSheet, Image, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 
 import {ChatBubble} from '@/components/ChatBubble';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {router} from 'expo-router';
 
@@ -31,7 +32,7 @@ export default function LearnerAssessment() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },

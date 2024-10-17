@@ -7,7 +7,12 @@ const resultService = require("../../dist/services/resultService");
 
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
+    storage: {
+        from: jest.fn(),
+    },
 }));
+
+jest.mock("../../dist/services/resultService");
 
 let consoleErrorSpy;
 
@@ -273,6 +278,91 @@ describe("getGamificationData", () => {
         expect(consoleErrorSpy).toHaveBeenCalledWith(new Error(errorMessage));
     });
 });
+
+describe("getBadges", () => {
+    const badges = [
+        {
+            publicUrl: "https://badges.com/placeholder.png",
+        },
+        {
+            publicUrl: "https://badges.com/placeholder.png",
+        },
+        {
+            publicUrl: "https://badges.com/badge2.png",
+        },
+        {
+            publicUrl: "https://badges.com/badge1.png",
+        },
+    ];
+
+    const mockData = [
+        {
+            name: "badge1",
+        },
+        {
+            name: "badge2",
+        },
+        {
+            name: "placeholder",
+        },
+    ];
+
+    it("should return an array of badge URLs", async () => {
+        resultService.getNoOfCompletedUnit.mockResolvedValue(4);
+
+        // get no. of badges in bucket
+        const mockList = jest
+            .fn()
+            .mockResolvedValue({ data: mockData, error: null });
+
+        // indiv calls to get badges individually
+        let mockGetPublicURL = jest.fn();
+
+        for (let i = 0; i < badges.length; i++) {
+            mockGetPublicURL.mockResolvedValueOnce({ data: badges[i] });
+        }
+
+        supabase.storage.from.mockReturnValue({
+            list: mockList,
+            getPublicUrl: mockGetPublicURL,
+        });
+
+        const result = await accountsGamificationService.getBadges("123");
+
+        const expectedResult = badges.map((badge) => badge.publicUrl);
+
+        expect(result).toEqual(expectedResult);
+    });
+
+    it("should return 'Badges Not Found' when there are no badges in storage", async () => {
+        resultService.getNoOfCompletedUnit.mockResolvedValue(4);
+
+        // get no. of badges in bucket
+        const mockList = jest.fn().mockResolvedValue({ data: [], error: null });
+        supabase.storage.from.mockReturnValue({ list: mockList });
+
+        await expect(
+            accountsGamificationService.getBadges("123")
+        ).rejects.toThrow("Badge Not Found");
+    });
+
+    it("should throw an error when there is an error from supabase", async () => {
+        const expectedError = new Error("Database Error");
+
+        resultService.getNoOfCompletedUnit.mockResolvedValue(4);
+
+        // get no. of badges in bucket
+        const mockList = jest
+            .fn()
+            .mockResolvedValue({ data: [], error: expectedError });
+        supabase.storage.from.mockReturnValue({ list: mockList });
+
+        await expect(
+            accountsGamificationService.getBadges("123")
+        ).rejects.toThrow(expectedError.message);
+    });
+
+})
 
 describe("updatePoints", () => {
     afterEach(() => {

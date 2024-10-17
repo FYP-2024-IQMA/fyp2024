@@ -16,6 +16,11 @@ router.get(
 	verifyToken,
 	accountsGamificationController.getTop5Accounts
 );
+router.get(
+	"/badges/:userid",
+	verifyToken,
+	accountsGamificationController.getBadges
+);
 
 /* UPDATE */
 router.patch(

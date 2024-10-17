@@ -1,22 +1,24 @@
 import {
-    Text,
-    View,
-    Image,
-    TextInput,
-    Button,
-    StyleSheet,
-    Pressable,
     ActivityIndicator,
+    Button,
+    Image,
+    Pressable,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
 } from 'react-native';
+
+import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
-import {Profile} from '@/components/Profile';
-import {CustomButton} from '@/components/CustomButton';
-import {useState} from 'react';
 import {Picker} from '@react-native-picker/picker';
-import {AuthContext} from '@/context/AuthContext';
-import {useContext} from 'react';
+import {Profile} from '@/components/Profile';
 import {router} from 'expo-router';
+import {useContext} from 'react';
+import {useState} from 'react';
 
 export default function CreateProfile() {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -109,7 +111,7 @@ export default function CreateProfile() {
                 flex: 1,
                 // justifyContent: "center",
                 alignItems: 'center',
-                backgroundColor: '#FFFFFF',
+                backgroundColor: Colors.light.background,
                 // backgroundColor: "#ff4500",
                 padding: 20,
                 gap: 20,
@@ -123,8 +125,10 @@ export default function CreateProfile() {
                     borderWidth: 1,
                     // borderColor: '#E5E5E5',
                     borderColor:
-                        !isContinue && !firstName ? '#ff4c4c' : '#E5E5E5',
-                    backgroundColor: '#F7F7F7',
+                        !isContinue && !firstName
+                            ? Colors.border.wrongColor
+                            : '#E5E5E5',
+                    backgroundColor: Colors.profile.inputColor,
                     borderRadius: 10,
                     padding: 10,
                     width: '100%',
@@ -151,8 +155,10 @@ export default function CreateProfile() {
                     borderWidth: 1,
                     // borderColor: '#E5E5E5',
                     borderColor:
-                        !isContinue && !lastName ? '#ff4c4c' : '#E5E5E5',
-                    backgroundColor: '#F7F7F7',
+                        !isContinue && !lastName
+                            ? Colors.border.wrongColor
+                            : '#E5E5E5',
+                    backgroundColor: Colors.profile.inputColor,
                     borderRadius: 10,
                     padding: 10,
                     width: '100%',
@@ -178,8 +184,11 @@ export default function CreateProfile() {
                 style={{
                     borderWidth: 1,
                     // borderColor: '#E5E5E5',
-                    borderColor: !isContinue && !email ? '#ff4c4c' : '#E5E5E5',
-                    backgroundColor: '#F7F7F7',
+                    borderColor:
+                        !isContinue && !email
+                            ? Colors.border.wrongColor
+                            : '#E5E5E5',
+                    backgroundColor: Colors.profile.inputColor,
                     borderRadius: 10,
                     padding: 10,
                     width: '100%',
@@ -220,8 +229,10 @@ export default function CreateProfile() {
                         borderRadius: 10,
                         // borderColor: '#E5E5E5',
                         borderColor:
-                            !isContinue && !selectedAge ? '#ff4c4c' : '#E5E5E5',
-                        backgroundColor: '#F7F7F7',
+                            !isContinue && !selectedAge
+                                ? Colors.border.wrongColor
+                                : '#E5E5E5',
+                        backgroundColor: Colors.profile.inputColor,
                     }}
                 >
                     <Picker
@@ -271,9 +282,9 @@ export default function CreateProfile() {
                         // borderColor: '#E5E5E5',
                         borderColor:
                             !isContinue && !selectedGender
-                                ? '#ff4c4c'
+                                ? Colors.border.wrongColor
                                 : '#E5E5E5',
-                        backgroundColor: '#F7F7F7',
+                        backgroundColor: Colors.profile.inputColor,
                     }}
                 >
                     <Picker
@@ -344,21 +355,21 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         height: 40,
         width: '100%',
     },
     buttonText: {
-        color: '#FFFFFF',
+        color: Colors.light.background,
         fontSize: 12,
         fontWeight: 'bold',
     },
     defaultOptionText: {
-        color: '#5C5776',
-        fontSize: 14,
+        color: Colors.default.optionText,
+        fontSize: Colors.default.optionFontSize,
     },
     errorText: {
-        color: '#ff4c4c',
+        color: Colors.border.wrongColor,
     },
     termsAndConditionView: {
         padding: 10,

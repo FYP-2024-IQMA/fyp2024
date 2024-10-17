@@ -106,37 +106,35 @@ describe("GET /accounts/gamificationdata", () => {
     });
 });
 
-describe("GET /accounts/streaks", () => {
-    const mockAccounts = {
-        userID: "2",
-        points: 0,
-        streaks: 0,
-        lastUnitCompletionDate: expect.anything(),
-    };
+describe("GET /accounts/badges", () => {
+    const mockBadges = [
+        "https://badges.com/badge1.png",
+        "https://badges.com/badge2.png"
+    ];
 
-    it("should return 200 and the account on success", async () => {
-        accountsGamificationService.getStreaks.mockResolvedValue(mockAccounts);
+    it("should return 200 and the badge URLs on success", async () => {
+        accountsGamificationService.getBadges.mockResolvedValue(mockBadges);
 
         const response = await request(app).get(
-            `accounts/streaks/${mockAccounts.userID}`
+            `/accounts/badges/123`
         );
 
         expect(response.status).toBe(200);
-        expect(response.body).toEqual(mockAccounts);
-        expect(accountsGamificationService.getStreaks).toHaveBeenCalledTimes(1);
+        expect(response.body).toEqual(mockBadges);
+        expect(accountsGamificationService.getBadges).toHaveBeenCalledTimes(1);
     });
 
     it("should return 500 and an error message on failure", async () => {
         const mockError = new Error("Database error");
 
-        accountsGamificationService.getStreaks.mockRejectedValue(mockError);
+        accountsGamificationService.getBadges.mockRejectedValue(mockError);
 
         const response = await request(app).get(
-            `/accounts/streaks/${mockAccounts.userID}`
+            `/accounts/badges/123`
         );
 
         expect(response.status).toBe(500);
-        expect(accountsGamificationService.getStreaks).toHaveBeenCalledTimes(1);
+        expect(accountsGamificationService.getBadges).toHaveBeenCalledTimes(1);
     });
 });
 
