@@ -32,7 +32,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 await AsyncStorage.setItem('userID', user.sub);
             }
         } else {
-            await AsyncStorage.removeItem('userID');
+            // await AsyncStorage.removeItem('userID');
+            await AsyncStorage.clear();
             setIsLoading(false);
         }
         setIsLoading(false);
