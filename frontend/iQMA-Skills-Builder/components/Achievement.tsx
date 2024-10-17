@@ -29,29 +29,25 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
     //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge2.png',
     // ];
 
-    const [topThreeAchievements, setTopThreeAchievements] = useState<any>();
+    console.log('ACHIEVEMENTS: ' + achievements);
 
-        // const displayAchievements = [...achievements];
-        // const placeholderUri =
-        //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/placeholder.png';
+    // const displayAchievements = [...achievements];
+    // const placeholderUri =
+    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/placeholder.png';
 
-        // const lockedBadge = require('../assets/images/lockedbadge.png');
+    // const lockedBadge = require('../assets/images/lockedbadge.png');
 
-        // while (achievements.length < 3) {
-        //     achievements.push(lockedBadge);
-        // }
+    // while (achievements.length < 3) {
+    //     achievements.push(lockedBadge);
+    // }
 
-        // const topThreeAchievements = achievements[0]["badges"].slice(0, 3);
-        
-        useEffect(() => {
-            // setTopThreeAchievements(achievements[0].badges.slice(0, 3));
-        }, []);
-    
-    // console.log(topThreeAchievements)
+    const topThreeAchievements = achievements[0]["badges"].slice(0, 3);
 
-    // console.log('topThreeAchievements:', achievements[0].badges);
+    console.log('topThreeAchievements:', topThreeAchievements);
 
     // const topThreeAchievements = achievements[0].badges.slice(0, 3);
+
+    // console.log(achievements[0].badges.slice(0, 3));
 
     // topThreeAchievements.map((badge) => badge.badgeUrl);
 

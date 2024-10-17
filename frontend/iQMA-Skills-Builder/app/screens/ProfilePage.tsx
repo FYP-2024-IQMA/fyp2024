@@ -37,9 +37,11 @@ const ProfilePage: React.FC = () => {
         try {
             const sectionDetails =
                 await sectionEndpoints.getAllSectionDetails();
+
             const userDetails = await accountEndpoints.getUserDetails(
                 currentUser.sub
             );
+
             const badges = await gamificationEndpoints.getBadges(
                 currentUser.sub
             );
@@ -73,30 +75,17 @@ const ProfilePage: React.FC = () => {
             console.error('Error fetching Section details:', error);
         } finally {
             setLoading(false);
-            console.log("FINALLY")
-            // console.log(badges)
         }
     };
 
-    console.log(allSectionDetails);
-
-    useEffect(() => {
-        (
-            async () => {
-                setLoading(true);
-                await fetchProfileData();
-            }
-        )
-    }, []);
-
-    // Fetch data when navigating back
+    // Fetch data when screen is Focused
     useFocusEffect(
         useCallback(() => {
             fetchProfileData();
         }, [])
     );
 
-    if (isLoading || !userDetails) {
+    if (loading) {
         return <LoadingIndicator />;
     }
 
