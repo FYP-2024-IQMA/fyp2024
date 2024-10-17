@@ -4,6 +4,7 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as accountEndpoints from '@/helpers/accountEndpoints';
 
 import {
     NativeScrollEvent,
@@ -28,55 +29,6 @@ import TopStats from '@/components/TopStats';
 import {router} from 'expo-router';
 import {useContext} from 'react';
 
-function calculateTotalProgress(
-    i: number,
-    totalUnits: number,
-    getLessonIds: any[]
-) {
-    const uniqueAlphabets = new Set(getLessonIds);
-    // Get the count of unique alphabets for key takeaway count
-    const uniqueAlphabetCount = uniqueAlphabets.size;
-
-    // regular total progress
-    // 5 = UnitIntro + UnitAIntro + CheatSheet + RealityCheck + Assessment
-    // uniqueAlphabetCount = no. of KeyTakeaway
-    let totalProgress = 5 + getLessonIds.length * 2 + uniqueAlphabetCount;
-
-    if (i === 0) {
-        // to account for sectionIntro
-        totalProgress += 1;
-    } else if (i === totalUnits - 1) {
-        // to account for final assessment Intro & final assessment
-        totalProgress += 2;
-    }
-
-    // console.log('Total Progress:', totalProgress);
-    return totalProgress;
-}
-
-function calculateKTProgress(lessons: any[], completedLessonCount: number) {
-    const lessonCounts = lessons.reduce((acc, lessonID) => {
-        acc[lessonID] = (acc[lessonID] || 0) + 1;
-        return acc;
-    }, {});
-
-    const completedLessons = lessons
-        .slice(0, completedLessonCount)
-        .reduce((acc, lessonID) => {
-            acc[lessonID] = acc[lessonID] || 0; // Initialize if not already present
-            if (acc[lessonID] < lessonCounts[lessonID]) {
-                acc[lessonID]++; // Increment if below total occurrences
-            }
-            return acc;
-        }, {});
-
-    return Object.keys(lessonCounts).reduce((progress, lessonID) => {
-        return (
-            progress +
-            (completedLessons[lessonID] === lessonCounts[lessonID] ? 1 : 0)
-        );
-    }, 0);
-}
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -143,18 +95,6 @@ const HomeScreen: React.FC = () => {
             }
         } catch (error) {
             console.error('Error while loading circular progress:', error);
-        }
-    };
-
-    const getCurrentSection = async (): Promise<number> => {
-        try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getuserprogress/${currentUser.sub}`;
-            const response = await fetch(url);
-            const completedSection = await response.json();
-            return completedSection + 1;
-        } catch (error) {
-            console.error('Error while loading current section:', error);
-            return 0;
         }
     };
 
@@ -232,26 +172,19 @@ const HomeScreen: React.FC = () => {
             // console.log("unitID", unitID)
             // console.log("totalLesson", totalLesson)
 
-            let getAllLessons: any[] = [];
-            try {
-                getAllLessons = await lessonEndpoints.getAllLesson(
-                    sectionID,
-                    unitID
-                );
-            } catch (error) {
-                console.error(
-                    'Home - getIconStatus: Error while getting all lessons:',
-                    error
-                );
+            const getAllLessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
+
+            if (getAllLessons.length === 0) {
+                return;
             }
 
             const getLessonIds = getAllLessons.map(
-                (lesson) => lesson.lessonID.split('.')[0]
+                (lesson: any) => lesson.lessonID.split('.')[0]
             );
 
             // console.log('Lesson IDs:', getLessonIds);
 
-            const totalProgress = calculateTotalProgress(
+            const totalProgress = accountEndpoints.calculateTotalProgress(
                 i,
                 totalUnits,
                 getLessonIds
@@ -291,14 +224,16 @@ const HomeScreen: React.FC = () => {
                         currentProgress = totalProgress - 1;
                     }
                 } else {
-                    currentLessonId = getAllLessons[completedLessons].lessonID;
+                    if (getAllLessons[completedLessons]) {
+                        currentLessonId = getAllLessons[completedLessons].lessonID;
+                    }
                     currentLessonIdx = completedLessons;
                     if (completedLessons !== 0) {
                         routerName = 'Lesson';
                         currentProgress =
                             1 +
                             completedLessons * 2 +
-                            calculateKTProgress(getLessonIds, completedLessons);
+                            accountEndpoints.calculateKTProgress(getLessonIds, completedLessons);
                         // console.log('Current Progress:', currentProgress);
                     } else if (completedUnits === 0) {
                         routerName = 'SectionIntroduction';
@@ -354,7 +289,7 @@ const HomeScreen: React.FC = () => {
         const unitID = `UNIT${lightedUnit.toString().padStart(4, '0')}`;
 
         // circular progress is set inside here
-        loadUnitCircularProgress(
+        await loadUnitCircularProgress(
             currentUser.sub,
             sectionID,
             unitID,
@@ -374,9 +309,8 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         (async () => {
             try {
-                const sectionDetails =
-                    await sectionEndpoints.getAllSectionDetails();
-                let currentSection = await getCurrentSection();
+                const sectionDetails = await sectionEndpoints.getAllSectionDetails();
+                let currentSection = await resultEndpoints.getCurrentSection(currentUser.sub);
                 console.log('Current Section Outside:', currentSection);
 
                 if (currentSection > sectionDetails.length) {
@@ -413,7 +347,7 @@ const HomeScreen: React.FC = () => {
                 // Load iconsData based on currentSection
                 for (let i = 0; i < currentSection; i++) {
                     const progressData = await fetchProgressDataNew(i + 1);
-                    newIconsData[i] = progressData;
+                    newIconsData[i] = progressData!;
                 }
 
                 setIconsData(newIconsData);
@@ -426,7 +360,6 @@ const HomeScreen: React.FC = () => {
     }, [completedFinals, sectionCircularProgress, circularProgress]);
 
     useEffect(() => {
-        // console.log('All Section Details:', allSectionDetails);
     }, [allSectionDetails]);
 
     const handlePress = (

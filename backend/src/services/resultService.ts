@@ -54,6 +54,25 @@ export async function checkIfCompletedQuiz(userID: string, quizID: string): Prom
     }
 }
 
+export async function checkIfCompletedSection(
+    userID: string,
+    sectionID: string
+): Promise<boolean> {
+    const { count, error } = await supabase
+        .from("result")
+        .select("quizID, quiz!inner(quizID)", { count: "exact" })
+        .eq("userID", userID)
+        .eq("quiz.sectionID", sectionID)
+        .eq("quiz.quizType", "section");
+
+    if (error) {
+        console.error(error);
+        throw error;
+    } else {
+        return count! > 0;
+    }
+}
+
 /*
 Get the User Progress: 
 - no. of completed sections quiz 

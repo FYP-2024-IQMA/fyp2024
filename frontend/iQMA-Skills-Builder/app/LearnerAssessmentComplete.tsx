@@ -6,6 +6,7 @@ import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
 import {router} from 'expo-router';
+import * as accountEndpoints from '@/helpers/accountEndpoints';
 
 export default function LearnerAssessmentComplete() {
     const handlePress = async () => {
@@ -80,13 +81,11 @@ export default function LearnerAssessmentComplete() {
             ]);
 
             const account = {
-                userID: userID,
+                userID: userID!,
                 hasOnboarded: true,
             };
-            const accountResponse = await axios.patch(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updateaccount`,
-                account
-            );
+
+            const accountResponse = await accountEndpoints.editUserDetails(account);
 
             console.log(
                 'Account Demographics created successfully: ',
