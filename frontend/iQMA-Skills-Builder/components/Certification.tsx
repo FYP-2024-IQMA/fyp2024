@@ -66,6 +66,7 @@ export const CertificationsList = () => {
                     style={{
                         textDecorationLine: 'underline',
                         textDecorationColor: '#5C5776',
+                        fontWeight: "bold"
                     }}
                 >
                     View all
@@ -120,9 +121,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 1,
         borderColor: '#D1D5DB',
-        elevation: 3,
+        elevation: 2,
         padding: 15,
-        marginBottom: 10,
         gap: 5,
     },
     titleContainer: {

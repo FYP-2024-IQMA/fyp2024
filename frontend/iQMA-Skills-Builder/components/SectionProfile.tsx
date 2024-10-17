@@ -13,6 +13,7 @@ import {AuthContext} from '@/context/AuthContext';
 import {router, useLocalSearchParams} from 'expo-router';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import {SectionProfileProgressBar} from './SectionProfileProgressBar';
 
 interface SectionProfileProps {
     sectionID: string;
@@ -347,15 +348,21 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
                     <Text style={styles.sectionTitle}>
                         SECTION {sectionNumber}
                     </Text>
-                    <Text style={styles.sectionCardTitle}>{sectionName}</Text>
-
-                    <ProgressBar
-                        progress={sectionCircularProgress}
-                        isQuestionnaire={true}
-                    />
-                    <Text style={styles.sectionCardSubtitle}>
-                        {sectionDuration + 'm'}
-                    </Text>
+                    <Text style={styles.sectionName}>{sectionName}</Text>
+                    <View style={styles.progressBarContainer}>
+                        {/* <ProgressBar
+                            progress={sectionCircularProgress}
+                            isQuestionnaire={true}
+                        /> */}
+                        <SectionProfileProgressBar
+                            progress={sectionCircularProgress}
+                        ></SectionProfileProgressBar>
+                    </View>
+                    <View style={styles.durationContainer}>
+                        <Text style={styles.duration}>
+                            {sectionDuration + 'm'}
+                        </Text>
+                    </View>
                 </View>
             </TouchableOpacity>
         </View>
@@ -364,60 +371,56 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
 
 const styles = StyleSheet.create({
     main: {
-        padding: 20,
+        flex: 1,
+        
     },
     image: {
         width: '100%',
         height: 150, // Adjust the height to whatever size you'd like the image to be
         resizeMode: 'cover',
-        justifyContent: 'flex-start',
     },
     sectionCard: {
         backgroundColor: '#fff',
         borderRadius: 15,
-        marginBottom: 20,
         borderColor: '#D1D5DB',
-        alignItems: 'center',
         borderWidth: 1,
         overflow: 'hidden', // Makes sure image edges are rounded with the sectionCard
+        marginTop: 10,
+        elevation: 2
+        
     },
     disabledSectionCard: {
         backgroundColor: 'gray', // or any color to indicate disabled state
     },
-    sectionTitle: {
-        color: '#18113C',
-        fontSize: 16,
-        marginTop: '2%',
-    },
-    sectionCardTitle: {
-        color: '#18113C',
-        fontSize: 16,
-        fontWeight: 'bold',
-        marginBottom: '2%',
-    },
-    sectionCardSubtitle: {
-        color: '#5C5776',
-        fontSize: 14,
-        marginLeft: '83%',
-        marginTop: '5%',
-    },
-    sectionButton: {
-        backgroundColor: Colors.default.purple500,
-        padding: 10,
-        borderRadius: 10,
-        borderColor: '#5E43C2',
-        borderWidth: 2,
-    },
     textContainer: {
-        width: '100%', // Ensures the text container takes up the full width of the card
-        padding: 10, // Adds spacing for text inside the card
-        backgroundColor: '#fff',
-        paddingLeft: 40,
-        flex: 1,
+        flexDirection: 'column',
+        padding: 20,
+        gap: 3,
     },
-    progressBar: {
-        paddingLeft: 20,
+    sectionTitle: {
+        fontWeight: 'bold',
+        fontSize: 12,
     },
+    sectionName: {
+        fontWeight: 'bold',
+    },
+    progressBarContainer: {
+        paddingVertical: 10,
+    },
+    durationContainer: {
+        flexDirection: 'row-reverse',
+    },
+    duration: {
+        fontSize: 12,
+        color: Colors.default.optionText,
+    },
+    // sectionButton: {
+    //     backgroundColor: Colors.default.purple500,
+    //     padding: 10,
+    //     borderRadius: 10,
+    //     borderColor: '#5E43C2',
+    //     borderWidth: 2,
+    // },
 });
 
 export default SectionProfile;

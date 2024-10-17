@@ -23,11 +23,10 @@ import SectionProfile from '@/components/SectionProfile';
 import ProfileCard from '@/components/ProfileCard';
 import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
-import { Achievements } from '@/components/Achievement';
+import {Achievements} from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
 
 const ProfilePage: React.FC = () => {
-
     const {currentUser, isLoading} = useContext(AuthContext);
     const [allSectionDetails, setAllSectionDetails] = useState<any[]>([]);
     const [userDetails, setUserDetails] = useState<any>();
@@ -35,17 +34,39 @@ const ProfilePage: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     const fetchProfileData = async () => {
-        
         try {
-            const sectionDetails = await sectionEndpoints.getAllSectionDetails();
-            const userDetails = await accountEndpoints.getUserDetails(currentUser.sub);
-            const badges = await gamificationEndpoints.getBadges(currentUser.sub);
+            const sectionDetails =
+                await sectionEndpoints.getAllSectionDetails();
+            const userDetails = await accountEndpoints.getUserDetails(
+                currentUser.sub
+            );
+            const badges = await gamificationEndpoints.getBadges(
+                currentUser.sub
+            );
 
             console.log('sectionDetails:', sectionDetails);
             console.log('userDetails:', userDetails);
             console.log('badges:', badges);
 
             setAllSectionDetails(sectionDetails);
+            // Testing
+            // setAllSectionDetails([
+            //     {
+            //         sectionDuration: 136,
+            //         sectionID: 'SEC0001',
+            //         sectionName: 'Communication',
+            //     },
+            //     {
+            //         sectionDuration: 136,
+            //         sectionID: 'SEC0001',
+            //         sectionName: 'Communication',
+            //     },
+            //     {
+            //         sectionDuration: 136,
+            //         sectionID: 'SEC0001',
+            //         sectionName: 'Communication',
+            //     },
+            // ]);
             setUserDetails(userDetails);
             setBadges(badges);
         } catch (error) {
@@ -53,12 +74,14 @@ const ProfilePage: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    }
+    };
+
+    console.log(allSectionDetails);
 
     useEffect(() => {
         setLoading(true);
         fetchProfileData();
-    }, [])
+    }, []);
 
     // Fetch data when navigating back
     useFocusEffect(
@@ -67,7 +90,6 @@ const ProfilePage: React.FC = () => {
         }, [])
     );
 
-
     if (isLoading || !userDetails) {
         return <LoadingIndicator />;
     }
@@ -75,29 +97,76 @@ const ProfilePage: React.FC = () => {
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
             <View style={styles.container}>
-                <ProfileCard userDetails={userDetails}/>
+                <ProfileCard userDetails={userDetails} />
 
-                <Achievements achievements={badges}/>
-                <CertificationsList/>
-                
-                {allSectionDetails.length > 0 ? (
-                    allSectionDetails.map((sectionDetail, index) => (
-                        <View key={index}>
-                            <SectionProfile
-                                sectionID={sectionDetail.sectionID}
-                                sectionName={sectionDetail.sectionName}
-                                sectionDuration={sectionDetail.sectionDuration}
-                            />
-                        </View>
-                    ))
-                ) : (
-                    <Text>No sections available</Text>
-                )}
+                <Achievements achievements={badges} />
+                <CertificationsList />
 
+                <View style={{paddingHorizontal: 20, marginVertical: 20}}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                        }}
+                    >
+                        <Text
+                            style={{
+                                fontSize: 16,
+                                fontWeight: 'bold',
+                                color: '#18113C',
+                            }}
+                        >
+                            Courses
+                        </Text>
+                        <Text
+                            style={{
+                                textDecorationLine: 'underline',
+                                textDecorationColor: '#5C5776',
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            View all
+                        </Text>
+                    </View>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent:
+                                allSectionDetails.length === 1
+                                    ? 'center'
+                                    : 'space-between',
+                            gap: 15
+                        }}
+                    >
+                        {allSectionDetails.length > 0 ? (
+                            allSectionDetails
+                                .slice(0, 2)
+                                .map((sectionDetail, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            flex: 1,
+                                        }}
+                                    >
+                                        <SectionProfile
+                                            sectionID={sectionDetail.sectionID}
+                                            sectionName={
+                                                sectionDetail.sectionName
+                                            }
+                                            sectionDuration={
+                                                sectionDetail.sectionDuration
+                                            }
+                                        />
+                                    </View>
+                                ))
+                        ) : (
+                            <Text>No sections available</Text>
+                        )}
+                    </View>
+                </View>
             </View>
         </ScrollView>
     );
-
 };
 
 const styles = StyleSheet.create({
@@ -106,7 +175,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff', // Ensure background color is white
     },
     container: {
-    
         backgroundColor: '#fff', // Container also white
     },
 });
