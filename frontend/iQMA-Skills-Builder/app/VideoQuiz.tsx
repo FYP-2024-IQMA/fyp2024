@@ -11,15 +11,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
-import { useTimer } from '@/helpers/useTimer';
 import ProgressBar from '@/components/ProgressBar';
 import {Question} from '@/constants/Quiz';
 import {QuizCard} from '@/components/QuizCard';
 import SectionCard from '@/components/SectionCard';
 import axios from 'axios';
+import {checkIfConfigIsValid} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -43,7 +44,11 @@ export default function VideoQuiz() {
     const [lessonName, setLessonName] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Video Quiz`);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+    // const [currentPoints, setCurrentPoints] = useState<number>(0);
+    const {startTimer, stopTimer} = useTimer(
+        `${sectionID} ${unitID} ${lessonID} Video Quiz`
+    );
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -167,6 +172,11 @@ export default function VideoQuiz() {
         }
     };
 
+    // const handleTotalPoints = async (points: number) => {
+    //     setTotalPoints(points);
+    //     console.log('total points in video quiz is ', points);
+    // };
+
     return (
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
@@ -200,6 +210,7 @@ export default function VideoQuiz() {
                             Choose the most appropriate option for each
                             question.
                         </Text>
+
                         <View style={{alignItems: 'center'}}>
                             <Image
                                 style={{marginBottom: 10}}
@@ -210,6 +221,7 @@ export default function VideoQuiz() {
                             <QuizCard
                                 questionData={questions[currentQnsIdx]}
                                 onNextQuestion={handleNextQuestion}
+                                // onTotalPoints={handleTotalPoints}
                             />
                         )}
                     </View>

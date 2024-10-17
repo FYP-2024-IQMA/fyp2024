@@ -12,10 +12,11 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import MiniChatbot from '@/components/MiniChatbot';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -38,7 +39,9 @@ export default function SelfReflection() {
         setChatHistoryLength(length);
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Self Reflection`);
+    const {startTimer, stopTimer} = useTimer(
+        `${sectionID} ${unitID} Self Reflection`
+    );
 
     useLayoutEffect(() => {
         const progress =
@@ -56,6 +59,26 @@ export default function SelfReflection() {
         startTimer();
         if (sectionID && unitID) {
             (async () => {
+                try {
+                    const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+                    const data = {
+                        userID: currentUser.sub,
+                        points: totalPoints,
+                    };
+
+                    console.log(data);
+
+                    const response = await axios.patch(url, data);
+                    const result = await response.data;
+                    console.log('Points successfully updated:', result);
+                    return result;
+                } catch (error: any) {
+                    console.error(
+                        'Error updating points:',
+                        error.response.data
+                    );
+                    return;
+                }
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,

@@ -6,12 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
+import {criticallyDampedSpringCalculations} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 
 export const QuizCard: React.FC<{
     questionData: Question;
     onNextQuestion: () => void;
-    onTotalPoints: (points: number) => void;
-}> = ({questionData, onNextQuestion, onTotalPoints}) => {
+    // onTotalPoints: (points: number) => void;
+}> = ({questionData, onNextQuestion}) => {
     const {
         quizID,
         questionNo,
@@ -42,15 +43,11 @@ export const QuizCard: React.FC<{
             if (selectedLabel == answer) {
                 let points = 0;
 
-                console.log('my count in handle answer is ');
                 if (count == 0) {
-                    console.log('first try');
                     points = 100; // First try
                 } else if (count == 1) {
-                    console.log('second try');
                     points = 50; // Second try
                 } else {
-                    console.log('third onwards');
                     points = 25; // Third or more tries
                 }
 
@@ -58,7 +55,6 @@ export const QuizCard: React.FC<{
                 setIsCorrect(true);
             }
             setCount((prevCount) => prevCount + 1);
-            console.log('count is ' + count);
             setModalVisible(true);
         }
     };
@@ -66,12 +62,15 @@ export const QuizCard: React.FC<{
     const handleAnswer = () => {
         if (isCorrect) {
             // Accumulate total points
-            setTotalPoints((prevPoints) => prevPoints + currentPoints);
+            const newTotalPoints = totalPoints + currentPoints;
+            setTotalPoints(newTotalPoints);
+            storeTotalPoints();
 
             // Pass points back to the parent component
-            onTotalPoints(totalPoints);
+            // onTotalPoints(newTotalPoints);
+            console.log('in handle ans in quiz card');
             console.log('points ' + currentPoints);
-            console.log('total points' + totalPoints);
+            console.log('total points' + newTotalPoints);
 
             onNextQuestion();
             setCount(0);
@@ -81,6 +80,27 @@ export const QuizCard: React.FC<{
         setSelectedButton(undefined);
     };
 
+    const storeTotalPoints = async () => {
+        try {
+            let storedPoints = await AsyncStorage.getItem('totalPoints');
+            if (storedPoints !== null) {
+                console.log('stored points' + storedPoints);
+                let storedPointsInNum = parseInt(storedPoints);
+                storedPointsInNum += currentPoints;
+                await AsyncStorage.setItem(
+                    'totalPoints',
+                    storedPointsInNum.toString()
+                );
+                console.log(
+                    'in the if statement in line 94' + storedPointsInNum
+                );
+            }
+            console.log('total points in line 98' + currentPoints);
+            await AsyncStorage.setItem('totalPoints', currentPoints.toString());
+        } catch (e) {
+            console.error(e);
+        }
+    };
     const sendMessage = async () => {
         const userID = await AsyncStorage.getItem('userID');
         let age = await AsyncStorage.getItem('age');

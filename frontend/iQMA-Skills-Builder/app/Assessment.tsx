@@ -9,7 +9,6 @@ import {router, useLocalSearchParams} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
-import { useTimer } from '@/helpers/useTimer';
 import {Colors} from '@/constants/Colors';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
@@ -17,9 +16,11 @@ import ProgressBar from '@/components/ProgressBar';
 import {Question} from '@/constants/Quiz';
 import {QuizCard} from '@/components/QuizCard';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -43,8 +44,11 @@ export default function Assessment() {
     } = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment`);
- 
+    const {startTimer, stopTimer} = useTimer(
+        `${sectionID} ${unitID} Assessment`
+    );
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
@@ -123,6 +127,7 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
+            console.log(checkFinal);
             if (checkFinal) {
                 // final assessment don't have self-reflection
                 try {
