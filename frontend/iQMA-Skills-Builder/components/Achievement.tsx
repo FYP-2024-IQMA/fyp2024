@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View,
     Text,
@@ -8,33 +8,59 @@ import {
     FlatList,
 } from 'react-native';
 
+interface Badge {
+    unitName: string;
+    badgeUrl: string;
+}
+
+interface badgeProps {
+    sectionID: string;
+    badges: Badge[];
+}
+
 interface AchievementsProps {
-    achievements: string[];
+    achievements: any[];
 }
 
 export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
-    
     // const achievements = [
     //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge3.png',
     //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge1.png',
     //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge2.png',
     // ];
 
-    // const displayAchievements = [...achievements];
-    // const placeholderUri =
-    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/placeholder.png';
+    const [topThreeAchievements, setTopThreeAchievements] = useState<any>();
 
-    const lockedBadge = require('../assets/images/lockedbadge.png');
+        // const displayAchievements = [...achievements];
+        // const placeholderUri =
+        //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/placeholder.png';
 
-    while (achievements.length < 3) {
-        achievements.push(lockedBadge);
-    }
+        // const lockedBadge = require('../assets/images/lockedbadge.png');
 
+        // while (achievements.length < 3) {
+        //     achievements.push(lockedBadge);
+        // }
+
+        // const topThreeAchievements = achievements[0]["badges"].slice(0, 3);
+        
+        useEffect(() => {
+            // setTopThreeAchievements(achievements[0].badges.slice(0, 3));
+        }, []);
+    
+    // console.log(topThreeAchievements)
+
+    // console.log('topThreeAchievements:', achievements[0].badges);
+
+    // const topThreeAchievements = achievements[0].badges.slice(0, 3);
+
+    // topThreeAchievements.map((badge) => badge.badgeUrl);
+
+    // console.log('topThreeAchievements:', topThreeAchievements);
     return (
         <View style={styles.outerContainer}>
             <Text style={styles.achievementsHeader}>Achievements</Text>
             <View style={styles.achievementsContainer}>
-                {achievements.slice(0, 3).map((achievementUri, index) => (
+                {/* {topThreeAchievements.map((achievementUri, index) => (
                     <View
                         key={index}
                         style={[
@@ -44,14 +70,10 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
                     >
                         <Image
                             style={styles.achievementImage}
-                            source={
-                                typeof achievementUri === 'string'
-                                    ? {uri: achievementUri}
-                                    : achievementUri
-                            }
+                            source={{uri: achievementUri}}
                         />
                     </View>
-                ))}
+                ))} */}
             </View>
         </View>
     );

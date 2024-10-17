@@ -46,7 +46,7 @@ const ProfilePage: React.FC = () => {
 
             console.log('sectionDetails:', sectionDetails);
             console.log('userDetails:', userDetails);
-            console.log('badges:', badges);
+            // console.log('badges:', badges);
 
             setAllSectionDetails(sectionDetails);
             // Testing
@@ -73,14 +73,20 @@ const ProfilePage: React.FC = () => {
             console.error('Error fetching Section details:', error);
         } finally {
             setLoading(false);
+            console.log("FINALLY")
+            // console.log(badges)
         }
     };
 
     console.log(allSectionDetails);
 
     useEffect(() => {
-        setLoading(true);
-        fetchProfileData();
+        (
+            async () => {
+                setLoading(true);
+                await fetchProfileData();
+            }
+        )
     }, []);
 
     // Fetch data when navigating back

@@ -307,14 +307,14 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
             handlePressParams.totalProgress
         );
 
-        let pathName = handlePressParams.routerName;
+        // let pathName = handlePressParams.routerName;
 
-        if (handlePressParams.status === 'completed') {
-            pathName = 'SectionIntroduction';
-        }
+        // if (handlePressParams.status === 'completed') {
+        //     pathName = 'SectionIntroduction';
+        // }
 
         router.push({
-            pathname: pathName,
+            pathname: handlePressParams.routerName,
             params: {
                 sectionID,
                 unitID: handlePressParams.unitID,
