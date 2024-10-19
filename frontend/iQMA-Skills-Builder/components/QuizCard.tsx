@@ -109,6 +109,7 @@ export const QuizCard: React.FC<{
                 );
                 await AsyncStorage.setItem('age', ageResponse.data['age']);
             } catch (e) {
+                console.log('error in quizcard sendMessage age line 112');
                 console.error(e);
             }
         } else {
@@ -127,6 +128,7 @@ export const QuizCard: React.FC<{
                 );
                 console.log(response.data);
             } catch (e) {
+                console.log('error in quizcard sendMessage line 131');
                 console.error(e);
             }
         }
