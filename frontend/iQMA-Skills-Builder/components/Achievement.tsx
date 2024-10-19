@@ -7,70 +7,64 @@ import {
     StyleSheet,
     FlatList,
 } from 'react-native';
-
-interface Badge {
-    unitName: string;
-    badgeUrl: string;
-}
-
-interface badgeProps {
-    sectionID: string;
-    badges: Badge[];
-}
+import {OverviewCard} from '@/components/OverviewCard';
 
 interface AchievementsProps {
     achievements: any[];
 }
 
 export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
-    // const achievements = [
-    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge3.png',
-    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge1.png',
-    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/badge2.png',
-    // ];
+    // console.log('achievements:', achievements);
 
-    console.log('ACHIEVEMENTS: ' + achievements);
+    let topThreeAchievements: any[] = [];
 
-    // const displayAchievements = [...achievements];
-    // const placeholderUri =
-    //     'https://lugppkebziopzwushqcg.supabase.co/storage/v1/object/public/badges/placeholder.png';
+    if (achievements.length !== 0) {
+        let topThreeAchievements = achievements[0]['badges'].slice(0, 3);
 
-    // const lockedBadge = require('../assets/images/lockedbadge.png');
-
-    // while (achievements.length < 3) {
-    //     achievements.push(lockedBadge);
-    // }
-
-    const topThreeAchievements = achievements[0]["badges"].slice(0, 3);
-
-    console.log('topThreeAchievements:', topThreeAchievements);
-
-    // const topThreeAchievements = achievements[0].badges.slice(0, 3);
-
-    // console.log(achievements[0].badges.slice(0, 3));
-
-    // topThreeAchievements.map((badge) => badge.badgeUrl);
+        topThreeAchievements = topThreeAchievements.map(
+            (badge: any) => badge.badgeUrl
+        );
+    }
 
     // console.log('topThreeAchievements:', topThreeAchievements);
     return (
         <View style={styles.outerContainer}>
-            <Text style={styles.achievementsHeader}>Achievements</Text>
-            <View style={styles.achievementsContainer}>
-                {/* {topThreeAchievements.map((achievementUri, index) => (
-                    <View
-                        key={index}
-                        style={[
-                            styles.achievementImageContainer,
-                            index === 1 && styles.middleItemBorder,
-                        ]}
-                    >
-                        <Image
-                            style={styles.achievementImage}
-                            source={{uri: achievementUri}}
-                        />
-                    </View>
-                ))} */}
-            </View>
+            <Text
+                style={[
+                    styles.achievementsHeader,
+                    topThreeAchievements.length === 0 &&
+                        styles.achievementsError,
+                ]}
+            >
+                Achievements
+            </Text>
+            {topThreeAchievements.length === 0 && (
+                <OverviewCard
+                    text="Sorry, our system is currently under maintenance."
+                    isError={true}
+                />
+            )}
+
+            {topThreeAchievements.length > 0 && (
+                <View style={styles.achievementsContainer}>
+                    {topThreeAchievements.map(
+                        (badgeUrl: any, index: number) => (
+                            <View
+                                key={index}
+                                style={[
+                                    styles.achievementImageContainer,
+                                    index === 1 && styles.middleItemBorder,
+                                ]}
+                            >
+                                <Image
+                                    style={styles.achievementImage}
+                                    source={{uri: badgeUrl}}
+                                />
+                            </View>
+                        )
+                    )}
+                </View>
+            )}
         </View>
     );
 };
@@ -106,6 +100,9 @@ const styles = StyleSheet.create({
         width: '100%',
         aspectRatio: 1,
         resizeMode: 'contain',
+    },
+    achievementsError: {
+        marginBottom: 10,
     },
 });
 

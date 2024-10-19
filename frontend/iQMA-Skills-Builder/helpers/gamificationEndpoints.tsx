@@ -6,6 +6,6 @@ export const getBadges = async (userID: string) => {
         return badges;
     } catch (error) {
         console.error('Error fetching badges:', error);
-        return "No badges found";
+        return [];
     }
 }
