@@ -35,12 +35,21 @@ export async function getTop5Accounts(userID: string) {
 			};
 		});
 
-		// Filter accounts with rank <= 5 or userID = userID
-		const filteredData = rankedData
-			.filter((record) => record.rank <= 5 || record.userID === userID)
+		const userRank = rankedData
+			.filter((record) => record.userID === userID)
 			.map(({ userID, ...rest }) => rest);
 
-		return filteredData;
+		// Filter accounts with rank <= 5 or userID = userID
+		const filteredData = rankedData
+			.filter((record) => record.rank <= 5)
+			.map(({ userID, ...rest }) => rest);
+
+		return {
+			user: {
+				...userRank[0],
+			},
+		 	top5: filteredData
+		};
 	}
 }
 
@@ -76,8 +85,6 @@ export async function getGamificationData(userID: string) {
 
 export async function getBadges(userID: string) {
 
-	const completedUnit = await resultService.getNoOfCompletedUnit(userID);
-
 	const { data: storageBadges, error } = await supabase.storage
 		.from("badges")
 		.list();
@@ -92,7 +99,6 @@ export async function getBadges(userID: string) {
 		throw new Error("Badge Not Found");
 	}
 
-
 	let badges = [];
 	
 	const totalSection = await sectionService.getAllSections();
@@ -101,6 +107,15 @@ export async function getBadges(userID: string) {
 
 		const section = totalSection[i];
 		let unitBadges = [];
+
+		const { data: sectionBadges, error } = await supabase.storage
+			.from(`badges`)
+			.list(section.sectionID);
+
+		if (error) {
+			console.error(error);
+			throw error;
+		}
 
 		const totalUnit = await unitService.getAllUnitsBySection(
 			section.sectionID
@@ -126,7 +141,7 @@ export async function getBadges(userID: string) {
 			}
 		}
 		
-		const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+		const withoutBadge = Math.max(0, completedUnit - sectionBadges.length);
 		const minBadges = completedUnit - withoutBadge;
 
 		for (let i = 0; i < withoutBadge; i++) {
@@ -168,6 +183,46 @@ export async function getBadges(userID: string) {
         
 	}
 	return badges;
+}
+
+export async function getLatestBadge(sectionID: string, unitID: string) {
+
+    const { data: storageBadges, error } = await supabase.storage
+        .from(`badges`)
+        .list(sectionID);
+
+    if (error) {
+        console.error(error);
+        throw error;
+	}
+	
+	const completedUnit = unitID.replace(/\D/g, '').replace(/^0+/, '');
+
+	const unitDetails = await unitService.getUnitDetailsBySectionAndUnit({ sectionID, unitID });
+
+    if (storageBadges.length === 0 || parseInt(completedUnit) > storageBadges.length) {
+        const { data: publicUrlData } = await supabase.storage
+            .from("badges")
+            .getPublicUrl(`placeholder.png`);
+
+        if (publicUrlData) {
+            return {
+                unitName: unitDetails.unitName,
+                badgeUrl: publicUrlData.publicUrl,
+            };
+        }
+    }
+
+    const { data: publicUrlData } = await supabase.storage
+        .from("badges")
+        .getPublicUrl(`${sectionID}/unit${completedUnit}.png`);
+
+    if (publicUrlData) {
+        return {
+            unitName: unitDetails.unitName,
+            badgeUrl: publicUrlData.publicUrl,
+        };
+    }
 }
 
 /* UPDATE */

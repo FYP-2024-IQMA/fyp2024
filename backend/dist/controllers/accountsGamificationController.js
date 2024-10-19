@@ -35,7 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStreaksFromUnit = exports.updateStreaksFromLogin = exports.updatePoints = exports.getBadges = exports.getGamificationData = exports.getTop5Accounts = void 0;
+exports.updateStreaksFromUnit = exports.updateStreaksFromLogin = exports.updatePoints = exports.getLatestBadge = exports.getBadges = exports.getGamificationData = exports.getTop5Accounts = void 0;
 const accountsGamificationService = __importStar(require("../services/accountsGamificationService"));
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 /* READ */
@@ -78,6 +78,19 @@ const getBadges = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getBadges = getBadges;
+const getLatestBadge = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const badges = yield accountsGamificationService.getLatestBadge(req.params.sectionid, req.params.unitid);
+        res.status(200).json(badges);
+    }
+    catch (error) {
+        const errorResponse = (0, errorHandling_1.default)(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+});
+exports.getLatestBadge = getLatestBadge;
 /* UPDATE */
 const updatePoints = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { userID, points } = req.body;
