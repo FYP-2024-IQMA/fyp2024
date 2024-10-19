@@ -178,14 +178,16 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
         );
         if (response) {
             // Add the chatbot response to the chat
-            const botReply = {text: response.content, isUser: false};
+            // use response.content if using /generate
+            // use response.output if using /langchain
+            const botReply = {text: response.output, isUser: false};
             const updatedMessages = [...newMessages, botReply];
             setMessages(updatedMessages);
             // Save the chat history
 
             const queryPair = [
                 {role: 'user', content: message},
-                {role: 'assistant', content: response.content},
+                {role: 'assistant', content: response.output},
             ];
 
             // chatInputFunctions.saveChatHistory(

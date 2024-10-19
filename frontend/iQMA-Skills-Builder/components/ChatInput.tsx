@@ -18,7 +18,35 @@ interface ChatInputProps {
     handleSend: (message: string) => void;
 }
 
-// Getting response from chatbot -> to add examples and summarise
+// Getting response from /generate-> to add examples and summarise
+// export const getChatbotResponse = async (
+//     role: string,
+//     message: string,
+//     history?: Array<{role: string; content: string}>
+// ) => {
+//     try {
+//         const response = await fetch(
+//             `${process.env.EXPO_PUBLIC_CHATBOT_URL}/generate`,
+//             {
+//                 method: 'POST',
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                 },
+//                 body: JSON.stringify({
+//                     role: role,
+//                     content: message,
+//                     ...(history && {history}),
+//                 }),
+//             }
+//         );
+//         const data = await response.json();
+//         return data;
+//     } catch (error) {
+//         console.error('Error while getting chatbot response:', error);
+//     }
+// };
+
+// Getting response from /langchain -> to add examples and summarise
 export const getChatbotResponse = async (
     role: string,
     message: string,
@@ -26,7 +54,7 @@ export const getChatbotResponse = async (
 ) => {
     try {
         const response = await fetch(
-            `${process.env.EXPO_PUBLIC_CHATBOT_URL}/generate`,
+            `${process.env.EXPO_PUBLIC_CHATBOT_URL}/langchain`,
             {
                 method: 'POST',
                 headers: {
