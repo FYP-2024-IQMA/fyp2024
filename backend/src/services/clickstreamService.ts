@@ -1,12 +1,6 @@
 import { Clickstream } from "../models/clickstreamModel";
 import amqp from "amqplib";
-import AWS from "aws-sdk";
-
-const s3 = new AWS.S3({
-    region: 'ap-southeast-1',
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
-});
+import { s3 } from "../config/awsConfig";
 
 async function uploadToS3(queue: string, newClickstream: Clickstream) {
     const key = `${queue}/${newClickstream.userID}.json`;

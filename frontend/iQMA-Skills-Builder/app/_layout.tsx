@@ -2,22 +2,24 @@ import 'react-native-gesture-handler';
 
 import * as Progress from 'react-native-progress';
 
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Button, StyleSheet, Text, View} from 'react-native';
 import {Auth0Provider, useAuth0} from 'react-native-auth0';
 import {useEffect, useState} from 'react';
 
 import {AuthProvider} from '@/context/AuthContext';
 import ChatbotDrawer from '../components/ChatbotDrawer';
+import {Colors} from '@/constants/Colors';
 import HomeScreen from './screens/Home';
 import {Ionicons} from '@expo/vector-icons';
 import {MaterialIcons} from '@expo/vector-icons';
 import ProfilePage from './screens/ProfilePage';
-import {Stack} from 'expo-router';
+import ProgressBar from '@/components/ProgressBar';
+import {Stack, useNavigation} from 'expo-router';
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
 import {useDrawerStatus} from '@react-navigation/drawer';
-import ProgressBar from '@/components/ProgressBar';
+import EditProfile from './EditProfile';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,10 +27,10 @@ const Tab = createBottomTabNavigator();
 const AppTabs: React.FC = () => {
     const colorScheme = useColorScheme();
     const tabBarOptions = {
-        activeTintColor: '#FFFFFF',
+        activeTintColor: Colors.light.background,
         inactiveTintColor: '#BBBBBB',
         style: {
-            backgroundColor: '#7654F2',
+            backgroundColor: Colors.default.purple500,
         },
     };
 
@@ -37,7 +39,7 @@ const AppTabs: React.FC = () => {
         <Tab.Navigator
             screenOptions={({route}) => ({
                 headerTitleAlign: 'center',
-                headerStyle: {backgroundColor: '#B199FF'},
+                headerStyle: {backgroundColor: Colors.default.purple100},
                 tabBarActiveTintColor: tabBarOptions.activeTintColor,
                 tabBarInactiveTintColor: tabBarOptions.inactiveTintColor,
                 tabBarStyle: tabBarOptions.style,
@@ -177,6 +179,16 @@ export default function RootLayout() {
                     <Stack.Screen
                         name="(tabs)"
                         options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                        name="EditProfile"
+                        options={{
+                            headerTitle: "Edit Profile",
+                            headerStyle: {
+                                backgroundColor: Colors.default.purple100,
+                            },
+                            headerTintColor: Colors.light.background
+                        }}
                     />
                 </Stack>
             </AuthProvider>

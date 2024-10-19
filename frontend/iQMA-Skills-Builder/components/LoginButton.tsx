@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
 import {useContext} from 'react';
 
 const screenWidth = Dimensions.get('window').width;
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#7654F2',
+        backgroundColor: Colors.default.purple500,
         height: 40,
     },
 });

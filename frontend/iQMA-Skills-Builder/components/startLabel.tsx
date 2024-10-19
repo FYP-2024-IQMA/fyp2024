@@ -1,5 +1,6 @@
 import {StyleSheet, Text, View, ViewStyle} from 'react-native';
 
+import {Colors} from '@/constants/Colors';
 import React from 'react';
 
 interface StartLabelProps {

@@ -1,8 +1,10 @@
-import {Image, StyleSheet, Text, View, Modal} from 'react-native';
-import React, {useState} from 'react';
-import {CustomButton} from '@/components/CustomButton';
+import {Image, Modal, StyleSheet, Text, View} from 'react-native';
 import {Option, Question} from '@/constants/Quiz';
+import React, {useState} from 'react';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
 
 export const QuizCard: React.FC<{
@@ -55,20 +57,37 @@ export const QuizCard: React.FC<{
 
     const sendMessage = async () => {
         const userID = await AsyncStorage.getItem('userID');
-        try {
-            const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
-                {
-                    userID: userID,
-                    eventType: 'attemptsTaken',
-                    event: `quizID ${quizID}, questionNo ${questionNo}`,
-                    timestamp: new Date().toISOString(),
-                    attempts: count,
-                }
-            );
-            console.log(response.data);
-        } catch (e) {
-            console.error(e);
+        let age = await AsyncStorage.getItem('age');
+        const section = await AsyncStorage.getItem('section');
+
+        if (age === null) {
+            try {
+                const ageResponse = await axios.get(
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${userID}`
+                );
+                await AsyncStorage.setItem('age', ageResponse.data['age']);
+            } catch (e) {
+                console.error(e)
+            }
+        }
+        else {
+            try {
+                const response = await axios.post(
+                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
+                    {
+                        userID: userID,
+                        age: age,
+                        eventType: 'attemptsTaken',
+                        section: section,
+                        event: `quizID ${quizID}, questionNo ${questionNo}`,
+                        timestamp: new Date().toISOString(),
+                        attempts: count,
+                    }
+                );
+                console.log(response.data);
+            } catch (e) {
+                console.error(e);
+            }
         }
     };
 
@@ -78,7 +97,7 @@ export const QuizCard: React.FC<{
                 style={{
                     fontSize: 16,
                     fontWeight: 'bold',
-                    color: '#4143A3',
+                    color: Colors.header.color,
                     marginBottom: 10,
                 }}
             >
@@ -89,66 +108,102 @@ export const QuizCard: React.FC<{
                 <CustomButton
                     label={option1.option}
                     labelColor={
-                        selectedButton === option1 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option1
+                            ? Colors.light.background
+                            : Colors.default.optionText
                     }
                     backgroundColor={
-                        selectedButton === option1 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option1
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option1 ? '#7654F2' : '#5C5776'
+                        selectedButton === option1
+                            ? Colors.default.purple500
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option1', option1)}
                     capitalise={false}
+                    isOption={true}
                 />
                 <CustomButton
                     label={option2.option}
                     labelColor={
-                        selectedButton === option2 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option2
+                            ? Colors.light.background
+                            : Colors.default.optionText
                     }
                     backgroundColor={
-                        selectedButton === option2 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option2
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option2 ? '#7654F2' : '#5C5776'
+                        selectedButton === option2
+                            ? Colors.default.purple500
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option2', option2)}
                     capitalise={false}
+                    isOption={true}
                 />
                 <CustomButton
                     label={option3.option}
                     labelColor={
-                        selectedButton === option3 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option3
+                            ? Colors.light.background
+                            : Colors.default.optionText
                     }
                     backgroundColor={
-                        selectedButton === option3 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option3
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option3 ? '#7654F2' : '#5C5776'
+                        selectedButton === option3
+                            ? Colors.default.purple500
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option3', option3)}
                     capitalise={false}
+                    isOption={true}
                 />
                 <CustomButton
                     label={option4.option}
                     labelColor={
-                        selectedButton === option4 ? '#FFFFFF' : '#5C5776'
+                        selectedButton === option4
+                            ? Colors.light.background
+                            : Colors.default.optionText
                     }
                     backgroundColor={
-                        selectedButton === option4 ? '#7654F2' : '#FFFFFF'
+                        selectedButton === option4
+                            ? Colors.default.purple500
+                            : Colors.light.background
                     }
                     borderColor={
-                        selectedButton === option4 ? '#7654F2' : '#5C5776'
+                        selectedButton === option4
+                            ? Colors.default.purple500
+                            : Colors.default.optionText
                     }
                     onPressHandler={() => handleButtonPress('option4', option4)}
                     capitalise={false}
+                    isOption={true}
                 />
 
                 <View style={{marginTop: 50, marginBottom: 50}}>
                     <CustomButton
                         label="check"
                         labelColor="#18113C"
-                        backgroundColor={selectedButton ? '#8CE5CB' : '#FFFFFF'}
-                        borderColor={selectedButton ? '#8CE5CB' : '#5C5776'}
+                        backgroundColor={
+                            selectedButton
+                                ? Colors.default.green
+                                : Colors.light.background
+                        }
+                        borderColor={
+                            selectedButton
+                                ? Colors.default.green
+                                : Colors.default.optionText
+                        }
                         onPressHandler={handleCheck}
                     />
                 </View>
@@ -181,23 +236,35 @@ export const QuizCard: React.FC<{
                                 style={{
                                     fontWeight: 'bold',
                                     fontSize: 16,
-                                    color: isCorrect ? '#1ACB98' : '#E66A63',
+                                    color: isCorrect
+                                        ? '#1ACB98'
+                                        : Colors.default.red,
                                 }}
                             >
                                 {isCorrect ? 'Correct' : 'Incorrect'}
                             </Text>
                         </View>
-                        <Text style={{marginBottom: 10}}>
+                        <Text style={{marginBottom: 10, fontWeight: 'bold'}}>
                             {selectedButton ? selectedButton!.explanation : ''}
                         </Text>
                         <View style={{alignItems: 'center'}}>
                             <CustomButton
                                 label={isCorrect ? 'continue' : 'try again'}
-                                labelColor={isCorrect ? '#18113C' : '#FFFFFF'}
-                                backgroundColor={
-                                    isCorrect ? '#8CE5CB' : '#E66A63'
+                                labelColor={
+                                    isCorrect
+                                        ? '#18113C'
+                                        : Colors.light.background
                                 }
-                                borderColor={isCorrect ? '#8CE5CB' : '#E66A63'}
+                                backgroundColor={
+                                    isCorrect
+                                        ? Colors.default.green
+                                        : Colors.default.red
+                                }
+                                borderColor={
+                                    isCorrect
+                                        ? Colors.default.green
+                                        : Colors.default.red
+                                }
                                 onPressHandler={handleAnswer}
                             />
                         </View>
@@ -214,7 +281,8 @@ const styles = StyleSheet.create({
         bottom: 0,
         left: 0,
         right: 0,
-        backgroundColor: '#D9D9D9',
+        // backgroundColor: '#D9D9D9',
+        backgroundColor: '#F0F0F0',
         paddingTop: 20,
         paddingBottom: 20,
     },

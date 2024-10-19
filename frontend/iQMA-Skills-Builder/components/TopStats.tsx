@@ -3,6 +3,7 @@
 import {Image, StyleSheet, Text, View} from 'react-native';
 
 import CircularProgress from './CircularProgress';
+import {Colors} from '@/constants/Colors';
 import React from 'react';
 
 interface TopStatsProps {
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 2,
-        borderColor: '#B199FF',
+        borderColor: Colors.default.purple100,
         marginHorizontal: 5,
         height: 52,
         width: 120,

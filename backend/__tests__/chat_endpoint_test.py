@@ -17,6 +17,10 @@ logger = logging.getLogger(__name__)
 logger.warning("Logging is active.")
 client = TestClient(app)
 
+#######################################################
+# OPENAI API TESTS
+#######################################################
+
 def test_generate_text_no_history():
     # Test without history
     response = client.post("/generate", json={"role": "user", 
@@ -51,10 +55,40 @@ def test_generate_text_invalid_prompt():
     logger.info(f"Response: {response.json()}")
     assert response.status_code == 422
 
+#######################################################
+# LANGCHAIN TESTS
+#######################################################
+
 def test_langchain_endpoint():
+    # Test langchain endpoint
     response = client.post("/langchain", json={"role": "user", 
                                               "content": "Reply with '42'. Do not add any other text. Stop generating after you have replied with '42'."
                                               })
     logger.info(f"Response: {response.json()}")
     assert response.status_code == 200, "Langchain endpoint is faulty."
-    assert "42" in response.json()["content"], "ChatGPT is not generating the correct response."
+    assert "42" in response.json()["content"]["final_answer"]["output"], "Langchain is not generating the correct response."
+
+def test_langchain_endpoint_with_history():
+    # Test with history
+    response = client.post("/langchain", json={"role": "assistant", 
+                                              "content": "Hello, how can I help you today?", 
+                                              "history": [{
+                                                  "role": "user", 
+                                                  "content": "Reply with '42'. Do not add any other text. Stop generating after you have replied with '42'."
+                                                  }]
+                                            })
+    logger.info(f"Response: {response.json()}")
+    assert response.status_code == 200, "Langchain endpoint is faulty."
+    assert "42" in response.json()["content"]["final_answer"]["output"], "Langchain is not generating the correct response."
+
+def test_langchain_endpoint_invalid_role():
+    # Test with missing role
+    response = client.post("/langchain", json={"prompt": "Hello, how can I help you today?"})
+    logger.info(f"Response: {response.json()}")
+    assert response.status_code == 422
+
+def test_langchain_endpoint_invalid_prompt():
+    # Test with missing prompt
+    response = client.post("/langchain", json={"role": "user"})
+    logger.info(f"Response: {response.json()}")
+    assert response.status_code == 422
