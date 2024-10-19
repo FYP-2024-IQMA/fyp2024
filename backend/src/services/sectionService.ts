@@ -2,6 +2,19 @@ import supabase from "../config/supabaseConfig";
 import * as videoService from "./videoService"
 
 
+const getSectionDuration = async (sectionID: string) => {
+    const { data, error } = await supabase
+        .from("lesson")
+        .select("lessonDuration")
+        .eq("sectionID", sectionID);
+    
+    if (error) {
+        console.error(error);
+        throw error;
+    }
+    return Math.ceil(data.reduce((acc: number, curr: any) => acc + curr.lessonDuration, 0));
+};
+
 /* READ */
 export async function getAllSections() {
     const { data, error } = await supabase
@@ -12,6 +25,17 @@ export async function getAllSections() {
         console.error(error);
         throw error;
     }
+
+    const transformedData = await Promise.all(
+        data.map(async (section: any) => {
+            const sectionDuration = await getSectionDuration(section.sectionID);
+            return {
+                ...section,
+                sectionDuration,
+            };
+        })
+    );
+
     // else {
     // 	const formattedData = data.map((section) => {
     // 		if (section.introductionURL) {
@@ -26,7 +50,7 @@ export async function getAllSections() {
     // 	});
     // 	return formattedData;
     // };
-    return data;
+    return transformedData;
 }
 
 export async function getSectionDetails(sectionID: string) {

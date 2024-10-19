@@ -1,5 +1,7 @@
 const sectionService = require("../../dist/services/sectionService");
 const supabase = require("../../dist/config/supabaseConfig");
+const sinon = require("sinon");
+const __RewireAPI__ = require("../../dist/services/sectionService");
 
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
@@ -72,6 +74,12 @@ describe("getSectionDetails", () => {
 });
 
 describe("getAllSections", () => {
+
+    afterEach(() => {
+        __RewireAPI__.__ResetDependency__("getSectionDuration");
+    })
+
+
     const mockSections = [
         {
             sectionID: 'SEC0001',
@@ -91,9 +99,23 @@ describe("getAllSections", () => {
             .mockResolvedValue({ data: mockSections, error: null });
         supabase.from.mockReturnValue({ select: mockSelect });
 
+        const getSectionDurationSpy = sinon.stub().returns(10);
+        __RewireAPI__.__Rewire__("getSectionDuration", getSectionDurationSpy);
+
         const result = await sectionService.getAllSections();
 
-        expect(result).toEqual(mockSections);
+        const expectedResult = mockSections.map((section) => {
+            return {
+                ...section,
+                sectionDuration: 10
+            }
+        })
+
+        sinon.assert.calledTwice(getSectionDurationSpy);
+        sinon.assert.calledWith(getSectionDurationSpy, 'SEC0001');
+        sinon.assert.calledWith(getSectionDurationSpy, 'SEC0002');
+
+        expect(result).toEqual(expectedResult);
     });
 
     it("should throw an error and log the error when there is a database error", async () => {

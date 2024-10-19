@@ -16,6 +16,11 @@ router.get(
     resultController.checkIfCompletedQuiz
 );
 router.get(
+    "/checkifcompletedsection/:userid/:sectionid",
+    verifyToken,
+    resultController.checkIfCompletedSection
+);
+router.get(
 	"/getuserprogress/:userid/:sectionid?",
 	verifyToken,
 	resultController.getUserProgress

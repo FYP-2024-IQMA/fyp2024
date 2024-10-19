@@ -14,6 +14,7 @@ export const Colors = {
         color: '#4143A3',
         tint: tintColorLight,
         tabIconSelected: tintColorLight,
+        unFilled: "#D8D8D8"
     },
     overviewCard: {
         background: '#EAF1FF',

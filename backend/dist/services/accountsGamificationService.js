@@ -1,18 +1,18 @@
 "use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function (o, m, k, k2) {
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-        desc = { enumerable: true, get: function () { return m[k]; } };
+      desc = { enumerable: true, get: function() { return m[k]; } };
     }
     Object.defineProperty(o, k2, desc);
-}) : (function (o, m, k, k2) {
+}) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
 }));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function (o, v) {
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
     Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function (o, v) {
+}) : function(o, v) {
     o["default"] = v;
 });
 var __importStar = (this && this.__importStar) || function (mod) {
@@ -52,11 +52,13 @@ exports.getBadges = getBadges;
 exports.updatePoints = updatePoints;
 exports.updateStreaksFromUnit = updateStreaksFromUnit;
 exports.updateStreaksFromLogin = updateStreaksFromLogin;
+const resultService = __importStar(require("../services/resultService"));
+const unitService = __importStar(require("../services/unitService"));
+const sectionService = __importStar(require("../services/sectionService"));
 const accountsGamificationModel_1 = require("../models/accountsGamificationModel");
 const resultModel_1 = require("../models/resultModel");
 const resultService_1 = require("./resultService");
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
-const resultService = __importStar(require("../services/resultService"));
 /* READ */
 function getTop5Accounts(userID) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -87,9 +89,9 @@ function getTop5Accounts(userID) {
             const filteredData = rankedData
                 .filter((record) => record.rank <= 5 || record.userID === userID)
                 .map((_a) => {
-                    var { userID } = _a, rest = __rest(_a, ["userID"]);
-                    return rest;
-                });
+                var { userID } = _a, rest = __rest(_a, ["userID"]);
+                return rest;
+            });
             return filteredData;
         }
     });
@@ -117,7 +119,6 @@ function getGamificationData(userID) {
 function getBadges(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const completedUnit = yield resultService.getNoOfCompletedUnit(userID);
-        let badges = [];
         const { data: storageBadges, error } = yield supabaseConfig_1.default.storage
             .from("badges")
             .list();
@@ -128,26 +129,57 @@ function getBadges(userID) {
         if (storageBadges.length === 0) {
             throw new Error("Badge Not Found");
         }
-        const designed = storageBadges
-            .map((badge) => badge.name)
-            .filter((badge) => badge.includes("badge"));
-        const withoutBadge = Math.max(0, completedUnit - designed.length);
-        const minBadges = completedUnit - withoutBadge;
-        for (let i = 0; i < withoutBadge; i++) {
-            const { data: publicUrlData } = yield supabaseConfig_1.default.storage
-                .from("badges")
-                .getPublicUrl(`placeholder.png`);
-            if (publicUrlData) {
-                badges.push(publicUrlData.publicUrl);
+        let badges = [];
+        const totalSection = yield sectionService.getAllSections();
+        for (let i = totalSection.length - 1; i >= 0; i--) {
+            const section = totalSection[i];
+            let unitBadges = [];
+            const totalUnit = yield unitService.getAllUnitsBySection(section.sectionID);
+            const completedUnit = yield resultService.getUserProgress(userID, section.sectionID);
+            const lockedUnit = Math.max(totalUnit.length - completedUnit, 0);
+            for (let i = 0; i < lockedUnit; i++) {
+                const { data: publicUrlData } = yield supabaseConfig_1.default.storage
+                    .from("badges")
+                    .getPublicUrl(`locked.png`);
+                if (publicUrlData) {
+                    unitBadges.push({
+                        unitName: "LOCKED",
+                        badgeUrl: publicUrlData.publicUrl
+                    });
+                }
             }
-        }
-        for (let i = minBadges; i > 0; i--) {
-            const { data: publicUrlData } = yield supabaseConfig_1.default.storage
-                .from("badges")
-                .getPublicUrl(`badge${i}.png`);
-            if (publicUrlData) {
-                badges.push(publicUrlData.publicUrl);
+            const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+            const minBadges = completedUnit - withoutBadge;
+            for (let i = 0; i < withoutBadge; i++) {
+                const { data: publicUrlData } = yield supabaseConfig_1.default.storage
+                    .from("badges")
+                    .getPublicUrl(`placeholder.png`);
+                if (publicUrlData) {
+                    unitBadges.push({
+                        unitName: "PLACEHOLDER",
+                        badgeUrl: publicUrlData.publicUrl,
+                    });
+                }
             }
+            for (let i = minBadges; i > 0; i--) {
+                const { data: publicUrlData } = yield supabaseConfig_1.default.storage
+                    .from("badges")
+                    .getPublicUrl(`${section.sectionID}/unit${i}.png`);
+                if (publicUrlData) {
+                    unitBadges.push({
+                        unitName: "UNIT",
+                        badgeUrl: publicUrlData.publicUrl,
+                    });
+                }
+            }
+            for (let i = totalUnit.length - 1; i >= 0; i--) {
+                const unit = totalUnit[i];
+                unitBadges[i].unitName = unit.unitName;
+            }
+            badges.push({
+                sectionID: section.sectionID,
+                badges: unitBadges,
+            });
         }
         return badges;
     });
@@ -159,8 +191,8 @@ function updatePoints(userID, points) {
         const { status, statusText, error } = yield supabaseConfig_1.default
             .from("accountsgamification")
             .update({
-                points: accountGamificationData.getPoints() + points,
-            })
+            points: accountGamificationData.getPoints() + points,
+        })
             .eq("userID", userID);
         if (error) {
             console.error(error);
@@ -224,8 +256,8 @@ function updateStreaksFromUnit(userID, quizID) {
                 const { status, statusText, error } = yield supabaseConfig_1.default
                     .from("accountsgamification")
                     .update({
-                        streaks: currentStreak,
-                    })
+                    streaks: currentStreak,
+                })
                     .eq("userID", userID);
             }
         }
@@ -263,8 +295,8 @@ function updateStreaksFromLogin(userID) {
                 const { status, statusText, error } = yield supabaseConfig_1.default
                     .from("accountsgamification")
                     .update({
-                        streaks: currentStreak,
-                    })
+                    streaks: currentStreak,
+                })
                     .eq("userID", userID);
             }
         }

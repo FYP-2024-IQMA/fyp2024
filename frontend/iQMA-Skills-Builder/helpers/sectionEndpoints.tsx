@@ -20,6 +20,7 @@ export const getAllSectionDetails = async () => {
         // sectionDetails.push({
         //     sectionID: 'SEC0002',
         //     sectionName: 'Decision Making',
+        //     sectionDuration: '160',
         // });
         // console.log(sectionDetails);
         return sectionDetails;

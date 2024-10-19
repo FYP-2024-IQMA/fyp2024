@@ -2,7 +2,7 @@ import 'react-native-gesture-handler';
 
 import * as Progress from 'react-native-progress';
 
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, Button, StyleSheet, Text, View} from 'react-native';
 import {Auth0Provider, useAuth0} from 'react-native-auth0';
 import {useEffect, useState} from 'react';
 
@@ -14,11 +14,12 @@ import {Ionicons} from '@expo/vector-icons';
 import {MaterialIcons} from '@expo/vector-icons';
 import ProfilePage from './screens/ProfilePage';
 import ProgressBar from '@/components/ProgressBar';
-import {Stack} from 'expo-router';
+import {Stack, useNavigation} from 'expo-router';
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
 import {useDrawerStatus} from '@react-navigation/drawer';
+import EditProfile from './EditProfile';
 
 const Tab = createBottomTabNavigator();
 
@@ -178,6 +179,16 @@ export default function RootLayout() {
                     <Stack.Screen
                         name="(tabs)"
                         options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                        name="EditProfile"
+                        options={{
+                            headerTitle: "Edit Profile",
+                            headerStyle: {
+                                backgroundColor: Colors.default.purple100,
+                            },
+                            headerTintColor: Colors.light.background
+                        }}
                     />
                 </Stack>
             </AuthProvider>
