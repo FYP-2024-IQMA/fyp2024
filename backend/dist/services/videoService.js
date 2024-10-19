@@ -35,7 +35,7 @@ function retrieveVideoFromS3(sectionID, lessonID) {
         }
         catch (error) {
             if (error.code === "NotFound" || error.code === "NoSuchKey") {
-                console.error("The specified file does not exist.");
+                // console.log("The specified file does not exist.", sectionID, lessonID);
             }
             else {
                 console.error("An error occurred:", error);
