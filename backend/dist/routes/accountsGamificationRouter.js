@@ -34,6 +34,7 @@ const router = (0, express_1.Router)();
 router.get("/gamificationdata/:userid", authMiddleware_1.default, accountsGamificationController.getGamificationData);
 router.get("/leaderboard/:userid", authMiddleware_1.default, accountsGamificationController.getTop5Accounts);
 router.get("/badges/:userid", authMiddleware_1.default, accountsGamificationController.getBadges);
+router.get("/getlatestbadge/:sectionid/:unitid", authMiddleware_1.default, accountsGamificationController.getLatestBadge);
 /* UPDATE */
 router.patch("/updatepoints", authMiddleware_1.default, accountsGamificationController.updatePoints);
 router.patch("/updateloginstreaks/:userid", authMiddleware_1.default, accountsGamificationController.updateStreaksFromLogin);

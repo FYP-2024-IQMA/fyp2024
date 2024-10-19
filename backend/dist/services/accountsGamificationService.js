@@ -49,6 +49,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTop5Accounts = getTop5Accounts;
 exports.getGamificationData = getGamificationData;
 exports.getBadges = getBadges;
+exports.getLatestBadge = getLatestBadge;
 exports.updatePoints = updatePoints;
 exports.updateStreaksFromUnit = updateStreaksFromUnit;
 exports.updateStreaksFromLogin = updateStreaksFromLogin;
@@ -85,14 +86,23 @@ function getTop5Accounts(userID) {
                     userID: record.accounts.userID,
                 };
             });
-            // Filter accounts with rank <= 5 or userID = userID
-            const filteredData = rankedData
-                .filter((record) => record.rank <= 5 || record.userID === userID)
+            const userRank = rankedData
+                .filter((record) => record.userID === userID)
                 .map((_a) => {
                 var { userID } = _a, rest = __rest(_a, ["userID"]);
                 return rest;
             });
-            return filteredData;
+            // Filter accounts with rank <= 5 or userID = userID
+            const filteredData = rankedData
+                .filter((record) => record.rank <= 5)
+                .map((_a) => {
+                var { userID } = _a, rest = __rest(_a, ["userID"]);
+                return rest;
+            });
+            return {
+                user: Object.assign({}, userRank[0]),
+                top5: filteredData
+            };
         }
     });
 }
@@ -118,7 +128,6 @@ function getGamificationData(userID) {
 }
 function getBadges(userID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const completedUnit = yield resultService.getNoOfCompletedUnit(userID);
         const { data: storageBadges, error } = yield supabaseConfig_1.default.storage
             .from("badges")
             .list();
@@ -134,6 +143,13 @@ function getBadges(userID) {
         for (let i = totalSection.length - 1; i >= 0; i--) {
             const section = totalSection[i];
             let unitBadges = [];
+            const { data: sectionBadges, error } = yield supabaseConfig_1.default.storage
+                .from(`badges`)
+                .list(section.sectionID);
+            if (error) {
+                console.error(error);
+                throw error;
+            }
             const totalUnit = yield unitService.getAllUnitsBySection(section.sectionID);
             const completedUnit = yield resultService.getUserProgress(userID, section.sectionID);
             const lockedUnit = Math.max(totalUnit.length - completedUnit, 0);
@@ -148,7 +164,7 @@ function getBadges(userID) {
                     });
                 }
             }
-            const withoutBadge = Math.max(0, completedUnit - storageBadges.length);
+            const withoutBadge = Math.max(0, completedUnit - sectionBadges.length);
             const minBadges = completedUnit - withoutBadge;
             for (let i = 0; i < withoutBadge; i++) {
                 const { data: publicUrlData } = yield supabaseConfig_1.default.storage
@@ -182,6 +198,39 @@ function getBadges(userID) {
             });
         }
         return badges;
+    });
+}
+function getLatestBadge(sectionID, unitID) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const { data: storageBadges, error } = yield supabaseConfig_1.default.storage
+            .from(`badges`)
+            .list(sectionID);
+        if (error) {
+            console.error(error);
+            throw error;
+        }
+        const completedUnit = unitID.replace(/\D/g, '').replace(/^0+/, '');
+        const unitDetails = yield unitService.getUnitDetailsBySectionAndUnit({ sectionID, unitID });
+        if (storageBadges.length === 0 || parseInt(completedUnit) > storageBadges.length) {
+            const { data: publicUrlData } = yield supabaseConfig_1.default.storage
+                .from("badges")
+                .getPublicUrl(`placeholder.png`);
+            if (publicUrlData) {
+                return {
+                    unitName: unitDetails.unitName,
+                    badgeUrl: publicUrlData.publicUrl,
+                };
+            }
+        }
+        const { data: publicUrlData } = yield supabaseConfig_1.default.storage
+            .from("badges")
+            .getPublicUrl(`${sectionID}/unit${completedUnit}.png`);
+        if (publicUrlData) {
+            return {
+                unitName: unitDetails.unitName,
+                badgeUrl: publicUrlData.publicUrl,
+            };
+        }
     });
 }
 /* UPDATE */

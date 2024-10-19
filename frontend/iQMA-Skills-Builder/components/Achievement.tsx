@@ -19,7 +19,7 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
     let topThreeAchievements: any[] = [];
 
     if (achievements.length !== 0) {
-        let topThreeAchievements = achievements[0]['badges'].slice(0, 3);
+        topThreeAchievements = achievements[0]['badges'].slice(0, 3);
 
         topThreeAchievements = topThreeAchievements.map(
             (badge: any) => badge.badgeUrl

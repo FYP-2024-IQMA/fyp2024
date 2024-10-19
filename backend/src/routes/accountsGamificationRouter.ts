@@ -22,6 +22,12 @@ router.get(
 	accountsGamificationController.getBadges
 );
 
+router.get(
+    "/getlatestbadge/:sectionid/:unitid",
+    verifyToken,
+    accountsGamificationController.getLatestBadge
+);
+
 /* UPDATE */
 router.patch(
 	"/updatepoints",
