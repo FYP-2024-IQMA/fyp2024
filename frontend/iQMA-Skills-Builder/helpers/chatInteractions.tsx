@@ -42,3 +42,43 @@ export const chatInteractions = async (
         }
     }
 };
+
+export const chatResponseTime = async (
+    section: string,
+    unit: string,
+    duration: number
+) => {
+    const userID = await AsyncStorage.getItem('userID');
+    let age = await AsyncStorage.getItem('age');
+
+    if (age === null) {
+        try {
+            const ageResponse = await axios.get(
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${userID}`
+            );
+            await AsyncStorage.setItem('age', ageResponse.data['age']);
+        } catch (e) {
+            console.error(e);
+        }
+    } else {
+        try {
+            const response = await axios.post(
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
+                {
+                    userID: userID,
+                    age: age,
+                    eventType: 'chatResponseTime',
+                    section: section,
+                    event: `Section: ${section}, Unit: ${unit} Chat Response Time`,
+                    timestamp: new Date().toISOString(),
+                    duration: duration,
+                }
+            );
+            console.log(response.data);
+            console.log('chat response time event type');
+            console.log('added chat response time:', duration);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
