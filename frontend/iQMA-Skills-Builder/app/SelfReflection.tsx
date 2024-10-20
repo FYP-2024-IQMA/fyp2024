@@ -120,9 +120,7 @@ export default function SelfReflection() {
         }
         // })();
 
-        if (
-            parseInt(currentUnit as string) === parseInt(totalUnits as string)
-        ) {
+        if (parseInt(unitNumber as string) === parseInt(totalUnits as string)) {
             // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
             router.push({
                 pathname: 'AssessmentIntroduction',
