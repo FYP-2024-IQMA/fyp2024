@@ -20,6 +20,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         router.replace('Home');
     };
 
+    // progress =
+    //     !isNaN(progress) && progress >= 0 && progress <= 1 ? progress : 0;
+
     return (
         <View style={styles.container}>
             <Progress.Bar

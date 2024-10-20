@@ -67,10 +67,9 @@ export const QuizCard: React.FC<{
                 );
                 await AsyncStorage.setItem('age', ageResponse.data['age']);
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
-        }
-        else {
+        } else {
             try {
                 const response = await axios.post(
                     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
@@ -85,6 +84,7 @@ export const QuizCard: React.FC<{
                     }
                 );
                 console.log(response.data);
+                console.log('send attempts taken');
             } catch (e) {
                 console.error(e);
             }

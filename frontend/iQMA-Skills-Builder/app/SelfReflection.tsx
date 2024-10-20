@@ -1,3 +1,4 @@
+import * as chatInteractionsEndpoints from '@/helpers/chatInteractions';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
@@ -15,7 +16,7 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -38,7 +39,9 @@ export default function SelfReflection() {
         setChatHistoryLength(length);
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Self Reflection`);
+    const {startTimer, stopTimer} = useTimer(
+        `${sectionID} ${unitID} Self Reflection`
+    );
 
     useLayoutEffect(() => {
         const progress =
@@ -57,6 +60,17 @@ export default function SelfReflection() {
         if (sectionID && unitID) {
             (async () => {
                 try {
+                    console.log({
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        isFinal: 'true',
+                        currentProgress: (
+                            parseInt(currentProgress as string) + 1
+                        ).toString(),
+                        totalProgress,
+                    });
                     const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,
                         unitID as string
@@ -78,11 +92,18 @@ export default function SelfReflection() {
     }, [sectionID, unitID]);
 
     const handlePress = async () => {
-        // (async () => {
         try {
             const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(
                 currentUser.sub,
                 parseInt(quizID as string)
+            );
+
+            // add number of interactions to clickstream
+            const numberOfInteractions = (chatHistoryLength - 1) / 2;
+            await chatInteractionsEndpoints.chatInteractions(
+                sectionID as string,
+                unitID as string,
+                numberOfInteractions
             );
 
             if (!ifCompleted) {
