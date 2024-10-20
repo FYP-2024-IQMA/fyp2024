@@ -40,9 +40,10 @@ const clickstreamService = __importStar(require("../services/clickstreamService"
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
 const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const messageBody = req.body;
+    console.log(messageBody);
     try {
         const message = yield clickstreamService.sendMessage(messageBody);
-        res.status(200).json({ message: 'Published message successfully' });
+        res.status(200).json({ message: "Published message successfully" });
     }
     catch (error) {
         const errorResponse = (0, errorHandling_1.default)(error);

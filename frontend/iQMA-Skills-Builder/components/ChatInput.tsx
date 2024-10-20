@@ -72,6 +72,7 @@ export const saveChatHistory = async (
         });
 
         const data = await response.json();
+        console.log('data:', data);
 
         console.log('Status: ', data.status);
     } catch (error) {

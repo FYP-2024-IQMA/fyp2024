@@ -1,4 +1,5 @@
-import {useState, useRef} from 'react';
+import {useRef, useState} from 'react';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -13,7 +14,7 @@ export const useTimer = (event: string) => {
         timerRef.current = setInterval(() => {
             setSeconds((prevSeconds) => prevSeconds + 1);
         }, 1000);
-    }; 
+    };
 
     const stopTimer = async () => {
         if (timerRef.current) {
@@ -32,10 +33,9 @@ export const useTimer = (event: string) => {
                 );
                 await AsyncStorage.setItem('age', ageResponse.data['age']);
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
-        }
-        else {
+        } else {
             try {
                 const response = await axios.post(
                     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
@@ -50,6 +50,7 @@ export const useTimer = (event: string) => {
                     }
                 );
                 console.log(response.data);
+                console.log('send time taken event type');
             } catch (e) {
                 console.error(e);
             }
@@ -57,5 +58,5 @@ export const useTimer = (event: string) => {
         setSeconds(0);
     };
 
-    return { startTimer, stopTimer }
-}
+    return {startTimer, stopTimer};
+};
