@@ -67,8 +67,8 @@ export default function Courses() {
         <ScrollView style={globalStyles.container}>
             <View style={styles.container}>
                         <View style={styles.sectionContainer}>
-                        {mock.length > 0 ? (
-                            mock
+                        {courses.length > 0 ? (
+                            courses
                                 .map((course, index) => (
                                     <View
                                         key={index}
