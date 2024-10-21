@@ -96,10 +96,6 @@ export default function Settings() {
                         onToggle={toggleNotifications}
                     />
                 </View>
-                <Button
-                    title="Press Me"
-                    onPress={() => router.push('EditProfile')}
-                />
 
                 <CustomButton
                     label="Log out"
