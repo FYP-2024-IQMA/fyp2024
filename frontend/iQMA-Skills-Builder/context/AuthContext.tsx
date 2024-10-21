@@ -3,7 +3,7 @@ import {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {router} from 'expo-router';
 import messaging from '@react-native-firebase/messaging';
-import { AppRegistry, PermissionsAndroid } from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 
 export const AuthContext = createContext<any>(null);
 
@@ -39,7 +39,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
 
     useEffect(() => {
-        requestUserPermission();
         getToken();
     })
 
@@ -100,10 +99,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     // Log In
     const logIn = async () => {
         try {
-            await authorize();
-            AppRegistry.registerHeadlessTask('ReactNativeFirebaseMessagingHeadlessTask', () => async (remoteMessage) => {
-                console.log('Message handled in the background (Headless Task):', remoteMessage);
-            });              
+            await authorize();            
         } catch (e) {
             console.log(e);
         }
@@ -140,7 +136,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 data.details === 'The result contains 0 rows'
             ) {
                 console.log('First Time:', data);
-
+                requestUserPermission();
                 router.replace('CreateProfile');
             } else if (response.status === 200) {
                 console.log('Not first time:', data);
