@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
         borderColor: '#5C5776',
         borderRadius: 10,
         marginTop: 10,
-        backgroundColor: "#FFFF"
     },
     achievementImageContainer: {
         flex: 1,

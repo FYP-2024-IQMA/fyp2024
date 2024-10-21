@@ -25,6 +25,7 @@ import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
 import {Achievements} from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
+import { globalStyles } from '@/constants/styles';
 
 const ProfilePage: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -95,7 +96,7 @@ const ProfilePage: React.FC = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.container}>
+            <View style={globalStyles.container}>
                 <ProfileCard userDetails={userDetails} />
 
                 <Achievements achievements={badges} />

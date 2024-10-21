@@ -15,6 +15,7 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import {Colors} from '@/constants/Colors';
 import { formatSection } from '@/helpers/formatSectionID';
 import SectionProfile from '@/components/SectionProfile';
+import { globalStyles } from '@/constants/styles';
 
 export default function Courses() {
     const {currentUser} = useContext(AuthContext);
@@ -63,9 +64,8 @@ export default function Courses() {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View>
-                    <>
+        <ScrollView style={globalStyles.container}>
+            <View style={styles.container}>
                         <View style={styles.sectionContainer}>
                         {courses.length > 0 ? (
                             courses
@@ -91,7 +91,6 @@ export default function Courses() {
                             <Text>No courses available</Text>
                         )}
                         </View>
-                    </>
             </View>
         </ScrollView>
     );
