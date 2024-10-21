@@ -12,7 +12,7 @@ import {AuthContext} from '@/context/AuthContext';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import { router } from 'expo-router';
-// import { ScrollView } from 'react-native-gesture-handler';
+import { globalStyles } from '@/constants/styles';
 
 export default function EditProfile() {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -59,7 +59,7 @@ export default function EditProfile() {
 
     return (
         <ScrollView
-            style={styles.container}
+            style={globalStyles.container}
         >
             <View style={styles.form}>
                 <Text style={styles.label}>FIRST NAME</Text>
@@ -83,10 +83,6 @@ export default function EditProfile() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#FFF',
-    },
     form: {
         padding: 20,
     },

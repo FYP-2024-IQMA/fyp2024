@@ -28,6 +28,7 @@ import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import {router} from 'expo-router';
 import {useContext} from 'react';
+import { globalStyles } from '@/constants/styles';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -429,7 +430,7 @@ const HomeScreen: React.FC = () => {
     }
 
     return (
-        <SafeAreaView style={styles.outerContainer}>
+        <SafeAreaView style={globalStyles.container}>
             <ScrollView
                 contentContainerStyle={styles.container}
                 onScroll={onScroll}
@@ -469,12 +470,12 @@ const HomeScreen: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-    },
+    // outerContainer: {
+    //     flex: 1,
+    // },
     container: {
         padding: 20,
-        backgroundColor: '#F5F5F5',
+        // backgroundColor: '#F5F5F5',
     },
     lineSeparator: {
         height: 1,
