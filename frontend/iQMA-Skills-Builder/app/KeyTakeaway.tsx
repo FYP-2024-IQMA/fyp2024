@@ -2,23 +2,27 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const {currentUser, _} = useContext(AuthContext);
 
     useLayoutEffect(() => {
         const progress =
@@ -32,7 +36,7 @@ export default function KeyTakeaway() {
         });
     }, [navigation]);
 
-    const handlePress = () => {
+    const handlePress = async () => {
         let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
         let pathName = 'Lesson';
 
@@ -90,7 +94,9 @@ export default function KeyTakeaway() {
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Key Takeaway`);
+    const {startTimer, stopTimer} = useTimer(
+        `${sectionID} ${unitID} ${lessonID} Key Takeaway`
+    );
 
     useEffect(() => {
         startTimer();

@@ -191,6 +191,16 @@ export default function RootLayout() {
                         }}
                     />
                     <Stack.Screen
+                        name="Achievements"
+                        options={{
+                            headerTitle: "Achievements",
+                            headerStyle: {
+                                backgroundColor: Colors.default.purple100,
+                            },
+                            headerTintColor: Colors.light.background
+                        }}
+                    />
+                    <Stack.Screen
                         name="Courses"
                         options={{
                             headerTitle: "All Courses",

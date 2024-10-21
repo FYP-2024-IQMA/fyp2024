@@ -1,10 +1,10 @@
 // screens/HomeScreen.tsx
 
+import * as accountEndpoints from '@/helpers/accountEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as accountEndpoints from '@/helpers/accountEndpoints';
 
 import {
     NativeScrollEvent,
@@ -29,7 +29,6 @@ import TopStats from '@/components/TopStats';
 import {router} from 'expo-router';
 import {useContext} from 'react';
 import { globalStyles } from '@/constants/styles';
-
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -173,7 +172,10 @@ const HomeScreen: React.FC = () => {
             // console.log("unitID", unitID)
             // console.log("totalLesson", totalLesson)
 
-            const getAllLessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
+            const getAllLessons = await lessonEndpoints.getAllLesson(
+                sectionID,
+                unitID
+            );
 
             if (getAllLessons.length === 0) {
                 return;
@@ -226,7 +228,8 @@ const HomeScreen: React.FC = () => {
                     }
                 } else {
                     if (getAllLessons[completedLessons]) {
-                        currentLessonId = getAllLessons[completedLessons].lessonID;
+                        currentLessonId =
+                            getAllLessons[completedLessons].lessonID;
                     }
                     currentLessonIdx = completedLessons;
                     if (completedLessons !== 0) {
@@ -234,7 +237,10 @@ const HomeScreen: React.FC = () => {
                         currentProgress =
                             1 +
                             completedLessons * 2 +
-                            accountEndpoints.calculateKTProgress(getLessonIds, completedLessons);
+                            accountEndpoints.calculateKTProgress(
+                                getLessonIds,
+                                completedLessons
+                            );
                         // console.log('Current Progress:', currentProgress);
                     } else if (completedUnits === 0) {
                         routerName = 'SectionIntroduction';
@@ -310,8 +316,15 @@ const HomeScreen: React.FC = () => {
     useEffect(() => {
         (async () => {
             try {
-                const sectionDetails = await sectionEndpoints.getAllSectionDetails();
-                let currentSection = await resultEndpoints.getCurrentSection(currentUser.sub);
+                AsyncStorage.setItem('totalPoints', '0');
+
+                const pt = AsyncStorage.getItem('totalPoints');
+
+                const sectionDetails =
+                    await sectionEndpoints.getAllSectionDetails();
+                let currentSection = await resultEndpoints.getCurrentSection(
+                    currentUser.sub
+                );
                 console.log('Current Section Outside:', currentSection);
 
                 if (currentSection > sectionDetails.length) {
@@ -360,8 +373,7 @@ const HomeScreen: React.FC = () => {
         })();
     }, [completedFinals, sectionCircularProgress, circularProgress]);
 
-    useEffect(() => {
-    }, [allSectionDetails]);
+    useEffect(() => {}, [allSectionDetails]);
 
     const handlePress = (
         pathName: string,

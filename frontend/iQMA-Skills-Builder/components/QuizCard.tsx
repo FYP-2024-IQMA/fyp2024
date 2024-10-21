@@ -6,10 +6,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
+import {criticallyDampedSpringCalculations} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 
 export const QuizCard: React.FC<{
     questionData: Question;
     onNextQuestion: () => void;
+    // onTotalPoints: (points: number) => void;
 }> = ({questionData, onNextQuestion}) => {
     const {
         quizID,
@@ -28,6 +30,8 @@ export const QuizCard: React.FC<{
     const [modalVisible, setModalVisible] = useState<boolean>(false);
     const [isCorrect, setIsCorrect] = useState<boolean>(false);
     const [count, setCount] = useState<number>(0);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+    const [currentPoints, setCurrentPoints] = useState<number>(0);
 
     const handleButtonPress = (label: string, option: Option) => {
         setSelectedButton(option);
@@ -37,16 +41,31 @@ export const QuizCard: React.FC<{
     const handleCheck = () => {
         if (selectedButton) {
             if (selectedLabel == answer) {
+                let points = 0;
+
+                if (count == 0) {
+                    points = 100; // First try
+                } else if (count == 1) {
+                    points = 50; // Second try
+                } else {
+                    points = 25; // Third or more tries
+                }
+
+                setCurrentPoints(points);
                 setIsCorrect(true);
             }
-            setCount(count + 1);
+            setCount((prevCount) => prevCount + 1);
             setModalVisible(true);
         }
     };
 
-    const handleAnswer = () => {
+    const handleAnswer = async () => {
         if (isCorrect) {
-            sendMessage();
+            // Accumulate total points
+            const newTotalPoints = totalPoints + currentPoints;
+            setTotalPoints(newTotalPoints);
+            await storeTotalPoints();
+
             onNextQuestion();
             setCount(0);
         }
@@ -55,6 +74,29 @@ export const QuizCard: React.FC<{
         setSelectedButton(undefined);
     };
 
+    const storeTotalPoints = async () => {
+        try {
+            let storedPoints = await AsyncStorage.getItem('totalPoints');
+            if (storedPoints !== null) {
+                console.log('stored points in STP: ' + storedPoints);
+                let storedPointsInNum = parseInt(storedPoints);
+                console.log('the current points IN STP: ' + currentPoints);
+                storedPointsInNum += currentPoints;
+
+                await AsyncStorage.setItem(
+                    'totalPoints',
+                    storedPointsInNum.toString()
+                );
+            } else {
+                await AsyncStorage.setItem(
+                    'totalPoints',
+                    currentPoints.toString()
+                );
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
     const sendMessage = async () => {
         const userID = await AsyncStorage.getItem('userID');
         let age = await AsyncStorage.getItem('age');
@@ -67,10 +109,10 @@ export const QuizCard: React.FC<{
                 );
                 await AsyncStorage.setItem('age', ageResponse.data['age']);
             } catch (e) {
-                console.error(e)
+                console.log('error in quizcard sendMessage age line 112');
+                console.error(e);
             }
-        }
-        else {
+        } else {
             try {
                 const response = await axios.post(
                     `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
@@ -86,6 +128,7 @@ export const QuizCard: React.FC<{
                 );
                 console.log(response.data);
             } catch (e) {
+                console.log('error in quizcard sendMessage line 131');
                 console.error(e);
             }
         }
@@ -222,27 +265,58 @@ export const QuizCard: React.FC<{
                                 flexDirection: 'row',
                                 alignItems: 'center',
                                 marginBottom: 10,
+                                justifyContent: 'space-between',
                             }}
                         >
-                            <Image
-                                source={
-                                    isCorrect
-                                        ? require('@/assets/images/correct.png')
-                                        : require('@/assets/images/incorrect.png')
-                                }
-                                style={{marginRight: 8}}
-                            />
-                            <Text
+                            <View
                                 style={{
-                                    fontWeight: 'bold',
-                                    fontSize: 16,
-                                    color: isCorrect
-                                        ? '#1ACB98'
-                                        : Colors.default.red,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
                                 }}
                             >
-                                {isCorrect ? 'Correct' : 'Incorrect'}
-                            </Text>
+                                <Image
+                                    source={
+                                        isCorrect
+                                            ? require('@/assets/images/correct.png')
+                                            : require('@/assets/images/incorrect.png')
+                                    }
+                                    style={{marginRight: 8}}
+                                />
+                                <Text
+                                    style={{
+                                        fontWeight: 'bold',
+                                        fontSize: 16,
+                                        color: isCorrect
+                                            ? '#1ACB98'
+                                            : Colors.default.red,
+                                    }}
+                                >
+                                    {isCorrect ? 'Correct' : 'Incorrect'}
+                                </Text>
+                            </View>
+                            {isCorrect && (
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: 16,
+                                            fontWeight: 'bold',
+                                            color: '#1ACB98',
+                                            marginRight: 8,
+                                        }}
+                                    >
+                                        +{currentPoints} XP
+                                    </Text>
+                                    <Image
+                                        source={require('@/assets/images/grey_xp.png')}
+                                        style={{width: 24, height: 24}}
+                                    />
+                                </View>
+                            )}
                         </View>
                         <Text style={{marginBottom: 10, fontWeight: 'bold'}}>
                             {selectedButton ? selectedButton!.explanation : ''}
@@ -282,7 +356,7 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         // backgroundColor: '#D9D9D9',
-        backgroundColor: '#F0F0F0',
+        backgroundColor: '#ECEBEB',
         paddingTop: 20,
         paddingBottom: 20,
     },
