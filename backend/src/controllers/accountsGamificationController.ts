@@ -47,6 +47,20 @@ export const getBadges = async (req: Request, res: Response) => {
     }
 }
 
+export const getLatestBadge = async (req: Request, res: Response) => {
+    try {
+        const badges = await accountsGamificationService.getLatestBadge(
+            req.params.sectionid, req.params.unitid
+        );
+        res.status(200).json(badges);
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+};
+
 /* UPDATE */
 
 export const updatePoints = async (req: Request, res: Response) => {
