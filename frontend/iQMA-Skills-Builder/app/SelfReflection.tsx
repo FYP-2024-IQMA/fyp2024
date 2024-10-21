@@ -61,26 +61,6 @@ export default function SelfReflection() {
         if (sectionID && unitID) {
             (async () => {
                 try {
-                    const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
-
-                    let points = await AsyncStorage.getItem('totalPoints');
-                    const numPoints = parseInt(points as string);
-
-                    const data = {
-                        userID: currentUser.sub,
-                        points: numPoints,
-                    };
-
-                    const response = await axios.patch(url, data);
-
-                    AsyncStorage.setItem('totalPoints', '0');
-                } catch (error: any) {
-                    console.error(
-                        'Error updating points:',
-                        error.response.data
-                    );
-                }
-                try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,
                         unitID as string
@@ -114,6 +94,26 @@ export default function SelfReflection() {
                     currentUser.sub,
                     parseInt(quizID as string)
                 );
+                try {
+                    const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                    let points = await AsyncStorage.getItem('totalPoints');
+                    const numPoints = parseInt(points as string);
+
+                    const data = {
+                        userID: currentUser.sub,
+                        points: numPoints,
+                    };
+
+                    const response = await axios.patch(url, data);
+
+                    AsyncStorage.setItem('totalPoints', '0');
+                } catch (error: any) {
+                    console.error(
+                        'Error updating points:',
+                        error.response.data
+                    );
+                }
             }
         } catch (error) {
             console.error(

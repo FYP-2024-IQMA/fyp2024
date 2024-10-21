@@ -134,6 +134,28 @@ export default function VideoQuiz() {
                         currentUser.sub,
                         questions[currentQnsIdx].quizID
                     );
+
+                    try {
+                        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                        let points = await AsyncStorage.getItem('totalPoints');
+                        const numPoints = parseInt(points as string);
+
+                        const data = {
+                            userID: currentUser.sub,
+                            points: numPoints,
+                        };
+
+                        const response = await axios.patch(url, data);
+                        const result = await response.data;
+                        console.log('Points successfully updated:', result);
+                        AsyncStorage.setItem('totalPoints', '0');
+                    } catch (error: any) {
+                        console.error(
+                            'Error updating points:',
+                            error.response.data
+                        );
+                    }
                 }
 
                 let pathName = 'KeyTakeaway';
