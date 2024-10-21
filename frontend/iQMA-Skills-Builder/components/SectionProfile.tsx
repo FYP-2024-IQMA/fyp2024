@@ -18,7 +18,7 @@ import {SectionProfileProgressBar} from './SectionProfileProgressBar';
 interface SectionProfileProps {
     sectionID: string;
     sectionName: string;
-    sectionDuration: string;
+    sectionDuration: number;
 }
 
 const SectionProfile: React.FC<SectionProfileProps> = ({

@@ -78,6 +78,10 @@ const ProfilePage: React.FC = () => {
         }
     };
 
+    const handlePressCourses = async () => {
+        router.push('Courses');
+    };
+
     // Fetch data when screen is Focused
     useFocusEffect(
         useCallback(() => {
@@ -113,15 +117,17 @@ const ProfilePage: React.FC = () => {
                         >
                             Courses
                         </Text>
-                        <Text
-                            style={{
-                                textDecorationLine: 'underline',
-                                textDecorationColor: '#5C5776',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            View all
-                        </Text>
+                        <TouchableOpacity onPress={handlePressCourses}>
+                            <Text
+                                style={{
+                                    textDecorationLine: 'underline',
+                                    textDecorationColor: '#5C5776',
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                View all
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     <View
                         style={{
@@ -130,7 +136,7 @@ const ProfilePage: React.FC = () => {
                                 allSectionDetails.length === 1
                                     ? 'center'
                                     : 'space-between',
-                            gap: 15
+                            gap: 15,
                         }}
                     >
                         {allSectionDetails.length > 0 ? (
@@ -167,10 +173,8 @@ const ProfilePage: React.FC = () => {
 const styles = StyleSheet.create({
     scrollView: {
         flexGrow: 1,
-        backgroundColor: '#fff', // Ensure background color is white
     },
     container: {
-        backgroundColor: '#fff', // Container also white
     },
 });
 
