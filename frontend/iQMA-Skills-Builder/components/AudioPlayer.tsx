@@ -19,7 +19,7 @@ export const AudioPlayer = () => {
     // Function to load and play the sound
     const playSound = async () => {
         const {sound} = await Audio.Sound.createAsync(
-            require('../assets/audio/Unit1Lesson1a.mp3') // replace with your sound file
+            require('../assets/audio/Unit1Lesson1a.mp3') // Test audio file
         );
         setSound(sound);
 
@@ -28,26 +28,26 @@ export const AudioPlayer = () => {
     };
 
     const pauseSound = async () => {
-        if (sound) {
+        if (sound && isPlaying) {
             await sound.pauseAsync();
             setIsPlaying(false);
         }
     };
 
     const stopSound = async () => {
-        if (sound) {
+        if (sound && isPlaying) {
             await sound.stopAsync();
             setIsPlaying(false);
         }
     };
 
-    useEffect(() => {
-        return () => {
-            if (sound) {
-                sound.unloadAsync();
-            }
-        };
-    }, [sound]);
+    // useEffect(() => {
+    //     return () => {
+    //         if (sound) {
+    //             sound.unloadAsync();
+    //         }
+    //     };
+    // }, [sound]);
 
     return (
         <View>
@@ -58,6 +58,7 @@ export const AudioPlayer = () => {
             <Button title="Play" onPress={playSound}></Button>
             <Button title="Pause" onPress={pauseSound}></Button>
             <Button title="Stop" onPress={stopSound} />
+            {isPlaying ? <Text>Sound Playing</Text> : <Text>Sound Not Playing</Text>}
         </View>
     );
 };
