@@ -2,6 +2,8 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
+
 
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
@@ -133,27 +135,38 @@ export default function VideoQuiz() {
                         questions[currentQnsIdx].quizID
                     );
 
-                    try {
-                        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+                    let points = await AsyncStorage.getItem(
+                        'totalPoints'
+                    );
+                    const numPoints = parseInt(points as string);
 
-                        let points = await AsyncStorage.getItem('totalPoints');
-                        const numPoints = parseInt(points as string);
+                    await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
 
-                        const data = {
-                            userID: currentUser.sub,
-                            points: numPoints,
-                        };
+                    // try {
+                    //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
 
-                        const response = await axios.patch(url, data);
-                        const result = await response.data;
-                        console.log('Points successfully updated:', result);
-                        AsyncStorage.setItem('totalPoints', '0');
-                    } catch (error: any) {
-                        console.error(
-                            'Error updating points:',
-                            error.response.data
-                        );
-                    }
+                    //     let points = await AsyncStorage.getItem(
+                    //         'totalPoints'
+                    //     );
+                    //     const numPoints = parseInt(points as string);
+    
+                    //     await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+
+                    //     // const data = {
+                    //     //     userID: currentUser.sub,
+                    //     //     points: numPoints,
+                    //     // };
+
+                    //     // const response = await axios.patch(url, data);
+                    //     // const result = await response.data;
+                    //     // console.log('Points successfully updated:', result);
+                    //     // AsyncStorage.setItem('totalPoints', '0');
+                    // } catch (error: any) {
+                    //     console.error(
+                    //         'Error updating points:',
+                    //         error.response.data
+                    //     );
+                    // }
                 }
 
                 let pathName = 'KeyTakeaway';

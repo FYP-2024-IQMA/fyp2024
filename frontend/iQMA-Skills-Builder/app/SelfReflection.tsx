@@ -1,5 +1,7 @@
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
+
 
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
@@ -92,26 +94,39 @@ export default function SelfReflection() {
                     currentUser.sub,
                     parseInt(quizID as string)
                 );
-                try {
-                    const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
 
-                    let points = await AsyncStorage.getItem('totalPoints');
-                    const numPoints = parseInt(points as string);
+                let points = await AsyncStorage.getItem(
+                    'totalPoints'
+                );
+                const numPoints = parseInt(points as string);
 
-                    const data = {
-                        userID: currentUser.sub,
-                        points: numPoints,
-                    };
+                await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
 
-                    const response = await axios.patch(url, data);
 
-                    AsyncStorage.setItem('totalPoints', '0');
-                } catch (error: any) {
-                    console.error(
-                        'Error updating points:',
-                        error.response.data
-                    );
-                }
+                // try {
+                //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                //     let points = await AsyncStorage.getItem(
+                //         'totalPoints'
+                //     );
+                //     const numPoints = parseInt(points as string);
+
+                //     await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+
+                //     // const data = {
+                //     //     userID: currentUser.sub,
+                //     //     points: numPoints,
+                //     // };
+
+                //     // const response = await axios.patch(url, data);
+
+                //     AsyncStorage.setItem('totalPoints', '0');
+                // } catch (error: any) {
+                //     console.error(
+                //         'Error updating points:',
+                //         error.response.data
+                //     );
+                // }
             }
         } catch (error) {
             console.error(
