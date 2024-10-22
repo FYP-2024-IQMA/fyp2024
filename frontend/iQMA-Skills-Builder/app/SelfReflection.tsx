@@ -40,9 +40,7 @@ export default function SelfReflection() {
         setChatHistoryLength(length);
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const {startTimer, stopTimer} = useTimer(
-        `${sectionID} ${unitID} Self Reflection`
-    );
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Self Reflection', unitID as string);
 
     useLayoutEffect(() => {
         const progress =

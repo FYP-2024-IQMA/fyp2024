@@ -36,7 +36,7 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Reality Check`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Reality Check', unitID as string);
 
     useLayoutEffect(() => {
         const progress =

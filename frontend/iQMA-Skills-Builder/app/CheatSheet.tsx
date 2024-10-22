@@ -61,7 +61,7 @@ export default function CheatSheet() {
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} Cheat Sheet`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Cheat Sheet');
 
     useLayoutEffect(() => {
         const progress =

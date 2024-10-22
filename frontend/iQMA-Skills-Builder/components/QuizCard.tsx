@@ -9,10 +9,10 @@ import axios from 'axios';
 import {criticallyDampedSpringCalculations} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 
 export const QuizCard: React.FC<{
+    sectionID: string,
     questionData: Question;
     onNextQuestion: () => void;
-    // onTotalPoints: (points: number) => void;
-}> = ({questionData, onNextQuestion}) => {
+}> = ({sectionID, questionData, onNextQuestion}) => {
     const {
         quizID,
         questionNo,
@@ -61,11 +61,11 @@ export const QuizCard: React.FC<{
 
     const handleAnswer = async () => {
         if (isCorrect) {
+            sendMessage();
             // Accumulate total points
             const newTotalPoints = totalPoints + currentPoints;
             setTotalPoints(newTotalPoints);
             await storeTotalPoints();
-
             onNextQuestion();
             setCount(0);
         }
@@ -99,38 +99,22 @@ export const QuizCard: React.FC<{
     };
     const sendMessage = async () => {
         const userID = await AsyncStorage.getItem('userID');
-        let age = await AsyncStorage.getItem('age');
-        const section = await AsyncStorage.getItem('section');
-
-        if (age === null) {
-            try {
-                const ageResponse = await axios.get(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${userID}`
-                );
-                await AsyncStorage.setItem('age', ageResponse.data['age']);
-            } catch (e) {
-                console.log('error in quizcard sendMessage age line 112');
-                console.error(e);
-            }
-        } else {
-            try {
-                const response = await axios.post(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
-                    {
-                        userID: userID,
-                        age: age,
-                        eventType: 'attemptsTaken',
-                        section: section,
-                        event: `quizID ${quizID}, questionNo ${questionNo}`,
-                        timestamp: new Date().toISOString(),
-                        attempts: count,
-                    }
-                );
-                console.log(response.data);
-            } catch (e) {
-                console.log('error in quizcard sendMessage line 131');
-                console.error(e);
-            }
+        try {
+            const response = await axios.post(
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
+                {
+                    userID: userID,
+                    eventType: 'attemptsTaken',
+                    timestamp: new Date().toISOString(),
+                    sectionID: sectionID,
+                    quizID: quizID,
+                    questionNo: questionNo,
+                    attempts: count,
+                }
+            );
+            console.log(response.data);
+        } catch (e) {
+            console.error(e);
         }
     };
 

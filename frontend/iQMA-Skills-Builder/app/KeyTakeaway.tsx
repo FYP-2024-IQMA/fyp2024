@@ -94,9 +94,7 @@ export default function KeyTakeaway() {
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const {startTimer, stopTimer} = useTimer(
-        `${sectionID} ${unitID} ${lessonID} Key Takeaway`
-    );
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Key Takeaway', unitID as string, lessonID as string);
 
     useEffect(() => {
         startTimer();
