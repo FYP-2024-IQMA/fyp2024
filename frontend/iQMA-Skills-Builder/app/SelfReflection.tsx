@@ -5,6 +5,7 @@ import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -12,10 +13,11 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import MiniChatbot from '@/components/MiniChatbot';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -90,6 +92,26 @@ export default function SelfReflection() {
                     currentUser.sub,
                     parseInt(quizID as string)
                 );
+                try {
+                    const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                    let points = await AsyncStorage.getItem('totalPoints');
+                    const numPoints = parseInt(points as string);
+
+                    const data = {
+                        userID: currentUser.sub,
+                        points: numPoints,
+                    };
+
+                    const response = await axios.patch(url, data);
+
+                    AsyncStorage.setItem('totalPoints', '0');
+                } catch (error: any) {
+                    console.error(
+                        'Error updating points:',
+                        error.response.data
+                    );
+                }
             }
         } catch (error) {
             console.error(

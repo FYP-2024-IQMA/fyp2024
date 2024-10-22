@@ -11,15 +11,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
-import { useTimer } from '@/helpers/useTimer';
 import ProgressBar from '@/components/ProgressBar';
 import {Question} from '@/constants/Quiz';
 import {QuizCard} from '@/components/QuizCard';
 import SectionCard from '@/components/SectionCard';
 import axios from 'axios';
+import {checkIfConfigIsValid} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import {useTimer} from '@/helpers/useTimer';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -44,6 +45,8 @@ export default function VideoQuiz() {
     const [loading, setIsLoading] = useState<boolean>(true);
     const [nextLessonID, setnextLessonID] = useState<string>('');
     const { startTimer, stopTimer } = useTimer(sectionID as string, 'Video Quiz', unitID as string, lessonID as string);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+    // const [currentPoints, setCurrentPoints] = useState<number>(0);
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -129,6 +132,28 @@ export default function VideoQuiz() {
                         currentUser.sub,
                         questions[currentQnsIdx].quizID
                     );
+
+                    try {
+                        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                        let points = await AsyncStorage.getItem('totalPoints');
+                        const numPoints = parseInt(points as string);
+
+                        const data = {
+                            userID: currentUser.sub,
+                            points: numPoints,
+                        };
+
+                        const response = await axios.patch(url, data);
+                        const result = await response.data;
+                        console.log('Points successfully updated:', result);
+                        AsyncStorage.setItem('totalPoints', '0');
+                    } catch (error: any) {
+                        console.error(
+                            'Error updating points:',
+                            error.response.data
+                        );
+                    }
                 }
 
                 let pathName = 'KeyTakeaway';
@@ -167,6 +192,11 @@ export default function VideoQuiz() {
         }
     };
 
+    // const handleTotalPoints = async (points: number) => {
+    //     setTotalPoints(points);
+    //     console.log('total points in video quiz is ', points);
+    // };
+
     return (
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
@@ -200,6 +230,7 @@ export default function VideoQuiz() {
                             Choose the most appropriate option for each
                             question.
                         </Text>
+
                         <View style={{alignItems: 'center'}}>
                             <Image
                                 style={{marginBottom: 10}}
@@ -211,6 +242,7 @@ export default function VideoQuiz() {
                                 sectionID={sectionID as string}
                                 questionData={questions[currentQnsIdx]}
                                 onNextQuestion={handleNextQuestion}
+                                // onTotalPoints={handleTotalPoints}
                             />
                         )}
                     </View>

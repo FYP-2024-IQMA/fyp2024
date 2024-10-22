@@ -1,4 +1,5 @@
-import {useState, useRef} from 'react';
+import {useRef, useState} from 'react';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
@@ -13,7 +14,7 @@ export const useTimer = (sectionID: string, event: string, unitID?: string | nul
         timerRef.current = setInterval(() => {
             setSeconds((prevSeconds) => prevSeconds + 1);
         }, 1000);
-    }; 
+    };
 
     const stopTimer = async () => {
         if (timerRef.current) {
@@ -44,5 +45,5 @@ export const useTimer = (sectionID: string, event: string, unitID?: string | nul
         setSeconds(0);
     };
 
-    return { startTimer, stopTimer }
-}
+    return {startTimer, stopTimer};
+};
