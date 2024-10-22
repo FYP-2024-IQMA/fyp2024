@@ -11,6 +11,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {MaterialIcons} from '@expo/vector-icons';
 import ProfilePage from '../screens/ProfilePage';
 import SettingPage from '../screens/Settings';
+import LeaderboardPage from '../screens/Leaderboard';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
 import {useDrawerStatus} from '@react-navigation/drawer';
@@ -61,6 +62,16 @@ export default function AppTabs() {
                             size={size}
                         />
                     ),
+                }}
+            />
+            <Tab.Screen
+                name="Leaderboard"
+                component={LeaderboardPage}
+                options={{
+                    tabBarIcon: ({color, size}) => (
+                        <Ionicons name="diamond" size={size} color={color} />
+                    ),
+                    headerTintColor: '#fff',
                 }}
             />
             <Tab.Screen
