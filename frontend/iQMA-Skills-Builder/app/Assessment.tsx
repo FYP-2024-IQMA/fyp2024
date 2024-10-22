@@ -43,7 +43,7 @@ export default function Assessment() {
     } = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Assessment', unitID as string);
  
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
@@ -214,6 +214,7 @@ export default function Assessment() {
 
                     {questions.length > 0 && questions[currentQnsIdx] && (
                         <QuizCard
+                            sectionID={sectionID as string}
                             questionData={questions[currentQnsIdx]}
                             onNextQuestion={handleNextQuestion}
                         />

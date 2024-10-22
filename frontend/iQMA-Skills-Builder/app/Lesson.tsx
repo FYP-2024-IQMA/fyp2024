@@ -39,7 +39,7 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Lesson`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Lesson', unitID as string, lessonID as string);
 
     useLayoutEffect(() => {
         const progress =

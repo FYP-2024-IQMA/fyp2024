@@ -43,7 +43,7 @@ export default function VideoQuiz() {
     const [lessonName, setLessonName] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} ${lessonID} Video Quiz`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Video Quiz', unitID as string, lessonID as string);
 
     // const lessonName = "Lesson 1a: Understanding Verbal and Non-verbal Signals";
     // const sectionID = "SEC0001";
@@ -208,6 +208,7 @@ export default function VideoQuiz() {
                         </View>
                         {questions.length > 0 && questions[currentQnsIdx] && (
                             <QuizCard
+                                sectionID={sectionID as string}
                                 questionData={questions[currentQnsIdx]}
                                 onNextQuestion={handleNextQuestion}
                             />

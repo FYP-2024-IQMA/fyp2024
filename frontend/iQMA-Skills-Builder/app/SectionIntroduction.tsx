@@ -37,7 +37,7 @@ export default function SectionIntroduction() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} Introduction`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Introduction');
 
     useLayoutEffect(() => {
         const progress =
