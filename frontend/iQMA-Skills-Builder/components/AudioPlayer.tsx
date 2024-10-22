@@ -10,39 +10,56 @@ import {
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {useContext, useEffect, useState} from 'react';
-import { Audio } from 'expo-av';
-import { Sound } from 'expo-av/build/Audio';
+import {Audio} from 'expo-av';
 
 export const AudioPlayer = () => {
-
     const [sound, setSound] = useState<Audio.Sound | undefined>(undefined);
+    const [isPlaying, setIsPlaying] = useState(false);
 
-    async function playSound() {
-        console.log('Loading Sound');
-        const { sound } = await Audio.Sound.createAsync( require('../assets/audio/Unit1Lesson1a.mp3')
+    // Function to load and play the sound
+    const playSound = async () => {
+        const {sound} = await Audio.Sound.createAsync(
+            require('../assets/audio/Unit1Lesson1a.mp3') // replace with your sound file
         );
         setSound(sound);
-    
-        console.log('Playing Sound');
-        await sound.playAsync();
-      }
-    
-      useEffect(() => {
-        return sound
-          ? () => {
-              console.log('Unloading Sound');
-              sound.unloadAsync();
-            }
-          : undefined;
-      }, [sound]);
-    
-      return (
-        <View>
-          <Button title="Play Sound" onPress={playSound} />
-        </View>
-      );
-    }
 
-const styles = StyleSheet.create({
-    
-});
+        await sound.playAsync();
+        setIsPlaying(true);
+    };
+
+    const pauseSound = async () => {
+        if (sound) {
+            await sound.pauseAsync();
+            setIsPlaying(false);
+        }
+    };
+
+    const stopSound = async () => {
+        if (sound) {
+            await sound.stopAsync();
+            setIsPlaying(false);
+        }
+    };
+
+    useEffect(() => {
+        return () => {
+            if (sound) {
+                sound.unloadAsync();
+            }
+        };
+    }, [sound]);
+
+    return (
+        <View>
+            {/* <Button
+                title={isPlaying ? 'Pause' : 'Play'}
+                onPress={isPlaying ? pauseSound : playSound}
+            /> */}
+            <Button title="Play" onPress={playSound}></Button>
+            <Button title="Pause" onPress={pauseSound}></Button>
+            <Button title="Stop" onPress={stopSound} />
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({});
