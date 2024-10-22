@@ -26,6 +26,7 @@ import {useContext} from 'react';
 import {Achievements} from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
 import { globalStyles } from '@/constants/styles';
+import { AudioPlayer } from '@/components/AudioPlayer';
 
 const ProfilePage: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -166,6 +167,7 @@ const ProfilePage: React.FC = () => {
                         )}
                     </View>
                 </View>
+                <AudioPlayer></AudioPlayer>
             </View>
         </ScrollView>
     );

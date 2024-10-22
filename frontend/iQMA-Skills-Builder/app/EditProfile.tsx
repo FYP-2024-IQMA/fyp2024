@@ -78,6 +78,7 @@ export default function EditProfile() {
                     <Text style={styles.buttonText}>SAVE</Text>
                 </TouchableOpacity>
             </View>
+            
         </ScrollView>
     );
 }

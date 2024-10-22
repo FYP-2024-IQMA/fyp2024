@@ -18,7 +18,6 @@ import {Colors} from '@/constants/Colors';
 import {globalStyles} from '@/constants/styles';
 import {checkNotifications} from 'react-native-permissions';
 import {useFocusEffect} from '@react-navigation/native';
-import {AudioPlayer} from '@/components/AudioPlayer';
 
 export default function Settings() {
     const {logOut} = useContext(AuthContext);
@@ -111,8 +110,6 @@ export default function Settings() {
                     backgroundColor="white"
                     onPressHandler={logOut}
                 />
-
-                <AudioPlayer></AudioPlayer>
             </View>
         </ScrollView>
     );
