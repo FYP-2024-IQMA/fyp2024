@@ -61,11 +61,11 @@ export const QuizCard: React.FC<{
 
     const handleAnswer = async () => {
         if (isCorrect) {
+            sendMessage();
             // Accumulate total points
             const newTotalPoints = totalPoints + currentPoints;
             setTotalPoints(newTotalPoints);
             await storeTotalPoints();
-
             onNextQuestion();
             setCount(0);
         }

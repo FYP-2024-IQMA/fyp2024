@@ -35,7 +35,7 @@ export const useTimer = (sectionID: string, event: string, unitID?: string | nul
                     unitID: unitID ?? null,
                     lessonID: lessonID ?? null,
                     event: event,
-                    time: `${seconds}`,
+                    time: seconds,
                 }
             );
             console.log(response.data);
