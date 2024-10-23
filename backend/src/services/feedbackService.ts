@@ -1,21 +1,20 @@
 import amqp from "amqplib";
-import bodyParser from "body-parser";
-import express from "express";
+import { Feedback } from "../models/feedbackModel";
 import { s3 } from "../config/awsConfig"; // Assuming you already have an AWS config for S3
-import { v4 as uuidv4 } from "uuid"; // For unique file naming
 
-async function uploadToS3(queue: string, newClickstream: Clickstream) {
-	const key = `${queue}/${newClickstream.userID}.json`;
+// Create upload function
+async function uploadToS3(queue: string, newFeedback: Feedback) {
+	const key = `${queue}/${newFeedback.userID}.json`;
 	const params = {
 		Bucket: "isb-raw-data-athena",
 		Key: key,
 	};
-	let existingClickstream: any[] = [];
+	let existingFeedback: any[] = [];
 
 	try {
 		const existingData = await s3.getObject(params).promise();
 		let fileContent = existingData.Body!.toString("utf-8");
-		existingClickstream = fileContent
+		existingFeedback = fileContent
 			.split("\n")
 			.filter((line: string) => line.trim().length > 0)
 			.map((line: string) => JSON.parse(line));
@@ -27,8 +26,8 @@ async function uploadToS3(queue: string, newClickstream: Clickstream) {
 		}
 	}
 
-	existingClickstream.push(newClickstream);
-	const lineDelimitedJson = existingClickstream
+	existingFeedback.push(newFeedback);
+	const lineDelimitedJson = existingFeedback
 		.map((item) => JSON.stringify(item))
 		.join("\n");
 	s3.putObject({
@@ -39,85 +38,41 @@ async function uploadToS3(queue: string, newClickstream: Clickstream) {
 }
 
 // Define your queues (you can add more if necessary)
-const FEEDBACK_QUEUE = "feedback";
+const QUEUE_NAMES = ["feedback", "bug", "suggestion"];
 
-// Initialize Express app
-const app = express();
+// Create a function to consume messages
+async function consumeMessage() {
+    try {
+        const conn = await amqp.connect(process.env.RABBITMQ_URL!);
+        const channel = await conn.createChannel();
 
-// Middleware to parse JSON request bodies
-app.use(bodyParser.json());
-
-// Helper function to send feedback to RabbitMQ
-async function sendFeedbackToQueue(feedback: any) {
-	const conn = await amqp.connect(process.env.RABBITMQ_URL!);
-	const channel = await conn.createChannel();
-	await channel.assertQueue(FEEDBACK_QUEUE);
-	channel.sendToQueue(FEEDBACK_QUEUE, Buffer.from(JSON.stringify(feedback)));
+        for (const queue of QUEUE_NAMES) {
+            await channel.assertQueue(queue);
+            channel.consume(queue, async (message) => {
+                if (message !== null) {
+                    const data = message.content.toString();
+                    let parsedData: Feedback = JSON.parse(data);
+                    try {
+                        await uploadToS3(queue, parsedData);
+                        channel.ack(message);
+                        console.log(message)
+                    } catch (error) {
+                        console.error(`Error processing message from ${QUEUE_NAMES[0]}: `, error);
+                        channel.nack(message);
+                    }
+                }
+            })
+        }
+    } catch (err) {
+        console.error(`Error: ${err}`);
+    }
 }
 
-// POST endpoint to receive feedback
-app.post("/submit-feedback", async (req, res) => {
-	const { name, feedbackType, message, rating } = req.body;
-
-	if (!name || !feedbackType || !message || !rating) {
-		return res.status(400).json({ error: "Missing required fields" });
-	}
-
-	// Create feedback object
-	const feedback = {
-		id: uuidv4(), // Generate a unique ID for the feedback
-		name,
-		feedbackType,
-		message,
-		rating,
-		timestamp: new Date().toISOString(),
-	};
-
-	try {
-		// Send feedback to RabbitMQ queue
-		await sendFeedbackToQueue(feedback);
-		res.status(200).json({ message: "Feedback submitted successfully!" });
-	} catch (error) {
-		console.error("Error submitting feedback:", error);
-		res.status(500).json({ error: "Failed to submit feedback" });
-	}
-});
-
-// RabbitMQ consumer to handle feedback from the queue
-async function consumeFeedbackMessages() {
-	try {
-		const conn = await amqp.connect(process.env.RABBITMQ_URL!);
-		const channel = await conn.createChannel();
-
-		// Assert feedback queue
-		await channel.assertQueue(FEEDBACK_QUEUE);
-
-		// Consume messages from the feedback queue
-		channel.consume(FEEDBACK_QUEUE, async (message) => {
-			if (message !== null) {
-				const data = message.content.toString();
-				const parsedData = JSON.parse(data);
-
-				try {
-					// Upload feedback to S3 (reusing uploadToS3 function)
-					await uploadToS3(FEEDBACK_QUEUE, parsedData);
-					channel.ack(message);
-				} catch (error) {
-					console.error(`Error uploading feedback to S3:`, error);
-					channel.nack(message); // Nack if something goes wrong
-				}
-			}
-		});
-	} catch (err) {
-		console.error("Error:", err);
-	}
+export async function sendMessage(feedback: Feedback) {
+    const queue = feedback.eventType;
+    const conn = await amqp.connect(process.env.RABBITMQ_URL!);
+    const channel = await conn.createChannel();
+    await channel.assertQueue(queue);
+    channel.sendToQueue(queue, Buffer.from(JSON.stringify(feedback)));
+    await consumeMessage();
 }
-
-// Start consuming messages
-consumeFeedbackMessages();
-
-// Start the Express server
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-	console.log(`Server is running on port ${PORT}`);
-});

@@ -29,6 +29,7 @@ import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import {router} from 'expo-router';
 import {useContext} from 'react';
+import { packageFeedback } from '@/helpers/feedbackEndpoints';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -461,7 +462,7 @@ const HomeScreen: React.FC = () => {
                     <Ionicons name="arrow-up" size={24} color="#7654F2" />
                 </TouchableOpacity>
             )}
-            <FeedbackComponent />
+            <FeedbackComponent userID={currentUser.sub}/>
         </SafeAreaView>
     );
 };

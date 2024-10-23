@@ -11,14 +11,45 @@ import React, {useState} from 'react';
 import {Colors} from '@/constants/Colors';
 import {Picker} from '@react-native-picker/picker';
 
-// Define types for the component
-type FeedbackComponentProps = {};
+import { packageFeedback, sendFeedback } from '@/helpers/feedbackEndpoints';
 
-const FeedbackComponent: React.FC<FeedbackComponentProps> = () => {
+// Define types for the component
+type FeedbackComponentProps = {
+    userID: string;
+};
+
+// onpress function
+const handleFeedbackSubmit = async (
+    userID: string,
+    eventType: string,
+    selectedRating: number | null,
+    userFeedback: string
+  ) => {
+    try {
+      // Step 1: Call the packageFeedback function to package the data
+      const feedbackData = await packageFeedback(userID, eventType, selectedRating, userFeedback);
+  
+      // Step 2: Send the packaged feedback using the sendFeedback function
+      const status = await sendFeedback(feedbackData);
+  
+      // Step 3: Check response status
+      if (status === 200) {
+        console.log('Feedback sent successfully!');
+      } else {
+        console.log('Failed to send feedback.');
+      }
+    } catch (error) {
+      console.error('Error while submitting feedback:', error);
+    }
+  };
+
+
+const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
     const [visible, setVisible] = useState<boolean>(false); // To toggle form visibility
     const [selectedOption, setSelectedOption] = useState<string>(''); // Dropdown state
     const [selectedRating, setSelectedRating] = useState<number | null>(null); // Rating state
     const [message, setMessage] = useState<string>(''); // Message based on dropdown
+    const [userFeedback, setUserFeedback] = useState<string>(''); // Feedback state
 
     // Messages corresponding to dropdown options
     const customMessages: {[key: string]: string} = {
@@ -105,7 +136,14 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = () => {
                             style={styles.textInput}
                             placeholder="We value your inputs! Please share your feedback here."
                             multiline
+                            onChangeText={(text) => setUserFeedback(text)}
                         />
+                        {/* Submit Button */}
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                        onPress={async () => {await handleFeedbackSubmit(userID, selectedOption, selectedRating, userFeedback); setVisible(false);}}>
+                            <Text style={styles.closeButtonText}>Submit</Text>
+                        </TouchableOpacity>
 
                         {/* Close Form Button */}
                         <TouchableOpacity

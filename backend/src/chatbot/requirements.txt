@@ -1,10 +1,11 @@
+# chromadb
 fastapi
 # langchain
 # langchain-chroma
-langchain-core
-langchain-community
+# langchain-core
+# langchain-community
 # langchain-huggingface
-langchain-openai
+# langchain-openai
 # langchain-text-splitters
 # llama-index
 # llama-index-embeddings-huggingface

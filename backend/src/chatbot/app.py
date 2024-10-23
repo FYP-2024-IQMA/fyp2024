@@ -11,10 +11,10 @@ from typing import List, Optional
 # dealing with relative / absolute imports
 if __package__ is None or __package__ == '' or __name__ == '__main__':
     from chatgpt import ChatGPT
-    from langchain_setup import full_chain, full_chain_w_history
+    # from langchain_setup import full_chain, full_chain_w_history
 else:
     from src.chatbot.chatgpt import ChatGPT
-    from src.chatbot.langchain_setup import full_chain, full_chain_w_history
+    # from src.chatbot.langchain_setup import full_chain, full_chain_w_history
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
@@ -55,8 +55,8 @@ async def generate_text(prompt: Prompt):
         logger.error("Error in '/generate' endpoint: %s", str(e))
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.post("/langchain")
-async def langchain_text(prompt: Prompt):
+# @app.post("/langchain")
+# async def langchain_text(prompt: Prompt):
     """
     Generate a response from Agent-integrated chain based on the role and prompt.
     """
