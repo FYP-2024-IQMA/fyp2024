@@ -67,7 +67,7 @@ export default function RealityCheck() {
 
                     setRealityCheckDescription(unitDetails.realityCheck);
                     setUnitName(unitDetails.unitName);
-                    setVideoId(unitDetails.realitycheckURL);
+                    setVideoId(unitDetails.realityCheckURL);
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
