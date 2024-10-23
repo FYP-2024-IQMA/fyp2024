@@ -116,15 +116,12 @@ export default function SectionIntroduction() {
     };
 
     return (
-        <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View>
+                    <View style={{flexGrow: 1}}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
@@ -137,7 +134,7 @@ export default function SectionIntroduction() {
                                 videoUrl={videoId}
                                 playing={playing}
                                 onStateChange={onStateChange}
-                                />
+                            />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -145,16 +142,15 @@ export default function SectionIntroduction() {
                             />
                         )}
                     </View>
-                    <View style={{marginBottom: 40}}>
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
-        </ScrollView>
+        </View>
     );
 }
 
@@ -162,7 +158,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
         padding: 20,
-        // flex: 1,
+        flex: 1,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,

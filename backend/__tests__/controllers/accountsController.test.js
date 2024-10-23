@@ -32,6 +32,7 @@ describe("POST /accounts/createaccount", () => {
             age: "Millennials (25-40)",
             gender: "Male",
             hasOnboarded: "false",
+            profilePic: "https://example.com/profile.jpg",
         },
     ];
 
@@ -82,6 +83,7 @@ describe("GET /accounts/getallaccounts", () => {
                 age: "Millennials (25-40)",
                 gender: "Male",
                 hasOnboarded: "false",
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 userID: "2",
@@ -92,6 +94,7 @@ describe("GET /accounts/getallaccounts", () => {
                 age: "Millennials (25-40)",
                 gender: "Female",
                 hasOnboarded: "true",
+                profilePic: "https://example.com/profile.jpg",
             },
         ];
 
@@ -128,7 +131,8 @@ describe("GET /accounts/getaccountbyid", () => {
         role: "learner",
         age: "Millennials (25-40)",
         gender: "Male",
-        hasOnboarded: "false"
+        hasOnboarded: "false",
+        profilePic: "https://example.com/profile.jpg",
     };
 
     it("should return 200 and the account on success", async () => {
@@ -171,6 +175,7 @@ describe("GET /accounts/getaccountsbyrole", () => {
             age: "Millennials (25-40)",
             gender: "Male",
             hasOnboarded: "false",
+            profilePic: "https://example.com/profile.jpg",
         },
         {
             userID: "2",
@@ -181,6 +186,7 @@ describe("GET /accounts/getaccountsbyrole", () => {
             age: "Millennials (25-40)",
             gender: "Female",
             hasOnboarded: "true",
+            profilePic: "https://example.com/profile.jpg",
         },
     ];
 
@@ -238,6 +244,7 @@ describe("PATCH /accounts/updateaccount", () => {
         age: "Millennials (25-40)",
         gender: "Male",
         hasOnboarded: "false",
+        profilePic: "https://example.com/profile.jpg",
     };
 
     it("should update an account and return 204 on success", async () => {
