@@ -1,63 +1,90 @@
-import { StyleSheet, Text, View, ScrollView, Image } from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '@/context/AuthContext';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
-import { leaderboard } from '@/helpers/gamificationEndpoints';
-import { globalStyles } from '@/constants/styles';
-import goldImage from '@/assets/images/gold.png'; // Adjust the import path as needed
-import silverImage from '@/assets/images/silver.png';
-import bronzeImage from '@/assets/images/bronze.png';
-import profileImage from '@/assets/images/Profile.png'; // Default profile picture
-import growthImage from '@/assets/images/growth.png'
+import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
+import {AuthContext} from '@/context/AuthContext';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {getLeaderboard} from '@/helpers/gamificationEndpoints';
+import {globalStyles} from '@/constants/styles';
+import {Colors} from '@/constants/Colors';
 
 interface User {
     name: string;
-    points: number; // Ensure points are a number
+    points: number;
     rank: number;
-}
-
-interface LeaderboardData {
-    top5: User[];
-}
-interface currentUserData{
-    user: User,
+    profilePic: string;
 }
 
 export default function Leaderboard() {
-    const { currentUser } = useContext(AuthContext);
-    const [data, setData] = useState<LeaderboardData>({ top5: [] });
+    const {currentUser} = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
-    const [currentUserData, setCurrentUserData] = useState<User>();
-    
-    
+    const [currentUserRankDetails, setCurrentUserRankDetails] =
+        useState<User | null>(null);
+    const [leaderboard, setLeaderboard] = useState<User[]>([]);
 
-    const isTop5 = data.top5.some(user => user.name === currentUser.name);
+    const mockData = {
+        user: {
+            rank: 6,
+            name: 'newemail new',
+            points: 0,
+            profilePic:
+                'https://s.gravatar.com/avatar/9729153ddfd681496bc6c0ca73cff1f6?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fne.png',
+        },
+        top5: [
+            {
+                rank: 1,
+                name: 'r sng',
+                points: 1000,
+                profilePic:
+                    'https://lh3.googleusercontent.com/a/ACg8ocKaRQKG30OsaOP70Iy_NOSwNAI_T6gnteL0HmW5UsDzOT6KHA=s96-c',
+            },
+            {
+                rank: 2,
+                name: 'Kb A',
+                points: 450,
+                profilePic:
+                    'https://lh3.googleusercontent.com/a/ACg8ocIM92iV75eTcPwAbJlvOK5uYb0Oq_86UwCnd_STHRoRPeR3M9E=s96-c',
+            },
+            {
+                rank: 3,
+                name: 'fadhli tan',
+                points: 275,
+                profilePic:
+                    'https://lh3.googleusercontent.com/a/ACg8ocLg8qSMH09DEWPw9_UMVAsnK7CNU8wAz_Oi1YIwgtMapVsgXQ=s96-c',
+            },
+            {
+                rank: 4,
+                name: 'Germaine Lim',
+                points: 185,
+                profilePic:
+                    'https://lh3.googleusercontent.com/a/ACg8ocJyaci71qFm4fKapaip-STm9ObiuI9v1N6cUJ6r26pMtREBBA=s96-c',
+            },
+            {
+                rank: 5,
+                name: 'yp tan',
+                points: 10,
+                profilePic:
+                    'https://lh3.googleusercontent.com/a/ACg8ocL9ZfGONHmi1bv88EiOilxaa3uU1eB3g9FhOXTYj0GhDQuV_A=s96-c',
+            },
+        ],
+    };
+
     useEffect(() => {
         const fetchLeaderboardData = async () => {
             try {
-                const response = await leaderboard(currentUser.sub);
-                setData(response); 
-                if (Object.keys(response.user).length === 0) {
-                    // If response.user is an empty object
-                    setCurrentUserData({
-                        "rank": 6,
-                        "name": "fadhli 6",
-                        "points": 20
-                    });
-                } else {
-                    // If response.user has data
-                    setCurrentUserData(response.user);
-                }
-                console.log(currentUserData)
+                const response = await getLeaderboard(currentUser.sub);
+                setCurrentUserRankDetails(response.user);
+                setLeaderboard(response.top5);
+                // setCurrentUserRankDetails(mockData.user);
+                // setLeaderboard(mockData.top5);
+                console.log(response);
             } catch (error) {
-                console.log(error); // Handle any errors
+                console.log(error);
             } finally {
-                setLoading(false); // Set loading to false after fetching
+                setLoading(false);
             }
         };
 
         fetchLeaderboardData();
-    }, [currentUser]);
+    }, []);
 
     if (loading) {
         return <LoadingIndicator />;
@@ -66,45 +93,105 @@ export default function Leaderboard() {
     return (
         <ScrollView style={globalStyles.container}>
             <View style={styles.leaderboard}>
-                {data.top5.map((user) => {
-                    const isCurrentUser = user.name === currentUser.name; // Check if the user is the current user
-                    return (
+                <View style={{alignItems: 'center'}}>
+                    <Text
+                        style={styles.title}
+                    >
+                        Top 5 Learners
+                    </Text>
+                </View>
+                {leaderboard &&
+                    leaderboard.map((user: User) => {
+                        return (
+                            <View
+                                key={user.rank}
+                                style={[
+                                    styles.itemContainer,
+                                    currentUserRankDetails?.rank ===
+                                        user.rank && styles.currentUser,
+                                ]}
+                            >
+                                <View
+                                    style={{
+                                        flexDirection: 'row',
+                                        flex: 1,
+                                        alignItems: 'center',
+                                        gap: 10,
+                                    }}
+                                >
+                                    {user.rank === 1 ? (
+                                        <Image
+                                            source={require('@/assets/images/gold.png')}
+                                            style={styles.rankImage}
+                                        />
+                                    ) : user.rank === 2 ? (
+                                        <Image
+                                            source={require('@/assets/images/silver.png')}
+                                            style={styles.rankImage}
+                                        />
+                                    ) : user.rank === 3 ? (
+                                        <Image
+                                            source={require('@/assets/images/bronze.png')}
+                                            style={styles.rankImage}
+                                        />
+                                    ) : (
+                                        <View
+                                            style={{justifyContent: 'center'}}
+                                        >
+                                            <Text style={styles.rank}>
+                                                {user.rank}
+                                            </Text>
+                                        </View>
+                                    )}
+
+                                    <Image
+                                        source={{uri: user.profilePic}}
+                                        style={styles.image}
+                                    />
+
+                                    <Text style={styles.name}>{user.name}</Text>
+                                </View>
+                                <View>
+                                    <Text style={styles.points}>
+                                        {user.points} XP
+                                    </Text>
+                                </View>
+                            </View>
+                        );
+                    })}
+
+                {currentUserRankDetails && currentUserRankDetails.rank > 5 && (
+                    <View style={[styles.belowTop5, styles.currentUser]}>
                         <View
-                            key={user.rank}
-                            style={[
-                                styles.itemContainer,
-                                isCurrentUser && styles.currentUser // Apply overlay styles if it's the current user
-                            ]}
+                            style={{
+                                flexDirection: 'row',
+                                flex: 1,
+                                alignItems: 'center',
+                                gap: 2,
+                            }}
                         >
-                            {user.rank === 1 ? (
-                                <Image source={goldImage} style={styles.rankImage} />
-                            ) : user.rank === 2 ? (
-                                <Image source={silverImage} style={styles.rankImage} />
-                            ) : user.rank === 3 ? (
-                                <Image source={bronzeImage} style={styles.rankImage} />
-                            ) : (
-                                <Text style={styles.rank}>{user.rank}</Text>
-                            )}
-                            {/* Conditional rendering for profile picture */}
-                            {user.name !== currentUser.name ? (
-                                <Image source={profileImage} style={styles.image} />
-                            ) : (
-                                <Image source={{ uri: currentUser.picture }} style={styles.profileImage} />
-                            )}
-                            <Text style={styles.name}>{user.name}</Text>
-                            <Text style={styles.points}>{user.points} XP</Text>
+                            <Image
+                                source={require('@/assets/images/growth.png')}
+                                style={styles.growthImage}
+                            />
+                            <Text style={styles.rankBelowTop5}>
+                                {currentUserRankDetails.rank}
+                            </Text>
+                            <Image
+                                source={{
+                                    uri: currentUserRankDetails.profilePic,
+                                }}
+                                style={styles.outsideTop5Image}
+                            />
+                            <Text style={styles.name}>
+                                {currentUserRankDetails.name}
+                            </Text>
                         </View>
-                    );
-                })}
-               { !isTop5 && (
-                <View style={[styles.belowTop5,styles.currentUser]}>
-             <Image source={growthImage} style={styles.growthImage} />
-            <Text style={styles.rankBelowTop5}>{currentUserData?.rank}</Text>
-            <Image source={{ uri: currentUser.picture }} style={styles.outsideTop5Image} />
-            <Text style={styles.name}>{currentUserData?.name}</Text>    
-            <Text style={styles.points}>{currentUserData?.points} XP</Text>
-
-
+                        <View>
+                            <Text style={styles.points}>
+                                {currentUserRankDetails.points} XP
+                            </Text>
+                        </View>
                     </View>
                 )}
             </View>
@@ -113,82 +200,70 @@ export default function Leaderboard() {
 }
 
 const styles = StyleSheet.create({
-    header: {
-        fontSize: 24,
+    title: {
         fontWeight: 'bold',
-        marginBottom: 20,
+        fontSize: 18,
+        marginBottom: 10,
+        color: Colors.light.color,
     },
     leaderboard: {
         padding: 20,
-        marginTop: 50,
-
+        marginTop: 10,
     },
-    belowTop5:{
-        marginTop:10,
-        paddingTop:10,
+    belowTop5: {
+        marginTop: 10,
+        padding: 10,
         flexDirection: 'row',
-        alignItems: 'center', // Align items vertically centered
+        alignItems: 'center',
         justifyContent: 'space-between',
-        borderTopWidth:0.5,
-      
-       
-
-        
-
+        borderTopWidth: 0.5,
     },
     itemContainer: {
         flexDirection: 'row',
-        alignItems: 'center', // Align items vertically centered
+        alignItems: 'center',
         justifyContent: 'space-between',
         padding: 10,
-        
     },
     outsideTop5Image: {
-        width:40, // Adjust size as needed
-        height: 40, // Adjust size as needed
-        borderRadius: 27.5, // Make the image circular
-        // Optional: add a border // Optional: border color
-        marginRight:10,
-    },
-  
-    rank: {
-        fontWeight: 'bold',
-        marginRight: 20,
-        color: '#7654F2',
-        marginLeft: 10,
-    },
-    rankBelowTop5 :{
-        fontWeight: 'bold',
-        marginRight: 20,
-        color: '#7654F2',
-        marginLeft: 5,
-
-    },
-    rankImage: {
-        width: 30, // Adjust size as needed
-        height: 30, // Adjust size as needed
+        width: 40,
+        height: 40,
+        borderRadius: 20,
         marginRight: 10,
     },
-    growthImage:{
-        width:15,
-        height:15,
+    rank: {
+        fontWeight: 'bold',
+        color: Colors.default.purple500,
+        width: 30,
+        height: 30,
+        textAlign: 'center',
+        lineHeight: 30,
     },
-
+    rankBelowTop5: {
+        fontWeight: 'bold',
+        marginRight: 20,
+        color: Colors.default.purple500,
+        marginLeft: 5,
+    },
+    rankImage: {
+        width: 30,
+        height: 30,
+    },
+    growthImage: {
+        width: 15,
+        height: 15,
+    },
     name: {
-        flex: 1,
         fontWeight: 'bold',
     },
     points: {
         fontWeight: 'thin',
     },
     image: {
-        width: 40, // Adjust size as needed
-        height: 40, // Adjust size as needed
-        marginRight: 10, // Space between the image and text
+        borderRadius: 20,
+        width: 40,
+        height: 40,
     },
     currentUser: {
-        backgroundColor: '#EAF1FF', // Purple overlay with some transparency
-        
-        // Optional: border color to highlight the current user
+        backgroundColor: Colors.overviewCard.background,
     },
 });

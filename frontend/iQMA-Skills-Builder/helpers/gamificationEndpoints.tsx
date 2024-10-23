@@ -31,7 +31,7 @@ export const updatePoints = async (userID: string, points: number) => {
     }
 };
 
-export const leaderboard = async (userID: string) => {
+export const getLeaderboard = async (userID: string) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/leaderboard/${userID}`;
 
