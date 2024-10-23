@@ -1,6 +1,6 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -11,7 +11,8 @@ import { useTimer } from '@/helpers/useTimer';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import {formatUnit} from '@/helpers/formatUnitID';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import { AudioPlayer } from '@/components/AudioPlayer';
 
 const formatCheatSheet = (cheatsheet: any) => {
     if (Array.isArray(cheatsheet)) {

@@ -1,9 +1,20 @@
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {router, useLocalSearchParams, useRouter} from 'expo-router';
+import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {
+    useCallback,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
+import {
+    router,
+    useFocusEffect,
+    useLocalSearchParams,
+    useRouter,
+} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@/constants/Colors';
@@ -15,7 +26,8 @@ import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
+import {AudioPlayer} from '@/components/AudioPlayer';
 
 export default function AssessmentIntroduction() {
     const navigation = useNavigation();
@@ -42,7 +54,11 @@ export default function AssessmentIntroduction() {
     const [introDetails, setIntroDetails] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Assessment Introduction', unitID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Assessment Introduction',
+        unitID as string
+    );
 
     useEffect(() => {
         startTimer();
@@ -193,6 +209,7 @@ export default function AssessmentIntroduction() {
                                 }
                             />
                         </View>
+                        
                     </View>
 
                     <CustomButton

@@ -1,174 +1,146 @@
-import {
-    Button,
-    Dimensions,
-    Pressable,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-
-import {AuthContext} from '@/context/AuthContext';
-import {Colors} from '@/constants/Colors';
-import {
-    useCallback,
-    useContext,
-    useEffect,
-    useLayoutEffect,
-    useState,
-} from 'react';
+import React, {useEffect, useState} from 'react';
+import {View, TouchableOpacity} from 'react-native';
 import {Audio, AVPlaybackStatus} from 'expo-av';
 import Slider from '@react-native-community/slider';
-import {useFocusEffect} from 'expo-router';
+import {useFocusEffect} from '@react-navigation/native';
 import {Ionicons} from '@expo/vector-icons';
+import {Colors} from '@/constants/Colors';
 
-export const AudioPlayer = () => {
+interface AudioPlayerProps {
+    audioUri: string;
+}
+
+export const AudioPlayer: React.FC<AudioPlayerProps> = ({audioUri}) => {
     const [sound, setSound] = useState<Audio.Sound | null>(null);
-    const [status, setStatus] = useState<AVPlaybackStatus | null>(null);
-    const [isSeeking, setIsSeeking] = useState<boolean>(false);
-    const [seekPosition, setSeekPosition] = useState<number>(0); // In milliseconds
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [isPaused, setIsPaused] = useState<boolean>(false);
+    const [duration, setDuration] = useState<number>(0);
+    const [position, setPosition] = useState<number>(0);
+    const [seekPosition, setSeekPosition] = useState<number | null>(null);
 
-    // Function to play sound
-    const playSound = async () => {
+    // Load audio when component mounts
+    useEffect(() => {
+        loadAudio();
+
+        return () => {
+            if (sound) {
+                sound.unloadAsync();
+            }
+        };
+    }, []);
+
+    // Load the audio
+    const loadAudio = async () => {
         try {
-            const {sound: playbackObject} = await Audio.Sound.createAsync(
-                require('../assets/audio/Unit1Lesson1a.mp3'),
-                {shouldPlay: true}
+            const {sound: newSound, status} = await Audio.Sound.createAsync(
+                typeof audioUri === 'string' ? {uri: audioUri} : audioUri, // uri if string, else is file
+                {shouldPlay: false}
             );
-            setSound(playbackObject);
-
-            // Set playback status update listener
-            playbackObject.setOnPlaybackStatusUpdate(updateStatus);
+            setSound(newSound);
+            if (status.isLoaded) {
+                setDuration(status.durationMillis ?? 0);
+            }
+            newSound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
         } catch (error) {
-            console.error('Error loading sound:', error);
+            console.error('Error loading audio:', error);
         }
     };
 
-    // Function to track the playback status
-    const updateStatus = (statusUpdate: any) => {
-        if (statusUpdate.isLoaded) {
-            setStatus(statusUpdate);
+    const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+        if (status.isLoaded) {
+            setPosition(status.positionMillis ?? 0);
+            setDuration(status.durationMillis ?? 0);
+            setIsPlaying(status.isPlaying);
+        }
+    };
 
-            if (!isSeeking && statusUpdate.positionMillis != null) {
-                setSeekPosition(statusUpdate.positionMillis); // Update seek position as the audio plays
+    const playAudio = async () => {
+        if (sound) {
+            if (seekPosition !== null) {
+                await sound.setPositionAsync(seekPosition);
+                setSeekPosition(null); // reset seek position after playing
+            }
+
+            if (isPaused) {
+                // if audio paused, resume from the current position
+                await sound.playAsync();
+                setIsPaused(false);
+            } else {
+                // if audio not paused, play from the current position or beginning
+                await sound.playAsync();
             }
         }
     };
 
-    // useEffect(() => {
-    //     return () => {
-    //         if (sound) {
-    //             sound.unloadAsync();
-    //         }
-    //     };
-    // }, [sound]);
+    const pauseAudio = async () => {
+        if (sound && isPlaying) {
+            await sound.pauseAsync();
+            setIsPaused(true);
+        }
+    };
 
+    const stopAudio = async () => {
+        if (sound) {
+            await sound.stopAsync();
+        }
+    };
+
+    const seekAudio = async (value: number) => {
+        setSeekPosition(value); // Set the seek position for when play is pressed
+        if (sound && isPlaying) {
+            await sound.setPositionAsync(value); // Update the position if playing
+        }
+    };
+
+    // Stop audio screen loses focus
     useFocusEffect(
-        useCallback(() => {
+        React.useCallback(() => {
             return () => {
                 if (sound) {
-                    sound
-                        .getStatusAsync()
-                        .then((status) => {
-                            if (status.isLoaded) {
-                                sound.stopAsync(); // Stop the audio if it's loaded
-                                sound.unloadAsync(); // Unload the sound to free up resources
-                            }
-                        })
-                        .catch((error) => {
-                            console.warn(
-                                'Error stopping/unloading sound: ',
-                                error
-                            );
-                        });
+                    sound.stopAsync();
+                    setIsPlaying(false);
+                    setIsPaused(false);
+                    setPosition(0);
                 }
             };
         }, [sound])
     );
 
-    // Function to handle user interaction with the slider
-    const onSeekSliderValueChange = async (value: number) => {
-        if (sound && status?.isLoaded) {
-            setIsSeeking(true);
-            setSeekPosition(value);
-        }
-    };
-
-    // Function to handle the end of user interaction with the slider
-    const onSeekSliderComplete = async (value: number) => {
-        if (sound && status?.isLoaded) {
-            setIsSeeking(false);
-            await sound.setPositionAsync(value); // Seek to the new position in milliseconds
-        }
-    };
-
-    const pauseSound = async () => {
-        if (sound) {
-            await sound.pauseAsync();
-        }
-    };
-
-    const resumeSound = async () => {
-        if (sound) {
-            await sound.playAsync();
-        }
-    };
-
-    const stopSound = async () => {
-        if (sound) {
-            try {
-                const currentStatus = await sound.getStatusAsync();
-                if (currentStatus.isLoaded) {
-                    await sound.stopAsync(); // Stop the audio
-                }
-            } catch (error) {
-                console.error('Error stopping sound:', error);
-            }
-        }
-    };
-
     return (
         <View>
-            {status && status.isLoaded && (
-                <View>
-                    <Slider
-                        style={{height: 40}}
-                        minimumValue={0}
-                        maximumValue={status.durationMillis || 1}
-                        value={seekPosition}
-                        onValueChange={onSeekSliderValueChange} // Track user interaction
-                        onSlidingComplete={onSeekSliderComplete} // Seek when user releases slider
-                        minimumTrackTintColor="#1FB28A"
-                        maximumTrackTintColor="#D3D3D3"
-                        thumbTintColor="#1FB28A"
-                    />
+            <Slider
+                style={{height: 30}}
+                minimumValue={0}
+                maximumValue={duration}
+                value={position}
+                onSlidingComplete={seekAudio}
+                minimumTrackTintColor={Colors.default.purple500}
+                maximumTrackTintColor={Colors.default.purple500}
+                thumbTintColor={Colors.default.purple500}
+            />
 
-                    <Text>Position: {Math.floor(seekPosition / 1000)}s</Text>
-                    <Text>
-                        Duration:{' '}
-                        {Math.floor((status.durationMillis || 0) / 1000)}s
-                    </Text>
-                    <Text>Is Playing: {status.isPlaying ? 'Yes' : 'No'}</Text>
-                </View>
-            )}
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 6,
+                }}
             >
-                {/* <Button title="Play Sound" onPress={playSound} /> */}
-                {/* <Button
-                    title={seekPosition > 0 ? 'Resume' : 'Play'}
-                    onPress={seekPosition > 0 ? resumeSound : playSound}
-                /> */}
-                <TouchableOpacity onPress={seekPosition > 0 ? resumeSound : playSound}>
-                    <Ionicons name="play" color="black" size={24} />
+                <TouchableOpacity onPress={playAudio} disabled={isPlaying}>
+                    <Ionicons
+                        name="play"
+                        color={Colors.default.purple500}
+                        size={24}
+                    />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={pauseSound}>
-                    <Ionicons name="pause" color="black" size={24} />
+                <TouchableOpacity onPress={pauseAudio} disabled={!isPlaying}>
+                    <Ionicons
+                        name="pause"
+                        color={Colors.default.purple500}
+                        size={24}
+                    />
                 </TouchableOpacity>
-                {/* <Button title="Pause Sound" onPress={pauseSound} /> */}
             </View>
         </View>
     );
 };
-
-const styles = StyleSheet.create({});

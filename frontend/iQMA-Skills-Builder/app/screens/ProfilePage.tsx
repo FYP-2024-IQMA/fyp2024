@@ -167,7 +167,6 @@ const ProfilePage: React.FC = () => {
                         )}
                     </View>
                 </View>
-                <AudioPlayer></AudioPlayer>
             </View>
         </ScrollView>
     );
