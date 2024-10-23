@@ -23,33 +23,46 @@ app.use("/accounts", accountsGamificationRouter);
 
 describe("GET /accounts/leaderboard", () => {
     it("should return 200 and the list of accounts on success", async () => {
-        const mockAccounts = [
+    const mockAccounts = {
+        user: {
+            rank: 4,
+            name: "test 5",
+            points: 50,
+            profilePic: "https://example.com/profile.jpg",
+        },
+        top5: [
             {
                 rank: 1,
                 name: "test USER",
                 points: 150,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 2,
                 name: "test 3",
                 points: 100,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 3,
                 name: "test 4",
                 points: 80,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 4,
                 name: "test 5",
                 points: 50,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 5,
                 name: "test 6",
                 points: 20,
+                profilePic: "https://example.com/profile.jpg",
             },
-        ];
+        ],
+    };
 
         accountsGamificationService.getTop5Accounts.mockResolvedValue(mockAccounts);
 

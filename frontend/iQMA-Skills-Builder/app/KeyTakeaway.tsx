@@ -1,7 +1,7 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, Dimensions} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
@@ -95,6 +95,8 @@ export default function KeyTakeaway() {
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
     const [nextLessonID, setnextLessonID] = useState<string>('');
     const { startTimer, stopTimer } = useTimer(sectionID as string, 'Key Takeaway', unitID as string, lessonID as string);
+    const [isScroll, setIsScroll] = useState<boolean>(false);
+    const screenHeight = Dimensions.get('window').height;
 
     useEffect(() => {
         startTimer();
@@ -154,12 +156,15 @@ export default function KeyTakeaway() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
         >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View>
+                    <View style={{flexGrow: 1}}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
@@ -196,13 +201,12 @@ export default function KeyTakeaway() {
                             ></Image>
                         </View>
                     </View>
-                    <View style={{marginBottom: 40}}>
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        isScroll={isScroll}
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </ScrollView>

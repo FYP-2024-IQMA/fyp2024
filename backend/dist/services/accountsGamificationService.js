@@ -65,7 +65,7 @@ function getTop5Accounts(userID) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data, error } = yield supabaseConfig_1.default
             .from("accountsgamification")
-            .select("points, accounts!inner(userID, firstName, lastName)")
+            .select("points, accounts!inner(userID, firstName, lastName, profilePic)")
             .order("points", { ascending: false });
         if (error) {
             console.error(error);
@@ -84,6 +84,7 @@ function getTop5Accounts(userID) {
                     name: record.accounts.firstName + " " + record.accounts.lastName,
                     points: record.points,
                     userID: record.accounts.userID,
+                    profilePic: record.accounts.profilePic,
                 };
             });
             const userRank = rankedData
