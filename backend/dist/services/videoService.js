@@ -17,14 +17,21 @@ function extractYouTubeID(url) {
     const matches = url.match(regex);
     return matches ? matches[1] : null;
 }
-function retrieveVideoFromS3(sectionID, unitID, lessonID) {
+function retrieveVideoFromS3(sectionID, unitID, lessonID, CsORKt) {
     return __awaiter(this, void 0, void 0, function* () {
         let videoKey = `${sectionID}/${sectionID}.mp4`;
         if (unitID) {
             videoKey = `${sectionID}/${unitID}/${unitID}.mp4`;
         }
         if (lessonID) {
-            videoKey = `${sectionID}/${unitID}/lesson${lessonID}.mp4`;
+            videoKey = `${sectionID}/${unitID}/Lesson${lessonID}.mp4`;
+        }
+        // Audio Files
+        if (CsORKt === "KeyTakeaway") {
+            videoKey = `${sectionID}/${unitID}/Lesson${lessonID}-KeyTakeaway.mp3`;
+        }
+        else if (CsORKt === "CheatSheet") {
+            videoKey = `${sectionID}/${unitID}/CheatSheet.mp3`;
         }
         const params = {
             Bucket: "vid-content",
@@ -47,9 +54,9 @@ function retrieveVideoFromS3(sectionID, unitID, lessonID) {
         }
     });
 }
-function formatVideoUrl(url, sectionID, unitID, lessonID) {
+function formatVideoUrl(url, sectionID, unitID, lessonID, CsORKt) {
     return __awaiter(this, void 0, void 0, function* () {
-        const signedUrl = yield retrieveVideoFromS3(sectionID, unitID, lessonID);
+        const signedUrl = yield retrieveVideoFromS3(sectionID, unitID, lessonID, CsORKt);
         if (signedUrl) {
             return signedUrl;
         }

@@ -8,7 +8,7 @@ function extractYouTubeID(url: string) {
     return matches ? matches[1] : null;
 }
 
-async function retrieveVideoFromS3(sectionID: string, unitID?: string, lessonID?: string) {
+async function retrieveVideoFromS3(sectionID: string, unitID?: string, lessonID?: string, CsORKt?: string) {
     let videoKey = `${sectionID}/${sectionID}.mp4`;
 
     if (unitID) {
@@ -16,7 +16,14 @@ async function retrieveVideoFromS3(sectionID: string, unitID?: string, lessonID?
     }
 
     if (lessonID) {
-        videoKey = `${sectionID}/${unitID}/lesson${lessonID}.mp4`;
+        videoKey = `${sectionID}/${unitID}/Lesson${lessonID}.mp4`;
+    }
+
+    // Audio Files
+    if (CsORKt === "KeyTakeaway") {
+        videoKey = `${sectionID}/${unitID}/Lesson${lessonID}-KeyTakeaway.mp3`;
+    } else if (CsORKt === "CheatSheet") {
+        videoKey = `${sectionID}/${unitID}/CheatSheet.mp3`;
     }
 
     const params = {
@@ -39,9 +46,9 @@ async function retrieveVideoFromS3(sectionID: string, unitID?: string, lessonID?
     }
 }
 
-export async function formatVideoUrl(url: string | null, sectionID: string, unitID?: string, lessonID?: string) {
+export async function formatVideoUrl(url: string | null, sectionID: string, unitID?: string, lessonID?: string, CsORKt?: string) {
 
-    const signedUrl = await retrieveVideoFromS3(sectionID, unitID, lessonID);
+    const signedUrl = await retrieveVideoFromS3(sectionID, unitID, lessonID, CsORKt);
 
     if (signedUrl) {
         return signedUrl;
