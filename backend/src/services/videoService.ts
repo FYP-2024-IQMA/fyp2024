@@ -8,11 +8,15 @@ function extractYouTubeID(url: string) {
     return matches ? matches[1] : null;
 }
 
-async function retrieveVideoFromS3(sectionID: string, lessonID?: string) {
+async function retrieveVideoFromS3(sectionID: string, unitID?: string, lessonID?: string) {
     let videoKey = `${sectionID}/${sectionID}.mp4`;
 
+    if (unitID) {
+        videoKey = `${sectionID}/${unitID}/${unitID}.mp4`;
+    }
+
     if (lessonID) {
-        videoKey = `${sectionID}/lesson${lessonID}.mp4`;
+        videoKey = `${sectionID}/${unitID}/lesson${lessonID}.mp4`;
     }
 
     const params = {
@@ -35,9 +39,9 @@ async function retrieveVideoFromS3(sectionID: string, lessonID?: string) {
     }
 }
 
-export async function formatVideoUrl(url: string, sectionID: string, lessonID?: string) {
+export async function formatVideoUrl(url: string | null, sectionID: string, unitID?: string, lessonID?: string) {
 
-    const signedUrl = await retrieveVideoFromS3(sectionID, lessonID);
+    const signedUrl = await retrieveVideoFromS3(sectionID, unitID, lessonID);
 
     if (signedUrl) {
         return signedUrl;

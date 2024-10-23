@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -16,6 +39,7 @@ exports.getNoOfUnitPerSection = getNoOfUnitPerSection;
 exports.getAllUnitsBySection = getAllUnitsBySection;
 exports.getUnitDetailsBySectionAndUnit = getUnitDetailsBySectionAndUnit;
 const supabaseConfig_1 = __importDefault(require("../config/supabaseConfig"));
+const videoService = __importStar(require("./videoService"));
 /* READ */
 function getNoOfUnitPerSection(sectionID) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -65,7 +89,8 @@ function getUnitDetailsBySectionAndUnit(sectionUnit) {
             throw error;
         }
         else {
-            return Object.assign(Object.assign({}, data), { unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [], assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [], realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [], scenario: data.scenario ? data.scenario.split('\r\n') : [] });
+            const realitycheckURL = yield videoService.formatVideoUrl(null, sectionID, unitID);
+            return Object.assign(Object.assign({}, data), { unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [], assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [], realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [], realitycheckURL, scenario: data.scenario ? data.scenario.split('\r\n') : [] });
         }
     });
 }
