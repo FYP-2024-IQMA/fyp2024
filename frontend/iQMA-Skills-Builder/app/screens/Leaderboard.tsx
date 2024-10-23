@@ -101,14 +101,14 @@ export default function Leaderboard() {
                     </Text>
                 </View>
                 {leaderboard &&
-                    leaderboard.map((user: User) => {
+                    leaderboard.map((user: User, index) => {
                         return (
                             <View
-                                key={user.rank}
+                                key={index}
                                 style={[
                                     styles.itemContainer,
-                                    currentUserRankDetails?.rank ===
-                                        user.rank && styles.currentUser,
+                                    currentUserRankDetails?.profilePic ===
+                                        user.profilePic && styles.currentUser,
                                 ]}
                             >
                                 <View
