@@ -1,5 +1,13 @@
-import {StyleSheet, Text, View, Button, Alert, ScrollView, Linking} from 'react-native';
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Alert,
+    ScrollView,
+    Linking,
+} from 'react-native';
+import React, {useContext, useEffect, useState, useCallback} from 'react';
 import CustomSwitch from '@/components/CustomSwitch';
 import {CustomButton} from '@/components/CustomButton';
 import {AuthContext} from '@/context/AuthContext';
@@ -9,7 +17,7 @@ import {router} from 'expo-router';
 import {Colors} from '@/constants/Colors';
 import {globalStyles} from '@/constants/styles';
 import {checkNotifications} from 'react-native-permissions';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function Settings() {
     const {logOut} = useContext(AuthContext);
@@ -20,13 +28,13 @@ export default function Settings() {
 
     const getNotifications = () => {
         checkNotifications().then(({status}) => {
-            if(status === 'granted'){
+            if (status === 'granted') {
                 setIsNotificationsEnabled(true);
-            }else{
+            } else {
                 setIsNotificationsEnabled(false);
             }
         });
-    }
+    };
 
     // Get Settings from AsyncStorage
     const getSettingsData = async () => {

@@ -30,3 +30,19 @@ export const updatePoints = async (userID: string, points: number) => {
         console.error('Error updating points:', error.response.data);
     }
 };
+
+export const getLeaderboard = async (userID: string) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/leaderboard/${userID}`;
+
+       
+
+        const response = await axios.get(url);
+        const result = await response.data;
+       return result;
+      
+    } catch (error: any) {
+        console.error('Error updating points:', error.response.data);
+    }
+};
+
