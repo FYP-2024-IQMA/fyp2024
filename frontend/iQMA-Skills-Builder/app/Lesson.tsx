@@ -2,7 +2,7 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
 import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -40,6 +40,8 @@ export default function Lesson() {
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const { startTimer, stopTimer } = useTimer(sectionID as string, 'Lesson', unitID as string, lessonID as string);
+    const [isScroll, setIsScroll] = useState(false);
+    const screenHeight = Dimensions.get('window').height;
 
     useLayoutEffect(() => {
         const progress =
@@ -130,13 +132,16 @@ export default function Lesson() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
         >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View>
-                         <SectionCard
+                    <View style={{flexGrow: 1}}>
+                        <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
@@ -157,7 +162,7 @@ export default function Lesson() {
                                 videoUrl={videoId}
                                 playing={playing}
                                 onStateChange={onStateChange}
-                                />
+                            />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -165,13 +170,13 @@ export default function Lesson() {
                             />
                         )}
                     </View>
-                    <View style={{marginBottom: 40}}>
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        isScroll={isScroll}
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </ScrollView>

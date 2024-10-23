@@ -23,7 +23,7 @@ const accountsModel_1 = require("../models/accountsModel");
 /* CREATE */
 function createAccount(account) {
     return __awaiter(this, void 0, void 0, function* () {
-        const { userID, firstName, lastName, email, role, age, gender, hasOnboarded } = account;
+        const { userID, firstName, lastName, email, role, age, gender, hasOnboarded, profilePic } = account;
         const { data, error } = yield supabaseConfig_1.default
             .from("accounts")
             .insert({
@@ -34,7 +34,8 @@ function createAccount(account) {
             role,
             age,
             gender,
-            hasOnboarded
+            hasOnboarded,
+            profilePic
         })
             .select();
         if (error) {
@@ -72,9 +73,9 @@ function getAccountById(userID) {
         }
         else {
             if (data.role === "admin") {
-                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, data.hasOnboarded);
+                return new accountsModel_1.Admin(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, data.hasOnboarded, data.profilePic);
             }
-            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, data.hasOnboarded);
+            return new accountsModel_1.Learner(data.userID, data.firstName, data.lastName, data.email, data.role, new Date(data.dateCreated), data.age, data.gender, data.hasOnboarded, data.profilePic);
         }
     });
 }
