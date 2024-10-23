@@ -28,6 +28,7 @@ describe("createAccount", () => {
             age: "Millennials (25-40)",
             gender: "Female",
             hasOnboarded: "false",
+            profilePic: "https://example.com/profile.jpg",
         },
     ];
 
@@ -96,6 +97,7 @@ describe("getAllAccounts", () => {
             gender: "Female",
             dateCreated: "2024-07-13T16:11:18.442052+00:00",
             hasOnboarded: "false",
+            profilePic: "https://example.com/profile.jpg",
         },
     ];
 
@@ -148,6 +150,7 @@ describe("getAccountById", () => {
         gender: "Female",
         dateCreated: "2024-07-23T13:48:04.443245+00:00",
         hasOnboarded: "false",
+        profilePic: "https://example.com/profile.jpg",
     };
 
     const expectedResult = {
@@ -217,7 +220,8 @@ describe("getAccountsByRole", () => {
             dateCreated: "2023-01-01T00:00:00.000Z",
             age: "twenty",
             gender: "male",
-            hasOnboarded: "false"
+            hasOnboarded: "false",
+            profilePic: "https://example.com/profile.jpg",
         },
         {
             userID: "456",
@@ -228,7 +232,8 @@ describe("getAccountsByRole", () => {
             dateCreated: "2023-02-01T00:00:00.000Z",
             age: "thirty",
             gender: "female",
-            hasOnboarded: "false"
+            hasOnboarded: "false",
+            profilePic: "https://example.com/profile.jpg",
         },
     ];
 

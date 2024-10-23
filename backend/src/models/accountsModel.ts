@@ -10,6 +10,7 @@ export interface Accounts {
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
     hasOnboarded: boolean;
+    profilePic: string | null;
 
     getFirstName(): string;
     getLastName(): string;
@@ -31,6 +32,7 @@ export class Learner implements Accounts {
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
     hasOnboarded: boolean;
+    profilePic: string | null;
 
     constructor(
         userID: string,
@@ -41,7 +43,8 @@ export class Learner implements Accounts {
         dateCreated: Date,
         age: Enums<"age_type">,
         gender: Enums<"gender_type">,
-        hasOnboarded: boolean
+        hasOnboarded: boolean,
+        profilePic: string | null
 
     ) {
         this.userID = userID;
@@ -53,6 +56,7 @@ export class Learner implements Accounts {
         this.age = age;
         this.gender = gender;
         this.hasOnboarded = hasOnboarded;
+        this.profilePic = profilePic;
     }
 
     getFirstName(): string {
@@ -98,6 +102,7 @@ export class Admin implements Accounts {
     age: Enums<"age_type">;
     gender: Enums<"gender_type">;
     hasOnboarded: boolean;
+    profilePic: string | null;
 
     constructor(
         userID: string,
@@ -108,7 +113,8 @@ export class Admin implements Accounts {
         dateCreated: Date,
         age: Enums<"age_type">,
         gender: Enums<"gender_type">,
-        hasOnboarded: boolean
+        hasOnboarded: boolean,
+        profilePic: string | null
     ) {
         this.userID = userID;
         this.firstName = firstName;
@@ -119,6 +125,7 @@ export class Admin implements Accounts {
         this.age = age;
         this.gender = gender;
         this.hasOnboarded = hasOnboarded;
+        this.profilePic = profilePic;
     }
 
     getFirstName(): string {

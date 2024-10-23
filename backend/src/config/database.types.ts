@@ -18,6 +18,7 @@ export type Database = {
           gender: Database["public"]["Enums"]["gender_type"]
           hasOnboarded: boolean
           lastName: string
+          profilePic: string | null
           role: Database["public"]["Enums"]["role"]
           userID: string
         }
@@ -29,6 +30,7 @@ export type Database = {
           gender: Database["public"]["Enums"]["gender_type"]
           hasOnboarded?: boolean
           lastName: string
+          profilePic?: string | null
           role: Database["public"]["Enums"]["role"]
           userID: string
         }
@@ -40,6 +42,7 @@ export type Database = {
           gender?: Database["public"]["Enums"]["gender_type"]
           hasOnboarded?: boolean
           lastName?: string
+          profilePic?: string | null
           role?: Database["public"]["Enums"]["role"]
           userID?: string
         }
@@ -818,4 +821,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
