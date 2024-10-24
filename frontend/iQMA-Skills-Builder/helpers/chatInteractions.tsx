@@ -26,10 +26,9 @@ export const chatInteractions = async (
                 `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
                 {
                     userID: userID,
-                    age: age,
                     eventType: 'numberOfInteractions',
-                    section: section,
-                    event: `Section: ${section}, Unit: ${unit} Chat Interaction`,
+                    sectionID: section,
+                    unitID: unit,
                     timestamp: new Date().toISOString(),
                     count: count,
                 }
@@ -37,6 +36,45 @@ export const chatInteractions = async (
             console.log(response.data);
             console.log('number of interactions event type');
             console.log('added number of interactions:', count);
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
+
+export const chatResponseTime = async (
+    section: string,
+    unit: string,
+    duration: number
+) => {
+    const userID = await AsyncStorage.getItem('userID');
+    let age = await AsyncStorage.getItem('age');
+
+    if (age === null) {
+        try {
+            const ageResponse = await axios.get(
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${userID}`
+            );
+            await AsyncStorage.setItem('age', ageResponse.data['age']);
+        } catch (e) {
+            console.error(e);
+        }
+    } else {
+        try {
+            const response = await axios.post(
+                `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
+                {
+                    userID: userID,
+                    eventType: 'chatResponseTime',
+                    sectionID: section,
+                    unitID: unit,
+                    timestamp: new Date().toISOString(),
+                    duration: duration,
+                }
+            );
+            console.log(response.data);
+            console.log('chat response time event type');
+            console.log('added chat response time:', duration);
         } catch (e) {
             console.error(e);
         }

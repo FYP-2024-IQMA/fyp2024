@@ -1,6 +1,10 @@
 export interface Clickstream {
 	userID: string;
-	eventType: "timeTaken" | "attemptsTaken";
+	eventType:
+		| "timeTaken"
+		| "attemptsTaken"
+		| "chatResponseTime"
+		| "numberOfInteractions";
 	timestamp: Date;
 	sectionID: string;
 }
@@ -16,4 +20,12 @@ export interface AttemptsTakenClickstream extends Clickstream {
 	quizID: number;
 	questionNo: number;
 	attempts: number;
+}
+
+export interface ChatResponseTimeClickstream extends Clickstream {
+	responseTime: number; // in seconds
+}
+
+export interface NumberOfInteractionsClickstream extends Clickstream {
+	count: number;
 }
