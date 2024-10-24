@@ -19,4 +19,4 @@ requests
 streamlit
 typing
 # unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
-# uvicorn
+uvicorn
