@@ -42,7 +42,7 @@ export default function AssessmentIntroduction() {
     const [introDetails, setIntroDetails] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment Introduction`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Assessment Introduction', unitID as string);
 
     useEffect(() => {
         startTimer();

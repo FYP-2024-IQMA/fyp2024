@@ -71,6 +71,7 @@ export default function CreateProfile() {
             age: selectedAge,
             gender: selectedGender,
             has_onboarded: 'true',
+            profilePic: currentUser.picture ? currentUser.picture : null,
         };
 
         if (

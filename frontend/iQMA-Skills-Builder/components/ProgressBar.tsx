@@ -1,11 +1,13 @@
 import * as Progress from 'react-native-progress';
 
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Dimensions, StyleSheet, TouchableOpacity, View} from 'react-native';
 
 import {Colors} from '@/constants/Colors';
 import {Ionicons} from '@expo/vector-icons';
 import React from 'react';
 import {router} from 'expo-router';
+
+const {width: screenWidth} = Dimensions.get('window');
 
 interface ProgressBarProps {
     progress: number;
@@ -20,14 +22,16 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         router.replace('Home');
     };
 
-    // progress =
-    //     !isNaN(progress) && progress >= 0 && progress <= 1 ? progress : 0;
+    const progressBarWidth = isQuestionnaire
+        ? screenWidth * 0.75
+        : screenWidth * 0.65;
 
     return (
         <View style={styles.container}>
             <Progress.Bar
                 progress={progress}
-                width={isQuestionnaire ? 300 : 270}
+                // width={isQuestionnaire ? 300 : 270}
+                width={progressBarWidth}
                 color={Colors.default.purple500}
             />
             {/* need to change to an icon */}

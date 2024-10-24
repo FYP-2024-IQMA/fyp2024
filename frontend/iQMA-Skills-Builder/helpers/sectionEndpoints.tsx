@@ -5,8 +5,8 @@ export const getSectionDetails = async (sectionID: string) => {
         const sectionDetails = await response.json();
         // console.log(sectionDetails);
         return sectionDetails;
-    } catch (error) {
-        console.error('Error fetching sectionDetails:', error);
+    } catch (error: any) {
+        console.error('Error fetching sectionDetails:', error.response.data);
         return;
     }
 };
@@ -24,8 +24,11 @@ export const getAllSectionDetails = async () => {
         // });
         // console.log(sectionDetails);
         return sectionDetails;
-    } catch (error) {
-        console.error('Error fetching all sectionDetails:', error);
+    } catch (error: any) {
+        console.error(
+            'Error fetching all sectionDetails:',
+            error.response.data
+        );
         return;
     }
 };

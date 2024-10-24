@@ -8,13 +8,14 @@ import {
     FlatList,
 } from 'react-native';
 import {OverviewCard} from '@/components/OverviewCard';
+import {router} from 'expo-router';
 
 interface AchievementsProps {
     achievements: any[];
 }
 
 export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
-    // console.log('achievements:', achievements);
+    console.log('achievements:', achievements);
 
     let topThreeAchievements: any[] = [];
 
@@ -26,18 +27,37 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
         );
     }
 
+    const handlePress = () => {
+        router.push("Achievements");
+    };
+
     // console.log('topThreeAchievements:', topThreeAchievements);
     return (
         <View style={styles.outerContainer}>
-            <Text
-                style={[
-                    styles.achievementsHeader,
-                    topThreeAchievements.length === 0 &&
-                        styles.achievementsError,
-                ]}
+            <View
+                style={{flexDirection: 'row', justifyContent: 'space-between'}}
             >
-                Achievements
-            </Text>
+                <Text
+                    style={[
+                        styles.achievementsHeader,
+                        topThreeAchievements.length === 0 &&
+                            styles.achievementsError,
+                    ]}
+                >
+                    Achievements
+                </Text>
+                <TouchableOpacity onPress={handlePress}>
+                    <Text
+                        style={{
+                            textDecorationLine: 'underline',
+                            textDecorationColor: '#5C5776',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        View all
+                    </Text>
+                </TouchableOpacity>
+            </View>
             {topThreeAchievements.length === 0 && (
                 <OverviewCard
                     text="Sorry, our system is currently under maintenance."
@@ -73,6 +93,11 @@ const styles = StyleSheet.create({
     outerContainer: {
         paddingHorizontal: 20,
         marginTop: 20,
+    },
+    header: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#18113C',
     },
     achievementsHeader: {
         fontSize: 16,

@@ -43,7 +43,7 @@ export async function getLesson(
 		let formattedLessonURL = data[0].lessonURL
 
 		if (formattedLessonURL) {
-			formattedLessonURL = await videoService.formatVideoUrl(formattedLessonURL, sectionID, lessonID);
+			formattedLessonURL = await videoService.formatVideoUrl(formattedLessonURL, sectionID, unitID, lessonID);
 		}
 
 		let description = data[0].lessonDescription;
@@ -156,7 +156,8 @@ export async function getAllLessons(sectionID: string, unitID: string) {
                 if (formattedLessonURL) {
                     formattedLessonURL = await videoService.formatVideoUrl(
                         lesson.lessonURL,
-                        sectionID,
+						sectionID,
+						unitID,
                         lesson.lessonID
                     );
                 }

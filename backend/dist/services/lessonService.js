@@ -74,7 +74,7 @@ function getLesson(sectionID, unitID, lessonID) {
         else {
             let formattedLessonURL = data[0].lessonURL;
             if (formattedLessonURL) {
-                formattedLessonURL = yield videoService.formatVideoUrl(formattedLessonURL, sectionID, lessonID);
+                formattedLessonURL = yield videoService.formatVideoUrl(formattedLessonURL, sectionID, unitID, lessonID);
             }
             let description = data[0].lessonDescription;
             let formattedDescription = description
@@ -144,7 +144,7 @@ function getAllLessons(sectionID, unitID) {
             const formattedLessons = yield Promise.all(data.map((lesson) => __awaiter(this, void 0, void 0, function* () {
                 let formattedLessonURL = lesson.lessonURL;
                 if (formattedLessonURL) {
-                    formattedLessonURL = yield videoService.formatVideoUrl(lesson.lessonURL, sectionID, lesson.lessonID);
+                    formattedLessonURL = yield videoService.formatVideoUrl(lesson.lessonURL, sectionID, unitID, lesson.lessonID);
                 }
                 let description = lesson.lessonDescription;
                 let formattedDescription = description
