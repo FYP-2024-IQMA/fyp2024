@@ -1,7 +1,7 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 
 import React, {useEffect, useLayoutEffect, useState,} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions} from 'react-native';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -13,6 +13,7 @@ import ProgressBar from '@/components/ProgressBar';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import { AudioPlayer } from '@/components/AudioPlayer';
+import {Ionicons} from '@expo/vector-icons';
 
 const formatCheatSheet = (cheatsheet: any) => {
     if (Array.isArray(cheatsheet)) {
@@ -72,8 +73,18 @@ export default function CheatSheet() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);

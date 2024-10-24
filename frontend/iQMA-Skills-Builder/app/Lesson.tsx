@@ -2,7 +2,7 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
 import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -16,6 +16,8 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import VideoPlayer from '@/components/VideoPlayer';
 import { useTimer } from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
+
 
 // where things show up
 export default function Lesson() {
@@ -49,8 +51,18 @@ export default function Lesson() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
