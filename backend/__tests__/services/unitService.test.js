@@ -1,9 +1,12 @@
 const unitService = require("../../dist/services/unitService");
 const supabase = require("../../dist/config/supabaseConfig");
+const videoService = require("../../dist/services/videoService");
 
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
 }));
+
+jest.mock("../../dist/services/videoService");
 
 let consoleErrorSpy;
 
@@ -159,6 +162,8 @@ describe("getUnitDetailsBySectionAndUnit", () => {
             "🎉 Welcome to the ultimate party mixer challenge!",
             "🎊 Get ready to navigate diverse conversations, decode communication styles, and master the art of making meaningful connections! 🚀",
         ],
+        realityCheckURL: "https://realityCheckURL.mp4",
+        cheatSheetAudio: "https://cheatSheetAudio.mp3",
         scenario: [
             "Imagine you're attending a bustling networking event filled with professionals from various industries. As you navigate through the crowd, you notice people engaged in conversations, exchanging business cards, and forming connections.",
             "Suddenly, you spot a potential client across the room who seems disinterested in the conversation they're having. How do you approach them and effectively convey your message to capture their attention and leave a lasting impression?",
@@ -176,6 +181,10 @@ describe("getUnitDetailsBySectionAndUnit", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
 
         supabase.from.mockReturnValue({ select: mockSelect });
+
+        videoService.formatVideoUrl
+            .mockReturnValueOnce("https://realityCheckURL.mp4")
+            .mockReturnValueOnce("https://cheatSheetAudio.mp3");
 
         const result = await unitService.getUnitDetailsBySectionAndUnit({
             sectionID,

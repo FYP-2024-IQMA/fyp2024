@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -15,6 +15,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {useNavigation} from '@react-navigation/native';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import VideoPlayer from '@/components/VideoPlayer';
+import {Ionicons} from '@expo/vector-icons';
 
 // where things show up
 export default function SectionIntroduction() {
@@ -45,8 +46,18 @@ export default function SectionIntroduction() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);

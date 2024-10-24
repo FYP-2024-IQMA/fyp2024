@@ -13,6 +13,8 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 import {Colors} from '@/constants/Colors';
 import { formatSection } from '@/helpers/formatSectionID';
+import { globalStyles } from '@/constants/styles';
+import React from 'react';
 
 export default function Achievements() {
     const {currentUser} = useContext(AuthContext);
@@ -107,11 +109,10 @@ export default function Achievements() {
     }
 
     return (
-        <ScrollView style={styles.container}>
-            <View>
+        <ScrollView style={globalStyles.container}>
+            <View style={styles.container}>
                 {badges.map((section) => (
-                    <>
-                        <View style={styles.sectionContainer}>
+                        <View style={styles.sectionContainer} key={section.sectionID}>
                             <Text style={styles.sectionHeading}>
                                 {/* {section.sectionID} */}
                                 Section {formatSection(section.sectionID)}
@@ -124,8 +125,8 @@ export default function Achievements() {
                                     (badge: {
                                         badgeUrl: string;
                                         unitName: string;
-                                    }) => (
-                                        <View style={styles.badgeContainer}>
+                                    }, index: number) => (
+                                        <View style={styles.badgeContainer} key={badge.unitName}>
                                             <Image
                                                 source={{uri: badge.badgeUrl}}
                                                 style={styles.badgeImage}
@@ -147,7 +148,6 @@ export default function Achievements() {
                                 )}
                             </View>
                         </View>
-                    </>
                 ))}
             </View>
         </ScrollView>
@@ -156,8 +156,6 @@ export default function Achievements() {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
-        // padding: 20,
         paddingHorizontal: 20,
     },
     sectionContainer: {
@@ -166,7 +164,7 @@ const styles = StyleSheet.create({
     sectionHeading: {
         color: Colors.light.color,
         fontWeight: 'bold',
-        fontSize: 16,
+        fontSize: 18,
         textAlign: "center"
     },
     badgeOuterContainer: {

@@ -1,7 +1,7 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View, Dimensions} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
@@ -18,6 +18,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
@@ -30,8 +31,18 @@ export default function KeyTakeaway() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);

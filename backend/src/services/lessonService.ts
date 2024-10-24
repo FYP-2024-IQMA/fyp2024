@@ -46,6 +46,8 @@ export async function getLesson(
 			formattedLessonURL = await videoService.formatVideoUrl(formattedLessonURL, sectionID, unitID, lessonID);
 		}
 
+		const lessonKeyTakeawayAudio = await videoService.formatVideoUrl(null, sectionID, unitID, lessonID, "KeyTakeaway");
+
 		let description = data[0].lessonDescription;
 		let formattedDescription: string[] | null = description
 			? description.split(/\r?\n/)
@@ -81,6 +83,7 @@ export async function getLesson(
 				lessonURL: formattedLessonURL,
 				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
+				lessonKeyTakeawayAudio,
 				lessonCheatSheet: formattedCheatSheet,
 			};
 		}
@@ -110,6 +113,7 @@ export async function getLesson(
 				lessonURL: formattedLessonURL,
 				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
+				lessonKeyTakeawayAudio,
 				lessonCheatSheet: formattedCheatSheet,
 			};
 		}
@@ -123,6 +127,7 @@ export async function getLesson(
 				lessonURL: formattedLessonURL,
 				lessonDescription: formattedDescription,
 				lessonKeyTakeaway: formattedTakeaway,
+				lessonKeyTakeawayAudio,
 				lessonCheatSheet: sentences,
 			};
 		}
@@ -132,6 +137,7 @@ export async function getLesson(
 			lessonURL: formattedLessonURL,
 			lessonDescription: formattedDescription,
 			lessonKeyTakeaway: formattedTakeaway,
+			lessonKeyTakeawayAudio,
 			lessonCheatSheet: [],
 		};
 	}

@@ -89,8 +89,10 @@ function getUnitDetailsBySectionAndUnit(sectionUnit) {
             throw error;
         }
         else {
-            const realitycheckURL = yield videoService.formatVideoUrl(null, sectionID, unitID);
-            return Object.assign(Object.assign({}, data), { unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [], assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [], realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [], realitycheckURL, scenario: data.scenario ? data.scenario.split('\r\n') : [] });
+            const realityCheckURL = yield videoService.formatVideoUrl(null, sectionID, unitID);
+            const cheatSheetAudio = yield videoService.formatVideoUrl(null, sectionID, unitID, undefined, "CheatSheet");
+            return Object.assign(Object.assign({}, data), { unitDescription: data.unitDescription ? data.unitDescription.split('\r\n') : [], assessmentIntro: data.assessmentIntro ? data.assessmentIntro.split('\r\n') : [], realityCheck: data.realityCheck ? data.realityCheck.split('\r\n') : [], realityCheckURL,
+                cheatSheetAudio, scenario: data.scenario ? data.scenario.split('\r\n') : [] });
         }
     });
 }

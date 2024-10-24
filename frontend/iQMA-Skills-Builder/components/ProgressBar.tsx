@@ -22,9 +22,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         router.replace('Home');
     };
 
-    const progressBarWidth = isQuestionnaire
-        ? screenWidth * 0.75
-        : screenWidth * 0.65;
+    const progressBarWidth = isQuestionnaire ? screenWidth * 0.75 : screenWidth * 0.50;
 
     return (
         <View style={styles.container}>
@@ -35,25 +33,25 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
                 color={Colors.default.purple500}
             />
             {/* need to change to an icon */}
-            {!isQuestionnaire && (
-                <TouchableOpacity onPress={handlePress}>
+            {/* {!isQuestionnaire && (
+                <TouchableOpacity onPress={handlePress}> */}
                     {/* <Ionicons name="close" size={24} color="black" style={{marginLeft: 30}} /> */}
-                    <Ionicons
+                    {/* <Ionicons
                         name="home"
                         size={24}
                         color="black"
                         style={{marginLeft: 30}}
                     />
                 </TouchableOpacity>
-            )}
+            )} */}
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        // flexDirection: 'row',
+        // alignItems: 'center',
     },
     closeButtonText: {
         fontSize: 20,

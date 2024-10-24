@@ -4,7 +4,7 @@ import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View} from 'react-native';
+import {ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -20,6 +20,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -54,8 +55,18 @@ export default function SelfReflection() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);

@@ -4,7 +4,7 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -21,7 +21,8 @@ import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {useTimer} from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer'
+import {Ionicons} from '@expo/vector-icons';;
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -114,8 +115,18 @@ export default function Assessment() {
               parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation, checkFinal]);
