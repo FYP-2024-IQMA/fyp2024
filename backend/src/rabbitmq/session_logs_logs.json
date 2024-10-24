@@ -1,0 +1,21 @@
+[
+  {
+    "type": "session",
+    "message": "User logged in",
+    "timestamp": "2024-09-01T12:00:00Z"
+  },
+  {
+    "type": "session",
+    "userID": "USR0001",
+    "startTime": "2024-09-01T12:00:00Z",
+    "endTime": "2024-09-02T12:00:00Z",
+    "duration": 123
+  },
+  {
+    "type": "session_logs",
+    "userID": "USR0001",
+    "startTime": "2024-09-01T12:00:00Z",
+    "endTime": "2024-09-02T12:00:00Z",
+    "duration": 123
+  }
+]

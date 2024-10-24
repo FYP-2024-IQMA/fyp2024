@@ -1,7 +1,7 @@
+import * as chatInteractionsEndpoints from '@/helpers/chatInteractions';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
-
 
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
@@ -42,7 +42,11 @@ export default function SelfReflection() {
         setChatHistoryLength(length);
     };
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Self Reflection', unitID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Self Reflection',
+        unitID as string
+    );
 
     useLayoutEffect(() => {
         const progress =
@@ -61,6 +65,17 @@ export default function SelfReflection() {
         if (sectionID && unitID) {
             (async () => {
                 try {
+                    console.log({
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        isFinal: 'true',
+                        currentProgress: (
+                            parseInt(currentProgress as string) + 1
+                        ).toString(),
+                        totalProgress,
+                    });
                     const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,
                         unitID as string
@@ -82,11 +97,18 @@ export default function SelfReflection() {
     }, [sectionID, unitID]);
 
     const handlePress = async () => {
-        // (async () => {
         try {
             const ifCompleted = await resultEndpoints.checkIfCompletedQuiz(
                 currentUser.sub,
                 parseInt(quizID as string)
+            );
+
+            // add number of interactions to clickstream
+            const numberOfInteractions = (chatHistoryLength - 1) / 2;
+            await chatInteractionsEndpoints.chatInteractions(
+                sectionID as string,
+                unitID as string,
+                numberOfInteractions
             );
 
             if (!ifCompleted) {
@@ -95,13 +117,13 @@ export default function SelfReflection() {
                     parseInt(quizID as string)
                 );
 
-                let points = await AsyncStorage.getItem(
-                    'totalPoints'
-                );
+                let points = await AsyncStorage.getItem('totalPoints');
                 const numPoints = parseInt(points as string);
 
-                await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
-
+                await gamificationEndpoints.updatePoints(
+                    currentUser.sub,
+                    numPoints
+                );
 
                 // try {
                 //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
@@ -136,9 +158,7 @@ export default function SelfReflection() {
         }
         // })();
 
-        if (
-            parseInt(currentUnit as string) === parseInt(totalUnits as string)
-        ) {
+        if (parseInt(unitNumber as string) === parseInt(totalUnits as string)) {
             // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
             router.push({
                 pathname: 'AssessmentIntroduction',

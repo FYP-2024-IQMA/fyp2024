@@ -1,6 +1,7 @@
 import accountsAffectiveRouter from "./routes/accountsAffectiveRouter";
 import accountsCognitiveRouter from "./routes/accountsCognitiveRouter";
 import accountsDemographicsRouter from "./routes/accountsDemographicsRouter";
+import accountsGamificationRouter from "./routes/accountsGamificationRouter";
 import accountsRouter from "./routes/accountsRouter";
 import accountsSocialRouter from "./routes/accountsSocialRouter";
 import amqp from "amqplib/callback_api"; // RabbitMQ
@@ -15,7 +16,6 @@ import quizRouter from "./routes/quizRouter";
 import resultRouter from "./routes/resultRouter";
 import sectionRouter from "./routes/sectionRouter";
 import unitRouter from "./routes/unitRouter";
-import accountsGamificationRouter from "./routes/accountsGamificationRouter";
 
 const app = express();
 const port = 3000;
@@ -42,41 +42,52 @@ app.use("/clickstream", clickstreamRouter);
 app.use("/accounts", accountsGamificationRouter);
 
 // RabbitMQ Producer: Sends "timeTaken" data to RabbitMQ
-app.post("/rabbitmq", (req, res) => {
-	const { timeTaken } = req.body;
-	console.log("timetaken:", timeTaken);
+// app.post("/rabbitmq", (req, res) => {
+// 	const data = req.body;
+// 	console.log("Data received from frontend: ", data);
 
-	// Connect to RabbitMQ
-	amqp.connect("amqp://localhost", (error0, connection) => {
-		if (error0) {
-			throw error0;
-		}
+// 	// Connect to RabbitMQ
+// 	amqp.connect("amqp://localhost", (error0, connection) => {
+// 		if (error0) {
+// 			throw error0;
+// 		}
 
-		connection.createChannel((error1, channel) => {
-			if (error1) {
-				throw error1;
-			}
+// 		connection.createChannel((error1, channel) => {
+// 			if (error1) {
+// 				throw error1;
+// 			}
 
-			const queue = "response_times";
-			const msg = JSON.stringify({ timeTaken });
+// 			const queues = ["session_logs", "response_times", "number_of_messages"];
 
-			// Ensure the queue exists
-			channel.assertQueue(queue, { durable: false });
+// 			// Ensure all queues exist
+// 			queues.forEach((queue) => {
+// 				channel.assertQueue(queue, { durable: false });
+// 			});
 
-			// Send message to RabbitMQ queue
-			channel.sendToQueue(queue, Buffer.from(msg));
+// 			console.log(queues);
+// 			// Determine which queue to send the message to
+// 			let queueToSend;
 
-			console.log(` [x] Sent ${msg}`);
-		});
+// 			if (data.type) {
+// 				queueToSend = data.type;
+// 			} else {
+// 				return res.status(400).send("Invalid data type");
+// 			}
+// 			// Send the message to the appropriate queue
+// 			const msg = JSON.stringify(data);
 
-		// Close the connection after sending the message
-		setTimeout(() => {
-			connection.close();
-		}, 500);
-	});
+// 			channel.sendToQueue(queueToSend, Buffer.from(msg));
 
-	res.send("Time sent to RabbitMQ");
-});
+// 			console.log(` [x] Sent to ${queueToSend}: ${msg}`);
+
+// 			// Close the connection after sending the message
+// 			setTimeout(() => {
+// 				connection.close();
+// 				res.send("Data sent to RabbitMQ");
+// 			}, 500);
+// 		});
+// 	});
+// });
 
 // Start the Express server
 app.listen(port, () => {

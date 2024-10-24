@@ -9,7 +9,7 @@ import axios from 'axios';
 import {criticallyDampedSpringCalculations} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 
 export const QuizCard: React.FC<{
-    sectionID: string,
+    sectionID: string;
     questionData: Question;
     onNextQuestion: () => void;
 }> = ({sectionID, questionData, onNextQuestion}) => {

@@ -7,7 +7,7 @@ import {Ionicons} from '@expo/vector-icons';
 import React from 'react';
 import {router} from 'expo-router';
 
-const { width: screenWidth } = Dimensions.get('window');
+const {width: screenWidth} = Dimensions.get('window');
 
 interface ProgressBarProps {
     progress: number;
@@ -22,7 +22,9 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         router.replace('Home');
     };
 
-    const progressBarWidth = isQuestionnaire ? screenWidth * 0.75 : screenWidth * 0.65;
+    const progressBarWidth = isQuestionnaire
+        ? screenWidth * 0.75
+        : screenWidth * 0.65;
 
     return (
         <View style={styles.container}>

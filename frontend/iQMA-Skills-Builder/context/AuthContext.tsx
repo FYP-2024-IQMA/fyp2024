@@ -1,9 +1,10 @@
+import {AppRegistry, PermissionsAndroid} from 'react-native';
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {router} from 'expo-router';
 import messaging from '@react-native-firebase/messaging';
-import { PermissionsAndroid } from 'react-native';
+import {router} from 'expo-router';
 
 export const AuthContext = createContext<any>(null);
 
@@ -13,7 +14,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [token, setToken] = useState<string | null>(null); // Store Access Token of current User
     const [isLoading, setIsLoading] = useState(true);
 
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         console.log('Message handled in the background!', remoteMessage);
     });
 
@@ -23,24 +24,23 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
             );
             if (permission === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("Notification permission granted");
-            }
-            else {
-                console.log("Notification permission denied");
+                console.log('Notification permission granted');
+            } else {
+                console.log('Notification permission denied');
             }
         } catch (e) {
             console.error(e);
         }
-    }
+    };
 
     const getToken = async () => {
         const token = await messaging().getToken();
-        console.log("Token = ", token);
-    }
+        console.log('Token = ', token);
+    };
 
     useEffect(() => {
         getToken();
-    })
+    });
 
     useEffect(() => {
         watchUserSession();
@@ -55,7 +55,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             console.log(user);
             // router.push("CreateProfile");
             // router.push("IntroductionMascot");
-            // router.replace("/Home");
+            // router.replace("/Home")
             await checkFirstLogin();
             if (user.sub) {
                 await AsyncStorage.setItem('userID', user.sub);
@@ -99,7 +99,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     // Log In
     const logIn = async () => {
         try {
-            await authorize();            
+            await authorize();
         } catch (e) {
             console.log(e);
         }
