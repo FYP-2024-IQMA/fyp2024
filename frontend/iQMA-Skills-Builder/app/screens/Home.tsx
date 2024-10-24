@@ -5,6 +5,7 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
 import {
     NativeScrollEvent,
@@ -42,6 +43,8 @@ const HomeScreen: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [completedFinals, setCompletedFinals] = useState<boolean>(false);
     const [showButton, setShowButton] = useState(false);
+    const [userPoints, setUserPoints] = useState<number>(0);
+    const [userStreak, setUserStreak] = useState<number>(0);
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const yOffset = event.nativeEvent.contentOffset.y;
@@ -327,6 +330,11 @@ const HomeScreen: React.FC = () => {
                 );
                 console.log('Current Section Outside:', currentSection);
 
+                const gamificationData  = await gamificationEndpoints.getStreak(currentUser.sub);
+                console.log(gamificationData);
+                setUserPoints(gamificationData.points);
+                setUserStreak(gamificationData.streaks);
+
                 if (currentSection > sectionDetails.length) {
                     currentSection = sectionDetails.length;
                     console.log(
@@ -438,7 +446,7 @@ const HomeScreen: React.FC = () => {
                 ref={scrollViewRef}
             >
                 {/* Top Stats */}
-                <TopStats circularProgress={sectionCircularProgress} />
+                <TopStats circularProgress={sectionCircularProgress} streak={userStreak} points={userPoints} />
 
                 {allSectionDetails.length > 0 ? (
                     allSectionDetails.map((sectionDetail, index) => (

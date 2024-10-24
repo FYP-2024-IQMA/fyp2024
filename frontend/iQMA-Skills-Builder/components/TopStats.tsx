@@ -8,32 +8,56 @@ import React from 'react';
 
 interface TopStatsProps {
     circularProgress: number;
+    points: number;
+    streak: number;
 }
 
-const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
+const TopStats: React.FC<TopStatsProps> = ({
+    circularProgress,
+    points,
+    streak,
+}) => {
     return (
         <View style={styles.statsContainer}>
-            <View style={[styles.statBox, styles.leftStatBox]}>
+            <View style={[styles.statBox]}>
                 <View style={styles.statContent}>
-                    <Image
-                        source={require('@/assets/images/fire.png')}
-                        style={styles.statIcon}
-                    />
                     <View>
-                        <Text style={styles.statNumber}>5</Text>
+                        <Image
+                            source={require('@/assets/images/fire_icon.png')}
+                            style={styles.statIcon}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.statNumber}>{streak}</Text>
                         <Text style={styles.statLabel}>Day streak</Text>
                     </View>
                 </View>
             </View>
-            <View style={[styles.statBox, styles.rightStatBox]}>
-                <CircularProgress
-                    size={40}
-                    strokeWidth={5}
-                    progress={circularProgress}
-                />
-                <Text style={styles.statLabelRight}>
-                    Section{'\n'}Completion
-                </Text>
+            <View style={[styles.statBox]}>
+                <View style={styles.statContent}>
+                    <View>
+                        <Image
+                            source={require('@/assets/images/xp_icon.png')}
+                            style={styles.statIcon}
+                        />
+                    </View>
+                    <View>
+                        <Text style={styles.statNumber}>{points}</Text>
+                        <Text style={styles.statLabel}>Total XP</Text>
+                    </View>
+                </View>
+            </View>
+            <View style={[styles.statBox]}>
+                <View style={styles.sectionContent}>
+                    <CircularProgress
+                        size={40}
+                        strokeWidth={5}
+                        progress={circularProgress}
+                    />
+                    <Text style={styles.statLabelRight}>
+                        Section{'\n'}Completion
+                    </Text>
+                </View>
             </View>
         </View>
     );
@@ -43,36 +67,36 @@ const styles = StyleSheet.create({
     statsContainer: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         marginBottom: 20,
-        // paddingHorizontal: 5,
+        gap: 10,
     },
     statBox: {
+        flex: 1,
+        flexDirection: 'row',
         padding: 5,
         borderRadius: 15,
         alignItems: 'center',
         justifyContent: 'center',
         borderWidth: 2,
         borderColor: Colors.default.purple100,
-        marginHorizontal: 5,
-        height: 52,
-        width: 120,
-    },
-    leftStatBox: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    rightStatBox: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        // backgroundColor: "red"
     },
     statContent: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+        flex: 1
+    },
+    sectionContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 5,
+        flex: 1
     },
     statIcon: {
-        width: 15,
-        height: 15,
+        width: 30,
+        height: 30,
         marginRight: 10,
     },
     statNumber: {
@@ -87,7 +111,6 @@ const styles = StyleSheet.create({
     statLabelRight: {
         fontSize: 10,
         color: '#333',
-        marginLeft: 5,
     },
 });
 
