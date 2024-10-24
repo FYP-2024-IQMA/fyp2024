@@ -96,7 +96,7 @@ export default function Settings() {
             </View>
             <Button
         title="Press Me"
-        onPress={() => router.push('EditProfile')}
+        onPress={() => router.push('Streak')}
       />
 
             <CustomButton
