@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from langchain_openai import ChatOpenAI
-from langchain_community.adapters.openai import convert_openai_messages
+# from langchain_openai import ChatOpenAI
+# from langchain_community.adapters.openai import convert_openai_messages
 import logging
 import os
 from pydantic.dataclasses import dataclass
