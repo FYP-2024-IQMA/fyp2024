@@ -1,12 +1,23 @@
-import { StyleSheet, Text, View ,Button,Alert} from 'react-native';
-import React, { useContext, useEffect, useState } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Alert,
+    ScrollView,
+    Linking,
+} from 'react-native';
+import React, {useContext, useEffect, useState, useCallback} from 'react';
 import CustomSwitch from '@/components/CustomSwitch';
-import { CustomButton } from '@/components/CustomButton';
-import { AuthContext } from '@/context/AuthContext';
+import {CustomButton} from '@/components/CustomButton';
+import {AuthContext} from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {router} from 'expo-router';
+import {Colors} from '@/constants/Colors';
+import {globalStyles} from '@/constants/styles';
+import {checkNotifications} from 'react-native-permissions';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function Settings() {
     const {logOut} = useContext(AuthContext);
@@ -15,19 +26,24 @@ export default function Settings() {
     const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    const getNotifications = () => {
+        checkNotifications().then(({status}) => {
+            if (status === 'granted') {
+                setIsNotificationsEnabled(true);
+            } else {
+                setIsNotificationsEnabled(false);
+            }
+        });
+    };
+
     // Get Settings from AsyncStorage
     const getSettingsData = async () => {
         try {
             const soundEffects = await AsyncStorage.getItem('soundEffects');
-            const notifications = await AsyncStorage.getItem('notifications');
 
             if (soundEffects !== null) {
                 const parsedSoundEffects = JSON.parse(soundEffects);
                 setIsSoundEffectsEnabled(parsedSoundEffects);
-            }
-            if (notifications !== null) {
-                const parsedNotifications = JSON.parse(notifications);
-                setIsNotificationsEnabled(parsedNotifications);
             }
         } catch (e) {
             console.error('Error reading AsyncStorage values:', e);
@@ -39,6 +55,12 @@ export default function Settings() {
     useEffect(() => {
         getSettingsData();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getNotifications();
+        }, [])
+    );
 
     // Auto save to AsyncStorage when user make changes
     const toggleSoundEffects = async (value: boolean) => {
@@ -52,14 +74,9 @@ export default function Settings() {
     };
 
     // Auto save to AsyncStorage when user make changes
-    const toggleNotifications = async (value: boolean) => {
-        setIsNotificationsEnabled(value);
-        try {
-            await AsyncStorage.setItem('notifications', JSON.stringify(value));
-            console.log('Notifications setting saved!');
-        } catch (e) {
-            console.error('Error saving notifications setting:', e);
-        }
+    const toggleNotifications = () => {
+        Linking.openSettings();
+        router.replace('Home');
     };
 
     // If still loading, show the loading indicator
@@ -68,35 +85,33 @@ export default function Settings() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.textHeading}>GENERAL</Text>
-            <View style={styles.switchContainer}>
-                <Text style={styles.label}>Sound Effects</Text>
-                <CustomSwitch
-                    isEnabled={isSoundEffectsEnabled}
-                    onToggle={toggleSoundEffects}
+        <ScrollView style={globalStyles.container}>
+            <View style={styles.container}>
+                <Text style={styles.textHeading}>GENERAL</Text>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>Sound Effects</Text>
+                    <CustomSwitch
+                        isEnabled={isSoundEffectsEnabled}
+                        onToggle={toggleSoundEffects}
+                    />
+                </View>
+
+                <Text style={styles.textHeading}>NOTIFICATIONS</Text>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>All Notifications</Text>
+                    <CustomSwitch
+                        isEnabled={isNotificationsEnabled}
+                        onToggle={toggleNotifications}
+                    />
+                </View>
+
+                <CustomButton
+                    label="Log out"
+                    backgroundColor="white"
+                    onPressHandler={logOut}
                 />
             </View>
-
-            <Text style={styles.textHeading}>NOTIFICATIONS</Text>
-            <View style={styles.switchContainer}>
-                <Text style={styles.label}>All Notifications</Text>
-                <CustomSwitch
-                    isEnabled={isNotificationsEnabled}
-                    onToggle={toggleNotifications}
-                />
-            </View>
-            <Button
-        title="Press Me"
-        onPress={() => router.push('EditProfile')}
-      />
-
-            <CustomButton
-                label="Log out"
-                backgroundColor="white"
-                onPressHandler={logOut}
-            />
-        </View>
+        </ScrollView>
     );
 }
 

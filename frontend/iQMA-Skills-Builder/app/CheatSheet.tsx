@@ -1,7 +1,7 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 
-import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useLayoutEffect, useState,} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -61,7 +61,9 @@ export default function CheatSheet() {
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} Cheat Sheet`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Cheat Sheet');
+    const [isScroll, setIsScroll] = useState(false);
+    const screenHeight = Dimensions.get('window').height;
 
     useLayoutEffect(() => {
         const progress =
@@ -130,12 +132,15 @@ export default function CheatSheet() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
         >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View>
+                    <View style = {{flexGrow: 1}}>
                         <Text style={[styles.title, {marginHorizontal: 10}]}>
                             Unit {unitNumber}: Cheat Sheet
                         </Text>
@@ -155,13 +160,14 @@ export default function CheatSheet() {
                             ></OverviewCard>
                         )}
                     </View>
-                    <View style={{marginBottom: 40}}>
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        isScroll={isScroll}
+                        onPressHandler={handlePress}
+                    />
+
                 </>
             )}
         </ScrollView>

@@ -1,28 +1,19 @@
 export interface Clickstream {
 	userID: string;
-	age: string;
-	eventType:
-		| "timeTaken"
-		| "attemptsTaken"
-		| "chatResponseTime"
-		| "numberOfInteractions";
-	section: string;
-	event: string;
+	eventType: "timeTaken" | "attemptsTaken";
 	timestamp: Date;
+	sectionID: string;
 }
 
 export interface TimeTakenClickstream extends Clickstream {
+	unitID?: string | null;
+	lessonID?: string | null;
+	event: string;
 	time: number; // in seconds
 }
 
 export interface AttemptsTakenClickstream extends Clickstream {
+	quizID: number;
+	questionNo: number;
 	attempts: number;
-}
-
-export interface ChatResponseTimeClickstream extends Clickstream {
-	responseTime: number; // in seconds
-}
-
-export interface NumberOfInteractionsClickstream extends Clickstream {
-	count: number;
 }

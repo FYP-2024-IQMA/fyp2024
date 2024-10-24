@@ -18,7 +18,7 @@ import {SectionProfileProgressBar} from './SectionProfileProgressBar';
 interface SectionProfileProps {
     sectionID: string;
     sectionName: string;
-    sectionDuration: string;
+    sectionDuration: number;
 }
 
 const SectionProfile: React.FC<SectionProfileProps> = ({
@@ -333,10 +333,7 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
     return (
         <View style={styles.main}>
             <TouchableOpacity
-                style={[
-                    styles.sectionCard,
-                    status === 'not-started' && styles.disabledSectionCard,
-                ]}
+                style={styles.sectionCard}
                 onPress={handlePress}
                 disabled={status === 'not-started'}
             >
@@ -364,6 +361,12 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
                         </Text>
                     </View>
                 </View>
+
+                {status === 'not-started' && (
+                    <View style={styles.lockOverlay}>
+                        <Text style={styles.lockedText}>LOCKED</Text>
+                    </View>
+                )}
             </TouchableOpacity>
         </View>
     );
@@ -372,7 +375,6 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
 const styles = StyleSheet.create({
     main: {
         flex: 1,
-        
     },
     image: {
         width: '100%',
@@ -386,8 +388,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         overflow: 'hidden', // Makes sure image edges are rounded with the sectionCard
         marginTop: 10,
-        elevation: 2
-        
+        elevation: 2,
     },
     disabledSectionCard: {
         backgroundColor: 'gray', // or any color to indicate disabled state
@@ -414,13 +415,17 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: Colors.default.optionText,
     },
-    // sectionButton: {
-    //     backgroundColor: Colors.default.purple500,
-    //     padding: 10,
-    //     borderRadius: 10,
-    //     borderColor: '#5E43C2',
-    //     borderWidth: 2,
-    // },
+    lockOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    lockedText: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
 });
 
 export default SectionProfile;

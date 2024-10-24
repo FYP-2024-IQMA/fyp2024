@@ -37,7 +37,7 @@ export default function UnitIntroduction() {
     const [unitName, setUnitName] = useState<string>('');
     const [unitDescription, setUnitDescription] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Introduction`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Introduction', unitID as string);
 
     useLayoutEffect(() => {
         const progress =

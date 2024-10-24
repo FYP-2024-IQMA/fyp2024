@@ -532,23 +532,27 @@ resource "aws_glue_catalog_table" "athena_table_time" {
       type = "string"
     }
     columns {
-      name = "age"
-      type = "string"
-    }
-    columns {
       name = "eventType"
       type = "string"
     }
     columns {
-      name = "section"
+      name = "timestamp"
+      type = "string"
+    }
+    columns {
+      name = "sectionID"
+      type = "string"
+    }
+    columns {
+      name = "unitID"
+      type = "string"
+    }
+    columns {
+      name = "lessonID"
       type = "string"
     }
     columns {
       name = "event"
-      type = "string"
-    }
-    columns {
-      name = "timestamp"
       type = "string"
     }
     columns {
@@ -592,24 +596,24 @@ resource "aws_glue_catalog_table" "athena_table_attempts" {
       type = "string"
     }
     columns {
-      name = "age"
-      type = "string"
-    }
-    columns {
       name = "eventType"
-      type = "string"
-    }
-    columns {
-      name = "section"
-      type = "string"
-    }
-    columns {
-      name = "event"
       type = "string"
     }
     columns {
       name = "timestamp"
       type = "string"
+    }
+    columns {
+      name = "sectionID"
+      type = "string"
+    }
+    columns {
+      name = "quizID"
+      type = "string"
+    }
+    columns {
+      name = "questionNo"
+      type = "int"
     }
     columns {
       name = "attempts"

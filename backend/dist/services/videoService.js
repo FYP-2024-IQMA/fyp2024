@@ -17,11 +17,14 @@ function extractYouTubeID(url) {
     const matches = url.match(regex);
     return matches ? matches[1] : null;
 }
-function retrieveVideoFromS3(sectionID, lessonID) {
+function retrieveVideoFromS3(sectionID, unitID, lessonID) {
     return __awaiter(this, void 0, void 0, function* () {
         let videoKey = `${sectionID}/${sectionID}.mp4`;
+        if (unitID) {
+            videoKey = `${sectionID}/${unitID}/${unitID}.mp4`;
+        }
         if (lessonID) {
-            videoKey = `${sectionID}/lesson${lessonID}.mp4`;
+            videoKey = `${sectionID}/${unitID}/lesson${lessonID}.mp4`;
         }
         const params = {
             Bucket: "vid-content",
@@ -44,9 +47,9 @@ function retrieveVideoFromS3(sectionID, lessonID) {
         }
     });
 }
-function formatVideoUrl(url, sectionID, lessonID) {
+function formatVideoUrl(url, sectionID, unitID, lessonID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const signedUrl = yield retrieveVideoFromS3(sectionID, lessonID);
+        const signedUrl = yield retrieveVideoFromS3(sectionID, unitID, lessonID);
         if (signedUrl) {
             return signedUrl;
         }

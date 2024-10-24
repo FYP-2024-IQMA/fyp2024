@@ -35,6 +35,7 @@ describe("getTop5Accounts", () => {
                 userID: "1",
                 lastName: "USER",
                 firstName: "test",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
         {
@@ -43,6 +44,7 @@ describe("getTop5Accounts", () => {
                 userID: "3",
                 lastName: "3",
                 firstName: "test",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
         {
@@ -51,6 +53,7 @@ describe("getTop5Accounts", () => {
                 userID: "8",
                 lastName: "4",
                 firstName: "test",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
         {
@@ -59,6 +62,7 @@ describe("getTop5Accounts", () => {
                 userID: "2",
                 lastName: "5",
                 firstName: "test",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
         {
@@ -67,6 +71,7 @@ describe("getTop5Accounts", () => {
                 userID: "5",
                 lastName: "6",
                 firstName: "test",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
         {
@@ -75,6 +80,7 @@ describe("getTop5Accounts", () => {
                 userID: "1041",
                 lastName: "Smith",
                 firstName: "LEARN",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
         {
@@ -83,6 +89,7 @@ describe("getTop5Accounts", () => {
                 userID: "jd",
                 lastName: "Doe",
                 firstName: "John",
+                profilePic: "https://example.com/profile.jpg",
             },
         },
     ];
@@ -92,34 +99,40 @@ describe("getTop5Accounts", () => {
             rank: 4,
             name: "test 5",
             points: 50,
+            profilePic: "https://example.com/profile.jpg",
         },
         top5: [
             {
                 rank: 1,
                 name: "test USER",
                 points: 150,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 2,
                 name: "test 3",
                 points: 100,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 3,
                 name: "test 4",
                 points: 80,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 4,
                 name: "test 5",
                 points: 50,
+                profilePic: "https://example.com/profile.jpg",
             },
             {
                 rank: 5,
                 name: "test 6",
                 points: 20,
+                profilePic: "https://example.com/profile.jpg",
             },
-        ]
+        ],
     };
 
     it("returns accounts ranked top 5 & user rank", async () => {
@@ -145,32 +158,38 @@ describe("getTop5Accounts", () => {
                 rank: 6,
                 name: "John Doe",
                 points: 0,
+                profilePic: "https://example.com/profile.jpg",
             },
             top5: [
                 {
                     rank: 1,
                     name: "test USER",
                     points: 150,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 2,
                     name: "test 3",
                     points: 100,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 3,
                     name: "test 4",
                     points: 80,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 4,
                     name: "test 5",
                     points: 50,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 5,
                     name: "test 6",
                     points: 20,
+                    profilePic: "https://example.com/profile.jpg",
                 },
             ],
         };
@@ -199,6 +218,7 @@ describe("getTop5Accounts", () => {
                     userID: "mockPair",
                     lastName: "pair",
                     firstName: "mock",
+                    profilePic: "https://example.com/profile.jpg",
                 },
             },
         ];
@@ -208,37 +228,44 @@ describe("getTop5Accounts", () => {
                 rank: 4,
                 name: "test 5",
                 points: 50,
+                profilePic: "https://example.com/profile.jpg",
             },
             top5: [
                 {
                     rank: 1,
                     name: "test USER",
                     points: 150,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 2,
                     name: "test 3",
                     points: 100,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 3,
                     name: "test 4",
                     points: 80,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 4,
                     name: "test 5",
                     points: 50,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 5,
                     name: "test 6",
                     points: 20,
+                    profilePic: "https://example.com/profile.jpg",
                 },
                 {
                     rank: 5,
                     name: "mock pair",
                     points: 20,
+                    profilePic: "https://example.com/profile.jpg",
                 },
             ],
         };

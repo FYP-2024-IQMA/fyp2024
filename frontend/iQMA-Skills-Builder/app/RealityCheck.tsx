@@ -1,6 +1,6 @@
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, View, ScrollView, Dimensions} from 'react-native';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
@@ -14,6 +14,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import { useTimer } from '@/helpers/useTimer';
+import VideoPlayer from '@/components/VideoPlayer';
 
 // where things show up
 export default function RealityCheck() {
@@ -36,7 +37,11 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Reality Check`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Reality Check', unitID as string);
+    const [isScroll, setIsScroll] = useState(false);
+    const screenHeight = Dimensions.get('window').height;
+    const [videoId, setVideoId] = useState<string>('');
+    const [playing, setPlaying] = useState<boolean>(true);
 
     useLayoutEffect(() => {
         const progress =
@@ -62,6 +67,7 @@ export default function RealityCheck() {
 
                     setRealityCheckDescription(unitDetails.realityCheck);
                     setUnitName(unitDetails.unitName);
+                    setVideoId(unitDetails.realitycheckURL);
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
@@ -75,6 +81,15 @@ export default function RealityCheck() {
             })();
         }
     }, [sectionID, unitID]);
+
+    const onStateChange = (state: string) => {
+        if (state === 'ended' || state === 'paused') {
+            setPlaying(false);
+        }
+        if (state === 'playing') {
+            setPlaying(true);
+        }
+    };
 
     const handlePress = async () => {
         router.push({
@@ -95,7 +110,13 @@ export default function RealityCheck() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
+        >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
@@ -125,10 +146,24 @@ export default function RealityCheck() {
                             />
                         )}
 
+                        {videoId ? (
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
+                            />
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Video is not available. Please check with your administrator."
+                            />
+                        )}
+
                         <View
                             style={{
                                 width: '100%',
                                 flexDirection: 'row-reverse',
+                                marginTop: 20,
                             }}
                         >
                             <Image
@@ -141,11 +176,12 @@ export default function RealityCheck() {
                     <CustomButton
                         label="continue"
                         backgroundColor="white"
+                        isScroll={isScroll}
                         onPressHandler={handlePress}
                     />
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 

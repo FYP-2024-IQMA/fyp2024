@@ -39,7 +39,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     };
 
     useEffect(() => {
-        requestUserPermission();
         getToken();
     });
 
@@ -64,7 +63,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         } else {
             // await AsyncStorage.removeItem('userID');
             await AsyncStorage.clear();
-            setIsLoading(false);
+            // setIsLoading(false);
         }
         setIsLoading(false);
     };
@@ -101,15 +100,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const logIn = async () => {
         try {
             await authorize();
-            AppRegistry.registerHeadlessTask(
-                'ReactNativeFirebaseMessagingHeadlessTask',
-                () => async (remoteMessage) => {
-                    console.log(
-                        'Message handled in the background (Headless Task):',
-                        remoteMessage
-                    );
-                }
-            );
         } catch (e) {
             console.log(e);
         }
@@ -146,7 +136,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 data.details === 'The result contains 0 rows'
             ) {
                 console.log('First Time:', data);
-
+                requestUserPermission();
                 router.replace('CreateProfile');
             } else if (response.status === 200) {
                 console.log('Not first time:', data);
