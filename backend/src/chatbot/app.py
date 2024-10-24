@@ -1,7 +1,7 @@
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from langchain_openai import ChatOpenAI
-from langchain_community.adapters.openai import convert_openai_messages
+# from langchain_openai import ChatOpenAI
+# from langchain_community.adapters.openai import convert_openai_messages
 import logging
 import os
 from pydantic.dataclasses import dataclass
@@ -11,10 +11,10 @@ from typing import List, Optional
 # dealing with relative / absolute imports
 if __package__ is None or __package__ == '' or __name__ == '__main__':
     from chatgpt import ChatGPT
-    from langchain_setup import full_chain, full_chain_w_history
+    # from langchain_setup import full_chain, full_chain_w_history
 else:
     from src.chatbot.chatgpt import ChatGPT
-    from src.chatbot.langchain_setup import full_chain, full_chain_w_history
+    # from src.chatbot.langchain_setup import full_chain, full_chain_w_history
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
