@@ -165,22 +165,6 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
         }
     };
 
-    // const sendToRabbitMQ = async (timeTaken: number) => {
-    //     try {
-    //         await fetch(`${process.env.EXPO_PUBLIC_LOCALHOST_URL}/rabbitmq`, {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 timeTaken: timeTaken,
-    //             }),
-    //         });
-    //     } catch (error) {
-    //         console.error('Error sending time to RabbitMQ:', error);
-    //     }
-    // };
-
     useEffect(() => {
         if (sectionID && unitID) {
             (async () => {
