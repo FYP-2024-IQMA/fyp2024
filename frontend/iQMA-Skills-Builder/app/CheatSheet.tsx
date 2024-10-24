@@ -1,4 +1,6 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
 
 import React, {useEffect, useLayoutEffect, useState,} from 'react';
 import {SafeAreaView, ScrollView, StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
@@ -12,8 +14,9 @@ import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import { AudioPlayer } from '@/components/AudioPlayer';
 import {Ionicons} from '@expo/vector-icons';
+import {AudioPlayer} from '@/components/AudioPlayer';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 const formatCheatSheet = (cheatsheet: any) => {
     if (Array.isArray(cheatsheet)) {
@@ -66,6 +69,7 @@ export default function CheatSheet() {
     const { startTimer, stopTimer } = useTimer(sectionID as string, 'Cheat Sheet');
     const [isScroll, setIsScroll] = useState(false);
     const screenHeight = Dimensions.get('window').height;
+    const [cheatSheetAudio, setCheatSheetAudio ] = useState<string>('');
 
     useLayoutEffect(() => {
         const progress =
@@ -99,6 +103,11 @@ export default function CheatSheet() {
                         unitID as string
                     );
 
+                    const unitDetails = await unitEndpoints.getUnitDetails(
+                        sectionID as string,
+                        unitID as string
+                    );
+
                     const processedLessonDetails = lessonDetails
                         .filter(
                             (lesson: any) => !/\.[2-9]\d*/.test(lesson.lessonID)
@@ -110,6 +119,7 @@ export default function CheatSheet() {
 
                     setLessons(processedLessonDetails);
                     setUnitNumber(formatUnit(unitID as string));
+                    setCheatSheetAudio(unitDetails.cheatSheetAudio)
                 } catch (error) {
                     console.error(
                         'Error fetching Lesson details in CheatSheet:',
@@ -156,6 +166,23 @@ export default function CheatSheet() {
                         <Text style={[styles.title, {marginHorizontal: 10}]}>
                             Unit {unitNumber}: Cheat Sheet
                         </Text>
+
+                        <Text style={styles.audioTitle}>Listen & Learn</Text>
+
+                        <View style={styles.logoContainer}>
+                            <View style={styles.audioCircle}>
+                                <FontAwesome5
+                                    name="headphones"
+                                    size={50}
+                                    color={Colors.default.purple500}
+                                />
+                            </View>
+                        </View>
+
+                        <AudioPlayer
+                            audioUri={cheatSheetAudio}
+                        />
+
                         {lessons.length > 0 ? (
                             lessons.map((lesson, index) => (
                                 <View key={index} style={[styles.cheatSheet]}>
@@ -191,6 +218,27 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.light.background,
         padding: 20,
     },
+    logoContainer: {
+        flex: 1,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    audioCircle: {
+        backgroundColor: Colors.light.unFilled,
+        width: 80,
+        height: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 40,
+    },
+    audioTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: Colors.header.color,
+        marginBottom: 20,
+        marginHorizontal: 10,
+        textAlign: 'center',
+    },
     title: {
         fontSize: 14,
         fontWeight: 'bold',
@@ -208,6 +256,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         padding: 10,
         marginBottom: 20,
+        marginTop: 20,
         backgroundColor: Colors.light.background,
         // shadow properties
         shadowColor: '#000',

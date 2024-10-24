@@ -1,7 +1,15 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View, Dimensions, TouchableOpacity} from 'react-native';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    Dimensions,
+    TouchableOpacity,
+} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
@@ -19,6 +27,8 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import {AudioPlayer} from '@/components/AudioPlayer';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
@@ -31,17 +41,17 @@ export default function KeyTakeaway() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -104,8 +114,14 @@ export default function KeyTakeaway() {
     const [unitName, setUnitName] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
+    const [lessonKeyTakeawayAudio, setLessonKeyTakeawayAudio ] = useState<string>('');
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Key Takeaway', unitID as string, lessonID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Key Takeaway',
+        unitID as string,
+        lessonID as string
+    );
     const [isScroll, setIsScroll] = useState<boolean>(false);
     const screenHeight = Dimensions.get('window').height;
 
@@ -154,6 +170,7 @@ export default function KeyTakeaway() {
                     setKeyTakeaway(lessonDetails.lessonKeyTakeaway);
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
+                    setLessonKeyTakeawayAudio(lessonDetails.lessonKeyTakeawayAudio)
                 } catch (error) {
                     console.error('Error fetching in Key Takeaway:', error);
                 } finally {
@@ -181,6 +198,22 @@ export default function KeyTakeaway() {
                             subtitle={unitName}
                         />
                         <Text style={styles.screenTitle}>{lessonName}</Text>
+
+                        <Text style={styles.audioTitle}>Listen & Learn</Text>
+
+                        <View style={styles.logoContainer}>
+                            <View style={styles.audioCircle}>
+                                <FontAwesome5
+                                    name="headphones"
+                                    size={50}
+                                    color={Colors.default.purple500}
+                                />
+                            </View>
+                        </View>
+
+                        <AudioPlayer
+                            audioUri={lessonKeyTakeawayAudio}
+                        />
 
                         <Text style={styles.takeawayHeader}>Key Takeaways</Text>
                         {keyTakeaway && keyTakeaway.length > 0 ? (
@@ -237,8 +270,30 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginHorizontal: 10,
     },
+    logoContainer: {
+        flex: 1,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    audioCircle: {
+        backgroundColor: Colors.light.unFilled,
+        width: 80,
+        height: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 40,
+    },
+    audioTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: Colors.header.color,
+        marginBottom: 20,
+        marginHorizontal: 10,
+        textAlign: 'center',
+    },
     takeawayHeader: {
         marginBottom: 10,
+        marginTop: 20,
         marginLeft: 15,
         color: Colors.header.color,
         fontWeight: 'bold',
