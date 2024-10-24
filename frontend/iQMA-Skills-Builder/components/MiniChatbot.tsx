@@ -1,4 +1,5 @@
 import * as chatInputFunctions from '@/components/ChatInput';
+import * as chatInteractionsEndpoints from '@/helpers/chatInteractions';
 
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
@@ -132,9 +133,15 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
         if (response) {
             const end = Date.now();
             const timeTaken = end - start;
+            // track time taken for chatbot to respond (rabbitmq)
             setResponseTime(timeTaken);
             console.log(`Time taken for chatbot to respond: ${timeTaken}ms`);
-            await sendToRabbitMQ(timeTaken);
+            // await sendToRabbitMQ(timeTaken);
+            await chatInteractionsEndpoints.chatResponseTime(
+                sectionID,
+                unitID,
+                timeTaken
+            );
 
             // Add the chatbot response to the chat
             const botReply = {text: response.content, isUser: false};
@@ -155,22 +162,6 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
                 unitID,
                 queryPair
             );
-        }
-    };
-
-    const sendToRabbitMQ = async (timeTaken: number) => {
-        try {
-            await fetch(`${process.env.EXPO_PUBLIC_LOCALHOST_URL}/rabbitmq`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    timeTaken: timeTaken,
-                }),
-            });
-        } catch (error) {
-            console.error('Error sending time to RabbitMQ:', error);
         }
     };
 

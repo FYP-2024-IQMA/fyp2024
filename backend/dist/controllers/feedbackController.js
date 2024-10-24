@@ -35,15 +35,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendMessage = void 0;
-const clickstreamService = __importStar(require("../services/clickstreamService"));
+exports.sendFeedback = void 0;
+const feedbackService = __importStar(require("../services/feedbackService"));
 const errorHandling_1 = __importDefault(require("../errors/errorHandling"));
-const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const sendFeedback = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const messageBody = req.body;
-    console.log(messageBody);
     try {
-        const message = yield clickstreamService.sendMessage(messageBody);
-        res.status(200).json({ message: "Published message successfully" });
+        const message = yield feedbackService.sendMessage(messageBody);
+        res.status(200).json({ message: 'Published message successfully' });
     }
     catch (error) {
         const errorResponse = (0, errorHandling_1.default)(error);
@@ -52,4 +51,4 @@ const sendMessage = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         }
     }
 });
-exports.sendMessage = sendMessage;
+exports.sendFeedback = sendFeedback;

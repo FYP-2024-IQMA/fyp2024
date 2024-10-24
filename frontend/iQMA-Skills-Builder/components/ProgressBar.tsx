@@ -7,7 +7,7 @@ import {Ionicons} from '@expo/vector-icons';
 import React from 'react';
 import {router} from 'expo-router';
 
-const { width: screenWidth } = Dimensions.get('window');
+const {width: screenWidth} = Dimensions.get('window');
 
 interface ProgressBarProps {
     progress: number;
