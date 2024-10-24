@@ -26,10 +26,9 @@ export const chatInteractions = async (
                 `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
                 {
                     userID: userID,
-                    age: age,
                     eventType: 'numberOfInteractions',
-                    section: section,
-                    event: `Section: ${section}, Unit: ${unit} Chat Interaction`,
+                    sectionID: section,
+                    unitID: unit,
                     timestamp: new Date().toISOString(),
                     count: count,
                 }
@@ -66,10 +65,9 @@ export const chatResponseTime = async (
                 `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/clickstream/sendMessage`,
                 {
                     userID: userID,
-                    age: age,
                     eventType: 'chatResponseTime',
-                    section: section,
-                    event: `Section: ${section}, Unit: ${unit} Chat Response Time`,
+                    sectionID: section,
+                    unitID: unit,
                     timestamp: new Date().toISOString(),
                     duration: duration,
                 }
