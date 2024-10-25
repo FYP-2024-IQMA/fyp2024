@@ -1,8 +1,8 @@
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import {Image, StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
-import {router, useLocalSearchParams, useRouter} from 'expo-router';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {router, useFocusEffect, useLocalSearchParams, useRouter} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
@@ -65,6 +65,15 @@ export default function RealityCheck() {
             ),
         });
     }, [navigation]);
+
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
 
     useEffect(() => {
         startTimer();

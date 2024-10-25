@@ -27,6 +27,11 @@ export default function Index() {
         fetchUserID();
     }, []);
 
+    console.log("isStorageLoading: ", isStorageLoading);
+    console.log("isLoading: ", isLoading);
+    console.log("currentUser: ", currentUser);
+    console.log("checkUID: ", checkUID);
+
     if (isStorageLoading || isLoading || currentUser || checkUID) {
         return (
             <>
