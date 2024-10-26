@@ -2,14 +2,14 @@ import * as quizEndpoints from '@/helpers/quizEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
-import { useTimer } from '@/helpers/useTimer';
 import {Colors} from '@/constants/Colors';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
@@ -17,9 +17,12 @@ import ProgressBar from '@/components/ProgressBar';
 import {Question} from '@/constants/Quiz';
 import {QuizCard} from '@/components/QuizCard';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
+import {useTimer} from '@/helpers/useTimer'
+import {Ionicons} from '@expo/vector-icons';;
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -43,8 +46,9 @@ export default function Assessment() {
     } = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} ${unitID} Assessment`);
- 
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Assessment', unitID as string);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
@@ -111,8 +115,18 @@ export default function Assessment() {
               parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation, checkFinal]);
@@ -123,6 +137,7 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
+            console.log(checkFinal);
             if (checkFinal) {
                 // final assessment don't have self-reflection
                 try {
@@ -137,6 +152,40 @@ export default function Assessment() {
                             currentUser.sub,
                             questions[currentQnsIdx].quizID
                         );
+
+                        let points = await AsyncStorage.getItem(
+                            'totalPoints'
+                        );
+                        const numPoints = parseInt(points as string);
+
+                        await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+
+                        // try {
+                            
+                        //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+
+                        //     let points = await AsyncStorage.getItem(
+                        //         'totalPoints'
+                        //     );
+                        //     const numPoints = parseInt(points as string);
+
+                        //     await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+
+                        //     // const data = {
+                        //     //     userID: currentUser.sub,
+                        //     //     points: numPoints,
+                        //     // };
+
+                        //     // const response = await axios.patch(url, data);
+                        //     // const result = await response.data;
+                        //     // console.log('Points successfully updated:', result);
+                        //     // AsyncStorage.setItem('totalPoints', '0');
+                        // } catch (error: any) {
+                        //     console.error(
+                        //         'Error updating points:',
+                        //         error.response.data
+                        //     );
+                        // }
                     }
                 } catch (error) {
                     console.error('Error in Assessment:', error);
@@ -214,6 +263,7 @@ export default function Assessment() {
 
                     {questions.length > 0 && questions[currentQnsIdx] && (
                         <QuizCard
+                            sectionID={sectionID as string}
                             questionData={questions[currentQnsIdx]}
                             onNextQuestion={handleNextQuestion}
                         />

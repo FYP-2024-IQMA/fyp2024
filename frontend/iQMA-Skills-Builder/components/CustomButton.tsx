@@ -14,6 +14,7 @@ export const CustomButton = ({
     capitalise = true,
     disabled = false,
     isOption = false,
+    isScroll = false,
 }) => {
     const textStyle = capitalise ? 'uppercase' : 'none';
 
@@ -21,6 +22,7 @@ export const CustomButton = ({
         <View
             style={[
                 styles.buttonContainer,
+                isScroll && {marginBottom: 40, marginTop: 20},
                 // !isQuiz && {justifyContent: 'flex-end'},
             ]}
         >

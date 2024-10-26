@@ -57,43 +57,43 @@ async def generate_text(prompt: Prompt):
     
 # @app.post("/langchain")
 # async def langchain_text(prompt: Prompt):
-    """
-    Generate a response from Agent-integrated chain based on the role and prompt.
-    """
-    logger.info("Endpoint '/langchain' has been called with prompt: %s", prompt)
-    try:
-        # llm = ChatOpenAI(
-        #     model="gpt-4o-mini",
-        #     api_key=os.environ.get("OPENAI_API_KEY"),
-        # )
-        config = {
-                "configurable": {
-                    "session_id": "abc123",
-                }
-            }
-        if prompt.history:
-            # format response for langchain
-            langchain_format = convert_openai_messages(prompt.history)
-            logger.info("Converted langchain messages: %s", langchain_format)
-            input = {
-                "input": prompt.content, 
-                "history": langchain_format,
-            }
-            response = full_chain_w_history.invoke(input, config=config)
-        else:
-            langchain_format = convert_openai_messages([{"role": prompt.role, "content": prompt.content}])
-            logger.info("Converted langchain messages: %s", langchain_format)
-            input = {
-                "input": prompt.content,
-                "history": langchain_format,
-            }
-            logger.info("Prompt: %s", prompt)
-            response = full_chain_w_history.invoke({"input": input}, config=config)
+    # """
+    # Generate a response from Agent-integrated chain based on the role and prompt.
+    # """
+    # logger.info("Endpoint '/langchain' has been called with prompt: %s", prompt)
+    # try:
+    #     # llm = ChatOpenAI(
+    #     #     model="gpt-4o-mini",
+    #     #     api_key=os.environ.get("OPENAI_API_KEY"),
+    #     # )
+    #     config = {
+    #             "configurable": {
+    #                 "session_id": "abc123",
+    #             }
+    #         }
+    #     if prompt.history:
+    #         # format response for langchain
+    #         langchain_format = convert_openai_messages(prompt.history)
+    #         logger.info("Converted langchain messages: %s", langchain_format)
+    #         input = {
+    #             "input": prompt.content, 
+    #             "history": langchain_format,
+    #         }
+    #         response = full_chain_w_history.invoke(input, config=config)
+    #     else:
+    #         langchain_format = convert_openai_messages([{"role": prompt.role, "content": prompt.content}])
+    #         logger.info("Converted langchain messages: %s", langchain_format)
+    #         input = {
+    #             "input": prompt.content,
+    #             "history": langchain_format,
+    #         }
+    #         logger.info("Prompt: %s", prompt)
+    #         response = full_chain_w_history.invoke({"input": input}, config=config)
 
-        return {
-            "role": "assistant",
-            "content": response,
-            }
-    except Exception as e:
-        logger.error("Error in '/langchain' endpoint: %s", str(e))
-        raise HTTPException(status_code=500, detail=str(e))
+#         return {
+#             "role": "assistant",
+#             "content": response,
+#             }
+#     except Exception as e:
+#         logger.error("Error in '/langchain' endpoint: %s", str(e))
+#         raise HTTPException(status_code=500, detail=str(e))

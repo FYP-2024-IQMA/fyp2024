@@ -8,7 +8,7 @@ import {
 /* CREATE */
 
 export async function createAccount(account: Accounts) {
-    const { userID, firstName, lastName, email, role, age, gender, hasOnboarded } = account;
+    const { userID, firstName, lastName, email, role, age, gender, hasOnboarded, profilePic } = account;
 
     const { data, error } = await supabase
         .from("accounts")
@@ -20,7 +20,8 @@ export async function createAccount(account: Accounts) {
             role,
             age,
             gender,
-            hasOnboarded
+            hasOnboarded,
+            profilePic
         })
         .select();
 
@@ -66,7 +67,8 @@ export async function getAccountById(userID: string): Promise<Accounts> {
                 new Date(data.dateCreated!),
                 data.age,
                 data.gender,
-                data.hasOnboarded
+                data.hasOnboarded,
+                data.profilePic
             );
         }
         return new Learner(
@@ -78,7 +80,8 @@ export async function getAccountById(userID: string): Promise<Accounts> {
             new Date(data.dateCreated!),
             data.age,
             data.gender,
-            data.hasOnboarded
+            data.hasOnboarded,
+            data.profilePic
         );
     }
 }

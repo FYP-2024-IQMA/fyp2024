@@ -190,6 +190,26 @@ export default function RootLayout() {
                             headerTintColor: Colors.light.background
                         }}
                     />
+                    <Stack.Screen
+                        name="Achievements"
+                        options={{
+                            headerTitle: "Achievements",
+                            headerStyle: {
+                                backgroundColor: Colors.default.purple100,
+                            },
+                            headerTintColor: Colors.light.background
+                        }}
+                    />
+                    <Stack.Screen
+                        name="Courses"
+                        options={{
+                            headerTitle: "All Courses",
+                            headerStyle: {
+                                backgroundColor: Colors.default.purple100,
+                            },
+                            headerTintColor: Colors.light.background
+                        }}
+                    />
                 </Stack>
             </AuthProvider>
         </Auth0Provider>

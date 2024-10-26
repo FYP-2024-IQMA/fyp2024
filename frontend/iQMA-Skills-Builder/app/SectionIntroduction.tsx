@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
 import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -15,6 +15,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {useNavigation} from '@react-navigation/native';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import VideoPlayer from '@/components/VideoPlayer';
+import {Ionicons} from '@expo/vector-icons';
 
 // where things show up
 export default function SectionIntroduction() {
@@ -37,7 +38,7 @@ export default function SectionIntroduction() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(`${sectionID} Introduction`);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Introduction');
 
     useLayoutEffect(() => {
         const progress =
@@ -45,8 +46,18 @@ export default function SectionIntroduction() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
@@ -116,15 +127,12 @@ export default function SectionIntroduction() {
     };
 
     return (
-        <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            style={styles.container}
-        >
+        <View style={styles.container}>
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View>
+                    <View style={{flexGrow: 1}}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
@@ -137,7 +145,7 @@ export default function SectionIntroduction() {
                                 videoUrl={videoId}
                                 playing={playing}
                                 onStateChange={onStateChange}
-                                />
+                            />
                         ) : (
                             <OverviewCard
                                 isError={true}
@@ -145,16 +153,15 @@ export default function SectionIntroduction() {
                             />
                         )}
                     </View>
-                    <View style={{marginBottom: 40}}>
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
-        </ScrollView>
+        </View>
     );
 }
 
@@ -162,7 +169,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
         padding: 20,
-        // flex: 1,
+        flex: 1,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,

@@ -11,7 +11,7 @@ import supabase from "../config/supabaseConfig";
 export async function getTop5Accounts(userID: string) {
 	const { data, error } = await supabase
 		.from("accountsgamification")
-		.select("points, accounts!inner(userID, firstName, lastName)")
+		.select("points, accounts!inner(userID, firstName, lastName, profilePic)")
 		.order("points", { ascending: false });
 
 	if (error) {
@@ -32,6 +32,7 @@ export async function getTop5Accounts(userID: string) {
 				name: record.accounts.firstName + " " + record.accounts.lastName,
 				points: record.points,
 				userID: record.accounts.userID,
+				profilePic: record.accounts.profilePic,
 			};
 		});
 

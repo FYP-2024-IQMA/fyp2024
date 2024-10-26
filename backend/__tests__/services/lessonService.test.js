@@ -1,9 +1,12 @@
 const lessonService = require("../../dist/services/lessonService");
 const supabase = require("../../dist/config/supabaseConfig");
+const videoService = require("../../dist/services/videoService");
 
 jest.mock("../../dist/config/supabaseConfig", () => ({
     from: jest.fn(),
 }));
+
+jest.mock("../../dist/services/videoService");
 
 let consoleErrorSpy;
 
@@ -108,105 +111,110 @@ describe("getLesson", () => {
     }
 
     const expectedLesson1a = {
-        "sectionID": "SEC0001",
-        "unitID": "UNIT0001",
-        "lessonID": "1a",
-        "lessonName": "Lesson 1a: Understanding Verbal and Non-verbal Signals",
-        "lessonURL": "4_5dayHDdBk",
-        "lessonDuration": 3.44,
-        "lessonText": null,
-        "lessonDescription": [
+        sectionID: "SEC0001",
+        unitID: "UNIT0001",
+        lessonID: "1a",
+        lessonName: "Lesson 1a: Understanding Verbal and Non-verbal Signals",
+        lessonURL: "4_5dayHDdBk",
+        lessonDuration: 3.44,
+        lessonText: null,
+        lessonDescription: [
             "🎤👀 Communication isn't just about what we say; it's also about how we say it!",
             "✨ Dive into the fascinating world of verbal and non-verbal signals, where the tone of your voice and the twinkle in your eye speak volumes. ",
-            "Learn to decipher these hidden messages and become a communication wizard! 🧙‍♂️"
+            "Learn to decipher these hidden messages and become a communication wizard! 🧙‍♂️",
         ],
-        "lessonKeyTakeaway": [
+        lessonKeyTakeaway: [
             "Verbal and non-verbal signals play crucial roles in communication, often conveying messages beyond words alone.",
             "Verbal signals encompass spoken language, including tone, pitch, and volume, which can convey emotions and intentions.",
             "Non-verbal signals, on the other hand, involve body language, facial expressions, gestures, and eye contact, providing additional context to verbal communication.",
-            "Understanding both types of signals enhances communication effectiveness by allowing individuals to interpret and respond appropriately to the complete message being conveyed."
+            "Understanding both types of signals enhances communication effectiveness by allowing individuals to interpret and respond appropriately to the complete message being conveyed.",
         ],
-        "lessonCheatSheet": {
+        lessonKeyTakeawayAudio: "https://lessonKeyTakeawayAudio.mp3",
+        lessonCheatSheet: {
             "🗣️ Verbal Signals:": [
                 "🎶 Tone of Voice: Emotions can be conveyed through variations in pitch, volume, and intonation.",
                 "📚 Word Choice: Different words can evoke different reactions and meanings.",
-                "🏃‍♂️ Pace: The speed at which someone speaks can indicate excitement, nervousness, or boredom."
+                "🏃‍♂️ Pace: The speed at which someone speaks can indicate excitement, nervousness, or boredom.",
             ],
             "👁️ Non-verbal Signals:": [
                 "🕺 Body Language: Posture, gestures, and facial expressions can speak volumes without saying a word.",
                 "👀 Eye Contact: The level of eye contact can convey confidence, interest, or discomfort.",
-                "🌍 Personal Space: Respect for personal space varies across cultures and can affect communication dynamics."
-            ]
+                "🌍 Personal Space: Respect for personal space varies across cultures and can affect communication dynamics.",
+            ],
         },
-        "dateCreated": "2024-08-18T14:59:11.210043+00:00"
+        dateCreated: "2024-08-18T14:59:11.210043+00:00",
     };
 
     const expectedLesson1b = {
-        "sectionID": "SEC0001",
-        "unitID": "UNIT0001",
-        "lessonID": "1b",
-        "lessonName": "Lesson 1b: Recognizing and Interpreting Different Communication Styles",
-        "lessonURL": "li4mCDH0eUE",
-        "lessonDuration": 4.45,
-        "lessonText": null,
-        "lessonDescription": [
-            "🕵️‍♀️ Ever wonder why some people just \"get\" each other while others seem to be speaking different languages?",
+        sectionID: "SEC0001",
+        unitID: "UNIT0001",
+        lessonID: "1b",
+        lessonName:
+            "Lesson 1b: Recognizing and Interpreting Different Communication Styles",
+        lessonURL: "li4mCDH0eUE",
+        lessonDuration: 4.45,
+        lessonText: null,
+        lessonDescription: [
+            '🕵️‍♀️ Ever wonder why some people just "get" each other while others seem to be speaking different languages?',
             "🎭 Explore the quirky world of communication styles - from the analytical thinkers to the expressive artists, and everything in between!",
-            "Unravel the mysteries of these diverse styles and learn how to adapt your communication to connect with anyone, anywhere! 🔍"
+            "Unravel the mysteries of these diverse styles and learn how to adapt your communication to connect with anyone, anywhere! 🔍",
         ],
-        "lessonKeyTakeaway": [
+        lessonKeyTakeaway: [
             "Communication styles vary widely among individuals and cultures, influencing how messages are conveyed and received. Four primary communication styles include analytical, expressive, amiable, and driver.",
             "Analytical communicators prioritize facts and logic, while expressive communicators focus on emotions and relationships.",
             "Amiable communicators prioritize harmony and cooperation, while driver communicators emphasize results and efficiency.",
-            "Recognizing these styles enables individuals to adapt their communication approach to suit the preferences and needs of different audiences, fostering clearer understanding and stronger connections."
+            "Recognizing these styles enables individuals to adapt their communication approach to suit the preferences and needs of different audiences, fostering clearer understanding and stronger connections.",
         ],
-        "lessonCheatSheet": {
+        lessonKeyTakeawayAudio: "https://lessonKeyTakeawayAudio.mp3",
+        lessonCheatSheet: {
             "Analytical Style:": [
                 "📊 Focuses on facts, logic, and precision.",
-                "📋 Prefers organized and structured communication."
+                "📋 Prefers organized and structured communication.",
             ],
             "Expressive Style:": [
                 "🎭 Emphasizes emotions, creativity, and storytelling.",
-                "🎤 Enjoys engaging with others and sharing personal experiences."
+                "🎤 Enjoys engaging with others and sharing personal experiences.",
             ],
             "Amiable Style:": [
                 "🤝 Prioritizes harmony, cooperation, and relationship-building.",
-                "❤️ Values empathy and understanding in communication."
+                "❤️ Values empathy and understanding in communication.",
             ],
             "Driver Style:": [
                 "🎯 Direct, assertive, and goal-oriented.",
-                "⏱️ Prefers efficiency and results-driven communication."
-            ]
+                "⏱️ Prefers efficiency and results-driven communication.",
+            ],
         },
-        "dateCreated": "2024-08-18T14:59:11.210043+00:00"
+        dateCreated: "2024-08-18T14:59:11.210043+00:00",
     };
 
     const expectedLesson1c = {
-        "sectionID": "SEC0001",
-        "unitID": "UNIT0001",
-        "lessonID": "1c",
-        "lessonName": "Lesson 1c: Evaluating Behavioral Insights Concepts in Communication",
-        "lessonURL": "CG8m8hoq-hc",
-        "lessonDuration": 5.08,
-        "lessonText": null,
-        "lessonDescription": [
+        sectionID: "SEC0001",
+        unitID: "UNIT0001",
+        lessonID: "1c",
+        lessonName:
+            "Lesson 1c: Evaluating Behavioral Insights Concepts in Communication",
+        lessonURL: "CG8m8hoq-hc",
+        lessonDuration: 5.08,
+        lessonText: null,
+        lessonDescription: [
             "🚀 Prepare for an epic journey into the depths of human behavior!",
             "💡 Discover the secrets behind why we do what we do, from the power of social proof to the magic of reciprocity. Armed with these insights, you'll be equipped to craft messages that captivate hearts, sway minds, and spark action!",
-            "It's time to unleash your inner communicator extraordinaire! 🧠💥"
+            "It's time to unleash your inner communicator extraordinaire! 🧠💥",
         ],
-        "lessonKeyTakeaway": [
+        lessonKeyTakeaway: [
             "Behavioral insights concepts offer valuable insights into human behavior and decision-making processes, enhancing communication effectiveness.",
             "Concepts such as social proof, reciprocity, and anchoring influence how individuals perceive and respond to messages.",
             "Understanding these concepts enables communicators to craft more persuasive and influential messages, whether in marketing, negotiation, or everyday interactions.",
-            "By incorporating behavioral insights into communication strategies, individuals can engage audiences more effectively, evoke desired responses, and ultimately achieve their communication goals with greater success."
+            "By incorporating behavioral insights into communication strategies, individuals can engage audiences more effectively, evoke desired responses, and ultimately achieve their communication goals with greater success.",
         ],
-        "lessonCheatSheet": [
+        lessonKeyTakeawayAudio: "https://lessonKeyTakeawayAudio.mp3",
+        lessonCheatSheet: [
             "👥 Social Proof: People are influenced by the actions and behaviors of others.",
             "🔄 Reciprocity: The tendency to feel obligated to return a favor after receiving one.",
             "🌱 Anchoring: The tendency to rely heavily on the first piece of information encountered when making decisions.",
-            "🖼️ Framing: How information is presented can influence perception and decision-making."
+            "🖼️ Framing: How information is presented can influence perception and decision-making.",
         ],
-        "dateCreated": "2024-08-18T14:59:11.210043+00:00"
+        dateCreated: "2024-08-18T14:59:11.210043+00:00",
     };
 
 
@@ -216,6 +224,10 @@ describe("getLesson", () => {
         const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
+
+        videoService.formatVideoUrl
+            .mockReturnValueOnce("4_5dayHDdBk")
+            .mockReturnValueOnce("https://lessonKeyTakeawayAudio.mp3");
 
         const result1a = await lessonService.getLesson("SEC0001", "UNIT0001", "1a");
         expect(mockEq1).toHaveBeenCalledWith("sectionID", "SEC0001");
@@ -232,6 +244,10 @@ describe("getLesson", () => {
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
 
+        videoService.formatVideoUrl
+            .mockReturnValueOnce("li4mCDH0eUE")
+            .mockReturnValueOnce("https://lessonKeyTakeawayAudio.mp3");
+
         const result1b = await lessonService.getLesson("SEC0001", "UNIT0001", "1b");
         expect(mockEq1).toHaveBeenCalledWith("sectionID", "SEC0001");
         expect(mockEq2).toHaveBeenCalledWith("unitID", "UNIT0001");
@@ -246,6 +262,10 @@ describe("getLesson", () => {
         const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
+
+        videoService.formatVideoUrl
+            .mockReturnValueOnce("CG8m8hoq-hc")
+            .mockReturnValueOnce("https://lessonKeyTakeawayAudio.mp3");
 
         const result1c = await lessonService.getLesson("SEC0001", "UNIT0001", "1c");
         expect(mockEq1).toHaveBeenCalledWith("sectionID", "SEC0001");
@@ -429,6 +449,11 @@ describe("getAllLessons", () => {
         const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
         const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
         supabase.from.mockReturnValue({ select: mockSelect });
+
+        videoService.formatVideoUrl
+            .mockReturnValueOnce("4_5dayHDdBk")
+            .mockReturnValueOnce("li4mCDH0eUE")
+            .mockReturnValueOnce("CG8m8hoq-hc");
 
         const result = await lessonService.getAllLessons(sectionID, unitID);
 

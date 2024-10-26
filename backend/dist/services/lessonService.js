@@ -74,8 +74,9 @@ function getLesson(sectionID, unitID, lessonID) {
         else {
             let formattedLessonURL = data[0].lessonURL;
             if (formattedLessonURL) {
-                formattedLessonURL = yield videoService.formatVideoUrl(formattedLessonURL, sectionID, lessonID);
+                formattedLessonURL = yield videoService.formatVideoUrl(formattedLessonURL, sectionID, unitID, lessonID);
             }
+            const lessonKeyTakeawayAudio = yield videoService.formatVideoUrl(null, sectionID, unitID, lessonID, "KeyTakeaway");
             let description = data[0].lessonDescription;
             let formattedDescription = description
                 ? description.split(/\r?\n/)
@@ -100,7 +101,7 @@ function getLesson(sectionID, unitID, lessonID) {
                     }
                     return acc;
                 }, {});
-                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
+                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonKeyTakeawayAudio, lessonCheatSheet: formattedCheatSheet });
             }
             //when there is no emoji in the headers
             const regex2 = /^(?:|\p{So})[^\n]*:$/gmu;
@@ -118,14 +119,14 @@ function getLesson(sectionID, unitID, lessonID) {
                     }
                     return acc;
                 }, {});
-                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: formattedCheatSheet });
+                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonKeyTakeawayAudio, lessonCheatSheet: formattedCheatSheet });
             }
             //when there is no headers
             const sentences = text === null || text === void 0 ? void 0 : text.split(/\r?\n/);
             if (sentences != null) {
-                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: sentences });
+                return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonKeyTakeawayAudio, lessonCheatSheet: sentences });
             }
-            return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonCheatSheet: [] });
+            return Object.assign(Object.assign({}, data[0]), { lessonURL: formattedLessonURL, lessonDescription: formattedDescription, lessonKeyTakeaway: formattedTakeaway, lessonKeyTakeawayAudio, lessonCheatSheet: [] });
         }
     });
 }
@@ -144,7 +145,7 @@ function getAllLessons(sectionID, unitID) {
             const formattedLessons = yield Promise.all(data.map((lesson) => __awaiter(this, void 0, void 0, function* () {
                 let formattedLessonURL = lesson.lessonURL;
                 if (formattedLessonURL) {
-                    formattedLessonURL = yield videoService.formatVideoUrl(lesson.lessonURL, sectionID, lesson.lessonID);
+                    formattedLessonURL = yield videoService.formatVideoUrl(lesson.lessonURL, sectionID, unitID, lesson.lessonID);
                 }
                 let description = lesson.lessonDescription;
                 let formattedDescription = description
