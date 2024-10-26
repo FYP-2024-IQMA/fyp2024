@@ -121,7 +121,7 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
                                     ]}
                                 >
                                     <Text style={styles.face}>{emoji}</Text>
-                                    <Text>{index + 1}</Text>
+                                    <Text style={styles.ratingNumber}>{index + 1}</Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
@@ -138,20 +138,23 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
                             multiline
                             onChangeText={(text) => setUserFeedback(text)}
                         />
-                        {/* Submit Button */}
-                        <TouchableOpacity
-                            style={styles.closeButton}
-                        onPress={async () => {await handleFeedbackSubmit(userID, selectedOption, selectedRating, userFeedback); setVisible(false);}}>
-                            <Text style={styles.closeButtonText}>Submit</Text>
-                        </TouchableOpacity>
+                        <View style={styles.buttons}>
+                            {/* Submit Button */}
+                            <TouchableOpacity
+                                style={styles.submitButton}
+                            onPress={async () => {await handleFeedbackSubmit(userID, selectedOption, selectedRating, userFeedback); setVisible(false);}}>
+                                <Text style={styles.closeButtonText}>Submit</Text>
+                            </TouchableOpacity>
 
-                        {/* Close Form Button */}
-                        <TouchableOpacity
-                            style={styles.closeButton}
-                            onPress={() => setVisible(false)}
-                        >
-                            <Text style={styles.closeButtonText}>Close</Text>
-                        </TouchableOpacity>
+                            {/* Close Form Button */}
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={() => setVisible(false)}
+                            >
+                                <Text style={styles.closeButtonText}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+
                     </View>
                 </View>
             </Modal>
@@ -177,14 +180,21 @@ const styles = StyleSheet.create({
         color: Colors.chatbot.inputColor,
         fontSize: 30,
     },
+    buttons: {
+        flexDirection: 'row',
+        gap: 20,
+    },
     closeButton: {
-        backgroundColor: '#C3B1FF',
+        alignItems: 'center',
+        backgroundColor: Colors.chatbot.inputColor,
         borderRadius: 5,
         marginTop: 10,
         padding: 10,
+        height: 40,
+        width: 100, 
     },
     closeButtonText: {
-        color: '#7654F2',
+        color: Colors.light.text,
     },
     container: {
         flex: 1,
@@ -197,7 +207,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
         paddingLeft: 20,
         paddingHorizontal: 10,
-        paddingVertical: 5,
+        paddingBottom: 20,
     },
     dropdown: {
         color: Colors.light.text,
@@ -244,15 +254,25 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginVertical: 10,
     },
+    ratingNumber: {
+        textAlign: 'center',
+    },
+    submitButton: {
+        alignItems: 'center',
+        backgroundColor: Colors.default.purple100,
+        borderRadius: 5,
+        marginTop: 10,
+        padding: 10,
+        height: 40,
+        width: 100, 
+    },
     textInput: {
         borderColor: 'gray',
         borderWidth: 1,
         borderRadius: 5,
         color: Colors.light.text,
         height: 100,
-        marginVertical: 20,
         marginRight: 10,
-        paddingHorizontal: 10,
         paddingLeft: 20,
         width: 300,
     },
