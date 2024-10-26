@@ -21,6 +21,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
+import FeedbackComponent from '@/components/Feedback';
 import {Ionicons} from '@expo/vector-icons';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -28,6 +29,7 @@ import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import {router} from 'expo-router';
 import {useContext} from 'react';
+import { packageFeedback } from '@/helpers/feedbackEndpoints';
 import { globalStyles } from '@/constants/styles';
 
 const HomeScreen: React.FC = () => {
@@ -465,6 +467,7 @@ const HomeScreen: React.FC = () => {
                     <Ionicons name="arrow-up" size={24} color="#7654F2" />
                 </TouchableOpacity>
             )}
+            <FeedbackComponent userID={currentUser.sub}/>
         </SafeAreaView>
     );
 };
