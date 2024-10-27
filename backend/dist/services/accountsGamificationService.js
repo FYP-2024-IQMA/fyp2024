@@ -54,8 +54,8 @@ exports.updatePoints = updatePoints;
 exports.updateStreaksFromUnit = updateStreaksFromUnit;
 exports.updateStreaksFromLogin = updateStreaksFromLogin;
 const resultService = __importStar(require("../services/resultService"));
-const unitService = __importStar(require("../services/unitService"));
 const sectionService = __importStar(require("../services/sectionService"));
+const unitService = __importStar(require("../services/unitService"));
 const accountsGamificationModel_1 = require("../models/accountsGamificationModel");
 const resultModel_1 = require("../models/resultModel");
 const resultService_1 = require("./resultService");
@@ -102,7 +102,7 @@ function getTop5Accounts(userID) {
             });
             return {
                 user: Object.assign({}, userRank[0]),
-                top5: filteredData
+                top5: filteredData,
             };
         }
     });
@@ -161,7 +161,7 @@ function getBadges(userID) {
                 if (publicUrlData) {
                     unitBadges.push({
                         unitName: "LOCKED",
-                        badgeUrl: publicUrlData.publicUrl
+                        badgeUrl: publicUrlData.publicUrl,
                     });
                 }
             }
@@ -210,9 +210,13 @@ function getLatestBadge(sectionID, unitID) {
             console.error(error);
             throw error;
         }
-        const completedUnit = unitID.replace(/\D/g, '').replace(/^0+/, '');
-        const unitDetails = yield unitService.getUnitDetailsBySectionAndUnit({ sectionID, unitID });
-        if (storageBadges.length === 0 || parseInt(completedUnit) > storageBadges.length) {
+        const completedUnit = unitID.replace(/\D/g, "").replace(/^0+/, "");
+        const unitDetails = yield unitService.getUnitDetailsBySectionAndUnit({
+            sectionID,
+            unitID,
+        });
+        if (storageBadges.length === 0 ||
+            parseInt(completedUnit) > storageBadges.length) {
             const { data: publicUrlData } = yield supabaseConfig_1.default.storage
                 .from("badges")
                 .getPublicUrl(`placeholder.png`);
@@ -267,7 +271,7 @@ function updatePoints(userID, points) {
 function calculateStreak(lastDate, today) {
     if (!lastDate)
         return 1; // No last date, start a new streak
-    const differenceInDays = Math.round((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+    const differenceInDays = today.getDate() - lastDate.getDate();
     console.log("today", today);
     console.log(differenceInDays);
     if (differenceInDays == 1)
@@ -309,6 +313,12 @@ function updateStreaksFromUnit(userID, quizID) {
                     streaks: currentStreak,
                 })
                     .eq("userID", userID);
+                yield supabaseConfig_1.default
+                    .from("accountsgamification")
+                    .update({
+                    lastUnitCompletionDate: new Date().toISOString(),
+                })
+                    .eq("userID", userID);
             }
         }
         catch (error) {
@@ -330,17 +340,13 @@ function updateStreaksFromLogin(userID) {
                 const daysSegment = calculateStreak(lastUnitDate, today);
                 let currentStreak = data.getStreaks();
                 // If the user has logged in today, do not update the streak
-                if (daysSegment === 0) {
-                    console.log("last unit completion date is today. streak unchanged");
+                if (daysSegment === 0 || daysSegment === 1) {
+                    console.log("last unit completion date is today or just did unit yesterday. streak unchanged");
                 }
                 else if (daysSegment > 1) {
                     // If the difference is greater than 1 day, reset the streak to 0
                     console.log("last unit completion date v long ago. streak reset");
                     currentStreak = 0;
-                }
-                else {
-                    console.log("diff is 1 means streak + 1");
-                    currentStreak += 1;
                 }
                 const { status, statusText, error } = yield supabaseConfig_1.default
                     .from("accountsgamification")
