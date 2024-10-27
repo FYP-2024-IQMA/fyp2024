@@ -1,11 +1,11 @@
 // screens/HomeScreen.tsx
 
 import * as accountEndpoints from '@/helpers/accountEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
 import {
     NativeScrollEvent,
@@ -27,9 +27,9 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
+import {globalStyles} from '@/constants/styles';
 import {router} from 'expo-router';
 import {useContext} from 'react';
-import { globalStyles } from '@/constants/styles';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -44,7 +44,6 @@ const HomeScreen: React.FC = () => {
     const [completedFinals, setCompletedFinals] = useState<boolean>(false);
     const [showButton, setShowButton] = useState(false);
     const [userPoints, setUserPoints] = useState<number>(0);
-    const [userStreak, setUserStreak] = useState<number>(0);
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const yOffset = event.nativeEvent.contentOffset.y;
@@ -330,10 +329,11 @@ const HomeScreen: React.FC = () => {
                 );
                 console.log('Current Section Outside:', currentSection);
 
-                const gamificationData  = await gamificationEndpoints.getStreak(currentUser.sub);
+                const gamificationData = await gamificationEndpoints.getStreak(
+                    currentUser.sub
+                );
                 console.log(gamificationData);
                 setUserPoints(gamificationData.points);
-                setUserStreak(gamificationData.streaks);
 
                 if (currentSection > sectionDetails.length) {
                     currentSection = sectionDetails.length;
@@ -446,7 +446,10 @@ const HomeScreen: React.FC = () => {
                 ref={scrollViewRef}
             >
                 {/* Top Stats */}
-                <TopStats circularProgress={sectionCircularProgress} streak={userStreak} points={userPoints} />
+                <TopStats
+                    circularProgress={sectionCircularProgress}
+                    points={userPoints}
+                />
 
                 {allSectionDetails.length > 0 ? (
                     allSectionDetails.map((sectionDetail, index) => (

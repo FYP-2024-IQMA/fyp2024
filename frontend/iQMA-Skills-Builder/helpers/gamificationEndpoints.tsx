@@ -35,12 +35,9 @@ export const getLeaderboard = async (userID: string) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/leaderboard/${userID}`;
 
-       
-
         const response = await axios.get(url);
         const result = await response.data;
-       return result;
-      
+        return result;
     } catch (error: any) {
         console.error('Error updating points:', error.response.data);
     }
@@ -56,5 +53,15 @@ export const getStreak = async (userID: string) => {
         console.error('Error fetching Streak:', error);
         return [];
     }
-}
+};
 
+export const updateStreakInLogin = async (userID: string) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updateloginstreaks/${userID}`;
+        const response = await axios.patch(url);
+        const result = await response.data;
+        console.log('Streak successfully updated:', result);
+    } catch (error: any) {
+        console.error('Error updating streak:', error.response.data);
+    }
+};

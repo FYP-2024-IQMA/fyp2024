@@ -1,22 +1,42 @@
 // components/TopStats.tsx
 
-import {Image, StyleSheet, Text, View} from 'react-native';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
+import {Image, StyleSheet, Text, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+
+import {AuthContext} from '@/context/AuthContext';
 import CircularProgress from './CircularProgress';
 import {Colors} from '@/constants/Colors';
-import React from 'react';
+import {useContext} from 'react';
 
 interface TopStatsProps {
     circularProgress: number;
     points: number;
-    streak: number;
 }
 
-const TopStats: React.FC<TopStatsProps> = ({
-    circularProgress,
-    points,
-    streak,
-}) => {
+const TopStats: React.FC<TopStatsProps> = ({circularProgress, points}) => {
+    const {currentUser, isLoading} = useContext(AuthContext);
+    const [updatedStreak, setUpdatedStreak] = useState<number>(0);
+
+    useEffect(() => {
+        const updateStreak = async () => {
+            try {
+                const updated = await gamificationEndpoints.updateStreakInLogin(
+                    currentUser.sub
+                );
+                const getStreak = await gamificationEndpoints.getStreak(
+                    currentUser.sub
+                );
+                console.log(getStreak);
+                setUpdatedStreak(getStreak.streaks);
+            } catch (error) {
+                console.error('Error updating streak:', error);
+            }
+        };
+
+        updateStreak();
+    }, [currentUser]);
     return (
         <View style={styles.statsContainer}>
             <View style={[styles.statBox]}>
@@ -28,7 +48,7 @@ const TopStats: React.FC<TopStatsProps> = ({
                         />
                     </View>
                     <View>
-                        <Text style={styles.statNumber}>{streak}</Text>
+                        <Text style={styles.statNumber}>{updatedStreak}</Text>
                         <Text style={styles.statLabel}>Day streak</Text>
                     </View>
                 </View>
@@ -85,14 +105,14 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        flex: 1
+        flex: 1,
     },
     sectionContent: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         gap: 5,
-        flex: 1
+        flex: 1,
     },
     statIcon: {
         width: 30,
