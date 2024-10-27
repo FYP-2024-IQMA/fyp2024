@@ -16,6 +16,8 @@ import quizRouter from "./routes/quizRouter";
 import resultRouter from "./routes/resultRouter";
 import sectionRouter from "./routes/sectionRouter";
 import unitRouter from "./routes/unitRouter";
+import accountsGamificationRouter from "./routes/accountsGamificationRouter";
+import feedbackRouter from "./routes/feedbackRouter";
 
 const app = express();
 const port = 3000;
@@ -40,6 +42,7 @@ app.use("/lesson", lessonRouter);
 app.use("/section", sectionRouter);
 app.use("/clickstream", clickstreamRouter);
 app.use("/accounts", accountsGamificationRouter);
+app.use("/feedback", feedbackRouter);
 
 // Start the Express server
 app.listen(port, () => {
