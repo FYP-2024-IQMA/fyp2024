@@ -17,7 +17,7 @@ import {
     View,
 } from 'react-native';
 import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
@@ -30,7 +30,7 @@ import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import {globalStyles} from '@/constants/styles';
 import {packageFeedback} from '@/helpers/feedbackEndpoints';
-import {router} from 'expo-router';
+import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
 
 const HomeScreen: React.FC = () => {
@@ -45,7 +45,6 @@ const HomeScreen: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [completedFinals, setCompletedFinals] = useState<boolean>(false);
     const [showButton, setShowButton] = useState(false);
-    const [userPoints, setUserPoints] = useState<number>(0);
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const yOffset = event.nativeEvent.contentOffset.y;
@@ -317,6 +316,7 @@ const HomeScreen: React.FC = () => {
         return iconsStatus;
     };
 
+
     useEffect(() => {
         (async () => {
             try {
@@ -330,12 +330,12 @@ const HomeScreen: React.FC = () => {
                     currentUser.sub
                 );
                 console.log('Current Section Outside:', currentSection);
+                console.log('check streak update: ');
 
                 const gamificationData = await gamificationEndpoints.getStreak(
                     currentUser.sub
                 );
                 console.log(gamificationData);
-                setUserPoints(gamificationData.points);
 
                 if (currentSection > sectionDetails.length) {
                     currentSection = sectionDetails.length;
@@ -450,7 +450,6 @@ const HomeScreen: React.FC = () => {
                 {/* Top Stats */}
                 <TopStats
                     circularProgress={sectionCircularProgress}
-                    points={userPoints}
                 />
 
                 {allSectionDetails.length > 0 ? (

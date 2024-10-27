@@ -3,21 +3,24 @@
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
 import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 
 import {AuthContext} from '@/context/AuthContext';
 import CircularProgress from './CircularProgress';
 import {Colors} from '@/constants/Colors';
 import {useContext} from 'react';
+import {useFocusEffect} from 'expo-router';
 
 interface TopStatsProps {
     circularProgress: number;
-    points: number;
 }
 
-const TopStats: React.FC<TopStatsProps> = ({circularProgress, points}) => {
+const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
     const {currentUser, isLoading} = useContext(AuthContext);
     const [updatedStreak, setUpdatedStreak] = useState<number>(0);
+    const [updatedPoints, setUpdatedPoints] = useState<number>(0);
+    const [key, setKey] = useState(0);
+
 
     useEffect(() => {
         const updateStreak = async () => {
@@ -30,13 +33,24 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress, points}) => {
                 );
                 console.log(getStreak);
                 setUpdatedStreak(getStreak.streaks);
+                setUpdatedPoints(getStreak.points);
             } catch (error) {
                 console.error('Error updating streak:', error);
             }
         };
 
         updateStreak();
-    }, [currentUser]);
+    }, [currentUser, key]);
+
+    useFocusEffect(
+        useCallback(() => {
+            // Change the key to force a re-render
+            setKey((prevKey) => prevKey + 1);
+        }, [])
+    );
+    
+    
+
     return (
         <View style={styles.statsContainer}>
             <View style={[styles.statBox]}>
@@ -62,7 +76,7 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress, points}) => {
                         />
                     </View>
                     <View>
-                        <Text style={styles.statNumber}>{points}</Text>
+                        <Text style={styles.statNumber}>{updatedPoints}</Text>
                         <Text style={styles.statLabel}>Total XP</Text>
                     </View>
                 </View>
