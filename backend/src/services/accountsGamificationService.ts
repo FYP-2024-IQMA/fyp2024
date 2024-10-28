@@ -268,13 +268,25 @@ function calculateStreak(lastDate: Date | null, today: Date): number {
 	return 0; // Default case, no streak update
 }
 
+function formatDate(date: Date) {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    const milliseconds = String(date.getUTCMilliseconds()).padStart(6, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}+00`;
+}
+
 // Ensure that the POST request correctly updates the user's streak when they complete a new unit.
 export async function updateStreaksFromUnit(userID: string, quizID: number) {
-	const resultInstance = new Result(userID, quizID, new Date());
+	const resultInstance = new Result(userID, quizID);
 
-	const createResultResponse = await createResult(resultInstance);
+	await createResult(resultInstance);
 	const data = await getGamificationData(userID);
-	console.log("from unit la");
+
 	console.log("quiz is", quizID);
 	console.log(data);
 	try {
@@ -301,13 +313,7 @@ export async function updateStreaksFromUnit(userID: string, quizID: number) {
 				.from("accountsgamification")
 				.update({
 					streaks: currentStreak,
-				})
-				.eq("userID", userID);
-
-			await supabase
-				.from("accountsgamification")
-				.update({
-					lastUnitCompletionDate: new Date().toISOString(),
+					lastUnitCompletionDate: formatDate(today),
 				})
 				.eq("userID", userID);
 		}

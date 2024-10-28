@@ -280,13 +280,22 @@ function calculateStreak(lastDate, today) {
         return 2; // Reset streak if difference is greater than 1 day
     return 0; // Default case, no streak update
 }
+function formatDate(date) {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    const milliseconds = String(date.getUTCMilliseconds()).padStart(6, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}+00`;
+}
 // Ensure that the POST request correctly updates the user's streak when they complete a new unit.
 function updateStreaksFromUnit(userID, quizID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resultInstance = new resultModel_1.Result(userID, quizID, new Date());
-        const createResultResponse = yield (0, resultService_1.createResult)(resultInstance);
+        const resultInstance = new resultModel_1.Result(userID, quizID);
+        yield (0, resultService_1.createResult)(resultInstance);
         const data = yield getGamificationData(userID);
-        console.log("from unit la");
         console.log("quiz is", quizID);
         console.log(data);
         try {
@@ -311,12 +320,7 @@ function updateStreaksFromUnit(userID, quizID) {
                     .from("accountsgamification")
                     .update({
                     streaks: currentStreak,
-                })
-                    .eq("userID", userID);
-                yield supabaseConfig_1.default
-                    .from("accountsgamification")
-                    .update({
-                    lastUnitCompletionDate: new Date().toISOString(),
+                    lastUnitCompletionDate: formatDate(today),
                 })
                     .eq("userID", userID);
             }

@@ -22,7 +22,6 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import MiniChatbot from '@/components/MiniChatbot';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
-import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
@@ -129,10 +128,6 @@ export default function SelfReflection() {
             );
 
             if (!ifCompleted) {
-                await resultEndpoints.createResult(
-                    currentUser.sub,
-                    parseInt(quizID as string)
-                );
 
                 let points = await AsyncStorage.getItem('totalPoints');
                 const numPoints = parseInt(points as string);
@@ -142,60 +137,52 @@ export default function SelfReflection() {
                     numPoints
                 );
 
-                // try {
-                //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+                await gamificationEndpoints.updateStreakUnit(currentUser.sub, quizID as string);
 
-                //     let points = await AsyncStorage.getItem(
-                //         'totalPoints'
-                //     );
-                //     const numPoints = parseInt(points as string);
+                router.push({
+                    pathname: 'Badge',
+                    params: {
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        currentProgress: (
+                            parseInt(currentProgress as string)
+                        ).toString(),
+                        totalProgress,
+                    },
+                });
 
-                //     await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+            } else {
 
-                //     // const data = {
-                //     //     userID: currentUser.sub,
-                //     //     points: numPoints,
-                //     // };
+                if (parseInt(unitNumber) === parseInt(totalUnits as string)) {
+                    // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
+                    router.push({
+                        pathname: 'AssessmentIntroduction',
+                        params: {
+                            sectionID,
+                            unitID,
+                            currentUnit,
+                            totalUnits,
+                            isFinal: 'true',
+                            currentProgress: (
+                                parseInt(currentProgress as string) + 1
+                            ).toString(),
+                            totalProgress,
+                        },
+                    });
+                } else {
+                    // after self-reflection navigate back to home for next unit
+                    router.replace('Home');
+                }
 
-                //     // const response = await axios.patch(url, data);
-
-                //     AsyncStorage.setItem('totalPoints', '0');
-                // } catch (error: any) {
-                //     console.error(
-                //         'Error updating points:',
-                //         error.response.data
-                //     );
-                // }
             }
+
         } catch (error) {
             console.error(
                 'Error in Submitting Unit Assessment (Self-Reflection Page):',
                 error
             );
-        }
-        // })();
-
-        if (
-            parseInt(currentUnit as string) === parseInt(totalUnits as string)
-        ) {
-            // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
-            router.push({
-                pathname: 'AssessmentIntroduction',
-                params: {
-                    sectionID,
-                    unitID,
-                    currentUnit,
-                    totalUnits,
-                    isFinal: 'true',
-                    currentProgress: (
-                        parseInt(currentProgress as string) + 1
-                    ).toString(),
-                    totalProgress,
-                },
-            });
-        } else {
-            // after self-reflection navigate back to home for next unit
-            router.replace('Home');
         }
         stopTimer();
     };
