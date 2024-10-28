@@ -643,6 +643,114 @@ resource "aws_glue_catalog_table" "athena_table_attempts" {
   depends_on = [aws_athena_database.athena_db]
 }
 
+# Structured Table in Athena Database for feedback
+resource "aws_glue_catalog_table" "athena_table_feedback" {
+  database_name = "s3jsondb"
+  name          = "feedback"
+
+  table_type = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    columns {
+      name = "userID"
+      type = "string"
+    }
+    columns {
+      name = "eventType"
+      type = "string"
+    }
+    columns {
+      name = "timestamp"
+      type = "string"
+    }
+    columns {
+      name = "rating"
+      type = "int"
+    }
+    columns {
+      name = "message"
+      type = "string"
+    }
+
+    location = "s3://isb-raw-data-athena/feedback/"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+      parameters = {
+        "ignore.malformed.json" = "FALSE"
+        "dots.in.keys"          = "FALSE"
+        "case.insensitive"      = "TRUE"
+        "mapping"               = "TRUE"
+      }
+    }
+  }
+
+  parameters = {
+    "classification" = "json"
+  }
+
+  depends_on = [aws_athena_database.athena_db]
+}
+
+# Structured Table in Athena Database for numberOfInteractions
+resource "aws_glue_catalog_table" "athena_table_interactions" {
+  database_name = "s3jsondb"
+  name          = "interactions"
+
+  table_type = "EXTERNAL_TABLE"
+
+  storage_descriptor {
+    columns {
+      name = "userID"
+      type = "string"
+    }
+    columns {
+      name = "eventType"
+      type = "string"
+    }
+    columns {
+      name = "timestamp"
+      type = "string"
+    }
+    columns {
+      name = "sectionID"
+      type = "string"
+    }
+    columns {
+      name = "unitID"
+      type = "string"
+    }
+    columns {
+      name = "count"
+      type = "int"
+    }
+
+    location = "s3://isb-raw-data-athena/numberOfInteractions/"
+
+    input_format  = "org.apache.hadoop.mapred.TextInputFormat"
+    output_format = "org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat"
+
+    ser_de_info {
+      serialization_library = "org.openx.data.jsonserde.JsonSerDe"
+      parameters = {
+        "ignore.malformed.json" = "FALSE"
+        "dots.in.keys"          = "FALSE"
+        "case.insensitive"      = "TRUE"
+        "mapping"               = "TRUE"
+      }
+    }
+  }
+
+  parameters = {
+    "classification" = "json"
+  }
+
+  depends_on = [aws_athena_database.athena_db]
+}
+
 # resource "aws_iam_role" "ec2_role" {
 #   name = "ec2_role"
 
