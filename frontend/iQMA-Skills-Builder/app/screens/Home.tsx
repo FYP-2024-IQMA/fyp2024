@@ -1,6 +1,7 @@
 // screens/HomeScreen.tsx
 
 import * as accountEndpoints from '@/helpers/accountEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
@@ -16,7 +17,7 @@ import {
     View,
 } from 'react-native';
 import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
@@ -27,10 +28,10 @@ import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
-import {router} from 'expo-router';
+import {globalStyles} from '@/constants/styles';
+import {packageFeedback} from '@/helpers/feedbackEndpoints';
+import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
-import { packageFeedback } from '@/helpers/feedbackEndpoints';
-import { globalStyles } from '@/constants/styles';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -315,6 +316,7 @@ const HomeScreen: React.FC = () => {
         return iconsStatus;
     };
 
+
     useEffect(() => {
         (async () => {
             try {
@@ -328,6 +330,12 @@ const HomeScreen: React.FC = () => {
                     currentUser.sub
                 );
                 console.log('Current Section Outside:', currentSection);
+                console.log('check streak update: ');
+
+                const gamificationData = await gamificationEndpoints.getStreak(
+                    currentUser.sub
+                );
+                console.log(gamificationData);
 
                 if (currentSection > sectionDetails.length) {
                     currentSection = sectionDetails.length;
@@ -440,7 +448,9 @@ const HomeScreen: React.FC = () => {
                 ref={scrollViewRef}
             >
                 {/* Top Stats */}
-                <TopStats circularProgress={sectionCircularProgress} />
+                <TopStats
+                    circularProgress={sectionCircularProgress}
+                />
 
                 {allSectionDetails.length > 0 ? (
                     allSectionDetails.map((sectionDetail, index) => (
@@ -467,7 +477,7 @@ const HomeScreen: React.FC = () => {
                     <Ionicons name="arrow-up" size={24} color="#7654F2" />
                 </TouchableOpacity>
             )}
-            <FeedbackComponent userID={currentUser.sub}/>
+            <FeedbackComponent userID={currentUser.sub} />
         </SafeAreaView>
     );
 };

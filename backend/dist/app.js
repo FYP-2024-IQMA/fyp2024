@@ -20,6 +20,7 @@ const quizRouter_1 = __importDefault(require("./routes/quizRouter"));
 const resultRouter_1 = __importDefault(require("./routes/resultRouter"));
 const sectionRouter_1 = __importDefault(require("./routes/sectionRouter"));
 const unitRouter_1 = __importDefault(require("./routes/unitRouter"));
+const feedbackRouter_1 = __importDefault(require("./routes/feedbackRouter"));
 const app = (0, express_1.default)();
 const port = 3000;
 // Middleware
@@ -41,6 +42,7 @@ app.use("/lesson", lessonRouter_1.default);
 app.use("/section", sectionRouter_1.default);
 app.use("/clickstream", clickstreamRouter_1.default);
 app.use("/accounts", accountsGamificationRouter_1.default);
+app.use("/feedback", feedbackRouter_1.default);
 // Start the Express server
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
