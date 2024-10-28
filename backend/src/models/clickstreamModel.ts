@@ -27,5 +27,6 @@ export interface ChatResponseTimeClickstream extends Clickstream {
 }
 
 export interface NumberOfInteractionsClickstream extends Clickstream {
+	unitID : string;
 	count: number;
 }
