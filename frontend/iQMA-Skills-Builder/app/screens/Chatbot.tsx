@@ -1,6 +1,6 @@
 // app/Chatbot.tsx
 
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -10,6 +10,7 @@ import {ChatDrawerParamList} from '@/components/ChatbotDrawer';
 import {Colors} from '@/constants/Colors';
 import {DrawerScreenProps} from '@react-navigation/drawer';
 import {useDrawerStatus} from '@react-navigation/drawer';
+import {useFocusEffect} from '@react-navigation/native';
 
 const sectionMapping: {[key: string]: string} = {
     SEC0001: 'Section 1: Communication',
@@ -80,10 +81,10 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
     // const navigation = useNavigation();
     const {sectionID} = route.params;
 
-    const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
         []
     );
+    const scrollViewRef = useRef<ScrollView>(null);
 
     useEffect(() => {
         navigation.getParent()?.setOptions({
@@ -106,6 +107,16 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
         loadHistory();
     }, [sectionID]);
 
+    useFocusEffect(
+        React.useCallback(() => {
+            // Scroll to the end when the screen is focused
+            console.log('called');
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollToEnd({animated: true});
+            }
+        }, [messages]) // Dependency on messages to ensure scroll when new messages are loaded
+    );
+
     if (!sectionID) {
         return (
             <View style={styles.container}>
@@ -115,7 +126,10 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
     }
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.chatContainer}>
+            <ScrollView
+                contentContainerStyle={styles.chatContainer}
+                ref={scrollViewRef}
+            >
                 {messages.map((msg, index) => (
                     <ChatBubble
                         key={index}
