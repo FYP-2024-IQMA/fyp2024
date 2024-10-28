@@ -21,6 +21,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
+import FeedbackComponent from '@/components/Feedback';
 import {Ionicons} from '@expo/vector-icons';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -28,6 +29,8 @@ import SectionCard from '@/components/SectionCard';
 import TopStats from '@/components/TopStats';
 import {router} from 'expo-router';
 import {useContext} from 'react';
+import { packageFeedback } from '@/helpers/feedbackEndpoints';
+import { globalStyles } from '@/constants/styles';
 
 const HomeScreen: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -429,7 +432,7 @@ const HomeScreen: React.FC = () => {
     }
 
     return (
-        <SafeAreaView style={styles.outerContainer}>
+        <SafeAreaView style={globalStyles.container}>
             <ScrollView
                 contentContainerStyle={styles.container}
                 onScroll={onScroll}
@@ -464,17 +467,18 @@ const HomeScreen: React.FC = () => {
                     <Ionicons name="arrow-up" size={24} color="#7654F2" />
                 </TouchableOpacity>
             )}
+            <FeedbackComponent userID={currentUser.sub}/>
         </SafeAreaView>
     );
 };
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-    },
+    // outerContainer: {
+    //     flex: 1,
+    // },
     container: {
         padding: 20,
-        backgroundColor: '#F5F5F5',
+        // backgroundColor: '#F5F5F5',
     },
     lineSeparator: {
         height: 1,

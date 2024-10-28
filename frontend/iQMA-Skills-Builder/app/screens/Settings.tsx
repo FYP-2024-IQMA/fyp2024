@@ -1,14 +1,23 @@
-import { StyleSheet, Text, View ,Button, Alert, Linking } from 'react-native';
-import React, { useContext, useEffect, useState, useCallback } from 'react';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Button,
+    Alert,
+    ScrollView,
+    Linking,
+} from 'react-native';
+import React, {useContext, useEffect, useState, useCallback} from 'react';
 import CustomSwitch from '@/components/CustomSwitch';
-import { CustomButton } from '@/components/CustomButton';
-import { AuthContext } from '@/context/AuthContext';
+import {CustomButton} from '@/components/CustomButton';
+import {AuthContext} from '@/context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
-import { router } from 'expo-router';
-import { Colors } from '@/constants/Colors';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {router} from 'expo-router';
+import {Colors} from '@/constants/Colors';
+import {globalStyles} from '@/constants/styles';
 import {checkNotifications} from 'react-native-permissions';
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 export default function Settings() {
     const {logOut} = useContext(AuthContext);
@@ -19,13 +28,13 @@ export default function Settings() {
 
     const getNotifications = () => {
         checkNotifications().then(({status}) => {
-            if(status === 'granted'){
+            if (status === 'granted') {
                 setIsNotificationsEnabled(true);
-            }else{
+            } else {
                 setIsNotificationsEnabled(false);
             }
         });
-    }
+    };
 
     // Get Settings from AsyncStorage
     const getSettingsData = async () => {
@@ -76,35 +85,33 @@ export default function Settings() {
     }
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.textHeading}>GENERAL</Text>
-            <View style={styles.switchContainer}>
-                <Text style={styles.label}>Sound Effects</Text>
-                <CustomSwitch
-                    isEnabled={isSoundEffectsEnabled}
-                    onToggle={toggleSoundEffects}
+        <ScrollView style={globalStyles.container}>
+            <View style={styles.container}>
+                <Text style={styles.textHeading}>GENERAL</Text>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>Sound Effects</Text>
+                    <CustomSwitch
+                        isEnabled={isSoundEffectsEnabled}
+                        onToggle={toggleSoundEffects}
+                    />
+                </View>
+
+                <Text style={styles.textHeading}>NOTIFICATIONS</Text>
+                <View style={styles.switchContainer}>
+                    <Text style={styles.label}>All Notifications</Text>
+                    <CustomSwitch
+                        isEnabled={isNotificationsEnabled}
+                        onToggle={toggleNotifications}
+                    />
+                </View>
+
+                <CustomButton
+                    label="Log out"
+                    backgroundColor="white"
+                    onPressHandler={logOut}
                 />
             </View>
-
-            <Text style={styles.textHeading}>NOTIFICATIONS</Text>
-            <View style={styles.switchContainer}>
-                <Text style={styles.label}>All Notifications</Text>
-                <CustomSwitch
-                    isEnabled={isNotificationsEnabled}
-                    onToggle={toggleNotifications}
-                />
-            </View>
-            <Button
-        title="Press Me"
-        onPress={() => router.push('Streak')}
-      />
-
-            <CustomButton
-                label="Log out"
-                backgroundColor="white"
-                onPressHandler={logOut}
-            />
-        </View>
+        </ScrollView>
     );
 }
 

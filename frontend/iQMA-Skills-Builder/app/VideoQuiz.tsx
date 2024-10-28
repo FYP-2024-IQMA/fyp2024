@@ -2,8 +2,10 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+
+import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -21,6 +23,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
@@ -109,8 +112,18 @@ export default function VideoQuiz() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
@@ -133,27 +146,38 @@ export default function VideoQuiz() {
                         questions[currentQnsIdx].quizID
                     );
 
-                    try {
-                        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+                    let points = await AsyncStorage.getItem(
+                        'totalPoints'
+                    );
+                    const numPoints = parseInt(points as string);
 
-                        let points = await AsyncStorage.getItem('totalPoints');
-                        const numPoints = parseInt(points as string);
+                    await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
 
-                        const data = {
-                            userID: currentUser.sub,
-                            points: numPoints,
-                        };
+                    // try {
+                    //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
 
-                        const response = await axios.patch(url, data);
-                        const result = await response.data;
-                        console.log('Points successfully updated:', result);
-                        AsyncStorage.setItem('totalPoints', '0');
-                    } catch (error: any) {
-                        console.error(
-                            'Error updating points:',
-                            error.response.data
-                        );
-                    }
+                    //     let points = await AsyncStorage.getItem(
+                    //         'totalPoints'
+                    //     );
+                    //     const numPoints = parseInt(points as string);
+    
+                    //     await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+
+                    //     // const data = {
+                    //     //     userID: currentUser.sub,
+                    //     //     points: numPoints,
+                    //     // };
+
+                    //     // const response = await axios.patch(url, data);
+                    //     // const result = await response.data;
+                    //     // console.log('Points successfully updated:', result);
+                    //     // AsyncStorage.setItem('totalPoints', '0');
+                    // } catch (error: any) {
+                    //     console.error(
+                    //         'Error updating points:',
+                    //         error.response.data
+                    //     );
+                    // }
                 }
 
                 let pathName = 'KeyTakeaway';

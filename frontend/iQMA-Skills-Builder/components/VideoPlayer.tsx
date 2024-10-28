@@ -12,7 +12,7 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateChange }) => {
     const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
     // const { height: screenHeight } = Dimensions.get('window'); // get device height
-    const [videoHeight, setVideoHeight] = useState(screenHeight * 0.75); // Default initial height
+    const [videoHeight, setVideoHeight] = useState(screenHeight * 0.3); // Default initial height
     const [isLoading, setIsLoading] = useState(true); // Loading state
 
     // const onVideoReadyForDisplay = (vidData: any) => {
@@ -47,7 +47,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateCha
 
     return (
         <YoutubePlayer
-            height={300}
+            height={videoHeight}
             play={playing}
             onChangeState={onStateChange}
             videoId={videoUrl} // YouTube video ID
@@ -58,8 +58,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, playing, onStateCha
 const styles = StyleSheet.create({
     video: {
         backgroundColor: 'black',
-        width: '100%',
-        marginBottom: 20
     },
 });
 

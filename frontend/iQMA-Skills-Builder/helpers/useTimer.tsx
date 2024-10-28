@@ -3,7 +3,12 @@ import {useRef, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 
-export const useTimer = (sectionID: string, event: string, unitID?: string | null, lessonID?: string | null) => {
+export const useTimer = (
+    sectionID: string,
+    event: string,
+    unitID?: string | null,
+    lessonID?: string | null
+) => {
     const [seconds, setSeconds] = useState<number>(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
 

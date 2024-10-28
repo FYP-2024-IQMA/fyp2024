@@ -25,6 +25,8 @@ import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
 import {Achievements} from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
+import { globalStyles } from '@/constants/styles';
+import { AudioPlayer } from '@/components/AudioPlayer';
 
 const ProfilePage: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -78,6 +80,10 @@ const ProfilePage: React.FC = () => {
         }
     };
 
+    const handlePressCourses = async () => {
+        router.push('Courses');
+    };
+
     // Fetch data when screen is Focused
     useFocusEffect(
         useCallback(() => {
@@ -91,7 +97,7 @@ const ProfilePage: React.FC = () => {
 
     return (
         <ScrollView contentContainerStyle={styles.scrollView}>
-            <View style={styles.container}>
+            <View style={globalStyles.container}>
                 <ProfileCard userDetails={userDetails} />
 
                 <Achievements achievements={badges} />
@@ -113,15 +119,17 @@ const ProfilePage: React.FC = () => {
                         >
                             Courses
                         </Text>
-                        <Text
-                            style={{
-                                textDecorationLine: 'underline',
-                                textDecorationColor: '#5C5776',
-                                fontWeight: 'bold',
-                            }}
-                        >
-                            View all
-                        </Text>
+                        <TouchableOpacity onPress={handlePressCourses}>
+                            <Text
+                                style={{
+                                    textDecorationLine: 'underline',
+                                    textDecorationColor: '#5C5776',
+                                    fontWeight: 'bold',
+                                }}
+                            >
+                                View all
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                     <View
                         style={{
@@ -130,7 +138,7 @@ const ProfilePage: React.FC = () => {
                                 allSectionDetails.length === 1
                                     ? 'center'
                                     : 'space-between',
-                            gap: 15
+                            gap: 15,
                         }}
                     >
                         {allSectionDetails.length > 0 ? (
@@ -167,10 +175,8 @@ const ProfilePage: React.FC = () => {
 const styles = StyleSheet.create({
     scrollView: {
         flexGrow: 1,
-        backgroundColor: '#fff', // Ensure background color is white
     },
     container: {
-        backgroundColor: '#fff', // Container also white
     },
 });
 
