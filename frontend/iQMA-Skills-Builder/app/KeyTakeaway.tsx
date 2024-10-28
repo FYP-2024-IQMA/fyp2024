@@ -199,18 +199,6 @@ export default function KeyTakeaway() {
                         />
                         <Text style={styles.screenTitle}>{lessonName}</Text>
 
-                        <Text style={styles.audioTitle}>Listen & Learn</Text>
-
-                        <View style={styles.logoContainer}>
-                            <View style={styles.audioCircle}>
-                                <FontAwesome5
-                                    name="headphones"
-                                    size={50}
-                                    color={Colors.default.purple500}
-                                />
-                            </View>
-                        </View>
-
                         <AudioPlayer
                             audioUri={lessonKeyTakeawayAudio}
                         />
@@ -269,27 +257,6 @@ const styles = StyleSheet.create({
         color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
-    },
-    logoContainer: {
-        flex: 1,
-        alignItems: 'center',
-        marginBottom: 10,
-    },
-    audioCircle: {
-        backgroundColor: Colors.light.unFilled,
-        width: 80,
-        height: 80,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 40,
-    },
-    audioTitle: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        color: Colors.header.color,
-        marginBottom: 20,
-        marginHorizontal: 10,
-        textAlign: 'center',
     },
     takeawayHeader: {
         marginBottom: 10,
