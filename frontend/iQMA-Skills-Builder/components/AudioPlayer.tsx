@@ -45,7 +45,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({audioUri}) => {
             newSound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
         } catch (error) {
             setError(true);
-            console.error('Error loading audio:', error);
+            // console.error('Error loading audio:', error);
         }
     };
 
