@@ -4,23 +4,28 @@ import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import {router, useLocalSearchParams} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
+import {Ionicons} from '@expo/vector-icons';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import MiniChatbot from '@/components/MiniChatbot';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
-import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
-import {Ionicons} from '@expo/vector-icons';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -55,17 +60,17 @@ export default function SelfReflection() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -123,10 +128,6 @@ export default function SelfReflection() {
             );
 
             if (!ifCompleted) {
-                await resultEndpoints.createResult(
-                    currentUser.sub,
-                    parseInt(quizID as string)
-                );
 
                 let points = await AsyncStorage.getItem('totalPoints');
                 const numPoints = parseInt(points as string);
@@ -136,58 +137,52 @@ export default function SelfReflection() {
                     numPoints
                 );
 
-                // try {
-                //     // const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
+                await gamificationEndpoints.updateStreakUnit(currentUser.sub, quizID as string);
 
-                //     let points = await AsyncStorage.getItem(
-                //         'totalPoints'
-                //     );
-                //     const numPoints = parseInt(points as string);
+                router.push({
+                    pathname: 'Badge',
+                    params: {
+                        sectionID,
+                        unitID,
+                        currentUnit,
+                        totalUnits,
+                        currentProgress: (
+                            parseInt(currentProgress as string)
+                        ).toString(),
+                        totalProgress,
+                    },
+                });
 
-                //     await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+            } else {
 
-                //     // const data = {
-                //     //     userID: currentUser.sub,
-                //     //     points: numPoints,
-                //     // };
+                if (parseInt(unitNumber) === parseInt(totalUnits as string)) {
+                    // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
+                    router.push({
+                        pathname: 'AssessmentIntroduction',
+                        params: {
+                            sectionID,
+                            unitID,
+                            currentUnit,
+                            totalUnits,
+                            isFinal: 'true',
+                            currentProgress: (
+                                parseInt(currentProgress as string) + 1
+                            ).toString(),
+                            totalProgress,
+                        },
+                    });
+                } else {
+                    // after self-reflection navigate back to home for next unit
+                    router.replace('Home');
+                }
 
-                //     // const response = await axios.patch(url, data);
-
-                //     AsyncStorage.setItem('totalPoints', '0');
-                // } catch (error: any) {
-                //     console.error(
-                //         'Error updating points:',
-                //         error.response.data
-                //     );
-                // }
             }
+
         } catch (error) {
             console.error(
                 'Error in Submitting Unit Assessment (Self-Reflection Page):',
                 error
             );
-        }
-        // })();
-
-        if (parseInt(currentUnit as string) === parseInt(totalUnits as string)) {
-            // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
-            router.push({
-                pathname: 'AssessmentIntroduction',
-                params: {
-                    sectionID,
-                    unitID,
-                    currentUnit,
-                    totalUnits,
-                    isFinal: 'true',
-                    currentProgress: (
-                        parseInt(currentProgress as string) + 1
-                    ).toString(),
-                    totalProgress,
-                },
-            });
-        } else {
-            // after self-reflection navigate back to home for next unit
-            router.replace('Home');
         }
         stopTimer();
     };
@@ -196,6 +191,7 @@ export default function SelfReflection() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            scrollEnabled={false}
         >
             {isLoading ? (
                 <LoadingIndicator />

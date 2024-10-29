@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {View, TouchableOpacity} from 'react-native';
+import {View, TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {Audio, AVPlaybackStatus} from 'expo-av';
 import Slider from '@react-native-community/slider';
 import {useFocusEffect} from '@react-navigation/native';
-import {Ionicons} from '@expo/vector-icons';
+import {FontAwesome5, Ionicons} from '@expo/vector-icons';
 import {Colors} from '@/constants/Colors';
+import {OverviewCard} from './OverviewCard';
 
 interface AudioPlayerProps {
     audioUri: string;
@@ -17,6 +18,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({audioUri}) => {
     const [duration, setDuration] = useState<number>(0);
     const [position, setPosition] = useState<number>(0);
     const [seekPosition, setSeekPosition] = useState<number | null>(null);
+    const [error, setError] = useState<boolean>(false);
 
     // Load audio when component mounts
     useEffect(() => {
@@ -42,6 +44,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({audioUri}) => {
             }
             newSound.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
         } catch (error) {
+            setError(true);
             console.error('Error loading audio:', error);
         }
     };
@@ -106,8 +109,32 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({audioUri}) => {
         }, [sound])
     );
 
+    if (error) {
+        return (
+            <>
+                <OverviewCard
+                    isError={true}
+                    text="Audio is not available. Please check with your administrator."
+                />
+            </>
+        );
+    }
+
     return (
         <View>
+
+            <Text style={styles.audioTitle}>Listen & Learn</Text>
+
+            <View style={styles.logoContainer}>
+                <View style={styles.audioCircle}>
+                    <FontAwesome5
+                        name="headphones"
+                        size={50}
+                        color={Colors.default.purple500}
+                    />
+                </View>
+            </View>
+
             <Slider
                 style={{height: 30}}
                 minimumValue={0}
@@ -144,3 +171,34 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({audioUri}) => {
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    screenTitle: {
+        fontSize: Colors.lessonName.fontSize,
+        fontWeight: 'bold',
+        color: Colors.header.color,
+        marginBottom: 20,
+        marginHorizontal: 10,
+    },
+    logoContainer: {
+        flex: 1,
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    audioCircle: {
+        backgroundColor: Colors.light.unFilled,
+        width: 80,
+        height: 80,
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 40,
+    },
+    audioTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: Colors.header.color,
+        marginBottom: 20,
+        marginHorizontal: 10,
+        textAlign: 'center',
+    },
+});

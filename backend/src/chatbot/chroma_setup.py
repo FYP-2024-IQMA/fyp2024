@@ -129,7 +129,7 @@ Thought: you should always think about what to do
 
 Action: the action to take, should be one of [{tool_names}]
 
-Action Input: the input to the action. If you are using the same tool because the response is not waht yo uneed, think about how you can rephrase the input and make sure it is different from the previous input.
+Action Input: the input to the action. If you are using the same tool because the response is not what you need, think about how you can rephrase the input and make sure it is different from the previous input.
 
 Observation: the result of the action
 

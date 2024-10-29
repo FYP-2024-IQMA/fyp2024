@@ -57,9 +57,6 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
     const scrollViewRef = useRef<ScrollView>(null);
     const [responseTime, setResponseTime] = useState<number>(0);
 
-    // const sectionID = 'SEC0001';
-    // const unitID = 'UNIT0002';
-
     const loadUnitChatHistory = async (
         userId: string,
         sectionId: string,
@@ -184,6 +181,7 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
             <View style={styles.container}>
                 <View style={styles.purpleBox}>
                     <ScrollView
+                        ref={scrollViewRef}
                         style={styles.scrollView}
                         contentContainerStyle={styles.chatContainer}
                         onContentSizeChange={() =>

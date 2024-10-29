@@ -54,8 +54,8 @@ exports.updatePoints = updatePoints;
 exports.updateStreaksFromUnit = updateStreaksFromUnit;
 exports.updateStreaksFromLogin = updateStreaksFromLogin;
 const resultService = __importStar(require("../services/resultService"));
-const unitService = __importStar(require("../services/unitService"));
 const sectionService = __importStar(require("../services/sectionService"));
+const unitService = __importStar(require("../services/unitService"));
 const accountsGamificationModel_1 = require("../models/accountsGamificationModel");
 const resultModel_1 = require("../models/resultModel");
 const resultService_1 = require("./resultService");
@@ -102,7 +102,7 @@ function getTop5Accounts(userID) {
             });
             return {
                 user: Object.assign({}, userRank[0]),
-                top5: filteredData
+                top5: filteredData,
             };
         }
     });
@@ -161,7 +161,7 @@ function getBadges(userID) {
                 if (publicUrlData) {
                     unitBadges.push({
                         unitName: "LOCKED",
-                        badgeUrl: publicUrlData.publicUrl
+                        badgeUrl: publicUrlData.publicUrl,
                     });
                 }
             }
@@ -210,9 +210,13 @@ function getLatestBadge(sectionID, unitID) {
             console.error(error);
             throw error;
         }
-        const completedUnit = unitID.replace(/\D/g, '').replace(/^0+/, '');
-        const unitDetails = yield unitService.getUnitDetailsBySectionAndUnit({ sectionID, unitID });
-        if (storageBadges.length === 0 || parseInt(completedUnit) > storageBadges.length) {
+        const completedUnit = unitID.replace(/\D/g, "").replace(/^0+/, "");
+        const unitDetails = yield unitService.getUnitDetailsBySectionAndUnit({
+            sectionID,
+            unitID,
+        });
+        if (storageBadges.length === 0 ||
+            parseInt(completedUnit) > storageBadges.length) {
             const { data: publicUrlData } = yield supabaseConfig_1.default.storage
                 .from("badges")
                 .getPublicUrl(`placeholder.png`);
@@ -267,7 +271,7 @@ function updatePoints(userID, points) {
 function calculateStreak(lastDate, today) {
     if (!lastDate)
         return 1; // No last date, start a new streak
-    const differenceInDays = Math.round((today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24));
+    const differenceInDays = today.getDate() - lastDate.getDate();
     console.log("today", today);
     console.log(differenceInDays);
     if (differenceInDays == 1)
@@ -276,13 +280,22 @@ function calculateStreak(lastDate, today) {
         return 2; // Reset streak if difference is greater than 1 day
     return 0; // Default case, no streak update
 }
+function formatDate(date) {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    const milliseconds = String(date.getUTCMilliseconds()).padStart(6, "0");
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}+00`;
+}
 // Ensure that the POST request correctly updates the user's streak when they complete a new unit.
 function updateStreaksFromUnit(userID, quizID) {
     return __awaiter(this, void 0, void 0, function* () {
-        const resultInstance = new resultModel_1.Result(userID, quizID, new Date());
-        const createResultResponse = yield (0, resultService_1.createResult)(resultInstance);
+        const resultInstance = new resultModel_1.Result(userID, quizID);
+        yield (0, resultService_1.createResult)(resultInstance);
         const data = yield getGamificationData(userID);
-        console.log("from unit la");
         console.log("quiz is", quizID);
         console.log(data);
         try {
@@ -307,6 +320,7 @@ function updateStreaksFromUnit(userID, quizID) {
                     .from("accountsgamification")
                     .update({
                     streaks: currentStreak,
+                    lastUnitCompletionDate: formatDate(today),
                 })
                     .eq("userID", userID);
             }
@@ -330,17 +344,13 @@ function updateStreaksFromLogin(userID) {
                 const daysSegment = calculateStreak(lastUnitDate, today);
                 let currentStreak = data.getStreaks();
                 // If the user has logged in today, do not update the streak
-                if (daysSegment === 0) {
-                    console.log("last unit completion date is today. streak unchanged");
+                if (daysSegment === 0 || daysSegment === 1) {
+                    console.log("last unit completion date is today or just did unit yesterday. streak unchanged");
                 }
                 else if (daysSegment > 1) {
                     // If the difference is greater than 1 day, reset the streak to 0
                     console.log("last unit completion date v long ago. streak reset");
                     currentStreak = 0;
-                }
-                else {
-                    console.log("diff is 1 means streak + 1");
-                    currentStreak += 1;
                 }
                 const { status, statusText, error } = yield supabaseConfig_1.default
                     .from("accountsgamification")

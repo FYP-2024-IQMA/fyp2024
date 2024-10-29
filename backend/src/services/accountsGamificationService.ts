@@ -1,6 +1,6 @@
 import * as resultService from "../services/resultService";
-import * as unitService from "../services/unitService";
 import * as sectionService from "../services/sectionService";
+import * as unitService from "../services/unitService";
 
 import { AccountsGamification } from "../models/accountsGamificationModel";
 import { Result } from "../models/resultModel";
@@ -49,7 +49,7 @@ export async function getTop5Accounts(userID: string) {
 			user: {
 				...userRank[0],
 			},
-		 	top5: filteredData
+			top5: filteredData,
 		};
 	}
 }
@@ -85,11 +85,9 @@ export async function getGamificationData(userID: string) {
 }
 
 export async function getBadges(userID: string) {
-
 	const { data: storageBadges, error } = await supabase.storage
 		.from("badges")
 		.list();
-    
 
 	if (error) {
 		console.error(error);
@@ -101,11 +99,10 @@ export async function getBadges(userID: string) {
 	}
 
 	let badges = [];
-	
+
 	const totalSection = await sectionService.getAllSections();
 
 	for (let i = totalSection.length - 1; i >= 0; i--) {
-
 		const section = totalSection[i];
 		let unitBadges = [];
 
@@ -118,9 +115,7 @@ export async function getBadges(userID: string) {
 			throw error;
 		}
 
-		const totalUnit = await unitService.getAllUnitsBySection(
-			section.sectionID
-		);
+		const totalUnit = await unitService.getAllUnitsBySection(section.sectionID);
 
 		const completedUnit = await resultService.getUserProgress(
 			userID,
@@ -137,11 +132,11 @@ export async function getBadges(userID: string) {
 			if (publicUrlData) {
 				unitBadges.push({
 					unitName: "LOCKED",
-					badgeUrl: publicUrlData.publicUrl
+					badgeUrl: publicUrlData.publicUrl,
 				});
 			}
 		}
-		
+
 		const withoutBadge = Math.max(0, completedUnit - sectionBadges.length);
 		const minBadges = completedUnit - withoutBadge;
 
@@ -176,54 +171,57 @@ export async function getBadges(userID: string) {
 			unitBadges[i].unitName = unit.unitName;
 		}
 
-
 		badges.push({
 			sectionID: section.sectionID,
 			badges: unitBadges,
 		});
-        
 	}
 	return badges;
 }
 
 export async function getLatestBadge(sectionID: string, unitID: string) {
+	const { data: storageBadges, error } = await supabase.storage
+		.from(`badges`)
+		.list(sectionID);
 
-    const { data: storageBadges, error } = await supabase.storage
-        .from(`badges`)
-        .list(sectionID);
-
-    if (error) {
-        console.error(error);
-        throw error;
+	if (error) {
+		console.error(error);
+		throw error;
 	}
-	
-	const completedUnit = unitID.replace(/\D/g, '').replace(/^0+/, '');
 
-	const unitDetails = await unitService.getUnitDetailsBySectionAndUnit({ sectionID, unitID });
+	const completedUnit = unitID.replace(/\D/g, "").replace(/^0+/, "");
 
-    if (storageBadges.length === 0 || parseInt(completedUnit) > storageBadges.length) {
-        const { data: publicUrlData } = await supabase.storage
-            .from("badges")
-            .getPublicUrl(`placeholder.png`);
+	const unitDetails = await unitService.getUnitDetailsBySectionAndUnit({
+		sectionID,
+		unitID,
+	});
 
-        if (publicUrlData) {
-            return {
-                unitName: unitDetails.unitName,
-                badgeUrl: publicUrlData.publicUrl,
-            };
-        }
-    }
+	if (
+		storageBadges.length === 0 ||
+		parseInt(completedUnit) > storageBadges.length
+	) {
+		const { data: publicUrlData } = await supabase.storage
+			.from("badges")
+			.getPublicUrl(`placeholder.png`);
 
-    const { data: publicUrlData } = await supabase.storage
-        .from("badges")
-        .getPublicUrl(`${sectionID}/unit${completedUnit}.png`);
+		if (publicUrlData) {
+			return {
+				unitName: unitDetails.unitName,
+				badgeUrl: publicUrlData.publicUrl,
+			};
+		}
+	}
 
-    if (publicUrlData) {
-        return {
-            unitName: unitDetails.unitName,
-            badgeUrl: publicUrlData.publicUrl,
-        };
-    }
+	const { data: publicUrlData } = await supabase.storage
+		.from("badges")
+		.getPublicUrl(`${sectionID}/unit${completedUnit}.png`);
+
+	if (publicUrlData) {
+		return {
+			unitName: unitDetails.unitName,
+			badgeUrl: publicUrlData.publicUrl,
+		};
+	}
 }
 
 /* UPDATE */
@@ -259,11 +257,7 @@ export async function updatePoints(userID: string, points: number) {
 function calculateStreak(lastDate: Date | null, today: Date): number {
 	if (!lastDate) return 1; // No last date, start a new streak
 
-	const differenceInDays = Math.round(
-		(today.getTime() - lastDate.getTime()) / (1000 * 60 * 60 * 24)
-	);
-	console.log("today", today);
-	console.log(differenceInDays);
+	const differenceInDays = today.getDate() - lastDate.getDate();
 
 	if (differenceInDays == 1) return 1; // Increment streak by 1 if difference is 1 day
 	if (differenceInDays > 1) return 2; // Reset streak if difference is greater than 1 day
@@ -271,13 +265,25 @@ function calculateStreak(lastDate: Date | null, today: Date): number {
 	return 0; // Default case, no streak update
 }
 
+function formatDate(date: Date) {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+    const day = String(date.getUTCDate()).padStart(2, "0");
+    const hours = String(date.getUTCHours()).padStart(2, "0");
+    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    const seconds = String(date.getUTCSeconds()).padStart(2, "0");
+    const milliseconds = String(date.getUTCMilliseconds()).padStart(6, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}.${milliseconds}+00`;
+}
+
 // Ensure that the POST request correctly updates the user's streak when they complete a new unit.
 export async function updateStreaksFromUnit(userID: string, quizID: number) {
-	const resultInstance = new Result(userID, quizID, new Date());
+	const resultInstance = new Result(userID, quizID);
 
-	const createResultResponse = await createResult(resultInstance);
+	await createResult(resultInstance);
 	const data = await getGamificationData(userID);
-	console.log("from unit la");
+
 	console.log("quiz is", quizID);
 	console.log(data);
 	try {
@@ -304,6 +310,7 @@ export async function updateStreaksFromUnit(userID: string, quizID: number) {
 				.from("accountsgamification")
 				.update({
 					streaks: currentStreak,
+					lastUnitCompletionDate: formatDate(today),
 				})
 				.eq("userID", userID);
 		}
@@ -328,15 +335,14 @@ export async function updateStreaksFromLogin(userID: string) {
 			let currentStreak = data.getStreaks();
 
 			// If the user has logged in today, do not update the streak
-			if (daysSegment === 0) {
-				console.log("last unit completion date is today. streak unchanged");
+			if (daysSegment === 0 || daysSegment === 1) {
+				console.log(
+					"last unit completion date is today or just did unit yesterday. streak unchanged"
+				);
 			} else if (daysSegment > 1) {
 				// If the difference is greater than 1 day, reset the streak to 0
 				console.log("last unit completion date v long ago. streak reset");
 				currentStreak = 0;
-			} else {
-				console.log("diff is 1 means streak + 1");
-				currentStreak += 1;
 			}
 
 			const { status, statusText, error } = await supabase

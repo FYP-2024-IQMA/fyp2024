@@ -2,12 +2,12 @@
 export class Result {
     userID: string;
     quizID: number;
-    dateCreated: Date;
+    dateCreated?: Date;
 
     constructor(
         userID: string,
         quizID: number,
-        dateCreated: Date,
+        dateCreated?: Date,
 
     ) {
         this.userID = userID;
@@ -23,8 +23,8 @@ export class Result {
         return this.quizID;
     }
    
-    getDateCreated(): Date {
-        return this.dateCreated;
+    getDateCreated(): Date | null {
+        return this.dateCreated!;
     }
 }
 
