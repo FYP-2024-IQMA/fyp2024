@@ -155,7 +155,7 @@ export default function SectionIntroduction() {
                     </View>
 
                     <CustomButton
-                        label="continue"
+                        label="Continue"
                         backgroundColor="white"
                         onPressHandler={handlePress}
                     />
