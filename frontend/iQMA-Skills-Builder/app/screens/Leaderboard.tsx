@@ -1,10 +1,11 @@
 import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {AuthContext} from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {getLeaderboard} from '@/helpers/gamificationEndpoints';
 import {globalStyles} from '@/constants/styles';
 import {Colors} from '@/constants/Colors';
+import {useFocusEffect} from 'expo-router';
 
 interface User {
     name: string;
@@ -20,69 +21,27 @@ export default function Leaderboard() {
         useState<User | null>(null);
     const [leaderboard, setLeaderboard] = useState<User[]>([]);
 
-    const mockData = {
-        user: {
-            rank: 6,
-            name: 'newemail new',
-            points: 0,
-            profilePic:
-                'https://s.gravatar.com/avatar/9729153ddfd681496bc6c0ca73cff1f6?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fne.png',
-        },
-        top5: [
-            {
-                rank: 1,
-                name: 'r sng',
-                points: 1000,
-                profilePic:
-                    'https://lh3.googleusercontent.com/a/ACg8ocKaRQKG30OsaOP70Iy_NOSwNAI_T6gnteL0HmW5UsDzOT6KHA=s96-c',
-            },
-            {
-                rank: 2,
-                name: 'Kb A',
-                points: 450,
-                profilePic:
-                    'https://lh3.googleusercontent.com/a/ACg8ocIM92iV75eTcPwAbJlvOK5uYb0Oq_86UwCnd_STHRoRPeR3M9E=s96-c',
-            },
-            {
-                rank: 3,
-                name: 'fadhli tan',
-                points: 275,
-                profilePic:
-                    'https://lh3.googleusercontent.com/a/ACg8ocLg8qSMH09DEWPw9_UMVAsnK7CNU8wAz_Oi1YIwgtMapVsgXQ=s96-c',
-            },
-            {
-                rank: 4,
-                name: 'Germaine Lim',
-                points: 185,
-                profilePic:
-                    'https://lh3.googleusercontent.com/a/ACg8ocJyaci71qFm4fKapaip-STm9ObiuI9v1N6cUJ6r26pMtREBBA=s96-c',
-            },
-            {
-                rank: 5,
-                name: 'yp tan',
-                points: 10,
-                profilePic:
-                    'https://lh3.googleusercontent.com/a/ACg8ocL9ZfGONHmi1bv88EiOilxaa3uU1eB3g9FhOXTYj0GhDQuV_A=s96-c',
-            },
-        ],
+    // Fetch data when screen is Focused
+    useFocusEffect(
+        useCallback(() => {
+            fetchLeaderboardData();
+        }, [])
+    );
+
+    const fetchLeaderboardData = async () => {
+        try {
+            const response = await getLeaderboard(currentUser.sub);
+            setCurrentUserRankDetails(response.user);
+            setLeaderboard(response.top5);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
-        const fetchLeaderboardData = async () => {
-            try {
-                const response = await getLeaderboard(currentUser.sub);
-                setCurrentUserRankDetails(response.user);
-                setLeaderboard(response.top5);
-                // setCurrentUserRankDetails(mockData.user);
-                // setLeaderboard(mockData.top5);
-                console.log(response);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
         fetchLeaderboardData();
     }, []);
 
@@ -94,11 +53,7 @@ export default function Leaderboard() {
         <ScrollView style={globalStyles.container}>
             <View style={styles.leaderboard}>
                 <View style={{alignItems: 'center'}}>
-                    <Text
-                        style={styles.title}
-                    >
-                        Top 5 Learners
-                    </Text>
+                    <Text style={styles.title}>Top 5 Learners</Text>
                 </View>
                 {leaderboard &&
                     leaderboard.map((user: User, index) => {
