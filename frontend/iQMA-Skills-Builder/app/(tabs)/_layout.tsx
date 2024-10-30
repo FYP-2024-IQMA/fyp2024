@@ -69,7 +69,7 @@ export default function AppTabs() {
                 component={LeaderboardPage}
                 options={{
                     tabBarIcon: ({color, size}) => (
-                        <Ionicons name="diamond" size={size} color={color} />
+                        <MaterialIcons name="leaderboard" size={size} color={color} />
                     ),
                     headerTintColor: '#fff',
                 }}

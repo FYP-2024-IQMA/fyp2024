@@ -121,7 +121,7 @@ export default function Achievements() {
                                 key={section.sectionID}
                                 style={styles.badgeOuterContainer}
                             >
-                                {section.badges.map(
+                                {section.badges.reverse().map(
                                     (badge: {
                                         badgeUrl: string;
                                         unitName: string;

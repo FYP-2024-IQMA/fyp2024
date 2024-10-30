@@ -1,14 +1,10 @@
-import {ActivityIndicator, Image, Text, View} from 'react-native';
+import {View} from 'react-native';
 import {useContext, useEffect, useState} from 'react';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
-import {LogoutButton} from '@/components/LogoutButton';
-import {Profile} from '@/components/Profile';
 
 // where things show upp
 export default function Index() {
@@ -31,7 +27,12 @@ export default function Index() {
         fetchUserID();
     }, []);
 
-    if (isStorageLoading || isLoading || currentUser) {
+    console.log("isStorageLoading: ", isStorageLoading);
+    console.log("isLoading: ", isLoading);
+    console.log("currentUser: ", currentUser);
+    console.log("checkUID: ", checkUID);
+
+    if (isStorageLoading || isLoading || currentUser || checkUID) {
         return (
             <>
                 <View
@@ -44,22 +45,11 @@ export default function Index() {
                 ></View>
             </>
         );
-        // return <LoadingIndicator></LoadingIndicator>;
     }
 
     return (
         <>
-            {checkUID ? (
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: Colors.light.background,
-                    }}
-                ></View>
-            ) : (
-                <View
+            <View
                     style={{
                         flex: 1,
                         justifyContent: 'center',
@@ -70,50 +60,6 @@ export default function Index() {
                     <LogoVisual />
                     <LoginButton />
                 </View>
-            )}
         </>
     );
-
-    // return (
-    // <View
-    //     style={{
-    //         flex: 1,
-    //         justifyContent: 'center',
-    //         alignItems: 'center',
-    //         backgroundColor: '#C3B1FF',
-    //     }}
-    // >
-    //     <LogoVisual></LogoVisual>
-    //     <LoginButton></LoginButton>
-    //     {/* For Testing & Debugging */}
-    //     {/* <Profile></Profile>  */}
-    // </View>
-    //     <>
-    //         {checkUID ? (
-    //             <View
-    //                 style={{
-    //                     flex: 1,
-    //                     justifyContent: 'center',
-    //                     alignItems: 'center',
-    //                     backgroundColor: '#C3B1FF',
-    //                 }}
-    //             >
-    //                 <Text>LOADING...</Text>
-    //                 {/* <LoginButton></LoginButton> */}
-    //             </View>
-    //         ) : (
-    //             <View
-    //                 style={{
-    //                     flex: 1,
-    //                     justifyContent: 'center',
-    //                     alignItems: 'center',
-    //                     backgroundColor: '#C3B1FF',
-    //                 }}
-    //             >
-    //                 <LogoVisual></LogoVisual>
-    //                 <LoginButton></LoginButton>
-    //             </View>
-    //         )}
-    //     </>
-    // );
 }
