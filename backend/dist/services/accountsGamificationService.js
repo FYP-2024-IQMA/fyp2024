@@ -272,8 +272,6 @@ function calculateStreak(lastDate, today) {
     if (!lastDate)
         return 1; // No last date, start a new streak
     const differenceInDays = today.getDate() - lastDate.getDate();
-    console.log("today", today);
-    console.log(differenceInDays);
     if (differenceInDays == 1)
         return 1; // Increment streak by 1 if difference is 1 day
     if (differenceInDays > 1)
