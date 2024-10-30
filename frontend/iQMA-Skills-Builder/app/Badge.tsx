@@ -8,6 +8,8 @@ import { Colors } from '@/constants/Colors';
 import { CustomButton } from '@/components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { router, useLocalSearchParams } from 'expo-router';
+import { globalStyles } from '@/constants/styles';
+
 
 export default function Badge() {
     const navigation = useNavigation();
@@ -72,10 +74,10 @@ export default function Badge() {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
             {showConfetti && <ConfettiCannon count={100} origin={{ x: -10, y: 0 }} />}
             <View style={styles.insideContainer}>
-                <Animated.View style={{ transform: [{ scale }] }}>
+                <Animated.View style={{ transform: [{ scale }]}}>
                     <Image source={{ uri: badgeUrl }} style={styles.imageStyle} />
                 </Animated.View>
                 <Text style={styles.badgeText}>You have obtained your {unitName} Badge!</Text>
@@ -103,9 +105,10 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     imageStyle: {
-        width: 100,
-        height: 100,
-        marginBottom: 50,
+        width: 150,
+        height: 150,
+        resizeMode: 'contain',
+        marginBottom: 20,
     },
     badgeText: {
         color: '#4143A3',

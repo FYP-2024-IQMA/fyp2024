@@ -9,6 +9,7 @@ import StreakImage from '@/assets/images/Streak.png'
 import {useNavigation} from '@react-navigation/native';
 import { router, useLocalSearchParams } from 'expo-router';
 import {formatUnit} from '@/helpers/formatUnitID';
+import { globalStyles } from '@/constants/styles';
 
 const StreakComponent: React.FC = () => {
     const [streakData, setStreakData] = useState<{ streakDays: number; lastCompletionDate: string; daysOfWeek: string[]; tickMarks: boolean[] } | null>(null);
@@ -148,7 +149,7 @@ const StreakComponent: React.FC = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
             <View style={styles.insideContainer}>
                 <Image
                     source={StreakImage} // Ensure correct path
@@ -204,6 +205,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        padding: 20
     },
     time: {
         fontSize: 24,
@@ -222,11 +224,11 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     message: {
-        fontSize: 16,
+        fontSize: 12,
         textAlign: 'center',
         marginVertical: 10,
         color: '#4143A3',
-        fontWeight: '200',
+        fontWeight: 'light',
     },
     daysContainer: {
         flexDirection: 'row',
