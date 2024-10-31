@@ -36,6 +36,20 @@ export default function Settings() {
         });
     };
 
+    const goToBadgePage = () => {
+        router.push({
+            pathname: 'Badge',
+            params: {
+                sectionID: "SEC0001",
+                unitID: "UNIT0001",
+                currentUnit: "UNIT0001",
+                totalUnits: 7,
+                currentProgress: 1,
+                totalProgress: 5,
+            },
+        });
+    }
+
     // Get Settings from AsyncStorage
     const getSettingsData = async () => {
         try {
@@ -110,6 +124,8 @@ export default function Settings() {
                     backgroundColor="white"
                     onPressHandler={logOut}
                 />
+
+                <Button title="Go to Badge" onPress={goToBadgePage}></Button>
             </View>
         </ScrollView>
     );
