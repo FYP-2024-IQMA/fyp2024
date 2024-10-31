@@ -109,8 +109,6 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const logOut = async () => {
         try {
             await clearSession();
-            setCurrentUser(null);
-            setToken(null);
             await AsyncStorage.clear();
             router.replace('/'); // For redirect if page is not Index
         } catch (e) {
