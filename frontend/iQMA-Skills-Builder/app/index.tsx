@@ -32,20 +32,20 @@ export default function Index() {
     console.log("currentUser: ", currentUser);
     console.log("checkUID: ", checkUID);
 
-    if (isStorageLoading || isLoading || currentUser || checkUID) {
-        return (
-            <>
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: Colors.light.background,
-                    }}
-                ></View>
-            </>
-        );
-    }
+    // if (isStorageLoading || isLoading || currentUser || checkUID) {
+    //     return (
+    //         <>
+    //             <View
+    //                 style={{
+    //                     flex: 1,
+    //                     justifyContent: 'center',
+    //                     alignItems: 'center',
+    //                     backgroundColor: Colors.light.background,
+    //                 }}
+    //             ></View>
+    //         </>
+    //     );
+    // }
 
     return (
         <>
