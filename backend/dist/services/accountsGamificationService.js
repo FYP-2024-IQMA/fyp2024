@@ -297,9 +297,9 @@ function updateStreaksFromUnit(userID, quizID) {
         console.log("quiz is", quizID);
         console.log(data);
         try {
+            const today = new Date();
             if (data.lastUnitCompletionDate != null) {
                 const lastUnitDate = new Date(data.lastUnitCompletionDate);
-                const today = new Date();
                 const daysSegment = calculateStreak(lastUnitDate, today);
                 console.log("days segment is", daysSegment);
                 let currentStreak = data.getStreaks();
@@ -318,6 +318,15 @@ function updateStreaksFromUnit(userID, quizID) {
                     .from("accountsgamification")
                     .update({
                     streaks: currentStreak,
+                    lastUnitCompletionDate: formatDate(today),
+                })
+                    .eq("userID", userID);
+            }
+            else {
+                const { status, statusText, error } = yield supabaseConfig_1.default
+                    .from("accountsgamification")
+                    .update({
+                    streaks: 1,
                     lastUnitCompletionDate: formatDate(today),
                 })
                     .eq("userID", userID);

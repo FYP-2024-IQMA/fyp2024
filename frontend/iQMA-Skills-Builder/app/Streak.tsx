@@ -1,18 +1,25 @@
-import React, { useEffect, useState, useContext } from 'react';
-import {Image, View, Text, ActivityIndicator, StyleSheet } from 'react-native';
-import { getStreak } from '@/helpers/gamificationEndpoints'; // Adjust the import path as necessary
-import { AuthContext } from '@/context/AuthContext';
-import { CustomButton } from '@/components/CustomButton';
-import { MaterialCommunityIcons } from '@expo/vector-icons'; // Importing icons from expo
-import { LoadingIndicator } from '@/components/LoadingIndicator';
-import StreakImage from '@/assets/images/Streak.png'
+import React, {useEffect, useState, useContext} from 'react';
+import {Image, View, Text, ActivityIndicator, StyleSheet} from 'react-native';
+import {getStreak} from '@/helpers/gamificationEndpoints'; // Adjust the import path as necessary
+import {AuthContext} from '@/context/AuthContext';
+import {CustomButton} from '@/components/CustomButton';
+import {MaterialCommunityIcons} from '@expo/vector-icons'; // Importing icons from expo
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import StreakImage from '@/assets/images/Streak.png';
 import {useNavigation} from '@react-navigation/native';
-import { router, useLocalSearchParams } from 'expo-router';
+import {router, useLocalSearchParams} from 'expo-router';
 import {formatUnit} from '@/helpers/formatUnitID';
-import { globalStyles } from '@/constants/styles';
+import {globalStyles} from '@/constants/styles';
+import {ScreenStackHeaderBackButtonImage} from 'react-native-screens';
+import {experimentalSetDeliveryMetricsExportedToBigQueryEnabled} from '@react-native-firebase/messaging';
 
 const StreakComponent: React.FC = () => {
-    const [streakData, setStreakData] = useState<{ streakDays: number; lastCompletionDate: string; daysOfWeek: string[]; tickMarks: boolean[] } | null>(null);
+    const [streakData, setStreakData] = useState<{
+        streakDays: number;
+        lastCompletionDate: string;
+        daysOfWeek: string[];
+        tickMarks: boolean[];
+    } | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const navigation = useNavigation();
@@ -25,6 +32,8 @@ const StreakComponent: React.FC = () => {
         currentProgress,
         totalProgress,
     } = useLocalSearchParams();
+    const [data, setData] = useState();
+    const [userStreak, setUserStreak] = useState<number>(0);
 
     useEffect(() => {
         const fetchStreakData = async () => {
@@ -33,7 +42,7 @@ const StreakComponent: React.FC = () => {
                     const data = await getStreak(currentUser.sub);
                     //  Call the getStreak function
                     console.log(data);
-                    
+
                     // const data = {
                     //     lastUnitCompletionDate: '2024-09-19T12:02:35.000Z',
                     //     points: 4185,
@@ -43,12 +52,26 @@ const StreakComponent: React.FC = () => {
 
                     const lastCompletionDate = data.lastUnitCompletionDate;
 
+                    console.log('Day:', new Date(lastCompletionDate).getDay());
+
+                    setData(data);
+                    setUserStreak(data.streaks);
+
                     // Calculate days from last completion date to today
-                    const daysDiff = calculateDaysDifference(lastCompletionDate);
+                    const daysDiff =
+                        calculateDaysDifference(lastCompletionDate);
                     console.log(daysDiff);
-                    const { daysOfWeek, tickMarks } = getDaysOfWeek(lastCompletionDate,daysDiff);
-                    
-                    setStreakData({ streakDays: data.streaks, lastCompletionDate, daysOfWeek, tickMarks }); // Set the fetched data to state
+                    const {daysOfWeek, tickMarks} = getDaysOfWeek(
+                        lastCompletionDate,
+                        daysDiff
+                    );
+
+                    setStreakData({
+                        streakDays: data.streaks,
+                        lastCompletionDate,
+                        daysOfWeek,
+                        tickMarks,
+                    }); // Set the fetched data to state
                 } catch (err) {
                     console.error(err); // Log the error for debugging
                     setError('Failed to load streak data'); // Handle any errors
@@ -62,9 +85,12 @@ const StreakComponent: React.FC = () => {
         };
 
         fetchStreakData(); // Invoke the async function
-    }, [currentUser?.sub]); // Include currentUser.sub in the dependency array
+    }, []); // Include currentUser.sub in the dependency array
 
-    console.log(streakData?.tickMarks);
+    console.log('DATA: ', data);
+    console.log('USERSTREAK ', userStreak);
+
+    console.log('tickmark:', streakData?.tickMarks);
     const calculateDaysDifference = (dateString: string) => {
         const lastDate = new Date(dateString);
         const today = new Date();
@@ -73,51 +99,86 @@ const StreakComponent: React.FC = () => {
         return diffDays;
     };
 
-    const getDaysOfWeek = (lastUnitCompletionDateString: string, streak: number) => {
+    const getDaysOfWeek = (
+        lastUnitCompletionDateString: string,
+        streak: number
+    ) => {
         const lastUnitCompletionDate = new Date(lastUnitCompletionDateString);
         const today = new Date();
         const currentDay = today.getDay();
-        
+
         // Calculate the first completion date based on the streak
         const firstCompletionDate = new Date(today); // Start with today
-    
-    firstCompletionDate.setDate(today.getDate() - (streak )); // Subtract streak to get the first completion date
-    
-    // Log firstCompletionDate
-    console.log('First Completion Date:', firstCompletionDate.toLocaleDateString());
-    
+
+        firstCompletionDate.setDate(today.getDate() - streak) + 1; // Subtract streak to get the first completion date
+
+        // Log firstCompletionDate
+        console.log(
+            'First Completion Date:',
+            firstCompletionDate.toLocaleDateString()
+        );
+
         // Calculate Monday of the current week
         const mondayOfCurrentWeek = new Date(today);
-        mondayOfCurrentWeek.setDate(today.getDate() - (currentDay === 0 ? 6 : currentDay - 1));
-    
+        mondayOfCurrentWeek.setDate(
+            today.getDate() - (currentDay === 0 ? 6 : currentDay - 1)
+        );
+
         // Calculate Sunday of the current week
         const sundayOfCurrentWeek = new Date(mondayOfCurrentWeek);
         sundayOfCurrentWeek.setDate(mondayOfCurrentWeek.getDate() + 6);
-    
+
         const days: string[] = [];
         const ticks: boolean[] = [];
-    
-        
-    
+
+        let streakCount = streakData?.streakDays ?? 0;
+        console.log('testing');
+        console.log('here', streakCount);
+
         // Loop through each day from Monday to Sunday of the current week
-        for (let d = new Date(mondayOfCurrentWeek); d <= sundayOfCurrentWeek; d.setDate(d.getDate() + 1)) {
-            days.push(d.toLocaleDateString('en-US', { weekday: 'short' }));
-    
+        for (
+            let d = new Date(mondayOfCurrentWeek);
+            d <= sundayOfCurrentWeek;
+            d.setDate(d.getDate() + 1)
+        ) {
+            days.push(d.toLocaleDateString('en-US', {weekday: 'short'}));
+
             // Determine if the day falls within the completion streak
 
-            if (d >= firstCompletionDate && d <= today) {
+            if ((d >= firstCompletionDate && d <= today) || streakCount > 0) {
                 ticks.push(true); // Mark as completed
+                streakCount--;
             } else {
                 ticks.push(false); // Not completed
             }
         }
-    
-        return { daysOfWeek: days, tickMarks: ticks };
+
+        return {daysOfWeek: days, tickMarks: ticks};
     };
+
+    const ticksArray: boolean[] = [];
+
+    if (userStreak > new Date().getDay()) {
+        for (let i = 1; i <= new Date().getDay(); i++) {
+            ticksArray.push(true);
+        }
+    } else {
+
+        ticksArray.fill(false);
+
+        const streakcounter = new Date().getDay() - userStreak + 1;
+
+        // tues 2
+        // thurs 4
+        for (let i = streakcounter; i <= new Date().getDay(); i++) {
+            ticksArray[i-1] = true;
+        }
+    }
 
     const handlePress = async () => {
         if (
-            parseInt(formatUnit(unitID as string)) === parseInt(totalUnits as string)
+            parseInt(formatUnit(unitID as string)) ===
+            parseInt(totalUnits as string)
         ) {
             // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
             router.push({
@@ -141,7 +202,7 @@ const StreakComponent: React.FC = () => {
     };
 
     if (loading) {
-        return <LoadingIndicator/>
+        return <LoadingIndicator />;
     }
 
     if (error) {
@@ -156,9 +217,27 @@ const StreakComponent: React.FC = () => {
                     style={styles.image} // Ensure the Image has styles with width and height
                 />
                 <View style={styles.daysContainer}>
-                    {streakData?.daysOfWeek.map((day, index) => (
+                    {/* {streakData?.daysOfWeek.map((day, index) => (
                         <View key={index} style={styles.dayContainer}>
                             {streakData.tickMarks[index] ? (
+                                <MaterialCommunityIcons
+                                    name="check-circle"
+                                    size={24}
+                                    color="#FE9D0D"
+                                />
+                            ) : (
+                                <MaterialCommunityIcons
+                                    name="check-circle-outline"
+                                    size={24}
+                                    color="#E0E0E0"
+                                />
+                            )}
+                            <Text style={styles.dayText}>{day}</Text>
+                        </View>
+                    ))} */}
+                    {streakData?.daysOfWeek.map((day, index) => (
+                        <View key={index} style={styles.dayContainer}>
+                            {ticksArray[index] ? (
                                 <MaterialCommunityIcons
                                     name="check-circle"
                                     size={24}
@@ -205,7 +284,7 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20
+        padding: 20,
     },
     time: {
         fontSize: 24,
