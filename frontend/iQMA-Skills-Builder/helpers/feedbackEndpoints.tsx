@@ -2,10 +2,11 @@
 
 // Helper function to package the feedback data
 export const packageFeedback = async (
-  userID: string,
   eventType: string,
+  message: string,
   selectedRating: number | null,
-  message: string
+  status: string,
+  userID: string,
 ) => {
   try {
     // Retrieve the userID from AsyncStorage
@@ -20,7 +21,8 @@ export const packageFeedback = async (
       timestamp: new Date().toISOString(), // Current datetime in ISO format
       eventType,        // Option selected from the dropdown
       rating: selectedRating !== null ? selectedRating : 'No rating', // Emoji rating, fallback if no rating
-      message: message !== null ? message : "No message",               // User's input message
+      message: message !== null ? message : "No message",            // User's input message
+      stuats: "open" // Status of the feedback
     };
 
     // Return the packaged feedback data

@@ -1,7 +1,8 @@
 export interface Feedback {
-    userID: string;
-    timestamp: Date;
     eventType: "feedback" | "bug" | "sugestion";
-    rating: number;
     message: string;
+    rating: number;
+    status: "open";
+    timestamp: Date;
+    userID: string;
 }

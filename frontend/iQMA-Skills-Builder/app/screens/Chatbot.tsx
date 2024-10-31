@@ -47,16 +47,18 @@ export const loadChatHistory = async (userId: string, sectionId: string) => {
                 }))
         );
 
-        const fixedResponse = [
-            {
-                isUser: false,
-                text: `Hello! How can I assist you with ${sectionMapping[sectionId]}?`,
-            },
-        ];
+        // const fixedResponse = [
+        //     {
+        //         isUser: false,
+        //         text: `Hello! How can I assist you with ${sectionMapping[sectionId]}?`,
+        //     },
+        // ];
 
-        return formattedChatHistory.length > 0
-            ? fixedResponse.concat(formattedChatHistory, fixedResponse)
-            : fixedResponse;
+        // return formattedChatHistory.length > 0
+        //     ? fixedResponse.concat(formattedChatHistory, fixedResponse)
+        //     : fixedResponse;
+
+        return formattedChatHistory;
     } catch (error) {
         console.error('Error while loading chat history:', error);
     }

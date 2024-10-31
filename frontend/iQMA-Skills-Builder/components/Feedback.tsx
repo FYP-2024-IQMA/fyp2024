@@ -20,14 +20,15 @@ type FeedbackComponentProps = {
 
 // onpress function
 const handleFeedbackSubmit = async (
-    userID: string,
     eventType: string,
+    feedback_status: string,
     selectedRating: number | null,
-    userFeedback: string
+    userID: string,
+    userFeedback: string,
   ) => {
     try {
       // Step 1: Call the packageFeedback function to package the data
-      const feedbackData = await packageFeedback(userID, eventType, selectedRating, userFeedback);
+      const feedbackData = await packageFeedback(eventType, feedback_status, selectedRating, userID, userFeedback);
   
       // Step 2: Send the packaged feedback using the sendFeedback function
       const status = await sendFeedback(feedbackData);
@@ -142,7 +143,7 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
                             {/* Submit Button */}
                             <TouchableOpacity
                                 style={styles.submitButton}
-                            onPress={async () => {await handleFeedbackSubmit(userID, selectedOption, selectedRating, userFeedback); setVisible(false);}}>
+                            onPress={async () => {await handleFeedbackSubmit(selectedOption, "open", selectedRating, userID, userFeedback); setVisible(false);}}>
                                 <Text style={styles.closeButtonText}>Submit</Text>
                             </TouchableOpacity>
 

@@ -125,7 +125,7 @@ export default function Settings() {
                     onPressHandler={logOut}
                 />
 
-                <Button title="Go to Badge" onPress={goToBadgePage}></Button>
+                {/* <Button title="Go to Badge" onPress={goToBadgePage}></Button> */}
             </View>
         </ScrollView>
     );
