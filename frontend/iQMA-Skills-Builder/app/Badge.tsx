@@ -1,54 +1,37 @@
-import {
-    Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    ScrollView,
-    Image,
-} from 'react-native';
-import {useState, useContext, useEffect} from 'react';
-import {AuthContext} from '@/context/AuthContext';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import React, { useState, useEffect, useContext } from 'react';
+import { Text, View, Image, StyleSheet, Animated } from 'react-native';
+import ConfettiCannon from 'react-native-confetti-cannon';
+import { AuthContext } from '@/context/AuthContext';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
-import {Colors} from '@/constants/Colors';
-import {globalStyles} from '@/constants/styles';
-import React from 'react';
+import { Colors } from '@/constants/Colors';
+import { CustomButton } from '@/components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
 import { router, useLocalSearchParams } from 'expo-router';
-import {CustomButton} from '@/components/CustomButton';
+import { globalStyles } from '@/constants/styles';
+
 
 export default function Badge() {
     const navigation = useNavigation();
-    const {currentUser} = useContext(AuthContext);
-    const {
-        sectionID,
-        unitID,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
-    } = useLocalSearchParams();
-    const [unitName, setUnitName] = useState<string>('');
-    const [badgeUrl, setbadgeUrl] = useState<string>('');
-    const [loading, setLoading] = useState<boolean>(true);
-    // const sectionID = "SEC0001";
-    // const unitID = "UNIT0001";
+    const { currentUser } = useContext(AuthContext);
+    const { sectionID, unitID, currentUnit, totalUnits, currentProgress, totalProgress } = useLocalSearchParams();
+    const [unitName, setUnitName] = useState('');
+    const [badgeUrl, setBadgeUrl] = useState('');
+    const [loading, setLoading] = useState(true);
+    const [showConfetti, setShowConfetti] = useState(false);
+    const [scale] = useState(new Animated.Value(1)); // For scaling animation
 
-    const fetchBadge = async (sectionID: string, unitID: string) => {
-        try {            
-            const badge = await gamificationEndpoints.getBadge(
-                sectionID, unitID
-            );
-
+    const fetchBadge = async (sectionID:string, unitID:string) => {
+        try {
+            const badge = await gamificationEndpoints.getBadge(sectionID, unitID);
             setUnitName(badge.unitName);
-            setbadgeUrl(badge.badgeUrl);
-
-            console.log(badge);
+            setBadgeUrl(badge.badgeUrl);
+            handleAnimation(); // Trigger scaling animation
         } catch (error) {
             console.error('Error fetching badge', error);
         } finally {
             setLoading(false);
+            setShowConfetti(true); // Show confetti when badge is fetched
         }
     };
 
@@ -58,7 +41,21 @@ export default function Badge() {
         }
     }, []);
 
-    const handlePress = async () => {
+    const handleAnimation = () => {
+        Animated.spring(scale, {
+            toValue: 1.2,
+            friction: 3,
+            useNativeDriver: true,
+        }).start(() => {
+            Animated.spring(scale, {
+                toValue: 1,
+                friction: 3,
+                useNativeDriver: true,
+            }).start();
+        });
+    };
+
+    const handlePress = () => {
         router.push({
             pathname: 'Streak',
             params: {
@@ -66,9 +63,7 @@ export default function Badge() {
                 unitID,
                 currentUnit,
                 totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string)
-                ).toString(),
+                currentProgress: (parseInt(currentProgress as string)).toString(),
                 totalProgress,
             },
         });
@@ -79,14 +74,14 @@ export default function Badge() {
     }
 
     return (
-        <View style={styles.container}>
+        <View style={globalStyles.container}>
+            {showConfetti && <ConfettiCannon count={100} origin={{ x: -10, y: 0 }} />}
             <View style={styles.insideContainer}>
-                <Text>Badges</Text>
-                <Image
-                    source={{uri: badgeUrl}}
-                    style={{width: 100, height: 100}}
-                />
-                <Text>{unitName}</Text>
+                <Animated.View style={{ transform: [{ scale }]}}>
+                    <Image source={{ uri: badgeUrl }} style={styles.imageStyle} />
+                </Animated.View>
+                <Text style={styles.badgeText}>You have obtained your {unitName} Badge!</Text>
+                <Text style={styles.bottomText}>Visit your profile to see your new badge!</Text>
             </View>
             <CustomButton
                 label="Continue"
@@ -100,12 +95,32 @@ export default function Badge() {
 const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
-        padding: 20,
+        padding: 10,
         flex: 1,
     },
     insideContainer: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        textAlign: 'center',
+    },
+    imageStyle: {
+        width: 150,
+        height: 150,
+        resizeMode: 'contain',
+        marginBottom: 20,
+    },
+    badgeText: {
+        color: '#4143A3',
+        fontWeight: 'bold',
+        fontSize: 20,
+        textAlign: 'center',
+    },
+    bottomText: {
+        color: '#4143A3',
+        fontWeight: 'light',
+        fontSize: 12,
+        textAlign: 'center',
+        marginTop: 10,
     },
 });
