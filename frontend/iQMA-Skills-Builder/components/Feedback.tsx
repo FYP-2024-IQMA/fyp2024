@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
         left: 20,
         position: 'absolute',
         zIndex: 1000,
+        elevation: 3
     },
     bubbleText: {
         color: Colors.chatbot.inputColor,
