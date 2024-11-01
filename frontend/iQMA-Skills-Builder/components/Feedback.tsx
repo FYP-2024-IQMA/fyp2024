@@ -54,6 +54,9 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
     const [selectedRating, setSelectedRating] = useState<number | null>(null); // Rating state
     const [message, setMessage] = useState<string>(''); // Message based on dropdown
     const [userFeedback, setUserFeedback] = useState<string>(''); // Feedback state
+    const [ratingError, setRatingError] = useState<boolean>(false);
+    const [optionError, setOptionError] = useState<boolean>(false);
+    const [userFeedbackError, setUserFeedbackError] = useState<boolean>(false);
 
     // Messages corresponding to dropdown options
     const customMessages: {[key: string]: string} = {
@@ -66,21 +69,50 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
 
     const onDropdownChange = (itemValue: string) => {
         setSelectedOption(itemValue);
-        setMessage(customMessages[itemValue] || ''); // Set custom message based on dropdown selection
+        // setMessage(customMessages[itemValue] || ''); // Set custom message based on dropdown selection
     };
 
     const handleSubmit = async () => {
-        await handleFeedbackSubmit(
-            selectedOption,
-            userFeedback,
-            selectedRating,
-            userID
-        );
-        setVisible(false);
-        // clear everything
-        setSelectedOption('');
-        setSelectedRating(null);
-        setMessage('');
+        setRatingError(false);
+        setOptionError(false);
+        setUserFeedbackError(false);
+
+        let hasError = false;
+
+        if (selectedRating == null) {
+            setRatingError(true);
+            hasError = true;
+        }
+
+        if (selectedOption == '') {
+            setOptionError(true);
+            hasError = true;
+        }
+
+        if (userFeedback == '') {
+            setUserFeedbackError(true);
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        } else {
+            await handleFeedbackSubmit(
+                selectedOption,
+                userFeedback,
+                selectedRating! + 1,
+                userID
+            );
+            setVisible(false);
+            // clear everything
+            setSelectedOption('');
+            setSelectedRating(null);
+            setMessage('');
+            setUserFeedback('');
+            setRatingError(false);
+            setOptionError(false);
+            setUserFeedbackError(false);
+        }
     };
 
     const ratingFaces = ['😭', '😐', '😊', '😀'];
@@ -102,7 +134,14 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
                         <Text style={styles.formTitle}>User Feedback Form</Text>
 
                         {/* Dropdown Field */}
-                        <View style={styles.dropdownContainer}>
+                        <View
+                            style={[
+                                styles.dropdownContainer,
+                                optionError
+                                    ? {borderColor: 'red', borderWidth: 1}
+                                    : null,
+                            ]}
+                        >
                             <Picker
                                 selectedValue={selectedOption}
                                 style={styles.dropdown}
@@ -147,17 +186,34 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
                         </View>
 
                         {/* Custom Message */}
-                        {selectedOption ? (
+                        {/* {selectedOption ? (
                             <Text style={styles.customMessage}>{message}</Text>
-                        ) : null}
+                        ) : null} */}
 
                         {/* Text Input Field */}
                         <TextInput
-                            style={styles.textInput}
-                            placeholder="We value your inputs! Please share your feedback here."
+                            style={[
+                                styles.textInput,
+                                userFeedbackError
+                                    ? {borderColor: 'red', borderWidth: 1}
+                                    : null,
+                            ]}
+                            // placeholder="We value your inputs! Please share your feedback here."
+                            placeholder={
+                                selectedOption && customMessages[selectedOption]
+                                    ? customMessages[selectedOption]
+                                    : 'We value your inputs! Please share your feedback here.'
+                            }
                             multiline
                             onChangeText={(text) => setUserFeedback(text)}
                         />
+                        {ratingError ? (
+                            <Text style={{color: 'red', fontWeight: 'bold'}}>
+                                Please select a rating!
+                            </Text>
+                        ) : (
+                            <></>
+                        )}
                         <View style={styles.buttons}>
                             {/* Close Form Button */}
                             <TouchableOpacity
