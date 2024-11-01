@@ -11,16 +11,46 @@ import {useState, useContext, useEffect} from 'react';
 import {AuthContext} from '@/context/AuthContext';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
-import { router } from 'expo-router';
-import { globalStyles } from '@/constants/styles';
+import {router} from 'expo-router';
+import {globalStyles} from '@/constants/styles';
 
 export default function EditProfile() {
     const {currentUser, isLoading} = useContext(AuthContext);
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(true);
+    const [firstNameError, setFirstNameError] = useState<string>(
+        'First Name cannot be empty!'
+    );
+    const [lastNameError, setLastNameError] = useState<string>(
+        'Last Name cannot be empty!'
+    );
 
     const handleSave = async () => {
+        // setFirstNameError(false);
+        // setLastNameError(false);
+
+        // let hasError = false;
+
+        // if (firstName == '') {
+        //     setFirstNameError(true);
+        //     hasError = true;
+        // }
+
+        // if (lastName == '') {
+        //     setLastNameError(true);
+        //     hasError = true;
+        // }
+
+        if (lastName == '') {
+            return;
+        }
+
+        if (firstName == '') {
+            return;
+        }
+
         try {
             const userDetails = {
                 userID: `${currentUser.sub}`,
@@ -31,7 +61,6 @@ export default function EditProfile() {
             await accountEndpoints.editUserDetails(userDetails);
             Alert.alert('Success', 'Profile updated successfully.');
         } catch (error) {
-            console.error('Failed to update profile:', error);
             Alert.alert('Error', 'Failed to update profile. Please try again.');
         }
     };
@@ -45,6 +74,7 @@ export default function EditProfile() {
                 console.log('userDetails:', userDetails);
                 setFirstName(userDetails.firstName);
                 setLastName(userDetails.lastName);
+                setEmail(userDetails.email);
             } catch (error) {
                 console.error('Error fetching user details:', error);
             } finally {
@@ -58,27 +88,47 @@ export default function EditProfile() {
     }
 
     return (
-        <ScrollView
-            style={globalStyles.container}
-        >
+        <ScrollView style={globalStyles.container}>
             <View style={styles.form}>
                 <Text style={styles.label}>FIRST NAME</Text>
                 <TextInput
-                    style={styles.input}
+                    style={[
+                        styles.input,
+                        firstName == ''
+                            ? {borderColor: 'red', borderWidth: 1, marginBottom: 0}
+                            : null,
+                    ]}
                     value={firstName}
                     onChangeText={(text) => setFirstName(text)}
                 />
+                {firstName == '' ? <Text style={styles.errorLabel}>{firstNameError}</Text> : null}
                 <Text style={styles.label}>LAST NAME</Text>
                 <TextInput
-                    style={styles.input}
+                    style={[
+                        styles.input,
+                        lastName == ''
+                            ? {borderColor: 'red', borderWidth: 1, marginBottom: 0}
+                            : null,
+                    ]}
                     value={lastName}
                     onChangeText={(text) => setLastName(text)}
                 />
-                <TouchableOpacity style={styles.button} onPress={handleSave}>
-                    <Text style={styles.buttonText}>SAVE</Text>
-                </TouchableOpacity>
+                {lastName == '' ? <Text style={styles.errorLabel}>{lastNameError}</Text> : null}
+                <Text style={styles.label}>EMAIL</Text>
+                <TextInput
+                    style={styles.input}
+                    value={email}
+                    editable={false}
+                />
+                <View style={{marginTop: 20}}>
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleSave}
+                    >
+                        <Text style={styles.buttonText}>SAVE</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            
         </ScrollView>
     );
 }
@@ -89,9 +139,9 @@ const styles = StyleSheet.create({
     },
     label: {
         color: '#7654F2',
-        fontSize: 14,
+        fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 5,
+        marginBottom: 10,
     },
     input: {
         height: 40,
@@ -105,14 +155,24 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         borderRadius: 10,
         borderColor: '#9C81FF',
-        borderWidth: 1,
+        borderWidth: 2,
         padding: 10,
         justifyContent: 'center',
         alignItems: 'center',
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 4},
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+        elevation: 5,
     },
     buttonText: {
         color: '#7654F2',
         fontSize: 16,
         fontWeight: 'bold',
     },
+    errorLabel: {
+        color: 'red',
+        fontSize: 12,
+        marginBottom: 10
+    }
 });
