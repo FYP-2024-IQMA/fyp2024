@@ -255,6 +255,7 @@ const styles = StyleSheet.create({
         left: 20,
         position: 'absolute',
         zIndex: 1000,
+        elevation: 3
     },
     bubbleText: {
         color: Colors.chatbot.inputColor,
@@ -314,6 +315,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,

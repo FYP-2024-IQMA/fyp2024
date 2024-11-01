@@ -53,24 +53,6 @@ const ProfilePage: React.FC = () => {
             console.log('badges:', badges);
 
             setAllSectionDetails(sectionDetails);
-            // Testing
-            // setAllSectionDetails([
-            //     {
-            //         sectionDuration: 136,
-            //         sectionID: 'SEC0001',
-            //         sectionName: 'Communication',
-            //     },
-            //     {
-            //         sectionDuration: 136,
-            //         sectionID: 'SEC0001',
-            //         sectionName: 'Communication',
-            //     },
-            //     {
-            //         sectionDuration: 136,
-            //         sectionID: 'SEC0001',
-            //         sectionName: 'Communication',
-            //     },
-            // ]);
             setUserDetails(userDetails);
             setBadges(badges);
         } catch (error) {
