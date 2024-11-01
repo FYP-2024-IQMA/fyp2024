@@ -314,6 +314,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         alignItems: 'center',
+        justifyContent: 'center',
         backgroundColor: 'white',
         borderRadius: 10,
         padding: 20,
