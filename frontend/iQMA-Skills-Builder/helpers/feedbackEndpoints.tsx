@@ -5,7 +5,6 @@ export const packageFeedback = async (
   eventType: string,
   message: string,
   selectedRating: number | null,
-  status: string,
   userID: string,
 ) => {
   try {
@@ -22,7 +21,7 @@ export const packageFeedback = async (
       eventType,        // Option selected from the dropdown
       rating: selectedRating !== null ? selectedRating : 'No rating', // Emoji rating, fallback if no rating
       message: message !== null ? message : "No message",            // User's input message
-      stuats: "open" // Status of the feedback
+      status: "open" // Status of the feedback
     };
 
     // Return the packaged feedback data

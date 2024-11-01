@@ -38,7 +38,8 @@ async function uploadToS3(queue: string, newFeedback: Feedback) {
 }
 
 // Define your queues (you can add more if necessary)
-const QUEUE_NAMES = ["feedback", "bug", "suggestion"];
+// const QUEUE_NAMES = ["feedback", "bug", "suggestion"];
+const QUEUE_NAMES = ["feedback"];
 
 // Create a function to consume messages
 async function consumeMessage() {
@@ -69,7 +70,7 @@ async function consumeMessage() {
 }
 
 export async function sendMessage(feedback: Feedback) {
-    const queue = feedback.eventType;
+    const queue = "feedback";
     const conn = await amqp.connect(process.env.RABBITMQ_URL!);
     const channel = await conn.createChannel();
     await channel.assertQueue(queue);

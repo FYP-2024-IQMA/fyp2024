@@ -11,7 +11,7 @@ import React, {useState} from 'react';
 import {Colors} from '@/constants/Colors';
 import {Picker} from '@react-native-picker/picker';
 
-import { packageFeedback, sendFeedback } from '@/helpers/feedbackEndpoints';
+import {packageFeedback, sendFeedback} from '@/helpers/feedbackEndpoints';
 
 // Define types for the component
 type FeedbackComponentProps = {
@@ -21,31 +21,34 @@ type FeedbackComponentProps = {
 // onpress function
 const handleFeedbackSubmit = async (
     eventType: string,
-    feedback_status: string,
-    selectedRating: number | null,
-    userID: string,
     userFeedback: string,
-  ) => {
+    selectedRating: number | null,
+    userID: string
+) => {
     try {
-      // Step 1: Call the packageFeedback function to package the data
-      const feedbackData = await packageFeedback(eventType, feedback_status, selectedRating, userID, userFeedback);
-  
-      // Step 2: Send the packaged feedback using the sendFeedback function
-      const status = await sendFeedback(feedbackData);
-  
-      // Step 3: Check response status
-      if (status === 200) {
-        console.log('Feedback sent successfully!');
-      } else {
-        console.log('Failed to send feedback.');
-      }
+        // Step 1: Call the packageFeedback function to package the data
+        const feedbackData = await packageFeedback(
+            eventType,
+            userFeedback,
+            selectedRating,
+            userID
+        );
+
+        // Step 2: Send the packaged feedback using the sendFeedback function
+        const status = await sendFeedback(feedbackData);
+
+        // Step 3: Check response status
+        if (status === 200) {
+            console.log('Feedback sent successfully!');
+        } else {
+            console.log('Failed to send feedback.');
+        }
     } catch (error) {
-      console.error('Error while submitting feedback:', error);
+        console.error('Error while submitting feedback:', error);
     }
-  };
+};
 
-
-const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
+const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
     const [visible, setVisible] = useState<boolean>(false); // To toggle form visibility
     const [selectedOption, setSelectedOption] = useState<string>(''); // Dropdown state
     const [selectedRating, setSelectedRating] = useState<number | null>(null); // Rating state
@@ -64,6 +67,20 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
     const onDropdownChange = (itemValue: string) => {
         setSelectedOption(itemValue);
         setMessage(customMessages[itemValue] || ''); // Set custom message based on dropdown selection
+    };
+
+    const handleSubmit = async () => {
+        await handleFeedbackSubmit(
+            selectedOption,
+            userFeedback,
+            selectedRating,
+            userID
+        );
+        setVisible(false);
+        // clear everything
+        setSelectedOption('');
+        setSelectedRating(null);
+        setMessage('');
     };
 
     const ratingFaces = ['😭', '😐', '😊', '😀'];
@@ -122,7 +139,9 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
                                     ]}
                                 >
                                     <Text style={styles.face}>{emoji}</Text>
-                                    <Text style={styles.ratingNumber}>{index + 1}</Text>
+                                    <Text style={styles.ratingNumber}>
+                                        {index + 1}
+                                    </Text>
                                 </TouchableOpacity>
                             ))}
                         </View>
@@ -140,22 +159,26 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({ userID }) => {
                             onChangeText={(text) => setUserFeedback(text)}
                         />
                         <View style={styles.buttons}>
-                            {/* Submit Button */}
-                            <TouchableOpacity
-                                style={styles.submitButton}
-                            onPress={async () => {await handleFeedbackSubmit(selectedOption, "open", selectedRating, userID, userFeedback); setVisible(false);}}>
-                                <Text style={styles.closeButtonText}>Submit</Text>
-                            </TouchableOpacity>
-
                             {/* Close Form Button */}
                             <TouchableOpacity
                                 style={styles.closeButton}
                                 onPress={() => setVisible(false)}
                             >
-                                <Text style={styles.closeButtonText}>Close</Text>
+                                <Text style={styles.closeButtonText}>
+                                    Close
+                                </Text>
+                            </TouchableOpacity>
+
+                            {/* Submit Button */}
+                            <TouchableOpacity
+                                style={styles.submitButton}
+                                onPress={handleSubmit}
+                            >
+                                <Text style={styles.closeButtonText}>
+                                    Submit
+                                </Text>
                             </TouchableOpacity>
                         </View>
-
                     </View>
                 </View>
             </Modal>
@@ -192,7 +215,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 10,
         height: 40,
-        width: 100, 
+        width: 100,
     },
     closeButtonText: {
         color: Colors.light.text,
@@ -242,8 +265,9 @@ const styles = StyleSheet.create({
     },
     formTitle: {
         color: Colors.default.purple500,
-        fontSize: 18,
-        marginBottom: 10,
+        fontSize: 20,
+        marginBottom: 20,
+        fontWeight: 'bold',
     },
     modalBackground: {
         flex: 1,
@@ -253,7 +277,7 @@ const styles = StyleSheet.create({
     ratingContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginVertical: 10,
+        marginBottom: 10,
     },
     ratingNumber: {
         textAlign: 'center',
@@ -265,17 +289,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         padding: 10,
         height: 40,
-        width: 100, 
+        width: 100,
     },
     textInput: {
         borderColor: 'gray',
         borderWidth: 1,
-        borderRadius: 5,
+        borderRadius: 10,
         color: Colors.light.text,
-        height: 100,
-        marginRight: 10,
-        paddingLeft: 20,
-        width: 300,
+        height: '25%',
+        padding: 15,
+        width: '90%',
+        textAlignVertical: 'top',
+        marginBottom: 20,
     },
 });
 

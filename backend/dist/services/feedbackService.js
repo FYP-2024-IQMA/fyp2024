@@ -48,7 +48,8 @@ function uploadToS3(queue, newFeedback) {
     });
 }
 // Define your queues (you can add more if necessary)
-const QUEUE_NAMES = ["feedback", "bug", "suggestion"];
+// const QUEUE_NAMES = ["feedback", "bug", "suggestion"];
+const QUEUE_NAMES = ["feedback"];
 // Create a function to consume messages
 function consumeMessage() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -81,7 +82,7 @@ function consumeMessage() {
 }
 function sendMessage(feedback) {
     return __awaiter(this, void 0, void 0, function* () {
-        const queue = feedback.eventType;
+        const queue = "feedback";
         const conn = yield amqplib_1.default.connect(process.env.RABBITMQ_URL);
         const channel = yield conn.createChannel();
         yield channel.assertQueue(queue);
