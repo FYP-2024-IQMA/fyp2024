@@ -99,7 +99,8 @@ export default function EditProfile() {
                             : null,
                     ]}
                     value={firstName}
-                    onChangeText={(text) => setFirstName(text)}
+                    onChangeText={(text) => setFirstName(text.replace(/[0-9\s]/g, ''))}
+                    maxLength={10}
                 />
                 {firstName == '' ? <Text style={styles.errorLabel}>{firstNameError}</Text> : null}
                 <Text style={styles.label}>LAST NAME</Text>
@@ -111,7 +112,8 @@ export default function EditProfile() {
                             : null,
                     ]}
                     value={lastName}
-                    onChangeText={(text) => setLastName(text)}
+                    onChangeText={(text) => setLastName(text.replace(/[0-9\s]/g, ''))}
+                    maxLength={10}
                 />
                 {lastName == '' ? <Text style={styles.errorLabel}>{lastNameError}</Text> : null}
                 <Text style={styles.label}>EMAIL</Text>
