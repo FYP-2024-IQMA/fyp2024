@@ -33,8 +33,8 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) => {
         try {
             const result = await Share.share({
                 message: 'Join me on my iQMA Learning Adventure!',
-                url: 'https://example.com/my-profile', // Add your profile URL here
-                title: 'Yi Peng Tan Profile',
+                // url: 'https://example.com/my-profile', // Add your profile URL here
+                // title: 'Yi Peng Tan Profile',
             });
 
             if (result.action === Share.sharedAction) {
@@ -144,6 +144,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderColor: '#9CA3AF',
         borderWidth: 1,
+        
+        
     },
     editText: {
         fontSize: 12,
