@@ -154,10 +154,12 @@ agent_executor = AgentExecutor(
     agent=agent,
     tools=langchain_tools,
     verbose=True,
-    handle_parsing_errors=True
+    handle_parsing_errors=True,
+    return_intermediate_steps=True
 )
 
 #######################################################
+# Code for loading documents from docs folder if not using notebook
 
 # # set up parser
 # print(f"Setting up parser")

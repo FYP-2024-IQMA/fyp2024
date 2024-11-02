@@ -150,19 +150,6 @@ full_chain = (
     | RunnableAssign({'output': reply_chain})
 )
 
-# full_chain = (
-#     PPrint()
-#     | RunnableAssign({'choice': branch_chain})
-#     | PPrint()
-#     | RunnableBranch(
-#         (lambda x: "question" in x["choice"].lower(), RunnableAssign({'final_answer': answer_llm})),
-#         # (lambda x: "summary" in x["choice"].lower(), RunnableAssign({'final_answer': answer_chain})),
-#         RunnableAssign({'final_answer': answer_chain})
-#     )
-#     | PPrint()
-#     | RunnableAssign({'output': reply_chain})
-# )
-
 store = {}
 
 full_chain_w_history = RunnableWithMessageHistory(

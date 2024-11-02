@@ -64,7 +64,7 @@ result = evaluate(
 )
 
 result = result.to_pandas()
-mean_results = result[["Faithfulness", "answer_relevancy", "context_recall", "context_precision"]].mean(axis=0)
+mean_results = result[["faithfulness", "answer_relevancy", "context_recall", "context_precision"]].mean(axis=0)
 print(f"Results: {mean_results}")
 
 
