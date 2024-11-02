@@ -10,14 +10,15 @@ import nest_asyncio
 import os
 import pandas as pd
 import pickle
-from ragas.testset.generator import TestsetGenerator
-from ragas.testset.evolutions import simple, reasoning
+from ragas.testset import TestsetGenerator
+
 
 load_dotenv()
 nest_asyncio.apply()
 
-model_name = "distilbert/distilbert-base-multilingual-cased"
-embeddings = HuggingFaceEmbeddings(model_name=model_name)
+# model_name = "distilbert/distilbert-base-multilingual-cased"
+# embeddings = HuggingFaceEmbeddings(model_name=model_name)
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=os.environ.get("OPENAI_API_KEY"))
 
 # LOAD documents
 document_path = "./docs"
@@ -45,6 +46,8 @@ print(f"Cleaned {len(documentList)} documents")
 with open("documents.pkl", "wb") as f:
     pickle.dump(documentList, f)
 
+# with open("documents.pkl", "rb") as f:
+#     documentList = pickle.load(f)
 # load openai chat and embedding
 # openai_client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -53,23 +56,16 @@ with open("documents.pkl", "wb") as f:
 #    return openai_client.embeddings.create(input = [text], model=model).data[0].embedding
 
 generator_llm = ChatOpenAI(model="gpt-4o-mini", api_key=os.getenv("OPENAI_API_KEY"))
-critic_llm = ChatOpenAI(model="gpt-4o-mini", api_key=os.getenv("OPENAI_API_KEY"))
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small", api_key=os.getenv("OPENAI_API_KEY"))
 
-generator = TestsetGenerator.from_langchain(
-    generator_llm, 
-    critic_llm, 
-    embeddings
+generator = TestsetGenerator.from_langchain( 
+    llm=generator_llm, 
+    embedding_model=embeddings
 )
 
 testset = generator.generate_with_langchain_docs(
     documentList,
-    test_size=20,
-    distribution={
-        "simple": 0.5,
-        "reasoning": 0.5,
-    },
-    raise_exception=False
+    testset_size=10,
 )
 print("Testset of length", len(testset), "generated")
 
