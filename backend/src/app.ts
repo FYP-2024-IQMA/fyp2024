@@ -1,14 +1,15 @@
 import accountsAffectiveRouter from "./routes/accountsAffectiveRouter";
 import accountsCognitiveRouter from "./routes/accountsCognitiveRouter";
 import accountsDemographicsRouter from "./routes/accountsDemographicsRouter";
+import accountsGamificationRouter from "./routes/accountsGamificationRouter";
 import accountsRouter from "./routes/accountsRouter";
 import accountsSocialRouter from "./routes/accountsSocialRouter";
-import amqp from "amqplib/callback_api"; // RabbitMQ
 import chatRouter from "./routes/chatRouter";
 import clickstreamRouter from "./routes/clickstreamRouter";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
+import feedbackRouter from "./routes/feedbackRouter";
 import lessonRouter from "./routes/lessonRouter";
 import questionRouter from "./routes/questionRouter";
 import quizRouter from "./routes/quizRouter";
@@ -38,43 +39,8 @@ app.use("/chat", chatRouter);
 app.use("/lesson", lessonRouter);
 app.use("/section", sectionRouter);
 app.use("/clickstream", clickstreamRouter);
-
-// RabbitMQ Producer: Sends "timeTaken" data to RabbitMQ
-app.post("/rabbitmq", (req, res) => {
-	const { timeTaken } = req.body;
-	console.log("timetaken:", timeTaken);
-
-	// Connect to RabbitMQ
-	amqp.connect(process.env.RABBITMQ_URL!, (error0, connection) => {
-		if (error0) {
-			throw error0;
-		}
-
-		connection.createChannel((error1, channel) => {
-			if (error1) {
-				throw error1;
-			}
-
-			const queue = "response_times";
-			const msg = JSON.stringify({ timeTaken });
-
-			// Ensure the queue exists
-			channel.assertQueue(queue, { durable: false });
-
-			// Send message to RabbitMQ queue
-			channel.sendToQueue(queue, Buffer.from(msg));
-
-			console.log(` [x] Sent ${msg}`);
-		});
-
-		// Close the connection after sending the message
-		setTimeout(() => {
-			connection.close();
-		}, 500);
-	});
-
-	res.send("Time sent to RabbitMQ");
-});
+app.use("/accounts", accountsGamificationRouter);
+app.use("/feedback", feedbackRouter);
 
 // Start the Express server
 app.listen(port, () => {

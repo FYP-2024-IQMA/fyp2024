@@ -20,6 +20,8 @@ from uuid import uuid4
 load_dotenv()
 nest_asyncio.apply()
 
+persist_dir = "./chroma_langchain_db"
+
 # attempt to load documents from persistent storage
 try:
     print(f"Attempting to load documents from persistent storage")
@@ -30,7 +32,7 @@ try:
     vectorstore = ChromaVectorStore.from_params(
         collection_name="iqma_collection",
         embedding_function=embeddings,
-        persist_dir="./src/chatbot/chroma_langchain_db"
+        persist_dir=persist_dir,
     )
     print(f"Completed setting up vector store")
 
@@ -46,6 +48,7 @@ except:
 
 # load, process and store documents in persistent storage if not existent
 if not index_loaded:
+    print(f"Loading documents from docs folder")
     # set up parser
     parser = LlamaParse(
         result_type="text",
@@ -58,7 +61,7 @@ if not index_loaded:
     documents = document_reader.load_data()
 
     # set up chromadb
-    db = chromadb.PersistentClient(path="./src/chatbot/chroma_langchain_db")
+    db = chromadb.PersistentClient(path=persist_dir)
     chroma_collection = db.get_or_create_collection("iqma_collection")
 
     # create vector store
@@ -126,7 +129,7 @@ Thought: you should always think about what to do
 
 Action: the action to take, should be one of [{tool_names}]
 
-Action Input: the input to the action. If you are using the same tool because the response is not waht yo uneed, think about how you can rephrase the input and make sure it is different from the previous input.
+Action Input: the input to the action. If you are using the same tool because the response is not what you need, think about how you can rephrase the input and make sure it is different from the previous input.
 
 Observation: the result of the action
 
@@ -151,10 +154,12 @@ agent_executor = AgentExecutor(
     agent=agent,
     tools=langchain_tools,
     verbose=True,
-    handle_parsing_errors=True
+    handle_parsing_errors=True,
+    return_intermediate_steps=True
 )
 
 #######################################################
+# Code for loading documents from docs folder if not using notebook
 
 # # set up parser
 # print(f"Setting up parser")

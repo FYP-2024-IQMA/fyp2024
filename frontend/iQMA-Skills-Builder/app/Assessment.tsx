@@ -1,21 +1,28 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {ScrollView, StyleSheet, Text, Image, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
-import ProgressBar from '@/components/ProgressBar';
-import {QuizCard} from '@/components/QuizCard';
-import {router, useLocalSearchParams} from 'expo-router';
-import {Question} from '@/constants/Quiz';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as quizEndpoints from '@/helpers/quizEndpoints';
-import {formatUnit} from '@/helpers/formatUnitID';
-import {formatSection} from '@/helpers/formatSectionID';
-import {OverviewCard} from '@/components/OverviewCard';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
+
+import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
+import {router, useLocalSearchParams} from 'expo-router';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {OverviewCard} from '@/components/OverviewCard';
+import ProgressBar from '@/components/ProgressBar';
+import {Question} from '@/constants/Quiz';
+import {QuizCard} from '@/components/QuizCard';
+import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
+import {formatSection} from '@/helpers/formatSectionID';
+import {formatUnit} from '@/helpers/formatUnitID';
+import {useNavigation} from '@react-navigation/native';
+import {useTimer} from '@/helpers/useTimer'
+import {Ionicons} from '@expo/vector-icons';;
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -28,16 +35,27 @@ export default function Assessment() {
     const [sectionName, setSectionName] = useState<string>('');
     const [unitScenario, setUnitScenario] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        currentUnit,
+        totalUnits,
+        isFinal,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
- 
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Assessment', unitID as string);
+    const [totalPoints, setTotalPoints] = useState<number>(0);
+
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
     // const sectionID = 'SEC0001';
     // const unitID = 'UNIT0001';
 
     useEffect(() => {
+        startTimer();
         if (isFinal === 'true') {
             (async () => {
                 try {
@@ -91,12 +109,24 @@ export default function Assessment() {
     }, [sectionID, unitID, checkFinal]);
 
     useLayoutEffect(() => {
-
-        let progress = checkFinal ? 1 : parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        let progress = checkFinal
+            ? 1
+            : parseInt(currentProgress as string) /
+              parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation, checkFinal]);
@@ -107,7 +137,7 @@ export default function Assessment() {
             await AsyncStorage.setItem('currentQnsIdx', newIdx.toString());
             setCurrentQnsIdx(newIdx);
         } else {
-
+            console.log(checkFinal);
             if (checkFinal) {
                 // final assessment don't have self-reflection
                 try {
@@ -122,6 +152,14 @@ export default function Assessment() {
                             currentUser.sub,
                             questions[currentQnsIdx].quizID
                         );
+
+                        let points = await AsyncStorage.getItem(
+                            'totalPoints'
+                        );
+                        const numPoints = parseInt(points as string);
+
+                        await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
+
                     }
                 } catch (error) {
                     console.error('Error in Assessment:', error);
@@ -140,9 +178,10 @@ export default function Assessment() {
                         isFinal,
                         currentProgress,
                         totalProgress,
-                    }
+                    },
                 });
             }
+            stopTimer();
         }
     };
 
@@ -167,7 +206,7 @@ export default function Assessment() {
                         <Text
                             style={{
                                 fontSize: 14,
-                                color: '#4143A3',
+                                color: Colors.header.color,
                                 marginBottom: 10,
                             }}
                         >
@@ -198,6 +237,7 @@ export default function Assessment() {
 
                     {questions.length > 0 && questions[currentQnsIdx] && (
                         <QuizCard
+                            sectionID={sectionID as string}
                             questionData={questions[currentQnsIdx]}
                             onNextQuestion={handleNextQuestion}
                         />
@@ -210,7 +250,7 @@ export default function Assessment() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, {useContext, useEffect, useState} from 'react';
 
+import {Colors} from '@/constants/Colors';
 import {Feather} from '@expo/vector-icons';
 
 // import {TextInput} from 'react-native-gesture-handler';
@@ -71,6 +72,7 @@ export const saveChatHistory = async (
         });
 
         const data = await response.json();
+        console.log('data:', data);
 
         console.log('Status: ', data.status);
     } catch (error) {
@@ -123,7 +125,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginRight: 10,
         paddingLeft: 30,
-        backgroundColor: '#D1D5DB',
+        backgroundColor: Colors.chatbot.inputColor,
     },
     button: {
         justifyContent: 'center',
@@ -132,7 +134,7 @@ const styles = StyleSheet.create({
     sendButtonCircle: {
         width: 40,
         height: 40,
-        backgroundColor: '#B199FF',
+        backgroundColor: Colors.default.purple100,
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',

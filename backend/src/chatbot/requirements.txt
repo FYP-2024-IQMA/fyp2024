@@ -1,10 +1,11 @@
+# chromadb
 fastapi
 # langchain
 # langchain-chroma
 # langchain-core
-langchain-community
+# langchain-community
 # langchain-huggingface
-langchain-openai
+# langchain-openai
 # langchain-text-splitters
 # llama-index
 # llama-index-embeddings-huggingface
@@ -16,7 +17,7 @@ pydantic
 pytest
 python-dotenv
 requests
-# streamlit
+streamlit
 typing
 # unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git
 uvicorn

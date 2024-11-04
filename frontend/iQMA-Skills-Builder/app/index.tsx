@@ -1,13 +1,10 @@
-import {ActivityIndicator, Image, Text, View} from 'react-native';
-
-import {AuthContext} from '@/context/AuthContext';
-import {LoginButton} from '@/components/LoginButton';
-import {LogoVisual} from '@/components/LogoVisual';
-import {LogoutButton} from '@/components/LogoutButton';
-import {Profile} from '@/components/Profile';
+import {View} from 'react-native';
 import {useContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
+import {LoginButton} from '@/components/LoginButton';
+import {LogoVisual} from '@/components/LogoVisual';
 
 // where things show upp
 export default function Index() {
@@ -30,35 +27,29 @@ export default function Index() {
         fetchUserID();
     }, []);
 
-    if (isStorageLoading || isLoading || currentUser) {
-        return (
-            <>
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#FFFFFF',
-                    }}
-                ></View>
-            </>
-        );
-        // return <LoadingIndicator></LoadingIndicator>;
-    }
+    console.log("isStorageLoading: ", isStorageLoading);
+    console.log("isLoading: ", isLoading);
+    console.log("currentUser: ", currentUser);
+    console.log("checkUID: ", checkUID);
+
+    // if (isStorageLoading || isLoading || currentUser || checkUID) {
+    //     return (
+    //         <>
+    //             <View
+    //                 style={{
+    //                     flex: 1,
+    //                     justifyContent: 'center',
+    //                     alignItems: 'center',
+    //                     backgroundColor: Colors.light.background,
+    //                 }}
+    //             ></View>
+    //         </>
+    //     );
+    // }
 
     return (
         <>
-            {checkUID ? (
-                <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#FFFFFF',
-                    }}
-                ></View>
-            ) : (
-                <View
+            <View
                     style={{
                         flex: 1,
                         justifyContent: 'center',
@@ -69,50 +60,6 @@ export default function Index() {
                     <LogoVisual />
                     <LoginButton />
                 </View>
-            )}
         </>
     );
-
-    // return (
-    // <View
-    //     style={{
-    //         flex: 1,
-    //         justifyContent: 'center',
-    //         alignItems: 'center',
-    //         backgroundColor: '#C3B1FF',
-    //     }}
-    // >
-    //     <LogoVisual></LogoVisual>
-    //     <LoginButton></LoginButton>
-    //     {/* For Testing & Debugging */}
-    //     {/* <Profile></Profile>  */}
-    // </View>
-    //     <>
-    //         {checkUID ? (
-    //             <View
-    //                 style={{
-    //                     flex: 1,
-    //                     justifyContent: 'center',
-    //                     alignItems: 'center',
-    //                     backgroundColor: '#C3B1FF',
-    //                 }}
-    //             >
-    //                 <Text>LOADING...</Text>
-    //                 {/* <LoginButton></LoginButton> */}
-    //             </View>
-    //         ) : (
-    //             <View
-    //                 style={{
-    //                     flex: 1,
-    //                     justifyContent: 'center',
-    //                     alignItems: 'center',
-    //                     backgroundColor: '#C3B1FF',
-    //                 }}
-    //             >
-    //                 <LogoVisual></LogoVisual>
-    //                 <LoginButton></LoginButton>
-    //             </View>
-    //         )}
-    //     </>
-    // );
 }

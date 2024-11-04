@@ -26,7 +26,6 @@ services:
     - app-network
     env_file:
     - ./backend/src/chatbot/.env
-    restart: always
     # logging:
     #   driver: awslogs
     #   options:
@@ -42,7 +41,8 @@ services:
       RABBITMQ_DEFAULT_USER: rabbitmq
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PW}
       RABBITMQ_URL: ${RABBITMQ_URL}
-    restart: always
+    
+
     networks:
       - app-network
     # logging:
@@ -95,6 +95,14 @@ services:
   #   depends_on:
   #     - redis
   
+
+  
+# volumes:
+#   db-data:
+#   redis-data:
+  
+
+
 networks:
   app-network:
     driver: bridge

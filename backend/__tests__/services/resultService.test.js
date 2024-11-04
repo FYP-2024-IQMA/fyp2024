@@ -105,6 +105,60 @@ describe("checkIfCompletedQuiz", () => {
     });
 });
 
+describe("checkIfCompletedSection", () => {
+    const userID = "USR0001";
+    const sectionID = "SEC0001";
+
+    it("should return true when user completed the section", async () => {
+        const mockCount = 1;
+
+        const mockEq3 = jest
+            .fn()
+            .mockResolvedValue({ count: mockCount, error: null });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        const result = await resultService.checkIfCompletedSection(userID, sectionID);
+
+        expect(result).toEqual(true);
+    });
+
+    it("should return false when user did not complete the quiz", async () => {
+        const mockCount = 0;
+        const mockEq3 = jest
+            .fn()
+            .mockResolvedValue({ count: mockCount, error: null });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        const result = await resultService.checkIfCompletedSection(userID, sectionID);
+
+        expect(result).toEqual(false);
+    });
+
+    it("should throw an error and log the error when there is an error from the database", async () => {
+        const errorMessage = "Failed to fetch user results";
+
+        const mockEq3 = jest
+            .fn()
+            .mockResolvedValue({ count: null, error: new Error(errorMessage) });
+        const mockEq2 = jest.fn().mockReturnValue({ eq: mockEq3 });
+        const mockEq1 = jest.fn().mockReturnValue({ eq: mockEq2 });
+        const mockSelect = jest.fn().mockReturnValue({ eq: mockEq1 });
+        supabase.from.mockReturnValue({ select: mockSelect });
+
+        await expect(
+            resultService.checkIfCompletedSection(userID, sectionID)
+        ).rejects.toThrow(errorMessage);
+
+        expect(console.error).toHaveBeenCalledWith(new Error(errorMessage));
+    });
+});
+
 describe("getUserProgress", () => {
 
     const userID = "USR0001";

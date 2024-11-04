@@ -1,69 +1,69 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect, useEffect, useRef} from 'react';
-import {CustomButton} from '@/components/CustomButton';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
+import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
-import {useNavigation} from '@react-navigation/native';
-import ProgressBar from '@/components/ProgressBar';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
+import ProgressBar from '@/components/ProgressBar';
+import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {useNavigation} from '@react-navigation/native';
+import { useTimer } from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
 
 // where things show up
 export default function UnitIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        lessonID,
+        currentLessonIdx,
+        totalLesson,
+        currentUnit,
+        totalUnits,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [unitDescription, setUnitDescription] = useState<string[]>([]);
-
-    const [seconds, setSeconds] = useState<number>(0);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const startTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-        }
-        timerRef.current = setInterval(() => {
-            setSeconds((prevSeconds) => prevSeconds + 1);
-        }, 1000);
-    };
-
-    const stopTimer = () => {
-        if (timerRef.current) {
-            clearInterval(timerRef.current);
-            timerRef.current = null;
-        }
-    };
-
-    useEffect(() => {
-        startTimer();
-        return () => {
-            if (timerRef.current) {
-                clearInterval(timerRef.current);
-            }
-        };
-    }, []);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Introduction', unitID as string);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
 
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -98,28 +98,13 @@ export default function UnitIntroduction() {
                 totalLesson,
                 currentUnit,
                 totalUnits,
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
                 totalProgress,
             },
         });
         stopTimer();
-        const userID = await AsyncStorage.getItem('userID');
-        try {
-            const response = await axios.post(
-                `${process.env.EXPO_PUBLIC_BACKEND_URL}/clickstream/sendMessage`,
-                {
-                    userID: userID,
-                    eventType: 'timeTaken',
-                    event: `unitID ${unitID}`,
-                    timestamp: new Date().toISOString(),
-                    time: `${seconds}`,
-                }
-            );
-            console.log(response.data);
-        } catch (e) {
-            console.error(e);
-        }
-        setSeconds(0);
     };
 
     return (
@@ -176,14 +161,14 @@ export default function UnitIntroduction() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
     },

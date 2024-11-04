@@ -1,27 +1,16 @@
 // app/Chatbot.tsx
 
-import * as chatInputFunctions from '@/components/ChatInput';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {ScrollView, StyleSheet, Text, View} from 'react-native';
 
-import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
-
-import {AntDesign} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthContext} from '@/context/AuthContext';
 import {ChatBubble} from '@/components/ChatBubble';
 import {ChatDrawerParamList} from '@/components/ChatbotDrawer';
+import {Colors} from '@/constants/Colors';
 import {DrawerScreenProps} from '@react-navigation/drawer';
-import {Feather} from '@expo/vector-icons';
-import {TextInput} from 'react-native-gesture-handler';
 import {useDrawerStatus} from '@react-navigation/drawer';
-import {useNavigation} from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 
 const sectionMapping: {[key: string]: string} = {
     SEC0001: 'Section 1: Communication',
@@ -58,16 +47,18 @@ export const loadChatHistory = async (userId: string, sectionId: string) => {
                 }))
         );
 
-        const fixedResponse = [
-            {
-                isUser: false,
-                text: `Hello! How can I assist you with ${sectionMapping[sectionId]}?`,
-            },
-        ];
+        // const fixedResponse = [
+        //     {
+        //         isUser: false,
+        //         text: `Hello! How can I assist you with ${sectionMapping[sectionId]}?`,
+        //     },
+        // ];
 
-        return formattedChatHistory.length > 0
-            ? fixedResponse.concat(formattedChatHistory, fixedResponse)
-            : fixedResponse;
+        // return formattedChatHistory.length > 0
+        //     ? fixedResponse.concat(formattedChatHistory, fixedResponse)
+        //     : fixedResponse;
+
+        return formattedChatHistory;
     } catch (error) {
         console.error('Error while loading chat history:', error);
     }
@@ -90,19 +81,18 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
 
     const isDrawerOpen = useDrawerStatus() === 'open';
     // const navigation = useNavigation();
-
     const {sectionID} = route.params;
 
-    const [message, setMessage] = useState('');
     const [messages, setMessages] = useState<{text: string; isUser: boolean}[]>(
         []
     );
+    const scrollViewRef = useRef<ScrollView>(null);
 
     useEffect(() => {
         navigation.getParent()?.setOptions({
             tabBarStyle: {
                 display: isDrawerOpen ? 'none' : 'flex',
-                backgroundColor: '#7654F2',
+                backgroundColor: Colors.default.purple500,
                 justifyContent: 'center',
                 alignItems: 'center',
                 paddingHorizontal: 80,
@@ -119,81 +109,15 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
         loadHistory();
     }, [sectionID]);
 
-    // Alert Function for deleting chat history
-    const deleteAlert = () => {
-        Alert.alert(
-            'Clearing Chat History',
-            'Are you sure you want to clear the chat history?',
-            [
-                {
-                    text: 'Cancel',
-                    onPress: () =>
-                        console.log('Delete chat history cancelled.'),
-                    style: 'cancel',
-                },
-                {
-                    text: 'Yes',
-                    onPress: async () => {
-                        try {
-                            await clearChatHistory(sectionID);
-                            const loadHistory = async () => {
-                                const history = await loadChatHistory(
-                                    currentUser.sub,
-                                    sectionID
-                                );
-                                setMessages(history!);
-                            };
-                            loadHistory();
-                        } catch (error) {
-                            console.error(
-                                'Error while clearing chat history:',
-                                error
-                            );
-                        }
-                    },
-                },
-            ],
-            {cancelable: true}
-        );
-    };
-
-    // handle user input
-    const handleSend = async () => {
-        const userMessage = {text: message, isUser: true};
-        const newMessages = [...messages, userMessage];
-        setMessages(newMessages);
-        setMessage('');
-
-        // get past messages
-        const history = newMessages.map((msg) => ({
-            role: msg.isUser ? 'user' : 'assistant',
-            content: msg.text,
-        }));
-
-        const response = await chatInputFunctions.getChatbotResponse(
-            'user',
-            message,
-            history
-        );
-        if (response) {
-            // Add the chatbot response to the chat
-            const botReply = {text: response.content, isUser: false};
-            const updatedMessages = [...newMessages, botReply];
-            setMessages(updatedMessages);
-            // Save the chat history
-
-            const queryPair = [
-                {role: 'user', content: message},
-                {role: 'assistant', content: response.content},
-            ];
-
-            // chatInputFunctions.saveChatHistory(
-            //     currentUser.sub,
-            //     sectionID,
-            //     queryPair
-            // );
-        }
-    };
+    useFocusEffect(
+        React.useCallback(() => {
+            // Scroll to the end when the screen is focused
+            console.log('called');
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollToEnd({animated: true});
+            }
+        }, [messages]) // Dependency on messages to ensure scroll when new messages are loaded
+    );
 
     if (!sectionID) {
         return (
@@ -204,12 +128,19 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
     }
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.chatContainer}>
+            <ScrollView
+                contentContainerStyle={styles.chatContainer}
+                ref={scrollViewRef}
+            >
                 {messages.map((msg, index) => (
                     <ChatBubble
                         key={index}
                         position={msg.isUser ? 'right' : 'left'}
-                        bubbleColor={msg.isUser ? '#B199FF' : '#D1D5DB'}
+                        bubbleColor={
+                            msg.isUser
+                                ? Colors.default.purple100
+                                : Colors.chatbot.inputColor
+                        }
                         textColor={msg.isUser ? '#000000' : '#000000'}
                         isUser={msg.isUser}
                         borderRadius={20}
@@ -220,26 +151,6 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
                     </ChatBubble>
                 ))}
             </ScrollView>
-            <View style={styles.inputContainer}>
-                <TouchableOpacity onPress={deleteAlert} style={styles.button}>
-                    <View style={styles.deleteButtonCircle}>
-                        <AntDesign name="delete" size={24} color="#000000" />
-                    </View>
-                </TouchableOpacity>
-                <TextInput
-                    style={styles.input}
-                    value={message}
-                    onChangeText={setMessage}
-                    placeholder="Type your messsage..."
-                    onSubmitEditing={handleSend}
-                    keyboardType="email-address"
-                />
-                <TouchableOpacity onPress={handleSend} style={styles.button}>
-                    <View style={styles.sendButtonCircle}>
-                        <Feather name="send" size={24} color="#000000" />
-                    </View>
-                </TouchableOpacity>
-            </View>
         </View>
     );
 };
@@ -247,16 +158,11 @@ const ChatbotScreen: React.FC<ChatbotScreenProps> = ({route, navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
     },
     chatContainer: {
         padding: 10,
         margin: 5,
-    },
-    inputContainer: {
-        flexDirection: 'row',
-        padding: 10,
-        backgroundColor: '#FFFFFF',
     },
     input: {
         flex: 1,
@@ -267,27 +173,11 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         marginRight: 10,
         paddingLeft: 30,
-        backgroundColor: '#D1D5DB',
+        backgroundColor: Colors.chatbot.inputColor,
     },
     button: {
         justifyContent: 'center',
         padding: 5,
-    },
-    deleteButtonCircle: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#FF6961',
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    sendButtonCircle: {
-        width: 40,
-        height: 40,
-        backgroundColor: '#B199FF',
-        borderRadius: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
 });
 export default ChatbotScreen;

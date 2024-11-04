@@ -1,10 +1,12 @@
-import {StyleSheet, Image, View} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
 import {router} from 'expo-router';
+import * as accountEndpoints from '@/helpers/accountEndpoints';
 
 export default function LearnerAssessmentComplete() {
     const handlePress = async () => {
@@ -79,13 +81,11 @@ export default function LearnerAssessmentComplete() {
             ]);
 
             const account = {
-                userID: userID,
+                userID: userID!,
                 hasOnboarded: true,
             };
-            const accountResponse = await axios.patch(
-                `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/updateaccount`,
-                account
-            );
+
+            const accountResponse = await accountEndpoints.editUserDetails(account);
 
             console.log(
                 'Account Demographics created successfully: ',
@@ -135,7 +135,7 @@ export default function LearnerAssessmentComplete() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },

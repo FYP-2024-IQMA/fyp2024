@@ -2,6 +2,7 @@ import {StyleSheet, Text, Touchable, View} from 'react-native';
 
 import {AntDesign} from '@expo/vector-icons';
 import CircularProgress from './CircularProgress';
+import {Colors} from '@/constants/Colors';
 import React from 'react';
 import StartLabel from './startLabel';
 import {TouchableOpacity} from 'react-native';
@@ -35,7 +36,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
 
             default:
                 return {
-                    progressItemColor: '#B199FF',
+                    progressItemColor: Colors.default.purple100,
                     darkerProgressItemColor: '#AE8BF1',
                 };
         }
@@ -121,7 +122,7 @@ const ProgressPath: React.FC<ProgressPathProps> = ({
                 <ProgressItem
                     key={index}
                     iconName={icon.name}
-                    iconColor={'#FFFFFF'}
+                    iconColor={Colors.light.background}
                     iconSize={40}
                     position={index % 2 === 0 ? 'left' : 'right'}
                     status={icon.status}

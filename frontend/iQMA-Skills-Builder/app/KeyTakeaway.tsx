@@ -1,36 +1,63 @@
 import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {ScrollView, Image, StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    Dimensions,
+    TouchableOpacity,
+} from 'react-native';
+import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {AuthContext} from '@/context/AuthContext';
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
+import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {useTimer} from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
+import {AudioPlayer} from '@/components/AudioPlayer';
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function KeyTakeaway() {
     const navigation = useNavigation();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const {currentUser, _} = useContext(AuthContext);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
 
-    const handlePress = () => {
-
+    const handlePress = async () => {
         let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
         let pathName = 'Lesson';
 
@@ -55,10 +82,13 @@ export default function KeyTakeaway() {
                 currentUnit,
                 totalUnits,
                 isFinal: 'false',
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
                 totalProgress,
             },
         });
+        stopTimer();
     };
 
     // const sectionID = 'SEC0001';
@@ -68,16 +98,42 @@ export default function KeyTakeaway() {
     // const totalLesson = '3';
     // const currentUnit = '3';
     // const totalUnits = '3';
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        lessonID,
+        currentLessonIdx,
+        totalLesson,
+        currentUnit,
+        totalUnits,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
+    const [lessonKeyTakeawayAudio, setLessonKeyTakeawayAudio ] = useState<string>('');
     const [nextLessonID, setnextLessonID] = useState<string>('');
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Key Takeaway',
+        unitID as string,
+        lessonID as string
+    );
+    const [isScroll, setIsScroll] = useState<boolean>(false);
+    const screenHeight = Dimensions.get('window').height;
 
     useEffect(() => {
-        if (sectionID && unitID && lessonID && currentLessonIdx && totalLesson) {
+        startTimer();
+        if (
+            sectionID &&
+            unitID &&
+            lessonID &&
+            currentLessonIdx &&
+            totalLesson
+        ) {
             (async () => {
                 try {
                     const unitDetails = await unitEndpoints.getUnitDetails(
@@ -98,13 +154,14 @@ export default function KeyTakeaway() {
                     );
 
                     let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
-                    
+
                     if (nxtLessonIdx === parseInt(totalLesson as string)) {
                         nxtLessonIdx = 0;
                     }
 
-                    if (lessonID.includes(".")) {
-                        lessonDetails.lessonName = lessonDetails.lessonName.replace(/\.\d+/, '');
+                    if (lessonID.includes('.')) {
+                        lessonDetails.lessonName =
+                            lessonDetails.lessonName.replace(/\.\d+/, '');
                     }
 
                     setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
@@ -113,6 +170,7 @@ export default function KeyTakeaway() {
                     setKeyTakeaway(lessonDetails.lessonKeyTakeaway);
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
+                    setLessonKeyTakeawayAudio(lessonDetails.lessonKeyTakeawayAudio)
                 } catch (error) {
                     console.error('Error fetching in Key Takeaway:', error);
                 } finally {
@@ -126,17 +184,24 @@ export default function KeyTakeaway() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
         >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View>
+                    <View style={{flexGrow: 1}}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
                         />
                         <Text style={styles.screenTitle}>{lessonName}</Text>
+
+                        <AudioPlayer
+                            audioUri={lessonKeyTakeawayAudio}
+                        />
 
                         <Text style={styles.takeawayHeader}>Key Takeaways</Text>
                         {keyTakeaway && keyTakeaway.length > 0 ? (
@@ -168,13 +233,12 @@ export default function KeyTakeaway() {
                             ></Image>
                         </View>
                     </View>
-                    <View style={{marginBottom: 40}}>
-                        <CustomButton
-                            label="continue"
-                            backgroundColor="white"
-                            onPressHandler={handlePress}
-                        />
-                    </View>
+                    <CustomButton
+                        label="continue"
+                        backgroundColor="white"
+                        isScroll={isScroll}
+                        onPressHandler={handlePress}
+                    />
                 </>
             )}
         </ScrollView>
@@ -183,30 +247,31 @@ export default function KeyTakeaway() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
     },
     takeawayHeader: {
         marginBottom: 10,
+        marginTop: 20,
         marginLeft: 15,
-        color: '#4143A3',
+        color: Colors.header.color,
         fontWeight: 'bold',
-        fontSize: 14,
+        fontSize: Colors.header.fontSize,
     },
     takeawayText: {
         marginLeft: 15,
-        fontSize: 12,
-        lineHeight: 25,
-        color: '#4143A3',
-        marginBottom: 15,
+        fontSize: Colors.text.fontSize,
+        lineHeight: 22,
+        color: Colors.header.color,
+        marginBottom: 25,
     },
     buttonContainer: {
         alignItems: 'center',

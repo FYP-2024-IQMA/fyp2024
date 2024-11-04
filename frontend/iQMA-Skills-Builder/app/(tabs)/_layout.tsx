@@ -5,11 +5,13 @@ import {useEffect, useState} from 'react';
 
 import {AuthProvider} from '@/context/AuthContext';
 import ChatbotDrawer from '@/components/ChatbotDrawer';
+import {Colors} from '@/constants/Colors';
 import HomeScreen from '../screens/Home';
 import {Ionicons} from '@expo/vector-icons';
 import {MaterialIcons} from '@expo/vector-icons';
 import ProfilePage from '../screens/ProfilePage';
 import SettingPage from '../screens/Settings';
+import LeaderboardPage from '../screens/Leaderboard';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
 import {useDrawerStatus} from '@react-navigation/drawer';
@@ -22,11 +24,11 @@ export default function AppTabs() {
         <Tab.Navigator
             screenOptions={({route}) => ({
                 headerTitleAlign: 'center',
-                headerStyle: {backgroundColor: '#B199FF'},
-                tabBarActiveTintColor: '#FFFFFF',
+                headerStyle: {backgroundColor: Colors.default.purple100},
+                tabBarActiveTintColor: Colors.light.background,
                 tabBarInactiveTintColor: '#BBBBBB',
                 tabBarStyle: {
-                    backgroundColor: '#7654F2',
+                    backgroundColor: Colors.default.purple500,
                     justifyContent: 'center',
                     alignItems: 'center',
                     paddingHorizontal: 80,
@@ -63,12 +65,23 @@ export default function AppTabs() {
                 }}
             />
             <Tab.Screen
+                name="Leaderboard"
+                component={LeaderboardPage}
+                options={{
+                    tabBarIcon: ({color, size}) => (
+                        <MaterialIcons name="leaderboard" size={size} color={color} />
+                    ),
+                    headerTintColor: '#fff',
+                }}
+            />
+            <Tab.Screen
                 name="Profile"
                 component={ProfilePage}
                 options={{
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="person" size={size} color={color} />
                     ),
+                    headerTintColor: '#fff',
                 }}
             />
             <Tab.Screen
@@ -78,6 +91,7 @@ export default function AppTabs() {
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="settings" size={size} color={color} />
                     ),
+                    headerTintColor: '#fff',
                 }}
             />
         </Tab.Navigator>

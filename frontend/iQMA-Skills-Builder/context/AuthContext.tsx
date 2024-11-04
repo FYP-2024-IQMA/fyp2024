@@ -1,7 +1,9 @@
+import {AppRegistry, PermissionsAndroid} from 'react-native';
 import {User, useAuth0} from 'react-native-auth0';
 import {createContext, useEffect, useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import messaging from '@react-native-firebase/messaging';
 import {router} from 'expo-router';
 
 export const AuthContext = createContext<any>(null);
@@ -12,9 +14,36 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const [token, setToken] = useState<string | null>(null); // Store Access Token of current User
     const [isLoading, setIsLoading] = useState(true);
 
+    messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+        console.log('Message handled in the background!', remoteMessage);
+    });
+
+    const requestUserPermission = async () => {
+        try {
+            const permission = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS
+            );
+            if (permission === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('Notification permission granted');
+            } else {
+                console.log('Notification permission denied');
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    const getToken = async () => {
+        const token = await messaging().getToken();
+        console.log('Token = ', token);
+    };
+
+    useEffect(() => {
+        getToken();
+    });
+
     useEffect(() => {
         watchUserSession();
-
         // checkFirstLogin();
     }, [user]);
 
@@ -26,13 +55,15 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
             console.log(user);
             // router.push("CreateProfile");
             // router.push("IntroductionMascot");
-            // router.replace("/Home");
+            // router.replace("/Home")
             await checkFirstLogin();
             if (user.sub) {
                 await AsyncStorage.setItem('userID', user.sub);
             }
         } else {
-            setIsLoading(false);
+            // await AsyncStorage.removeItem('userID');
+            await AsyncStorage.clear();
+            // setIsLoading(false);
         }
         setIsLoading(false);
     };
@@ -78,9 +109,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const logOut = async () => {
         try {
             await clearSession();
-            setCurrentUser(null);
-            setToken(null);
-            await AsyncStorage.removeItem('userID');
+            await AsyncStorage.clear();
             router.replace('/'); // For redirect if page is not Index
         } catch (e) {
             console.log(e);
@@ -105,7 +134,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 data.details === 'The result contains 0 rows'
             ) {
                 console.log('First Time:', data);
-
+                requestUserPermission();
                 router.replace('CreateProfile');
             } else if (response.status === 200) {
                 console.log('Not first time:', data);

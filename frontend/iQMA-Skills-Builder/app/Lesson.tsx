@@ -1,22 +1,38 @@
-import {StyleSheet, Text, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect, useEffect} from 'react';
-import YoutubePlayer from 'react-native-youtube-iframe';
+import * as lessonEndpoints from '@/helpers/lessonEndpoints';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import {StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
+
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
-import ProgressBar from '@/components/ProgressBar';
-import {useNavigation} from '@react-navigation/native';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
+import ProgressBar from '@/components/ProgressBar';
+import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
-import {router, useLocalSearchParams} from 'expo-router';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import * as lessonEndpoints from '@/helpers/lessonEndpoints';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {useNavigation} from '@react-navigation/native';
+import VideoPlayer from '@/components/VideoPlayer';
+import { useTimer } from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
+
 
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
-    const {sectionID, unitID, lessonID, currentLessonIdx, totalLesson, currentUnit, totalUnits, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        lessonID,
+        currentLessonIdx,
+        totalLesson,
+        currentUnit,
+        totalUnits,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -25,14 +41,28 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Lesson', unitID as string, lessonID as string);
+    const [isScroll, setIsScroll] = useState(false);
+    const screenHeight = Dimensions.get('window').height;
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
@@ -49,13 +79,27 @@ export default function Lesson() {
                 totalLesson,
                 currentUnit,
                 totalUnits,
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
                 totalProgress,
             },
         });
+        console.log("ISPLAYING: " + playing)
+        stopTimer();
     };
 
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
+
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID && lessonID) {
             (async () => {
                 try {
@@ -97,11 +141,15 @@ export default function Lesson() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
+        >
             {isLoading ? (
-                <View style={{flexGrow: 1}}>
-                    <LoadingIndicator />
-                </View>
+                <LoadingIndicator />
             ) : (
                 <>
                     <View style={{flexGrow: 1}}>
@@ -121,13 +169,11 @@ export default function Lesson() {
                                 text="Lesson Description is not available. Please check with your administrator."
                             />
                         )}
-
                         {videoId ? (
-                            <YoutubePlayer
-                                height={300}
-                                play={playing}
-                                onChangeState={onStateChange}
-                                videoId={videoId} // YouTube video ID
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
                             />
                         ) : (
                             <OverviewCard
@@ -136,27 +182,29 @@ export default function Lesson() {
                             />
                         )}
                     </View>
+
                     <CustomButton
                         label="continue"
                         backgroundColor="white"
+                        isScroll={isScroll}
                         onPressHandler={handlePress}
                     />
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
     },

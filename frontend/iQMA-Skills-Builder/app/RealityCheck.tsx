@@ -1,22 +1,36 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
-import SectionCard from '@/components/SectionCard';
-import React, {useState, useLayoutEffect, useEffect, useRef} from 'react';
+import * as unitEndpoints from '@/helpers/unitEndpoints';
+
+import {Image, StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from 'react';
+import {router, useFocusEffect, useLocalSearchParams, useRouter} from 'expo-router';
+
+import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
-import {router, useLocalSearchParams, useRouter} from 'expo-router';
-import {useNavigation} from '@react-navigation/native';
-import ProgressBar from '@/components/ProgressBar';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import {OverviewCard} from '@/components/OverviewCard';
+import ProgressBar from '@/components/ProgressBar';
+import SectionCard from '@/components/SectionCard';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
-import * as unitEndpoints from '@/helpers/unitEndpoints';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
+import {useNavigation} from '@react-navigation/native';
+import { useTimer } from '@/helpers/useTimer';
+import VideoPlayer from '@/components/VideoPlayer';
+import {Ionicons} from '@expo/vector-icons';
 
 // where things show up
 export default function RealityCheck() {
     const navigation = useNavigation();
 
     // Use this for Routing
-    const {sectionID, unitID, currentUnit, totalUnits, isFinal, currentProgress, totalProgress} = useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        currentUnit,
+        totalUnits,
+        isFinal,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -24,21 +38,45 @@ export default function RealityCheck() {
         string[]
     >([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    useEffect(() => {}, []);
+    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Reality Check', unitID as string);
+    const [isScroll, setIsScroll] = useState(false);
+    const screenHeight = Dimensions.get('window').height;
+    const [videoId, setVideoId] = useState<string>('');
+    const [playing, setPlaying] = useState<boolean>(true);
 
     useLayoutEffect(() => {
-
-        const progress = parseInt(currentProgress as string) / parseInt(totalProgress as string);
+        const progress =
+            parseInt(currentProgress as string) /
+            parseInt(totalProgress as string);
 
         navigation.setOptions({
+            headerTitleAlign: "center",
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
+            ),
+            headerRight: () => (
+                <TouchableOpacity onPress={() => {router.replace("Home")}}>
+                    <Ionicons
+                        name="home"
+                        size={24}
+                        color="black"
+                    />
+                </TouchableOpacity>
             ),
         });
     }, [navigation]);
 
+    useFocusEffect(
+        useCallback(() => {
+            setPlaying(true);
+            return () => {
+                setPlaying(false);
+            };
+        }, [])
+    );
+
     useEffect(() => {
+        startTimer();
         if (sectionID && unitID) {
             (async () => {
                 try {
@@ -49,6 +87,7 @@ export default function RealityCheck() {
 
                     setRealityCheckDescription(unitDetails.realityCheck);
                     setUnitName(unitDetails.unitName);
+                    setVideoId(unitDetails.realityCheckURL);
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
                 } catch (error) {
@@ -63,6 +102,15 @@ export default function RealityCheck() {
         }
     }, [sectionID, unitID]);
 
+    const onStateChange = (state: string) => {
+        if (state === 'ended' || state === 'paused') {
+            setPlaying(false);
+        }
+        if (state === 'playing') {
+            setPlaying(true);
+        }
+    };
+
     const handlePress = async () => {
         router.push({
             pathname: 'Assessment',
@@ -72,14 +120,23 @@ export default function RealityCheck() {
                 currentUnit,
                 totalUnits,
                 isFinal,
-                currentProgress: (parseInt(currentProgress as string) + 1).toString(),
-                totalProgress
+                currentProgress: (
+                    parseInt(currentProgress as string) + 1
+                ).toString(),
+                totalProgress,
             },
         });
+        stopTimer();
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height + 100 > screenHeight);
+            }}
+        >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
@@ -109,10 +166,24 @@ export default function RealityCheck() {
                             />
                         )}
 
+                        {videoId ? (
+                            <VideoPlayer
+                                videoUrl={videoId}
+                                playing={playing}
+                                onStateChange={onStateChange}
+                            />
+                        ) : (
+                            <OverviewCard
+                                isError={true}
+                                text="Video is not available. Please check with your administrator."
+                            />
+                        )}
+
                         <View
                             style={{
                                 width: '100%',
                                 flexDirection: 'row-reverse',
+                                marginTop: 20,
                             }}
                         >
                             <Image
@@ -125,24 +196,25 @@ export default function RealityCheck() {
                     <CustomButton
                         label="continue"
                         backgroundColor="white"
+                        isScroll={isScroll}
                         onPressHandler={handlePress}
                     />
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
     },
     screenTitle: {
-        fontSize: 14,
+        fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
-        color: '#4143A3',
+        color: Colors.header.color,
         marginBottom: 20,
         marginHorizontal: 10,
     },
