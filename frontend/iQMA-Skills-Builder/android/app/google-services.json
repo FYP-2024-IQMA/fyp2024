@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "224918132477",
+    "project_id": "iqma-66f3c",
+    "storage_bucket": "iqma-66f3c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:224918132477:android:48d50fe4550a0935c59094",
+        "android_client_info": {
+          "package_name": "com.iqma.iqmaskillsbuilder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANbocVcfwSYiEd1dfCkrjXruh4cukxde8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
