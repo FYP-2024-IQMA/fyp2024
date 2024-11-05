@@ -40,11 +40,7 @@ export const createResult = async (
     quizID: number
 ): Promise<void> => {
     try {
-<<<<<<< HEAD
-        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/createresult`
-=======
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/createresult`;
->>>>>>> develop
         const response = await fetch(url, {
             method: 'POST',
             headers: {
