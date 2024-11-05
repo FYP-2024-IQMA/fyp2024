@@ -8,7 +8,7 @@ backend/package-lock.json
 venv
 .venv
 .env
-android
+# android
 .idea
 .gguf
 infrastructure/.terraform
