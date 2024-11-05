@@ -1,6 +1,6 @@
 {
     "expo": {
-        "name": "iQMA-Skills-Builder",
+        "name": "iQMA Skills Builder",
         "slug": "iQMA-Skills-Builder",
         "scheme": "com.iqma.iqmaskillsbuilder",
         "version": "1.0.0",
@@ -21,7 +21,7 @@
                 "backgroundColor": "#ffffff"
             },
             "package": "com.iqma.iqmaskillsbuilder",
-            "versionCode": 10
+            "versionCode": 1
         },
         "web": {
             "bundler": "metro",
