@@ -2,6 +2,7 @@
     "expo": {
         "name": "iQMA-Skills-Builder",
         "slug": "iQMA-Skills-Builder",
+        "platforms": ["android"],
         "scheme": "com.iqma.iqmaskillsbuilder",
         "version": "1.0.0",
         "orientation": "portrait",
