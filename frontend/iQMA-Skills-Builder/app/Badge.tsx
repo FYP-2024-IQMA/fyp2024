@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
+        padding: 10
     },
     imageStyle: {
         width: 150,
