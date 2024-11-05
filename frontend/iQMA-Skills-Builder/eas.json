@@ -12,6 +12,9 @@
         },
         "production": {},
         "test": {
+            "android": {
+                "buildType": "apk"
+            },
             "env": {
                 "EXPO_PUBLIC_LOCALHOST_URL": "https://iqmaapp.com",
                 "EXPO_PUBLIC_CHATBOT_URL": "https://iqmaapp.com/chatbot",
