@@ -17,8 +17,6 @@ import ProgressBar from '@/components/ProgressBar';
 import {Question} from '@/constants/Quiz';
 import {QuizCard} from '@/components/QuizCard';
 import SectionCard from '@/components/SectionCard';
-import axios from 'axios';
-import {checkIfConfigIsValid} from 'react-native-reanimated/lib/typescript/reanimated2/animation/springUtils';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
