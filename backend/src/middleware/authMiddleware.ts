@@ -34,7 +34,7 @@ const verifyToken = (req: AuthenticatedRequest, res: Response, next: NextFunctio
     }
 
     try {
-        console.log(token);
+        
         jwt.verify(token, getKey, { algorithms: ['RS256'] }, (err, decoded) => {
             console.log(err);
             if (err) {

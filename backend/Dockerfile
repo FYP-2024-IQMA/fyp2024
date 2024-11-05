@@ -9,7 +9,7 @@ RUN npm install
 
 COPY . .
 
-RUN npx tsc
+RUN node --max-old-space-size=2048 ./node_modules/.bin/tsc
 
 EXPOSE 3000
 

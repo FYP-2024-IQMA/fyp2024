@@ -78,7 +78,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 setToken(credentials.idToken);
 
                 const response = await fetch(
-                    `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/setToken`,
+                    `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/setToken`,
                     {
                         method: 'POST',
                         headers: {
@@ -89,7 +89,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
                 );
 
                 console.log(response.status);
-                const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getallaccounts`;
+                const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/getallaccounts`;
             }
         } catch (e) {
             console.log('Error fetching token:', e);
@@ -119,7 +119,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     // Check First Time Login
     const checkFirstLogin = async () => {
         try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getaccountbyid/${user?.sub}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/accounts/getaccountbyid/${user?.sub}`;
 
             const response = await fetch(url);
 

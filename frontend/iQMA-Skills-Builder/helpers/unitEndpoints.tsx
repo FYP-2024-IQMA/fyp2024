@@ -1,6 +1,6 @@
 export const getUnitDetails = async (sectionID: string, unitID: string) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/getallunitsbysectionandunit/${sectionID}/${unitID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/unit/getallunitsbysectionandunit/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const unitDetails = await response.json();
         // console.log(unitDetails);
@@ -15,7 +15,7 @@ export const numberOfUnitsPerSection = async (
     sectionID: string
 ): Promise<number> => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/gettotalunit/${sectionID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/unit/gettotalunit/${sectionID}`;
         const response = await fetch(url);
         const unitProgress = await response.json();
         return unitProgress;

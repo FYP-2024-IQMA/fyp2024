@@ -26,7 +26,7 @@ export const getChatbotResponse = async (
 ) => {
     try {
         const response = await fetch(
-            `${process.env.EXPO_PUBLIC_CHATBOT_URL}/generate`,
+            `${process.env.EXPO_PUBLIC_BACKEND_URL}/chatbot/generate`,
             {
                 method: 'POST',
                 headers: {
@@ -61,7 +61,7 @@ export const saveChatHistory = async (
             queryPair: queryPair,
         };
 
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/chat/createchathistory`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/chat/createchathistory`;
 
         const response = await fetch(url, {
             method: 'POST',

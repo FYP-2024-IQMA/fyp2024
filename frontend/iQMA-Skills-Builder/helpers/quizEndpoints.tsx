@@ -4,7 +4,7 @@ export const getQuizzes = async (
     lessonID: string
 ) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}/${lessonID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/getquestions/${sectionID}/${unitID}/${lessonID}`;
         const response = await fetch(url);
         const quizzes = await response.json();
 
@@ -20,7 +20,7 @@ export const getAssessmentQuestions = async (
     unitID: string
 ) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}/${unitID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/getquestions/${sectionID}/${unitID}`;
         const response = await fetch(url);
         const assessmentQuestions = await response.json();
 
@@ -40,7 +40,7 @@ export const getAssessmentQuestions = async (
 
 export const getFinalAssessmentQuestions = async (sectionID: string) => {
     try {
-        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/quiz/getquestions/${sectionID}`;
+        const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/quiz/getquestions/${sectionID}`;
         const response = await fetch(url);
         const assessmentQuestions = await response.json();
 

@@ -75,7 +75,7 @@ const HomeScreen: React.FC = () => {
         console.log(userID, sectionID, unitID);
 
         try {
-            const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/getcircularprogress/${userID}/${sectionID}/${unitID}`;
             const response = await fetch(url);
             const circularProgress = await response.json();
             if (isLastUnit) {
@@ -101,6 +101,21 @@ const HomeScreen: React.FC = () => {
         }
     };
 
+<<<<<<< HEAD
+    const getCurrentSection = async (): Promise<number> => {
+        try {
+            const url = `${process.env.EXPO_PUBLIC_BACKEND_URL}/result/getuserprogress/${currentUser.sub}`;
+            const response = await fetch(url);
+            const completedSection = await response.json();
+            return completedSection + 1;
+        } catch (error) {
+            console.error('Error while loading current section:', error);
+            return 0;
+        }
+    };
+
+=======
+>>>>>>> develop
     // number of units user did out of total units in that section (completed units/ total units)
     // for top right circular progress
     // will show 0 if only lessons done in unit 1, because it 0 units completed
