@@ -5,6 +5,7 @@ import {
     Text,
     TextInput,
     View,
+    Dimensions
 } from 'react-native';
 import React, {useState} from 'react';
 
@@ -23,6 +24,8 @@ export default function LearnerAssessmentDemographics() {
     const [selectedCareer, setCareer] = useState<string>('');
     const [selectedNeed, setNeed] = useState<string>('');
     const [isContinue, setIsContinue] = useState(true);
+    const [isScroll, setIsScroll] = useState<boolean>(false);
+    const screenHeight = Dimensions.get('window').height;
 
     const race: string[] = [
         'Caucasian',
@@ -87,8 +90,11 @@ export default function LearnerAssessmentDemographics() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height * 1.1 > screenHeight);
+            }}
         >
-            <View style={{flexGrow: 1}}>
+            <View style={styles.insideContainer}>
                 <View style={{flexDirection: 'row'}}>
                     <Image
                         style={styles.mascotImage}
@@ -363,6 +369,7 @@ export default function LearnerAssessmentDemographics() {
             <CustomButton
                 label="continue"
                 backgroundColor="white"
+                isScroll={isScroll}
                 onPressHandler={handlePress}
             />
         </ScrollView>
@@ -374,6 +381,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
+    },
+    insideContainer: {
+        flexGrow: 1,
+        // margin: 20
     },
     mascotImage: {
         height: 150,

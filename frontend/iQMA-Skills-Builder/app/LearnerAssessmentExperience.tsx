@@ -1,4 +1,12 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+    Image,
+    StyleSheet,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+    Dimensions
+} from 'react-native';
 import React, {useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +22,8 @@ export default function LearnerAssessmentExperience() {
     const [selectedBarriers, setBarriers] = useState<string[]>([]);
     const [selectedPersonality, setPersonality] = useState<string>('');
     const [selectedReasons, setReasons] = useState<string[]>([]);
+    const [isScroll, setIsScroll] = useState<boolean>(false);
+    const screenHeight = Dimensions.get('window').height;
 
     const attitude: string[] = ['Positive', 'Neutral', 'Negative'];
     const motivation: string[] = ['High', 'Medium', 'Low'];
@@ -85,8 +95,14 @@ export default function LearnerAssessmentExperience() {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={{flexGrow: 1}}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{flexGrow: 1}}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height * 1.1 > screenHeight);
+            }}
+        >
+            <View style={styles.insideContainer}>
                 <View style={{flexDirection: 'row'}}>
                     <Image
                         style={styles.mascotImage}
@@ -139,7 +155,7 @@ export default function LearnerAssessmentExperience() {
                 </View>
                 <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.3}}>
+                    <View style={styles.alignCheckBox}>
                         {!selectedAttitude && !isContinue && (
                             <Text style={[styles.errorText]}>
                                 This field is required.
@@ -187,7 +203,7 @@ export default function LearnerAssessmentExperience() {
                 </View>
                 <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.3}}>
+                    <View style={styles.alignCheckBox}>
                         {!selectedMotivation && !isContinue && (
                             <Text style={[styles.errorText]}>
                                 This field is required.
@@ -201,7 +217,7 @@ export default function LearnerAssessmentExperience() {
                         <Text style={[styles.text, {flex: 1, marginTop: 5}]}>
                             Learning {'\n'}Barriers
                         </Text>
-                        <View style={{flex: 2.3}}>
+                        <View style={styles.alignCheckBox}>
                             {barriers.map((barrier) => (
                                 <TouchableOpacity
                                     key={barrier}
@@ -238,7 +254,7 @@ export default function LearnerAssessmentExperience() {
                 </View>
                 <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.3}}>
+                    <View style={styles.alignCheckBox}>
                         {!isContinue && !selectedBarriers.length && (
                             <Text style={[styles.errorText]}>
                                 This field is required.
@@ -286,7 +302,7 @@ export default function LearnerAssessmentExperience() {
                 </View>
                 <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.3}}>
+                    <View style={styles.alignCheckBox}>
                         {!selectedPersonality && !isContinue && (
                             <Text style={[styles.errorText]}>
                                 This field is required.
@@ -300,7 +316,7 @@ export default function LearnerAssessmentExperience() {
                         <Text style={[styles.text, {flex: 1, marginTop: 5}]}>
                             Reasons For {'\n'}Attending Course
                         </Text>
-                        <View style={{flex: 2.3}}>
+                        <View style={styles.alignCheckBox}>
                             {reasons.map((reason) => (
                                 <TouchableOpacity
                                     key={reason}
@@ -334,7 +350,7 @@ export default function LearnerAssessmentExperience() {
                 </View>
                 <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}></View>
-                    <View style={{flex: 2.3}}>
+                    <View style={styles.alignCheckBox}>
                         {!isContinue && !selectedReasons.length && (
                             <Text style={[styles.errorText]}>
                                 This field is required.
@@ -347,9 +363,10 @@ export default function LearnerAssessmentExperience() {
             <CustomButton
                 label="continue"
                 backgroundColor="white"
+                isScroll={isScroll}
                 onPressHandler={handlePress}
             />
-        </View>
+        </ScrollView>
     );
 }
 
@@ -359,6 +376,13 @@ const styles = StyleSheet.create({
         padding: 20,
         flex: 1,
     },
+    insideContainer: {
+        flexGrow: 1,
+        // margin: 20,
+    },
+    alignCheckBox: {
+        flex: 1.5
+    },
     mascotImage: {
         height: 150,
         width: 50,
@@ -366,7 +390,7 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     selectOption: {
-        flex: 2.3,
+        flex: 1.5,
         borderWidth: 1,
         borderRadius: 10,
     },

@@ -1,6 +1,13 @@
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+    Image,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    ScrollView,
+} from 'react-native';
 import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
@@ -15,7 +22,7 @@ import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
 
 // where things show up
@@ -38,7 +45,11 @@ export default function UnitIntroduction() {
     const [unitName, setUnitName] = useState<string>('');
     const [unitDescription, setUnitDescription] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Introduction', unitID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Introduction',
+        unitID as string
+    );
 
     useLayoutEffect(() => {
         const progress =
@@ -46,17 +57,17 @@ export default function UnitIntroduction() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -108,14 +119,17 @@ export default function UnitIntroduction() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
                     <LoadingIndicator />
                 </View>
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
+                    <View style={styles.insideContainer}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
@@ -155,7 +169,7 @@ export default function UnitIntroduction() {
                     />
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
@@ -164,6 +178,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
+    },
+    insideContainer: {
+        flexGrow: 1,
+        // margin: 20,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,

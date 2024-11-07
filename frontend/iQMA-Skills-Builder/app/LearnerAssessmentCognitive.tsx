@@ -1,4 +1,4 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, Text, View, Dimensions} from 'react-native';
 import React, {useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,8 @@ export default function LearnerAssessmentCognitive() {
     const [selectedLiteracy, setLiteracy] = useState<string>('');
     const [selectedLearning, setLearning] = useState<string>('');
     const [selectedSkill, setSkill] = useState<string>('');
+    const [isScroll, setIsScroll] = useState<boolean>(false);
+    const screenHeight = Dimensions.get('window').height;
 
     const education: string[] = [
         'High school or below',
@@ -72,8 +74,11 @@ export default function LearnerAssessmentCognitive() {
         <ScrollView
             contentContainerStyle={{flexGrow: 1}}
             style={styles.container}
+            onContentSizeChange={(width, height) => {
+                setIsScroll(height * 1.1 > screenHeight);
+            }}
         >
-            <View style={{flexGrow: 1}}>
+            <View style={styles.insideContainer}>
                 <View style={{flexDirection: 'row'}}>
                     <Image
                         style={styles.mascotImage}
@@ -124,7 +129,7 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={{flex: 2.5}}>
+                        <View style={styles.alignFieldRequired}>
                             {!selectedEducation && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
@@ -170,7 +175,7 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={{flex: 2.5}}>
+                        <View style={styles.alignFieldRequired}>
                             {!selectedLanguage && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
@@ -216,7 +221,7 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={{flex: 2.5}}>
+                        <View style={styles.alignFieldRequired}>
                             {!selectedLiteracy && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
@@ -262,7 +267,7 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={{flex: 2.5}}>
+                        <View style={styles.alignFieldRequired}>
                             {!selectedLearning && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
@@ -308,7 +313,7 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={{flex: 2.5}}>
+                        <View style={styles.alignFieldRequired}>
                             {!selectedSkill && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
@@ -322,6 +327,7 @@ export default function LearnerAssessmentCognitive() {
             <CustomButton
                 label="continue"
                 backgroundColor="white"
+                isScroll={isScroll}
                 onPressHandler={handlePress}
             />
         </ScrollView>
@@ -334,14 +340,21 @@ const styles = StyleSheet.create({
         padding: 20,
         flex: 1,
     },
+    insideContainer: {
+        flexGrow: 1,
+        // margin: 20,
+    },
     mascotImage: {
         height: 150,
         width: 50,
         marginRight: 40,
         marginLeft: 20,
     },
+    alignFieldRequired: {
+        flex: 1.5
+    },
     selectOption: {
-        flex: 2.5,
+        flex: 1.5,
         borderWidth: 1,
         borderRadius: 10,
     },

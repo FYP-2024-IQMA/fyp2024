@@ -18,8 +18,8 @@ export default function IntroductionSegment() {
                     source={require('@/assets/images/handsinpocket2.png')}
                 ></Image>
                 <ChatBubble position="top" isUser={true}>
-                    Help me understand you better with just{'\n'}
-                    <Text style={{fontWeight: 'bold'}}>4 quick segments</Text>!
+                    Help me understand you better with just
+                    <Text style={{fontWeight: 'bold'}}> 4 quick segments</Text>!
                 </ChatBubble>
             </View>
 

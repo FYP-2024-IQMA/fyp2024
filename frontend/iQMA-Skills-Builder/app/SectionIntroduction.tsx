@@ -1,11 +1,17 @@
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, TouchableOpacity} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    TouchableOpacity,
+} from 'react-native';
 import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
 import {CustomButton} from '@/components/CustomButton';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
@@ -38,7 +44,10 @@ export default function SectionIntroduction() {
     const [videoId, setVideoId] = useState<string>('');
     const [playing, setPlaying] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Introduction');
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Introduction'
+    );
 
     useLayoutEffect(() => {
         const progress =
@@ -46,17 +55,17 @@ export default function SectionIntroduction() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -85,7 +94,10 @@ export default function SectionIntroduction() {
                     setSectionName(sectionDetails.sectionName);
 
                     setSectionNumber(formatSection(sectionID as string));
-                    await AsyncStorage.setItem('section', sectionDetails.sectionName);
+                    await AsyncStorage.setItem(
+                        'section',
+                        sectionDetails.sectionName
+                    );
                 } catch (error) {
                     console.error('Error fetching Lesson details:', error);
                 } finally {
@@ -127,12 +139,15 @@ export default function SectionIntroduction() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            contentContainerStyle={{flexGrow: 1}}
+            style={styles.container}
+        >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
+                    <View style={styles.insideContainer}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}`}
                             subtitle={sectionName}
@@ -153,7 +168,6 @@ export default function SectionIntroduction() {
                             />
                         )}
                     </View>
-
                     <CustomButton
                         label="Continue"
                         backgroundColor="white"
@@ -161,7 +175,7 @@ export default function SectionIntroduction() {
                     />
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
@@ -170,6 +184,10 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.light.background,
         padding: 20,
         flex: 1,
+    },
+    insideContainer: {
+        flexGrow: 1,
+        // margin: 20,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,
