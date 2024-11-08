@@ -16,7 +16,7 @@ const SectionCard: React.FC<SectionCardProps> = ({title, subtitle}) => {
         <View style={styles.sectionCard}>
             <View style={styles.textContainer}>
                 <Text style={styles.sectionCardTitle}>{title}</Text>
-                <Text style={styles.sectionCardSubtitle}>{subtitle}</Text>
+                <Text style={styles.sectionCardSubtitle} ellipsizeMode='tail' numberOfLines={1}>{subtitle}</Text>
             </View>
             <TouchableOpacity style={styles.sectionButton}>
                 <Ionicons

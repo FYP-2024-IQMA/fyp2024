@@ -12,6 +12,7 @@ import {
 import {AuthContext} from '@/context/AuthContext';
 import {useContext} from 'react';
 import {LoadingIndicator} from './LoadingIndicator';
+import { Colors } from '@/constants/Colors';
 
 interface ProfileCardProps {
     userDetails: {
@@ -63,7 +64,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) => {
 
     return (
         <View style={styles.profileCard}>
-            <View style={styles.innerContainer}>
+            {/* <View style={styles.innerContainer}> */}
                 <View
                     style={styles.interactiveContainer}
                 >
@@ -90,7 +91,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({userDetails}) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </View>
+            {/* </View> */}
             <View style={styles.mascotContainer}>
                 <Image
                     style={{}}
@@ -108,6 +109,9 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 1,
         borderColor: '#D1D5DB',
+        // flex: 1,
+        justifyContent: "space-between",
+        backgroundColor: Colors.light.background
     },
     innerContainer: {
         flex: 3,
@@ -120,7 +124,7 @@ const styles = StyleSheet.create({
       gap: 20,
     },
     mascotContainer: {
-      flex: 1
+    //   flex: 1
     },
     userProfileContainer: {
         gap: 10,

@@ -31,6 +31,7 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
                 const getStreak = await gamificationEndpoints.getStreak(
                     currentUser.sub
                 );
+                console.log("STREAK UPDATED??")
                 console.log(getStreak);
                 setUpdatedStreak(getStreak.streaks);
                 setUpdatedPoints(getStreak.points);
@@ -62,8 +63,8 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
                         />
                     </View>
                     <View>
-                        <Text style={styles.statNumber} allowFontScaling={false}>{updatedStreak}</Text>
-                        <Text style={styles.statLabel} allowFontScaling={false}>Day streak</Text>
+                        <Text style={styles.statNumber} allowFontScaling={false}>{updatedStreak} Day</Text>
+                        <Text style={styles.statLabel} allowFontScaling={false}>streak</Text>
                     </View>
                 </View>
             </View>
@@ -134,6 +135,8 @@ const styles = StyleSheet.create({
     statIcon: {
         width: 30,
         height: 30,
+        resizeMode: "contain",
+        // backgroundColor: "red"
         // marginRight: 10,
     },
     statNumber: {

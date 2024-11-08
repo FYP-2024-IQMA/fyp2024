@@ -27,6 +27,7 @@ import {Achievements} from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
 import { globalStyles } from '@/constants/styles';
 import { AudioPlayer } from '@/components/AudioPlayer';
+import { Colors } from '@/constants/Colors';
 
 const ProfilePage: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -157,6 +158,7 @@ const ProfilePage: React.FC = () => {
 const styles = StyleSheet.create({
     scrollView: {
         flexGrow: 1,
+        backgroundColor: Colors.light.background
     },
     container: {
     },

@@ -99,7 +99,11 @@ export default function Settings() {
     }
 
     return (
-        <ScrollView style={globalStyles.container}>
+        <ScrollView contentContainerStyle={{
+            flexGrow: 1,
+            padding: 20,
+            backgroundColor: Colors.light.background
+        }}>
             <View style={styles.container}>
                 <Text style={styles.textHeading}>GENERAL</Text>
                 <View style={styles.switchContainer}>
@@ -119,11 +123,13 @@ export default function Settings() {
                     />
                 </View>
 
+                <View style={{marginTop: 20}}>
                 <CustomButton
                     label="Log out"
                     backgroundColor="white"
                     onPressHandler={logOut}
                 />
+                </View>
 
                 {/* <Button title="Go to Badge" onPress={goToBadgePage}></Button> */}
             </View>
@@ -133,8 +139,8 @@ export default function Settings() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        padding: 20,
+        flexGrow: 1,
+        // padding: 20,
     },
     textHeading: {
         color: Colors.default.purple500,
