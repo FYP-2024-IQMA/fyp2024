@@ -1,7 +1,14 @@
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+} from 'react-native';
 import React, {
     useCallback,
     useEffect,
@@ -76,17 +83,17 @@ export default function AssessmentIntroduction() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -153,14 +160,23 @@ export default function AssessmentIntroduction() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            // contentContainerStyle={{flexGrow: 1}}
+            // style={styles.container}
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background
+            }}
+            
+        >
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
                     <LoadingIndicator />
                 </View>
             ) : (
                 <>
-                    <View style={{flexGrow: 1}}>
+                    <View style={styles.insideContainer}>
                         <SectionCard
                             title={
                                 checkFinal
@@ -220,7 +236,6 @@ export default function AssessmentIntroduction() {
                                 }
                             />
                         </View>
-                        
                     </View>
 
                     <CustomButton
@@ -230,7 +245,7 @@ export default function AssessmentIntroduction() {
                     />
                 </>
             )}
-        </View>
+        </ScrollView>
     );
 }
 
@@ -238,6 +253,17 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
         padding: 20,
-        flex: 1,
+        // flex: 1,
+    },
+    insideContainer: {
+        flexGrow: 1,
+        marginBottom: 20,
+    },
+    screenTitle: {
+        fontSize: Colors.lessonName.fontSize,
+        fontWeight: 'bold',
+        color: Colors.header.color,
+        marginBottom: 20,
+        marginHorizontal: 10,
     },
 });

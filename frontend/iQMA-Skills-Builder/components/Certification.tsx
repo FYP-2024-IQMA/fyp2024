@@ -59,7 +59,7 @@ export const CertificationsList = () => {
     return (
         <View style={styles.container}>
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                style={{flexDirection: 'row', justifyContent: 'space-between', flexWrap: "wrap"}}
             >
                 <Text style={styles.header}>Certifications</Text>
                 <Text
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
+        flexWrap: "wrap"
     },
     title: {
         color: '#18113C',

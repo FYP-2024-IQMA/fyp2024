@@ -131,10 +131,15 @@ export default function RealityCheck() {
 
     return (
         <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            style={styles.container}
-            onContentSizeChange={(width, height) => {
-                setIsScroll(height + 100 > screenHeight);
+            // contentContainerStyle={{flexGrow: 1}}
+            // style={styles.container}
+            // onContentSizeChange={(width, height) => {
+            //     setIsScroll(height + 100 > screenHeight);
+            // }}
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background
             }}
         >
             {isLoading ? (
@@ -184,6 +189,7 @@ export default function RealityCheck() {
                                 width: '100%',
                                 flexDirection: 'row-reverse',
                                 marginTop: 20,
+                                marginBottom: 20
                             }}
                         >
                             <Image

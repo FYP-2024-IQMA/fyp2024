@@ -128,7 +128,6 @@ export default function SelfReflection() {
             );
 
             if (!ifCompleted) {
-
                 let points = await AsyncStorage.getItem('totalPoints');
                 const numPoints = parseInt(points as string);
 
@@ -137,7 +136,10 @@ export default function SelfReflection() {
                     numPoints
                 );
 
-                await gamificationEndpoints.updateStreakUnit(currentUser.sub, quizID as string);
+                await gamificationEndpoints.updateStreakUnit(
+                    currentUser.sub,
+                    quizID as string
+                );
 
                 router.push({
                     pathname: 'Badge',
@@ -146,15 +148,13 @@ export default function SelfReflection() {
                         unitID,
                         currentUnit,
                         totalUnits,
-                        currentProgress: (
-                            parseInt(currentProgress as string)
+                        currentProgress: parseInt(
+                            currentProgress as string
                         ).toString(),
                         totalProgress,
                     },
                 });
-
             } else {
-
                 if (parseInt(unitNumber) === parseInt(totalUnits as string)) {
                     // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
                     router.push({
@@ -175,9 +175,7 @@ export default function SelfReflection() {
                     // after self-reflection navigate back to home for next unit
                     router.replace('Home');
                 }
-
             }
-
         } catch (error) {
             console.error(
                 'Error in Submitting Unit Assessment (Self-Reflection Page):',
@@ -189,15 +187,19 @@ export default function SelfReflection() {
 
     return (
         <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            style={styles.container}
-            scrollEnabled={false}
+            // contentContainerStyle={{flexGrow: 1}}
+            // style={styles.container}
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background
+            }}
         >
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
                 <>
-                    <ScrollView>
+                    <View style={styles.insideContainer}>
                         <SectionCard
                             title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
                             subtitle={unitName}
@@ -219,7 +221,8 @@ export default function SelfReflection() {
                             sectionID={sectionID as string}
                             unitID={unitID as string}
                         />
-                    </ScrollView>
+                    </View>
+
                     <CustomButton
                         label="continue"
                         backgroundColor="white"
@@ -236,13 +239,20 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: Colors.light.background,
         padding: 20,
+        // paddingHorizontal: 20,
         flex: 1,
+    },
+    insideContainer: {
+        flexGrow: 1,
+        marginBottom: 20,
+        // marginVertical: 20
+        // margin: 20,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,
         fontWeight: 'bold',
         color: Colors.header.color,
-        marginBottom: 20,
+        marginBottom: 10,
         marginHorizontal: 10,
     },
 });

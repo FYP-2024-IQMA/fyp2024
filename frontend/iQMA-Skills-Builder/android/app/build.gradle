@@ -118,7 +118,7 @@ manifestPlaceholders = [auth0Domain: "dev-doimvjsv85uforrd.us.auth0.com", auth0S
         applicationId 'com.iqma.iqmaskillsbuilder'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 10
+        versionCode 1
         versionName "1.0.0"
     }
     signingConfigs {

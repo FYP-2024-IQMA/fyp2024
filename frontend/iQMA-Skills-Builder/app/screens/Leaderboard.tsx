@@ -71,7 +71,7 @@ export default function Leaderboard() {
                                         flexDirection: 'row',
                                         flex: 1,
                                         alignItems: 'center',
-                                        gap: 10,
+                                        gap: 10,                           
                                     }}
                                 >
                                     {user.rank === 1 ? (
@@ -93,7 +93,7 @@ export default function Leaderboard() {
                                         <View
                                             style={{justifyContent: 'center'}}
                                         >
-                                            <Text style={styles.rank}>
+                                            <Text style={styles.rank} allowFontScaling={false}>
                                                 {user.rank}
                                             </Text>
                                         </View>
@@ -104,10 +104,10 @@ export default function Leaderboard() {
                                         style={styles.image}
                                     />
 
-                                    <Text style={styles.name}>{user.name}</Text>
+                                    <Text style={styles.name} allowFontScaling={false}>{user.name}</Text>
                                 </View>
                                 <View>
-                                    <Text style={styles.points}>
+                                    <Text style={styles.points} allowFontScaling={false}>
                                         {user.points} XP
                                     </Text>
                                 </View>

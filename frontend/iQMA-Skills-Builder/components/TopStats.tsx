@@ -62,8 +62,8 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
                         />
                     </View>
                     <View>
-                        <Text style={styles.statNumber}>{updatedStreak}</Text>
-                        <Text style={styles.statLabel}>Day streak</Text>
+                        <Text style={styles.statNumber} allowFontScaling={false}>{updatedStreak}</Text>
+                        <Text style={styles.statLabel} allowFontScaling={false}>Day streak</Text>
                     </View>
                 </View>
             </View>
@@ -76,8 +76,8 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
                         />
                     </View>
                     <View>
-                        <Text style={styles.statNumber}>{updatedPoints}</Text>
-                        <Text style={styles.statLabel}>Total XP</Text>
+                        <Text style={styles.statNumber} allowFontScaling={false}>{updatedPoints}</Text>
+                        <Text style={styles.statLabel} allowFontScaling={false}>Total XP</Text>
                     </View>
                 </View>
             </View>
@@ -88,7 +88,7 @@ const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
                         strokeWidth={5}
                         progress={circularProgress}
                     />
-                    <Text style={styles.statLabelRight}>
+                    <Text style={styles.statLabelRight} allowFontScaling={false}>
                         Section{'\n'}Completion
                     </Text>
                 </View>
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 20,
         gap: 10,
+        
     },
     statBox: {
         flex: 1,
@@ -117,9 +118,10 @@ const styles = StyleSheet.create({
     },
     statContent: {
         flexDirection: 'row',
-        alignItems: 'center',
+        // alignItems: 'center',
         justifyContent: 'center',
         flex: 1,
+        gap: 2
     },
     sectionContent: {
         flexDirection: 'row',
@@ -127,24 +129,28 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         gap: 5,
         flex: 1,
+        flexWrap: "wrap"
     },
     statIcon: {
         width: 30,
         height: 30,
-        marginRight: 10,
+        // marginRight: 10,
     },
     statNumber: {
         fontSize: 13,
         fontWeight: 'bold',
         color: '#333',
+        flexShrink: 1
     },
     statLabel: {
         fontSize: 10,
         color: '#333',
+        flexShrink: 1
     },
     statLabelRight: {
         fontSize: 10,
         color: '#333',
+        flexShrink: 1
     },
 });
 

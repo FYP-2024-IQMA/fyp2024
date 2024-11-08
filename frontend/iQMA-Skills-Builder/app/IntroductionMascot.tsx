@@ -1,4 +1,4 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
 
 import {ChatBubble} from '@/components/ChatBubble';
 import {Colors} from '@/constants/Colors';
@@ -11,7 +11,13 @@ export default function LearnerAssessment() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView 
+        // style={styles.container}
+        contentContainerStyle={{
+            flexGrow: 1,
+            padding: 20,
+            backgroundColor: Colors.light.background
+        }}>
             <View style={styles.mascot}>
                 <Image
                     style={styles.mascotImage}
@@ -26,7 +32,7 @@ export default function LearnerAssessment() {
                 backgroundColor="white"
                 onPressHandler={handlePress}
             />
-        </View>
+        </ScrollView>
     );
 }
 

@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {Image, View, Text, ActivityIndicator, StyleSheet} from 'react-native';
+import {Image, View, Text, ActivityIndicator, StyleSheet, ScrollView} from 'react-native';
 import {getStreak} from '@/helpers/gamificationEndpoints'; // Adjust the import path as necessary
 import {AuthContext} from '@/context/AuthContext';
 import {CustomButton} from '@/components/CustomButton';
@@ -12,6 +12,7 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {globalStyles} from '@/constants/styles';
 import {ScreenStackHeaderBackButtonImage} from 'react-native-screens';
 import {experimentalSetDeliveryMetricsExportedToBigQueryEnabled} from '@react-native-firebase/messaging';
+import { Colors } from '@/constants/Colors';
 
 const StreakComponent: React.FC = () => {
     const [streakData, setStreakData] = useState<{
@@ -210,7 +211,11 @@ const StreakComponent: React.FC = () => {
     }
 
     return (
-        <View style={globalStyles.container}>
+        <ScrollView contentContainerStyle={{
+            flexGrow: 1,
+            padding: 20,
+            backgroundColor: Colors.light.background
+        }}>
             <View style={styles.insideContainer}>
                 <Image
                     source={StreakImage} // Ensure correct path
@@ -267,7 +272,7 @@ const StreakComponent: React.FC = () => {
                 backgroundColor="white"
                 onPressHandler={handlePress}
             />
-        </View>
+        </ScrollView>
     );
 };
 

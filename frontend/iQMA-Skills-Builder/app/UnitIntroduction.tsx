@@ -120,8 +120,13 @@ export default function UnitIntroduction() {
 
     return (
         <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            style={styles.container}
+            // contentContainerStyle={{flexGrow: 1}}
+            // style={styles.container}
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background
+            }}
         >
             {isLoading ? (
                 <View style={{flexGrow: 1}}>
@@ -153,6 +158,7 @@ export default function UnitIntroduction() {
                             style={{
                                 width: '100%',
                                 flexDirection: 'row-reverse',
+                                marginBottom: 20
                             }}
                         >
                             <Image

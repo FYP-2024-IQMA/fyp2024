@@ -47,7 +47,7 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
     return (
         <View style={styles.outerContainer}>
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}
+                style={{flexDirection: 'row', justifyContent: 'space-between', flexWrap: "wrap"}}
             >
                 <Text
                     style={[

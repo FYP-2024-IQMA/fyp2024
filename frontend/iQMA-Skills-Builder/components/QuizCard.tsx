@@ -124,13 +124,13 @@ export const QuizCard: React.FC<{
                     fontSize: 16,
                     fontWeight: 'bold',
                     color: Colors.header.color,
-                    marginBottom: 10,
+                    marginBottom: 20,
                 }}
             >
                 {question}
             </Text>
 
-            <View style={{alignItems: 'center'}}>
+            <View style={{gap: 15}}>
                 <CustomButton
                     label={option1.option}
                     labelColor={
@@ -301,10 +301,10 @@ export const QuizCard: React.FC<{
                                 </View>
                             )}
                         </View>
-                        <Text style={{marginBottom: 10, fontWeight: 'bold'}}>
+                        <Text style={{marginBottom: 20, fontWeight: 'bold'}}>
                             {selectedButton ? selectedButton!.explanation : ''}
                         </Text>
-                        <View style={{alignItems: 'center'}}>
+                        <View style={{}}>
                             <CustomButton
                                 label={isCorrect ? 'continue' : 'try again'}
                                 labelColor={

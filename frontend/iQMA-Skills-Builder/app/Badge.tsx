@@ -1,29 +1,45 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Text, View, Image, StyleSheet, Animated } from 'react-native';
+import React, {useState, useEffect, useContext} from 'react';
+import {
+    Text,
+    View,
+    Image,
+    StyleSheet,
+    Animated,
+    ScrollView,
+} from 'react-native';
 import ConfettiCannon from 'react-native-confetti-cannon';
-import { AuthContext } from '@/context/AuthContext';
-import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {AuthContext} from '@/context/AuthContext';
+import {LoadingIndicator} from '@/components/LoadingIndicator';
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
-import { Colors } from '@/constants/Colors';
-import { CustomButton } from '@/components/CustomButton';
-import { useNavigation } from '@react-navigation/native';
-import { router, useLocalSearchParams } from 'expo-router';
-import { globalStyles } from '@/constants/styles';
-
+import {Colors} from '@/constants/Colors';
+import {CustomButton} from '@/components/CustomButton';
+import {useNavigation} from '@react-navigation/native';
+import {router, useLocalSearchParams} from 'expo-router';
+import {globalStyles} from '@/constants/styles';
 
 export default function Badge() {
     const navigation = useNavigation();
-    const { currentUser } = useContext(AuthContext);
-    const { sectionID, unitID, currentUnit, totalUnits, currentProgress, totalProgress } = useLocalSearchParams();
+    const {currentUser} = useContext(AuthContext);
+    const {
+        sectionID,
+        unitID,
+        currentUnit,
+        totalUnits,
+        currentProgress,
+        totalProgress,
+    } = useLocalSearchParams();
     const [unitName, setUnitName] = useState('');
     const [badgeUrl, setBadgeUrl] = useState('');
     const [loading, setLoading] = useState(true);
     const [showConfetti, setShowConfetti] = useState(false);
     const [scale] = useState(new Animated.Value(1)); // For scaling animation
 
-    const fetchBadge = async (sectionID:string, unitID:string) => {
+    const fetchBadge = async (sectionID: string, unitID: string) => {
         try {
-            const badge = await gamificationEndpoints.getBadge(sectionID, unitID);
+            const badge = await gamificationEndpoints.getBadge(
+                sectionID,
+                unitID
+            );
             setUnitName(badge.unitName);
             setBadgeUrl(badge.badgeUrl);
             handleAnimation(); // Trigger scaling animation
@@ -63,7 +79,7 @@ export default function Badge() {
                 unitID,
                 currentUnit,
                 totalUnits,
-                currentProgress: (parseInt(currentProgress as string)).toString(),
+                currentProgress: parseInt(currentProgress as string).toString(),
                 totalProgress,
             },
         });
@@ -74,21 +90,33 @@ export default function Badge() {
     }
 
     return (
-        <View style={globalStyles.container}>
-            {showConfetti && <ConfettiCannon count={100} origin={{ x: -10, y: 0 }} />}
+        <ScrollView
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background,
+            }}
+        >
+            {showConfetti && (
+                <ConfettiCannon count={100} origin={{x: -10, y: 0}} />
+            )}
             <View style={styles.insideContainer}>
-                <Animated.View style={{ transform: [{ scale }]}}>
-                    <Image source={{ uri: badgeUrl }} style={styles.imageStyle} />
+                <Animated.View style={{transform: [{scale}]}}>
+                    <Image source={{uri: badgeUrl}} style={styles.imageStyle} />
                 </Animated.View>
-                <Text style={styles.badgeText}>You have obtained your {unitName} Badge!</Text>
-                <Text style={styles.bottomText}>Visit your profile to see your new badge!</Text>
+                <Text style={styles.badgeText}>
+                    You have obtained your {unitName} Badge!
+                </Text>
+                <Text style={styles.bottomText}>
+                    Visit your profile to see your new badge!
+                </Text>
             </View>
             <CustomButton
                 label="Continue"
                 backgroundColor="white"
                 onPressHandler={handlePress}
             />
-        </View>
+        </ScrollView>
     );
 }
 
@@ -103,7 +131,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        padding: 10
+        padding: 10,
     },
     imageStyle: {
         width: 150,

@@ -22,7 +22,7 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         router.replace('Home');
     };
 
-    const progressBarWidth = isQuestionnaire ? screenWidth * 0.75 : screenWidth * 0.50;
+    const progressBarWidth = isQuestionnaire ? screenWidth * 0.70 : screenWidth * 0.50;
 
     return (
         <View style={styles.container}>

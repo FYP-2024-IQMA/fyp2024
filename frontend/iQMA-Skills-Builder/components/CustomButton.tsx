@@ -67,8 +67,10 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     button: {
-        width: screenWidth * 0.9,
-        marginVertical: 10,
+        // width: screenWidth * 0.9,
+        width: "100%",
+        // marginVertical: 10,
+        // marginBottom: 20,
         padding: 15,
         borderRadius: 10,
         borderWidth: 2,

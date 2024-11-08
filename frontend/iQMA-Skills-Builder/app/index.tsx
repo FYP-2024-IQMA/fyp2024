@@ -55,6 +55,7 @@ export default function Index() {
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: '#C3B1FF',
+                        padding: 20
                     }}
                 >
                     <LogoVisual />

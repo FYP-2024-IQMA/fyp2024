@@ -140,8 +140,13 @@ export default function SectionIntroduction() {
 
     return (
         <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
-            style={styles.container}
+            // contentContainerStyle={{flexGrow: 1}}
+            // style={styles.container}
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background
+            }}
         >
             {isLoading ? (
                 <LoadingIndicator />

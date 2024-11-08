@@ -189,6 +189,7 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
                                 animated: true,
                             })
                         }
+                        nestedScrollEnabled
                     >
                         {messages.map((msg, index) => (
                             <ChatBubble

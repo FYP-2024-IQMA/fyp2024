@@ -3,6 +3,7 @@ import {
     Button,
     Image,
     Pressable,
+    ScrollView,
     StyleSheet,
     Text,
     TextInput,
@@ -107,15 +108,16 @@ export default function CreateProfile() {
     };
 
     return (
-        <View
-            style={{
-                flex: 1,
+        <ScrollView
+            contentContainerStyle={{
+                // flex: 1,
                 // justifyContent: "center",
                 alignItems: 'center',
                 backgroundColor: Colors.light.background,
                 // backgroundColor: "#ff4500",
                 padding: 20,
                 gap: 20,
+                flexGrow: 1
             }}
         >
             {/* <LoginButton></LoginButton> */}
@@ -342,7 +344,7 @@ export default function CreateProfile() {
                     apply.
                 </Text>
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -357,8 +359,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Colors.default.purple500,
-        height: 40,
+        // height: 40,
         width: '100%',
+        padding: 10
     },
     buttonText: {
         color: Colors.light.background,

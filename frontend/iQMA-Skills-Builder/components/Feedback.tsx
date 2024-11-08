@@ -124,7 +124,7 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
                 style={styles.bubble}
                 onPress={() => setVisible(true)}
             >
-                <Text style={styles.bubbleText}>🗳️</Text>
+                <Text style={styles.bubbleText} allowFontScaling={false}>🗳️</Text>
             </TouchableOpacity>
 
             {/* Modal for Form */}
@@ -177,7 +177,7 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
                                             : {},
                                     ]}
                                 >
-                                    <Text style={styles.face}>{emoji}</Text>
+                                    <Text style={styles.face} allowFontScaling={false}>{emoji}</Text>
                                     <Text style={styles.ratingNumber}>
                                         {index + 1}
                                     </Text>
@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
         padding: 10,
-        height: 40,
-        width: 100,
+        // height: 40,
+        // width: 100,
     },
     closeButtonText: {
         color: Colors.light.text,
@@ -346,8 +346,8 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10,
         padding: 10,
-        height: 40,
-        width: 100,
+        // height: 40,
+        // width: 100,
     },
     textInput: {
         borderColor: 'gray',
