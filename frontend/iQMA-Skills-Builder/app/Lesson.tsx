@@ -2,7 +2,14 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 
 import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, Dimensions, TouchableOpacity} from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    ScrollView,
+    Dimensions,
+    TouchableOpacity,
+} from 'react-native';
 import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
 
 import {Colors} from '@/constants/Colors';
@@ -15,9 +22,8 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import VideoPlayer from '@/components/VideoPlayer';
-import { useTimer } from '@/helpers/useTimer';
+import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
-
 
 // where things show up
 export default function Lesson() {
@@ -41,7 +47,12 @@ export default function Lesson() {
     const [playing, setPlaying] = useState<boolean>(true);
     const [lessonDescription, setLessonDescription] = useState<string | []>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Lesson', unitID as string, lessonID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Lesson',
+        unitID as string,
+        lessonID as string
+    );
     const [isScroll, setIsScroll] = useState(false);
     const screenHeight = Dimensions.get('window').height;
 
@@ -51,17 +62,17 @@ export default function Lesson() {
             parseInt(totalProgress as string);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -85,7 +96,7 @@ export default function Lesson() {
                 totalProgress,
             },
         });
-        console.log("ISPLAYING: " + playing)
+        console.log('ISPLAYING: ' + playing);
         stopTimer();
     };
 
@@ -150,7 +161,7 @@ export default function Lesson() {
             contentContainerStyle={{
                 flexGrow: 1,
                 padding: 20,
-                backgroundColor: Colors.light.background
+                backgroundColor: Colors.light.background,
             }}
         >
             {isLoading ? (
@@ -158,34 +169,36 @@ export default function Lesson() {
             ) : (
                 <>
                     <View style={{flexGrow: 1}}>
-                        <SectionCard
-                            title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
-                            subtitle={unitName}
-                        />
-                        <Text style={styles.screenTitle}>{lessonName}</Text>
+                        <View style={{marginBottom: 20}}>
+                            <SectionCard
+                                title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`}
+                                subtitle={unitName}
+                            />
+                            <Text style={styles.screenTitle}>{lessonName}</Text>
 
-                        {lessonDescription ? (
-                            <OverviewCard
-                                text={lessonDescription!}
-                            ></OverviewCard>
-                        ) : (
-                            <OverviewCard
-                                // isError={true}
-                                text="Lesson Description is not available. Please check with your administrator."
-                            />
-                        )}
-                        {videoId ? (
-                            <VideoPlayer
-                                videoUrl={videoId}
-                                playing={playing}
-                                onStateChange={onStateChange}
-                            />
-                        ) : (
-                            <OverviewCard
-                                isError={true}
-                                text="Video is not available. Please check with your administrator."
-                            />
-                        )}
+                            {lessonDescription ? (
+                                <OverviewCard
+                                    text={lessonDescription!}
+                                ></OverviewCard>
+                            ) : (
+                                <OverviewCard
+                                    // isError={true}
+                                    text="Lesson Description is not available. Please check with your administrator."
+                                />
+                            )}
+                            {videoId ? (
+                                <VideoPlayer
+                                    videoUrl={videoId}
+                                    playing={playing}
+                                    onStateChange={onStateChange}
+                                />
+                            ) : (
+                                <OverviewCard
+                                    isError={true}
+                                    text="Video is not available. Please check with your administrator."
+                                />
+                            )}
+                        </View>
                     </View>
 
                     <CustomButton

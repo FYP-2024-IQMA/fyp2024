@@ -129,7 +129,7 @@ export default function Leaderboard() {
                                 source={require('@/assets/images/growth.png')}
                                 style={styles.growthImage}
                             />
-                            <Text style={styles.rankBelowTop5}>
+                            <Text style={styles.rankBelowTop5} allowFontScaling={false}>
                                 {currentUserRankDetails.rank}
                             </Text>
                             <Image
@@ -138,12 +138,12 @@ export default function Leaderboard() {
                                 }}
                                 style={styles.outsideTop5Image}
                             />
-                            <Text style={styles.name}>
+                            <Text style={styles.name} allowFontScaling={false}>
                                 {currentUserRankDetails.name}
                             </Text>
                         </View>
                         <View>
-                            <Text style={styles.points}>
+                            <Text style={styles.points} allowFontScaling={false}>
                                 {currentUserRankDetails.points} XP
                             </Text>
                         </View>
