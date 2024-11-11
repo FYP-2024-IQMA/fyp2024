@@ -13,6 +13,13 @@
         "production": {
             "android": {
                 "buildType": "apk"
+            },
+            "env": {
+                "EXPO_PUBLIC_LOCALHOST_URL": "https://iqmaapp.com",
+                "EXPO_PUBLIC_CHATBOT_URL": "https://iqmaapp.com/chatbot",
+                "EXPO_PUBLIC_BACKEND_URL": "https://iqmaapp.com",
+                "EXPO_PUBLIC_AUTH0_CLIENTID": "Bzn1HsTYCFO7HBARAcv5MNeZ6Xu1GE5c",
+                "EXPO_PUBLIC_AUTH0_DOMAIN": "dev-doimvjsv85uforrd.us.auth0.com"
             }
         },
         "test": {
