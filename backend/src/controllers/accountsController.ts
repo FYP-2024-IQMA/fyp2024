@@ -88,7 +88,11 @@ export const getAccountById = async (req: Request, res: Response) => {
 
 export const getAccountsByRole = async (req: Request, res: Response) => {
     try {
-        const accounts = await accountsService.getAccountsByRole(req.params.role);
+        const role = req.params.role;
+        if (role !== "admin" && role !== "learner") {
+            return res.status(400).json({ message: "Invalid role parameter" });
+        }
+        const accounts = await accountsService.getAccountsByRole(role);
         res.status(200).json(accounts);
     } catch (error: any) {
 

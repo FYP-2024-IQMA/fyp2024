@@ -60,7 +60,7 @@ function checkIfCompletedQuiz(userID, quizID) {
             .from("result")
             .select("*", { count: "exact" })
             .eq("userID", userID)
-            .eq("quizID", quizID);
+            .eq("quizID", Number(quizID));
         if (error) {
             console.error(error);
             throw error;

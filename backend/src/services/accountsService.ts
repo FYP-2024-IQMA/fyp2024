@@ -86,7 +86,7 @@ export async function getAccountById(userID: string): Promise<Accounts> {
     }
 }
 
-export async function getAccountsByRole(role: string) {
+export async function getAccountsByRole(role: "admin" | "learner") {
     const { data, error } = await supabase
         .from("accounts")
         .select("*")
