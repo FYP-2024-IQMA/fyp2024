@@ -59,7 +59,7 @@ export default function LearnerAssessmentDynamics() {
                 'compLiteracy',
                 selectedComputer
             );
-            router.push('LearnerAssessmentExperience');
+            router.push('/legacy_signup_form/LearnerAssessmentExperience');
         }
     };
 

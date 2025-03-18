@@ -7,7 +7,9 @@ import {router} from 'expo-router';
 
 export default function IntroductionSegment() {
     const handlePress = () => {
-        router.push('LearnerAssessmentDemographics');
+        // router.push('LearnerAssessmentDemographics');
+        router.push('/signup_form/AboutYou');
+
     };
 
     return (

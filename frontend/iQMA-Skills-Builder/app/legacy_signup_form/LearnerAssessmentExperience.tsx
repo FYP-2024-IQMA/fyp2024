@@ -90,7 +90,7 @@ export default function LearnerAssessmentExperience() {
                 'reasons',
                 JSON.stringify(selectedReasons)
             );
-            router.push('LearnerAssessmentComplete');
+            router.push('/legacy_signup_form/LearnerAssessmentComplete');
         }
     };
 

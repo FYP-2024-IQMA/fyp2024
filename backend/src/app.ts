@@ -16,6 +16,10 @@ import quizRouter from "./routes/quizRouter";
 import resultRouter from "./routes/resultRouter";
 import sectionRouter from "./routes/sectionRouter";
 import unitRouter from "./routes/unitRouter";
+import accountsAboutYouRouter from "./routes/accountsAboutYouRouter";
+import accountsLearningStyleAndSkillsRouter from "./routes/accountsLearningStyleAndSkillsRouter";
+import accountsMotivationRouter from "./routes/accountsMotivationRouter";
+import accountsSocialAndTechHabitsRouter from "./routes/accountsSocialAndTechHabitsRouter";
 
 const app = express();
 const port = 3000;
@@ -41,6 +45,10 @@ app.use("/section", sectionRouter);
 app.use("/clickstream", clickstreamRouter);
 app.use("/accounts", accountsGamificationRouter);
 app.use("/feedback", feedbackRouter);
+app.use("/accountsaboutyou", accountsAboutYouRouter);
+app.use("/accountslearningstyleandskills", accountsLearningStyleAndSkillsRouter);
+app.use("/accountsmotivation", accountsMotivationRouter);
+app.use("/accountssocialandtechhabits", accountsSocialAndTechHabitsRouter);
 
 // Start the Express server
 app.listen(port, () => {

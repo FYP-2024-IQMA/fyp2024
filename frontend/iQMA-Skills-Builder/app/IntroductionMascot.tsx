@@ -7,7 +7,7 @@ import {router} from 'expo-router';
 
 export default function LearnerAssessment() {
     const handlePress = () => {
-        router.push('IntroductionSegment');
+        router.push('/IntroductionSegment');
     };
 
     return (
