@@ -228,6 +228,7 @@ export default function SelfReflection() {
                         backgroundColor="white"
                         onPressHandler={handlePress}
                         disabled={chatHistoryLength < 3}
+                        isChatButton={true}
                     />
                 </>
             )}

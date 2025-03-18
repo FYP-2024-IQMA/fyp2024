@@ -1,7 +1,6 @@
-import {Dimensions, Pressable, StyleSheet, Text, View} from 'react-native';
-
-import {Colors} from '@/constants/Colors';
-import React from 'react';
+import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Colors } from '@/constants/Colors';
+import React, { useEffect, useState } from 'react';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -15,15 +14,35 @@ export const CustomButton = ({
     disabled = false,
     isOption = false,
     isScroll = false,
+    isChatButton = false,
 }) => {
     const textStyle = capitalise ? 'uppercase' : 'none';
+    const [timeLeft, setTimeLeft] = useState(isChatButton ? 60 : 0);
+    const [buttonText, setButtonText] = useState(isChatButton ? 'Continue' : label);
+    const [buttonBgColor, setButtonBgColor] = useState(backgroundColor);
+    const [textColor, setTextColor] = useState(labelColor);
+
+    useEffect(() => {
+        if (isChatButton && timeLeft > 0) {
+            const timer = setInterval(() => {
+                setTimeLeft(prevTime => {
+                    console.log(`Time left: ${prevTime - 1}s`);
+                    return prevTime - 1;
+                });
+            }, 1000);
+            return () => clearInterval(timer);
+        } else if (isChatButton && timeLeft === 0) {
+            setButtonText('Attempt Assessment');
+            setButtonBgColor(Colors.default.purple500);
+            setTextColor('white');
+        }
+    }, [isChatButton, timeLeft]);
 
     return (
         <View
             style={[
                 styles.buttonContainer,
-                isScroll && {marginBottom: 40, marginTop: 20},
-                // !isQuiz && {justifyContent: 'flex-end'},
+                isScroll && { marginBottom: 40, marginTop: 20 },
             ]}
         >
             <Pressable
@@ -32,9 +51,7 @@ export const CustomButton = ({
                     styles.rounded,
                     styles.shadow,
                     {
-                        backgroundColor: disabled
-                            ? Colors.chatbot.inputColor
-                            : backgroundColor,
+                        backgroundColor: disabled ? Colors.chatbot.inputColor : (isChatButton && timeLeft === 0 ? buttonBgColor : backgroundColor),
                         borderColor: borderColor,
                         paddingHorizontal: isOption ? 25 : undefined,
                         alignItems: isOption ? undefined : 'center',
@@ -48,12 +65,12 @@ export const CustomButton = ({
                         style={[
                             styles.buttonText,
                             {
-                                color: disabled ? '#A0A0A0' : labelColor,
+                                color: disabled ? '#A0A0A0' : (isChatButton && timeLeft === 0 ? textColor : labelColor),
                                 textTransform: textStyle,
                             },
                         ]}
                     >
-                        {label}
+                        {buttonText}
                     </Text>
                 </View>
             </Pressable>
@@ -67,10 +84,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-end',
     },
     button: {
-        // width: screenWidth * 0.9,
-        width: "100%",
-        // marginVertical: 10,
-        // marginBottom: 20,
+        width: '100%',
         padding: 15,
         borderRadius: 10,
         borderWidth: 2,
@@ -84,7 +98,7 @@ const styles = StyleSheet.create({
     },
     shadow: {
         shadowColor: 'black',
-        shadowOffset: {width: 0, height: 4},
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 5,
