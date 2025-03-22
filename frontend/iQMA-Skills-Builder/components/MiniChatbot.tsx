@@ -110,7 +110,13 @@ const MiniChatbot: React.FC<MiniChatbotProps> = ({
     const handleSend = async (message: string) => {
         const userMessage = {text: message, isUser: true};
         const newMessages = [...messages, userMessage];
-        setMessages(newMessages);
+
+        // Add a placeholder chatbot response
+        const loadingMessage = {text: 'Thinking...', isUser: false};
+        const messagesWithLoading = [...newMessages, loadingMessage];
+
+        setMessages(messagesWithLoading);
+        // setMessages(newMessages);
         setMessage('');
 
         // get past messages
