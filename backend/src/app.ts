@@ -21,6 +21,7 @@ import accountsLearningStyleAndSkillsRouter from "./routes/accountsLearningStyle
 import accountsMotivationRouter from "./routes/accountsMotivationRouter";
 import accountsSocialAndTechHabitsRouter from "./routes/accountsSocialAndTechHabitsRouter";
 import userProgressRouter from "./routes/userProgressRouter";
+import userStoneProgressRouter from "./routes/userStoneProgressRouter";
 
 const app = express();
 const port = 3000;
@@ -51,6 +52,8 @@ app.use("/accountslearningstyleandskills", accountsLearningStyleAndSkillsRouter)
 app.use("/accountsmotivation", accountsMotivationRouter);
 app.use("/accountssocialandtechhabits", accountsSocialAndTechHabitsRouter);
 app.use("/userprogress", userProgressRouter);
+app.use("/userstoneprogress", userStoneProgressRouter);
+
 
 // Start the Express server
 app.listen(port, () => {

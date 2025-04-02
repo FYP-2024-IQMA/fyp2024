@@ -807,6 +807,32 @@ export type Database = {
           },
         ]
       }
+      user_stone_progress: {
+        Row: {
+          last_completed_stone_index: number | null
+          updated_at: string
+          userID: string
+        }
+        Insert: {
+          last_completed_stone_index?: number | null
+          updated_at?: string
+          userID: string
+        }
+        Update: {
+          last_completed_stone_index?: number | null
+          updated_at?: string
+          userID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stone_progress_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
