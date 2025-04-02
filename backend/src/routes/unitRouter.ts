@@ -7,19 +7,27 @@ const router = Router();
 
 /* READ */
 router.get(
-	"/gettotalunit/:sectionID",
-	verifyToken,
-	unitController.getNoOfUnitPerSection
+  "/gettotalunit/:sectionID",
+  verifyToken,
+  unitController.getNoOfUnitPerSection
 );
 router.get(
-	"/getallunitsbysection/:sectionID",
-	verifyToken,
-	unitController.getAllUnitsBySection
+  "/getallunitsbysection/:sectionID",
+  verifyToken,
+  unitController.getAllUnitsBySection
 );
 router.get(
-	"/getallunitsbysectionandunit/:sectionID/:unitID",
-	verifyToken,
-	unitController.getUnitDetailsBySectionAndUnit
+  "/getallunitsbysectionandunit/:sectionID/:unitID",
+  verifyToken,
+  unitController.getUnitDetailsBySectionAndUnit
+);
+
+router.get(
+  "/getallunits",
+  verifyToken,
+  unitController.getAllUnits,
+  verifyToken,
+  unitController.getUnitDetailsBySectionAndUnit
 );
 
 export default router;

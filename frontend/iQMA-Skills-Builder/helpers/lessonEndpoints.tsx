@@ -45,3 +45,18 @@ export const getNumofLessonsPerUnit = async (
         return 0;
     }
 };
+
+// get all lessons in database
+export const getAllLessons = async (
+
+) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/lesson/getalllessons`;
+        const response = await fetch(url);
+        const lessonDetails = await response.json();
+        return lessonDetails;
+    } catch (error: any) {
+        console.error('Error fetching all lessons:', error.response.data);
+        return;
+    }
+};

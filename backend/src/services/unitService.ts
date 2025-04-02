@@ -1,5 +1,6 @@
 import supabase from "../config/supabaseConfig";
 import * as videoService from "./videoService";
+import { Unit } from "../models/unitModel";
 
 type SectionUnit = {
     sectionID: string;
@@ -7,6 +8,21 @@ type SectionUnit = {
 }
 
 /* READ */
+
+// get every unit in the database
+export async function getAllUnits(): Promise<Unit[]> {
+  const { data, error } = await supabase.from("unit").select("*");
+
+  if (error) {
+    console.error(error);
+    throw error;
+  } else {
+    return data.map(unit => ({
+        ...unit,
+        dateCreated: unit.dateCreated ? new Date(unit.dateCreated) : null
+    })) as Unit[];
+  }
+}
 
 export async function getNoOfUnitPerSection(sectionID: string) {
     const { count, error } = await supabase

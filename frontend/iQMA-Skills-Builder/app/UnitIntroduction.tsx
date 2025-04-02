@@ -96,24 +96,33 @@ export default function UnitIntroduction() {
         }
     }, [sectionID, unitID]);
 
+    // const handlePress = async () => {
+    //     // router.push('Lesson');
+    //     router.push({
+    //         pathname: 'Lesson',
+    //         // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+    //         params: {
+    //             sectionID,
+    //             unitID,
+    //             lessonID,
+    //             currentLessonIdx,
+    //             totalLesson,
+    //             currentUnit,
+    //             totalUnits,
+    //             currentProgress: (
+    //                 parseInt(currentProgress as string) + 1
+    //             ).toString(),
+    //             totalProgress,
+    //         },
+    //     });
+    //     stopTimer();
+    // };
+
+    // Route back to home after clicking continue button
     const handlePress = async () => {
         // router.push('Lesson');
         router.push({
-            pathname: 'Lesson',
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            params: {
-                sectionID,
-                unitID,
-                lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
-            },
+            pathname: 'Home',
         });
         stopTimer();
     };

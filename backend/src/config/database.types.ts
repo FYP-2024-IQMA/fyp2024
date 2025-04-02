@@ -758,6 +758,55 @@ export type Database = {
           },
         ]
       }
+      user_progress: {
+        Row: {
+          created_at: string
+          lesson_id: string
+          progress_type: Database["public"]["Enums"]["progress_type"]
+          status: Database["public"]["Enums"]["stone_progress"] | null
+          unit_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          lesson_id: string
+          progress_type: Database["public"]["Enums"]["progress_type"]
+          status?: Database["public"]["Enums"]["stone_progress"] | null
+          unit_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          lesson_id?: string
+          progress_type?: Database["public"]["Enums"]["progress_type"]
+          status?: Database["public"]["Enums"]["stone_progress"] | null
+          unit_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_progress_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lesson"
+            referencedColumns: ["lessonID"]
+          },
+          {
+            foreignKeyName: "user_progress_unit_id_fkey"
+            columns: ["unit_id"]
+            isOneToOne: false
+            referencedRelation: "unit"
+            referencedColumns: ["unitID"]
+          },
+          {
+            foreignKeyName: "user_progress_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -850,6 +899,7 @@ export type Database = {
         | "Intermediate"
         | "Basic"
         | "None"
+      progress_type: "intro" | "lesson" | "assessment"
       quiz_type: "section" | "unit" | "lesson"
       race_type:
         | "Caucasian"
@@ -875,6 +925,7 @@ export type Database = {
       role: "admin" | "learner"
       social_background_type: "Urban" | "Suburban" | "Rural"
       special_needs_type: "None" | "Physical" | "Mental" | "Other"
+      stone_progress: "in_progress" | "completed"
       tendency_to_compete_or_cooperate_type:
         | "Competitive"
         | "Cooperative"

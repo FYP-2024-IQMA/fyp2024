@@ -27,3 +27,29 @@ export const numberOfUnitsPerSection = async (
         return 0;
     }
 };
+
+// get all units in database
+export const getAllUnits = async (sectionID: string, unitID: string) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/getallunits`;
+        const response = await fetch(url);
+        const unitDetails = await response.json();
+        return unitDetails;
+    } catch (error: any) {
+        console.error('Error fetching all units:', error.response.data);
+        return;
+    }
+};
+
+export const getUnitsForSection = async (sectionID: string) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/unit/getallunitsbysection/${sectionID}`;
+        const response = await fetch(url);
+        const unitDetails = await response.json();
+        // console.log(unitDetails);
+        return unitDetails;
+    } catch (error: any) {
+        console.error('Error fetching units:', error.response.data);
+        return;
+    }
+};
