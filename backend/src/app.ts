@@ -20,7 +20,6 @@ import accountsAboutYouRouter from "./routes/accountsAboutYouRouter";
 import accountsLearningStyleAndSkillsRouter from "./routes/accountsLearningStyleAndSkillsRouter";
 import accountsMotivationRouter from "./routes/accountsMotivationRouter";
 import accountsSocialAndTechHabitsRouter from "./routes/accountsSocialAndTechHabitsRouter";
-import userProgressRouter from "./routes/userProgressRouter";
 import userStoneProgressRouter from "./routes/userStoneProgressRouter";
 
 const app = express();
@@ -51,7 +50,6 @@ app.use("/accountsaboutyou", accountsAboutYouRouter);
 app.use("/accountslearningstyleandskills", accountsLearningStyleAndSkillsRouter);
 app.use("/accountsmotivation", accountsMotivationRouter);
 app.use("/accountssocialandtechhabits", accountsSocialAndTechHabitsRouter);
-app.use("/userprogress", userProgressRouter);
 app.use("/userstoneprogress", userStoneProgressRouter);
 
 // Start the Express server

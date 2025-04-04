@@ -533,6 +533,7 @@ import * as lessonEndpoints from '@/helpers/lessonEndpoints';
 import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
+import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
 
 import {
     NativeScrollEvent,
@@ -604,15 +605,26 @@ const HomeScreen: React.FC = () => {
         });
     };
 
-    const buildSectionProgressPath = async (section: any): Promise<ProgressPathProps['icons']> => {
+    const buildSectionProgressPath = async (
+        section: any,
+        overallStartingIndex: number,
+        lastCompletedIndex: number
+    ): Promise<{ icons: ProgressPathProps['icons'], nextOverallIndex: number }> => {
         const icons: ProgressPathProps['icons'] = [];
         const sectionID = section.sectionID;
         const units = await unitEndpoints.getUnitsForSection(sectionID);
         const totalUnits = units.length;
 
-        if (units.length === 0) return icons;
+        if (units.length === 0) return { icons, nextOverallIndex: overallStartingIndex };
 
         const totalProgress = totalUnits * 5;
+        let overallIndex = overallStartingIndex;
+
+        const getStoneStatus = (stoneIndex: number) => {
+            if (stoneIndex <= lastCompletedIndex) return 'completed';
+            if (stoneIndex === lastCompletedIndex + 1) return 'in-progress';
+            return 'not-started';
+        };
 
         for (let u = 0; u < units.length; u++) {
             const unit = units[u];
@@ -621,11 +633,11 @@ const HomeScreen: React.FC = () => {
             const totalLesson = lessons.length;
             const currentUnit = u + 1;
 
-            // 1️⃣ First unit: combine Section + Unit 1 Intro
+            // 1️⃣ First Unit Intro (with Section Intro)
             if (u === 0) {
                 icons.push({
                     name: 'playcircleo',
-                    status: 'completed',
+                    status: getStoneStatus(overallIndex),
                     onPress: () => handlePress(
                         'SectionIntroduction',
                         sectionID,
@@ -640,12 +652,11 @@ const HomeScreen: React.FC = () => {
                         totalProgress
                     )
                 });
+                overallIndex++;
             } else {
-                // 2️⃣ Other units: separate Unit Intro
-                const currentProgress = u * 5;
                 icons.push({
                     name: 'infocirlceo',
-                    status: 'locked',
+                    status: getStoneStatus(overallIndex),
                     onPress: () => handlePress(
                         'UnitIntroduction',
                         sectionID,
@@ -656,20 +667,19 @@ const HomeScreen: React.FC = () => {
                         currentUnit,
                         totalUnits,
                         false,
-                        currentProgress,
+                        (u * 5),
                         totalProgress
                     )
                 });
+                overallIndex++;
             }
 
-            // 3️⃣ Lessons
+            // 2️⃣ Lessons
             for (let i = 0; i < lessons.length; i++) {
                 const lesson = lessons[i];
-                const currentProgress = 1 + u * 5 + i;
-
                 icons.push({
                     name: 'book',
-                    status: 'completed',
+                    status: getStoneStatus(overallIndex),
                     onPress: () => handlePress(
                         'Lesson',
                         sectionID,
@@ -680,17 +690,17 @@ const HomeScreen: React.FC = () => {
                         currentUnit,
                         totalUnits,
                         false,
-                        currentProgress,
+                        1 + (u * 5) + i,
                         totalProgress
                     )
                 });
+                overallIndex++;
             }
 
-            // 4️⃣ Unit Assessment
-            const currentProgress = currentUnit * 5 - 1;
+            // 3️⃣ Unit Assessment
             icons.push({
                 name: 'key',
-                status: 'locked',
+                status: getStoneStatus(overallIndex),
                 onPress: () => handlePress(
                     'AssessmentIntroduction',
                     sectionID,
@@ -701,16 +711,17 @@ const HomeScreen: React.FC = () => {
                     currentUnit,
                     totalUnits,
                     false,
-                    currentProgress,
+                    currentUnit * 5 - 1,
                     totalProgress
                 )
             });
+            overallIndex++;
         }
 
-        // 5️⃣ Final Section Assessment
+        // 4️⃣ Final Section Assessment
         icons.push({
             name: 'pushpin',
-            status: 'locked',
+            status: getStoneStatus(overallIndex),
             onPress: () => {
                 const currentUnit = totalUnits;
                 const currentProgress = totalUnits * 5;
@@ -729,22 +740,36 @@ const HomeScreen: React.FC = () => {
                 );
             }
         });
+        overallIndex++;
 
-        return icons;
+        return { icons, nextOverallIndex: overallIndex };
     };
 
     useEffect(() => {
         (async () => {
             try {
+                setLoading(true);
+
+                // 🔥 Fetch user progress
+                const progressData = await userStoneProgressEndpoints.getUserStoneProgress(currentUser.sub);
+                const lastCompletedIndex = progressData?.last_completed_stone_index ?? -1;
+                console.log('User Progress:', lastCompletedIndex);
+
+                // 🔥 Fetch sections
                 const sectionList = await sectionEndpoints.getAllSectionDetails();
                 setSections(sectionList);
 
+                // 🔥 Build new icons using the fetched lastCompletedIndex
                 const newIconsData: { [key: number]: ProgressPathProps['icons'] } = {};
+                let overallStartingIndex = 0;
+
                 for (let i = 0; i < sectionList.length; i++) {
                     const section = sectionList[i];
-                    const icons = await buildSectionProgressPath(section);
+                    const { icons, nextOverallIndex } = await buildSectionProgressPath(section, overallStartingIndex, lastCompletedIndex);
                     newIconsData[i] = icons;
+                    overallStartingIndex = nextOverallIndex;
                 }
+
                 setIconsData(newIconsData);
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -807,4 +832,5 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
+
 
