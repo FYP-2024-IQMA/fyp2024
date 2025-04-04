@@ -4,13 +4,17 @@ import { UserStoneProgress } from "../models/userStoneProgressModel";
 /* CREATE */
 export async function createUserStoneProgress(
   userID: string,
-  last_completed_stone_index: number
+  last_completed_stone_index: number,
+  current_stone_index: number,
+  current_screen_index: number
 ) {
   const { data, error } = await supabase
     .from("user_stone_progress")
     .insert({
       userID,
       last_completed_stone_index,
+      current_stone_index,
+      current_screen_index
     })
     .select();
 
@@ -54,14 +58,23 @@ export async function getAllUserStoneProgress() {
 /* UPDATE */
 export async function updateUserStoneProgress(
   userID: string,
-  last_completed_stone_index: number
+  last_completed_stone_index?: number,
+  current_stone_index?: number,
+  current_screen_index?: number
 ) {
+  const updateFields: { [key: string]: any } = {};
+
+  if (last_completed_stone_index !== undefined) updateFields.last_completed_stone_index = last_completed_stone_index;
+  if (current_stone_index !== undefined) updateFields.current_stone_index = current_stone_index;
+  if (current_screen_index !== undefined) updateFields.current_screen_index = current_screen_index;
+
+  if (Object.keys(updateFields).length === 0) {
+    throw new Error("No fields to update");
+  }
+
   const { status, statusText, error } = await supabase
     .from("user_stone_progress")
-    .update({
-      last_completed_stone_index,
-      updated_at: new Date().toISOString(),
-    })
+    .update(updateFields)
     .eq("userID", userID);
 
   if (error) {
@@ -71,6 +84,7 @@ export async function updateUserStoneProgress(
     return { status, statusText };
   }
 }
+
 
 /* DELETE */
 export async function deleteUserStoneProgress(userID: string) {

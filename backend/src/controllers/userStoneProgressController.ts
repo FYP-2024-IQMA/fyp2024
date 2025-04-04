@@ -4,10 +4,10 @@ import handleError from "../errors/errorHandling";
 
 /* CREATE */
 export const createUserStoneProgress = async (req: Request, res: Response) => {
-    const { userID, last_completed_stone_index } = req.body;
+    const { userID, last_completed_stone_index, current_stone_index, current_screen_index } = req.body;
 
     try {
-        const result = await userStoneProgressService.createUserStoneProgress(userID, last_completed_stone_index);
+        const result = await userStoneProgressService.createUserStoneProgress(userID, last_completed_stone_index, current_stone_index, current_screen_index);
         res.status(201).json({
             userID: result[0].userID,
             status: 201,
@@ -48,13 +48,13 @@ export const getAllUserStoneProgress = async (_req: Request, res: Response) => {
 
 /* UPDATE */
 export const updateUserStoneProgress = async (req: Request, res: Response) => {
-    const { userID, last_completed_stone_index } = req.body;
+    const { userID, last_completed_stone_index, current_stone_index, current_screen_index } = req.body;
 
     try {
-        const result = await userStoneProgressService.updateUserStoneProgress(userID, last_completed_stone_index);
+        const result = await userStoneProgressService.updateUserStoneProgress(userID, last_completed_stone_index, current_stone_index, current_screen_index);
         res.status(200).json({
             status: 200,
-            statusText: "Progress Updated Successfully",
+            statusText: "User Progress Updated Successfully",
         });
     } catch (error: any) {
         const errorResponse = handleError(error);
@@ -70,7 +70,7 @@ export const deleteUserStoneProgress = async (req: Request, res: Response) => {
         const result = await userStoneProgressService.deleteUserStoneProgress(req.params.id);
         res.status(200).json({
             status: 200,
-            statusText: "Progress Deleted Successfully",
+            statusText: "User Progress Deleted Successfully",
         });
     } catch (error: any) {
         const errorResponse = handleError(error);

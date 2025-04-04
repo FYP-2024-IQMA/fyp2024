@@ -54,7 +54,6 @@ app.use("/accountssocialandtechhabits", accountsSocialAndTechHabitsRouter);
 app.use("/userprogress", userProgressRouter);
 app.use("/userstoneprogress", userStoneProgressRouter);
 
-
 // Start the Express server
 app.listen(port, () => {
 	console.log(`Server is running on port ${port}`);

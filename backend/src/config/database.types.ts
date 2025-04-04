@@ -809,16 +809,22 @@ export type Database = {
       }
       user_stone_progress: {
         Row: {
+          current_screen_index: number
+          current_stone_index: number
           last_completed_stone_index: number | null
           updated_at: string
           userID: string
         }
         Insert: {
+          current_screen_index: number
+          current_stone_index: number
           last_completed_stone_index?: number | null
           updated_at?: string
           userID: string
         }
         Update: {
+          current_screen_index?: number
+          current_stone_index?: number
           last_completed_stone_index?: number | null
           updated_at?: string
           userID?: string
