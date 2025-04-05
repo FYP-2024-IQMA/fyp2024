@@ -32,13 +32,14 @@ const HomeScreen: React.FC = () => {
     const { currentUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [sections, setSections] = useState<any[]>([]);
-    const [iconsData, setIconsData] = useState<{ [sectionIndex: number]: { [unitIndex: string]: ProgressPathProps['icons'] } }>({});
+    const [iconsData, setIconsData] = useState<{ [sectionIndex: number]: { [unitIndex: number]: ProgressPathProps['icons'] } }>({});
     const [showButton, setShowButton] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
     const unitRefs = useRef<{ [key: string]: View | null }>({});
 
     const [currentStoneIndex, setCurrentStoneIndex] = useState<number | null>(null);
     const [currentScreenIndex, setCurrentScreenIndex] = useState<number>(0);
+    const [currentScreenPathname, setCurrentScreenPathname] = useState<string | null>(null);
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const yOffset = event.nativeEvent.contentOffset.y;
@@ -66,9 +67,9 @@ const HomeScreen: React.FC = () => {
                 unitID,
                 lessonID,
                 isFinal: isFinal.toString(),
-                stoneIndex: stoneIndex.toString(),
-                screenIndex: screenIndex.toString(),
-                totalScreens: totalScreens.toString(),
+                stoneIndex,
+                screenIndex,
+                totalScreens,
             },
         });
     };
@@ -78,10 +79,10 @@ const HomeScreen: React.FC = () => {
         overallStartingIndex: number,
         lastCompletedIndex: number
     ): Promise<{
-        unitIcons: { [unitIndex: string]: ProgressPathProps['icons'] };
+        unitIcons: { [unitIndex: number]: ProgressPathProps['icons'] };
         nextOverallIndex: number;
     }> => {
-        const unitIcons: { [unitIndex: string]: ProgressPathProps['icons'] } = {};
+        const unitIcons: { [unitIndex: number]: ProgressPathProps['icons'] } = {};
         const sectionID = section.sectionID;
         const units = await unitEndpoints.getUnitsForSection(sectionID);
 
@@ -107,9 +108,12 @@ const HomeScreen: React.FC = () => {
             currentUnitIcons.push({
                 name: u === 0 ? 'playcircleo' : 'infocirlceo',
                 status: getStoneStatus(introStoneIndex),
-                onPress: () =>
+                onPress: () => {
+                    const pathToUse = (currentStoneIndex === introStoneIndex && currentScreenPathname)
+                        ? currentScreenPathname
+                        : (u === 0 ? 'SectionIntroduction' : 'UnitIntroduction');
                     handlePress(
-                        u === 0 ? 'SectionIntroduction' : 'UnitIntroduction',
+                        pathToUse,
                         sectionID,
                         unitID,
                         '',
@@ -117,7 +121,8 @@ const HomeScreen: React.FC = () => {
                         introStoneIndex,
                         currentStoneIndex === introStoneIndex ? currentScreenIndex : 0,
                         u === 0 ? 2 : 1
-                    ),
+                    );
+                }
             });
             overallIndex++;
 
@@ -127,9 +132,12 @@ const HomeScreen: React.FC = () => {
                 currentUnitIcons.push({
                     name: 'book',
                     status: getStoneStatus(lessonStoneIndex),
-                    onPress: () =>
+                    onPress: () => {
+                        const pathToUse = (currentStoneIndex === lessonStoneIndex && currentScreenPathname)
+                            ? currentScreenPathname
+                            : 'Lesson';
                         handlePress(
-                            'Lesson',
+                            pathToUse,
                             sectionID,
                             unitID,
                             lesson.lessonID,
@@ -137,7 +145,8 @@ const HomeScreen: React.FC = () => {
                             lessonStoneIndex,
                             currentStoneIndex === lessonStoneIndex ? currentScreenIndex : 0,
                             3
-                        ),
+                        );
+                    }
                 });
                 overallIndex++;
             }
@@ -146,9 +155,12 @@ const HomeScreen: React.FC = () => {
             currentUnitIcons.push({
                 name: 'key',
                 status: getStoneStatus(assessmentStoneIndex),
-                onPress: () =>
+                onPress: () => {
+                    const pathToUse = (currentStoneIndex === assessmentStoneIndex && currentScreenPathname)
+                        ? currentScreenPathname
+                        : 'AssessmentIntroduction';
                     handlePress(
-                        'AssessmentIntroduction',
+                        pathToUse,
                         sectionID,
                         unitID,
                         '',
@@ -156,29 +168,34 @@ const HomeScreen: React.FC = () => {
                         assessmentStoneIndex,
                         currentStoneIndex === assessmentStoneIndex ? currentScreenIndex : 0,
                         5
-                    ),
+                    );
+                }
             });
             overallIndex++;
 
             unitIcons[u] = currentUnitIcons;
         }
 
-        const finalAssessmentStoneIndex = overallIndex;
-        unitIcons['final'] = [
+        const finalStoneIndex = overallIndex;
+        unitIcons[units.length] = [
             {
-                name: 'smileo',
-                status: getStoneStatus(finalAssessmentStoneIndex),
-                onPress: () =>
+                name: 'staro',
+                status: getStoneStatus(finalStoneIndex),
+                onPress: () => {
+                    const pathToUse = (currentStoneIndex === finalStoneIndex && currentScreenPathname)
+                        ? currentScreenPathname
+                        : 'AssessmentIntroduction';
                     handlePress(
-                        'AssessmentIntroduction',
+                        pathToUse,
                         sectionID,
                         '',
                         '',
                         true,
-                        finalAssessmentStoneIndex,
-                        currentStoneIndex === finalAssessmentStoneIndex ? currentScreenIndex : 0,
+                        finalStoneIndex,
+                        currentStoneIndex === finalStoneIndex ? currentScreenIndex : 0,
                         5
-                    ),
+                    );
+                }
             },
         ];
         overallIndex++;
@@ -194,6 +211,7 @@ const HomeScreen: React.FC = () => {
                 const progressData = await userStoneProgressEndpoints.getUserStoneProgress(currentUser.sub);
                 setCurrentStoneIndex(progressData?.current_stone_index ?? null);
                 setCurrentScreenIndex(progressData?.current_screen_index ?? 0);
+                setCurrentScreenPathname(progressData?.current_screen_pathname ?? null);
 
                 const sectionList = await sectionEndpoints.getAllSectionDetails();
                 setSections(sectionList);
@@ -246,7 +264,7 @@ const HomeScreen: React.FC = () => {
                                     style={{ marginBottom: 20 }}
                                 >
                                     <SectionCard
-                                        title={`Section ${sectionIndex + 1}${unitIndex !== 'final' ? `, Unit ${parseInt(unitIndex) + 1}` : ': Final Assessment'}`}
+                                        title={`Section ${sectionIndex + 1}, Unit ${parseInt(unitIndex) + 1}`}
                                         subtitle={section.sectionName}
                                     />
                                     <ProgressPath icons={unitIcons} circularProgress={0} />

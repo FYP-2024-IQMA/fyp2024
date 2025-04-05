@@ -25,7 +25,7 @@ import {Ionicons} from '@expo/vector-icons';
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
+    const {sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens} =
         useLocalSearchParams();
 
     const [sectionNumber, setSectionNumber] = useState('');

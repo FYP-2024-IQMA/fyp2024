@@ -3,6 +3,7 @@ interface userStoneProgress {
     last_completed_stone_index: number,
     current_stone_index: number | null,
     current_screen_index: number | null,
+    current_screen_pathname: string | null,
 }
 
 export const createUserStoneProgress = async (userStoneProgress: userStoneProgress) => {

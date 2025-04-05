@@ -758,75 +758,35 @@ export type Database = {
           },
         ]
       }
-      user_progress: {
-        Row: {
-          created_at: string
-          lesson_id: string
-          progress_type: Database["public"]["Enums"]["progress_type"]
-          status: Database["public"]["Enums"]["stone_progress"] | null
-          unit_id: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          lesson_id: string
-          progress_type: Database["public"]["Enums"]["progress_type"]
-          status?: Database["public"]["Enums"]["stone_progress"] | null
-          unit_id: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          lesson_id?: string
-          progress_type?: Database["public"]["Enums"]["progress_type"]
-          status?: Database["public"]["Enums"]["stone_progress"] | null
-          unit_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_progress_lesson_id_fkey"
-            columns: ["lesson_id"]
-            isOneToOne: false
-            referencedRelation: "lesson"
-            referencedColumns: ["lessonID"]
-          },
-          {
-            foreignKeyName: "user_progress_unit_id_fkey"
-            columns: ["unit_id"]
-            isOneToOne: false
-            referencedRelation: "unit"
-            referencedColumns: ["unitID"]
-          },
-          {
-            foreignKeyName: "user_progress_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "accounts"
-            referencedColumns: ["userID"]
-          },
-        ]
-      }
       user_stone_progress: {
         Row: {
-          current_screen_index: number
-          current_stone_index: number
+          current_screen_index: number | null
+          current_screen_pathname:
+            | Database["public"]["Enums"]["path_name"]
+            | null
+          current_stone_index: number | null
           last_completed_stone_index: number | null
-          updated_at: string
+          updated_at: string | null
           userID: string
         }
         Insert: {
-          current_screen_index: number
-          current_stone_index: number
+          current_screen_index?: number | null
+          current_screen_pathname?:
+            | Database["public"]["Enums"]["path_name"]
+            | null
+          current_stone_index?: number | null
           last_completed_stone_index?: number | null
-          updated_at?: string
+          updated_at?: string | null
           userID: string
         }
         Update: {
-          current_screen_index?: number
-          current_stone_index?: number
+          current_screen_index?: number | null
+          current_screen_pathname?:
+            | Database["public"]["Enums"]["path_name"]
+            | null
+          current_stone_index?: number | null
           last_completed_stone_index?: number | null
-          updated_at?: string
+          updated_at?: string | null
           userID?: string
         }
         Relationships: [
@@ -919,6 +879,20 @@ export type Database = {
         | "Personal interest"
         | "Other"
       motivational_level_type: "High" | "Medium" | "Low"
+      path_name:
+        | "Achievement"
+        | "Assessment"
+        | "AssessmentIntroduction"
+        | "Badge"
+        | "CheatSheet"
+        | "KeyTakeaway"
+        | "Lesson"
+        | "RealityCheck"
+        | "SectionIntroduction"
+        | "SelfReflection"
+        | "Streak"
+        | "UnitIntroduction"
+        | "VideoQuiz"
       personality_type: "Extroverted" | "Introverted" | "Ambivert"
       preferred_learning_style_type:
         | "Watching videos or visuals"

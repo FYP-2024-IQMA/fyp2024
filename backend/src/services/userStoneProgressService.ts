@@ -1,12 +1,16 @@
 import supabase from "../config/supabaseConfig";
 import { UserStoneProgress } from "../models/userStoneProgressModel";
+import { Enums } from "../config/database.types";
+
 
 /* CREATE */
 export async function createUserStoneProgress(
   userID: string,
   last_completed_stone_index: number,
   current_stone_index: number,
-  current_screen_index: number
+  current_screen_index: number,
+  current_screen_pathname: Enums<"path_name">
+
 ) {
   const { data, error } = await supabase
     .from("user_stone_progress")
@@ -14,7 +18,8 @@ export async function createUserStoneProgress(
       userID,
       last_completed_stone_index,
       current_stone_index,
-      current_screen_index
+      current_screen_index,
+      current_screen_pathname
     })
     .select();
 
@@ -60,13 +65,16 @@ export async function updateUserStoneProgress(
   userID: string,
   last_completed_stone_index?: number,
   current_stone_index?: number,
-  current_screen_index?: number
+  current_screen_index?: number,
+  current_screen_pathname?: Enums<"path_name">
+
 ) {
   const updateFields: { [key: string]: any } = {};
 
   if (last_completed_stone_index !== undefined) updateFields.last_completed_stone_index = last_completed_stone_index;
   if (current_stone_index !== undefined) updateFields.current_stone_index = current_stone_index;
   if (current_screen_index !== undefined) updateFields.current_screen_index = current_screen_index;
+  if (current_screen_pathname !== undefined) updateFields.current_screen_pathname = current_screen_pathname;
 
   if (Object.keys(updateFields).length === 0) {
     throw new Error("No fields to update");
