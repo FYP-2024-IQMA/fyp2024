@@ -46,13 +46,7 @@ export default function AssessmentIntroduction() {
     // const currentUnit = "1";
     // const totalUnits = "1"
     const {
-        sectionID,
-        unitID,
-        currentUnit,
-        totalUnits,
-        isFinal,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens
     } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -78,9 +72,11 @@ export default function AssessmentIntroduction() {
     }, []);
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -142,18 +138,17 @@ export default function AssessmentIntroduction() {
         if (checkFinal) {
             pathName = 'Assessment';
         }
+
         router.push({
             pathname: pathName,
             params: {
                 sectionID,
                 unitID,
-                currentUnit,
-                totalUnits,
+                lessonID,
                 isFinal,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
             },
         });
         stopTimer();

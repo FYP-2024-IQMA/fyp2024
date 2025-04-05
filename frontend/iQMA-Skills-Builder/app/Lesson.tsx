@@ -29,15 +29,7 @@ import {Ionicons} from '@expo/vector-icons';
 export default function Lesson() {
     const navigation = useNavigation();
     const {
-        sectionID,
-        unitID,
-        lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens
     } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -57,9 +49,12 @@ export default function Lesson() {
     const screenHeight = Dimensions.get('window').height;
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
+
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -86,14 +81,9 @@ export default function Lesson() {
                 sectionID,
                 unitID,
                 lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
             },
         });
         console.log('ISPLAYING: ' + playing);

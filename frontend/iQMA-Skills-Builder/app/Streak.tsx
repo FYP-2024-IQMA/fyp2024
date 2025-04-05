@@ -28,10 +28,11 @@ const StreakComponent: React.FC = () => {
     const {
         sectionID,
         unitID,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
+        lessonID,
+        isFinal,
+        stoneIndex,
+        screenIndex,
+        totalScreens,
     } = useLocalSearchParams();
     const [data, setData] = useState();
     const [userStreak, setUserStreak] = useState<number>(0);
@@ -177,29 +178,30 @@ const StreakComponent: React.FC = () => {
     }
 
     const handlePress = async () => {
-        if (
-            parseInt(formatUnit(unitID as string)) ===
-            parseInt(totalUnits as string)
-        ) {
-            // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
-            router.push({
-                pathname: 'AssessmentIntroduction',
-                params: {
-                    sectionID,
-                    unitID,
-                    currentUnit,
-                    totalUnits,
-                    isFinal: 'true',
-                    currentProgress: (
-                        parseInt(currentProgress as string) + 1
-                    ).toString(),
-                    totalProgress,
-                },
-            });
-        } else {
-            // after self-reflection navigate back to home for next unit
-            router.replace('Home');
-        }
+        // if (
+        //     parseInt(formatUnit(unitID as string)) ===
+        //     parseInt(totalUnits as string)
+        // ) {
+        //     // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
+        //     router.push({
+        //         pathname: 'AssessmentIntroduction',
+        //         params: {
+        //             sectionID,
+        //             unitID,
+        //             currentUnit,
+        //             totalUnits,
+        //             isFinal: 'true',
+        //             currentProgress: (
+        //                 parseInt(currentProgress as string) + 1
+        //             ).toString(),
+        //             totalProgress,
+        //         },
+        //     });
+        // } else {
+        //     // after self-reflection navigate back to home for next unit
+        //     router.replace('Home');
+        // }
+        router.replace('Home');
     };
 
     if (loading) {

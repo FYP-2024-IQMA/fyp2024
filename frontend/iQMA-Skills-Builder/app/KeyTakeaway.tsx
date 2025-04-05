@@ -36,9 +36,12 @@ export default function KeyTakeaway() {
     const {currentUser, _} = useContext(AuthContext);
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
+
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -58,34 +61,29 @@ export default function KeyTakeaway() {
     }, [navigation]);
 
     const handlePress = async () => {
-        let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
-        let pathName = 'Lesson';
+        // let nextLessonIdx = parseInt(currentLessonIdx as string) + 1;
+        // let pathName = 'Lesson';
 
-        // If it is the last lesson, go to Assessment Intro for Unit Assessment (AssessmentIntroduction.tsx)
-        if (nextLessonIdx === parseInt(totalLesson as string)) {
-            // lessonIdx can be anything because will reset in Home
-            nextLessonIdx = 0;
-            pathName = 'AssessmentIntroduction';
-        }
+        // // If it is the last lesson, go to Assessment Intro for Unit Assessment (AssessmentIntroduction.tsx)
+        // if (nextLessonIdx === parseInt(totalLesson as string)) {
+        //     // lessonIdx can be anything because will reset in Home
+        //     nextLessonIdx = 0;
+        //     pathName = 'AssessmentIntroduction';
+        // }
 
-        console.log('nextLessonIdx:', nextLessonIdx);
-        console.log('nextLessonID:', nextLessonID);
+        // console.log('nextLessonIdx:', nextLessonIdx);
+        // console.log('nextLessonID:', nextLessonID);
 
         router.push({
-            pathname: pathName,
+            // pathname: pathName,
+            pathname: '/Home',
             params: {
                 sectionID,
                 unitID,
-                lessonID: nextLessonID,
-                currentLessonIdx: nextLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                isFinal: 'false',
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                lessonID,
+                stoneIndex,
+                screenIndex,
+                totalScreens,
             },
         });
         stopTimer();
@@ -98,23 +96,15 @@ export default function KeyTakeaway() {
     // const totalLesson = '3';
     // const currentUnit = '3';
     // const totalUnits = '3';
-    const {
-        sectionID,
-        unitID,
-        lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
-    } = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
+        useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
     const [keyTakeaway, setKeyTakeaway] = useState<string[]>([]);
-    const [lessonKeyTakeawayAudio, setLessonKeyTakeawayAudio ] = useState<string>('');
+    const [lessonKeyTakeawayAudio, setLessonKeyTakeawayAudio] =
+        useState<string>('');
     const [nextLessonID, setnextLessonID] = useState<string>('');
     const {startTimer, stopTimer} = useTimer(
         sectionID as string,
@@ -130,9 +120,9 @@ export default function KeyTakeaway() {
         if (
             sectionID &&
             unitID &&
-            lessonID &&
-            currentLessonIdx &&
-            totalLesson
+            lessonID
+            // currentLessonIdx &&
+            // totalLesson
         ) {
             (async () => {
                 try {
@@ -153,24 +143,26 @@ export default function KeyTakeaway() {
                         unitID as string
                     );
 
-                    let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
+                    // let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
 
-                    if (nxtLessonIdx === parseInt(totalLesson as string)) {
-                        nxtLessonIdx = 0;
-                    }
+                    // if (nxtLessonIdx === parseInt(totalLesson as string)) {
+                    //     nxtLessonIdx = 0;
+                    // }
 
                     if (lessonID.includes('.')) {
                         lessonDetails.lessonName =
                             lessonDetails.lessonName.replace(/\.\d+/, '');
                     }
 
-                    setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
+                    // setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
                     setLessonName(lessonDetails.lessonName);
                     setUnitName(unitDetails.unitName);
                     setKeyTakeaway(lessonDetails.lessonKeyTakeaway);
                     setSectionNumber(formatSection(sectionID as string));
                     setUnitNumber(formatUnit(unitID as string));
-                    setLessonKeyTakeawayAudio(lessonDetails.lessonKeyTakeawayAudio)
+                    setLessonKeyTakeawayAudio(
+                        lessonDetails.lessonKeyTakeawayAudio
+                    );
                 } catch (error) {
                     console.error('Error fetching in Key Takeaway:', error);
                 } finally {
@@ -178,7 +170,7 @@ export default function KeyTakeaway() {
                 }
             })();
         }
-    }, [sectionID, unitID, nextLessonID]);
+    }, [sectionID, unitID]);
 
     return (
         <ScrollView
@@ -190,7 +182,7 @@ export default function KeyTakeaway() {
             contentContainerStyle={{
                 flexGrow: 1,
                 padding: 20,
-                backgroundColor: Colors.light.background
+                backgroundColor: Colors.light.background,
             }}
         >
             {isLoading ? (
@@ -204,9 +196,7 @@ export default function KeyTakeaway() {
                         />
                         <Text style={styles.screenTitle}>{lessonName}</Text>
 
-                        <AudioPlayer
-                            audioUri={lessonKeyTakeawayAudio}
-                        />
+                        <AudioPlayer audioUri={lessonKeyTakeawayAudio} />
 
                         <Text style={styles.takeawayHeader}>Key Takeaways</Text>
                         {keyTakeaway && keyTakeaway.length > 0 ? (
@@ -230,7 +220,7 @@ export default function KeyTakeaway() {
                             style={{
                                 width: '100%',
                                 flexDirection: 'row-reverse',
-                                marginBottom: 20
+                                marginBottom: 20,
                             }}
                         >
                             <Image

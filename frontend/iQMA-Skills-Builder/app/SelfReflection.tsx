@@ -33,11 +33,11 @@ export default function SelfReflection() {
     const {
         sectionID,
         unitID,
-        currentUnit,
-        totalUnits,
-        quizID,
-        currentProgress,
-        totalProgress,
+        lessonID,
+        isFinal,
+        stoneIndex,
+        screenIndex,
+        totalScreens,
     } = useLocalSearchParams();
 
     const [sectionNumber, setSectionNumber] = useState<string>('');
@@ -55,9 +55,12 @@ export default function SelfReflection() {
     );
 
     useLayoutEffect(() => {
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
         const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+            (Number(screenIndex) + 1 || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -84,13 +87,11 @@ export default function SelfReflection() {
                     console.log({
                         sectionID,
                         unitID,
-                        currentUnit,
-                        totalUnits,
-                        isFinal: 'true',
-                        currentProgress: (
-                            parseInt(currentProgress as string) + 1
-                        ).toString(),
-                        totalProgress,
+                        lessonID,
+                        isFinal,
+                        stoneIndex,
+                        screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                        totalScreens,
                     });
                     const unitDetails = await unitEndpoints.getUnitDetails(
                         sectionID as string,
@@ -146,35 +147,35 @@ export default function SelfReflection() {
                     params: {
                         sectionID,
                         unitID,
-                        currentUnit,
-                        totalUnits,
-                        currentProgress: parseInt(
-                            currentProgress as string
-                        ).toString(),
-                        totalProgress,
+                        lessonID,
+                        isFinal,
+                        stoneIndex,
+                        screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                        totalScreens,
                     },
                 });
             } else {
-                if (parseInt(unitNumber) === parseInt(totalUnits as string)) {
-                    // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
-                    router.push({
-                        pathname: 'AssessmentIntroduction',
-                        params: {
-                            sectionID,
-                            unitID,
-                            currentUnit,
-                            totalUnits,
-                            isFinal: 'true',
-                            currentProgress: (
-                                parseInt(currentProgress as string) + 1
-                            ).toString(),
-                            totalProgress,
-                        },
-                    });
-                } else {
-                    // after self-reflection navigate back to home for next unit
-                    router.replace('Home');
-                }
+                // if (parseInt(unitNumber) === parseInt(totalUnits as string)) {
+                //     // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
+                //     router.push({
+                //         pathname: 'AssessmentIntroduction',
+                //         params: {
+                //             sectionID,
+                //             unitID,
+                //             currentUnit,
+                //             totalUnits,
+                //             isFinal: 'true',
+                //             currentProgress: (
+                //                 parseInt(currentProgress as string) + 1
+                //             ).toString(),
+                //             totalProgress,
+                //         },
+                //     });
+                // } else {
+                //     // after self-reflection navigate back to home for next unit
+                //     router.replace('Home');
+                // }
+                router.replace('Home');
             }
         } catch (error) {
             console.error(

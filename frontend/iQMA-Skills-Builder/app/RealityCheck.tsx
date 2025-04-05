@@ -23,13 +23,7 @@ export default function RealityCheck() {
 
     // Use this for Routing
     const {
-        sectionID,
-        unitID,
-        currentUnit,
-        totalUnits,
-        isFinal,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens
     } = useLocalSearchParams();
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -45,9 +39,11 @@ export default function RealityCheck() {
     const [playing, setPlaying] = useState<boolean>(true);
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: "center",
@@ -117,13 +113,11 @@ export default function RealityCheck() {
             params: {
                 sectionID,
                 unitID,
-                currentUnit,
-                totalUnits,
+                lessonID,
                 isFinal,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
             },
         });
         stopTimer();

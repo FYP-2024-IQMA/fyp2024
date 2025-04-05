@@ -55,13 +55,7 @@ const formatCheatSheet = (cheatsheet: any) => {
 export default function CheatSheet() {
     const navigation = useNavigation();
     const {
-        sectionID,
-        unitID,
-        currentUnit,
-        totalUnits,
-        isFinal,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens
     } = useLocalSearchParams();
     const [lessons, setLessons] = useState<any[]>([]);
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -72,9 +66,11 @@ export default function CheatSheet() {
     const [cheatSheetAudio, setCheatSheetAudio ] = useState<string>('');
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: "center",
@@ -138,13 +134,11 @@ export default function CheatSheet() {
             params: {
                 sectionID,
                 unitID,
-                currentUnit,
-                totalUnits,
+                lessonID,
                 isFinal,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
             },
         });
         stopTimer();

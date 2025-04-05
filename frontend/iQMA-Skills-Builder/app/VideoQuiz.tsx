@@ -4,8 +4,14 @@ import * as resultEndpoints from '@/helpers/resultEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
-
-import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -26,17 +32,8 @@ import {Ionicons} from '@expo/vector-icons';
 export default function VideoQuiz() {
     const navigation = useNavigation();
     const {currentUser, isLoading} = useContext(AuthContext);
-    const {
-        sectionID,
-        unitID,
-        lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
-    } = useLocalSearchParams();
+    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
+        useLocalSearchParams();
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -45,7 +42,12 @@ export default function VideoQuiz() {
     const [lessonName, setLessonName] = useState<string>('');
     const [loading, setIsLoading] = useState<boolean>(true);
     const [nextLessonID, setnextLessonID] = useState<string>('');
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Video Quiz', unitID as string, lessonID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Video Quiz',
+        unitID as string,
+        lessonID as string
+    );
     const [totalPoints, setTotalPoints] = useState<number>(0);
     // const [currentPoints, setCurrentPoints] = useState<number>(0);
 
@@ -76,13 +78,13 @@ export default function VideoQuiz() {
                         unitID as string
                     );
 
-                    let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
+                    // let nxtLessonIdx = parseInt(currentLessonIdx as string) + 1;
 
-                    if (nxtLessonIdx === parseInt(totalLesson as string)) {
-                        setnextLessonID('LastLesson');
-                    } else {
-                        setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
-                    }
+                    // if (nxtLessonIdx === parseInt(totalLesson as string)) {
+                    //     setnextLessonID('LastLesson');
+                    // } else {
+                    //     setnextLessonID(getAllLessons[nxtLessonIdx].lessonID);
+                    // }
 
                     const response = await quizEndpoints.getQuizzes(
                         sectionID as string,
@@ -105,22 +107,25 @@ export default function VideoQuiz() {
     }, [sectionID, unitID, lessonID, nextLessonID]);
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
+
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -144,42 +149,37 @@ export default function VideoQuiz() {
                         questions[currentQnsIdx].quizID
                     );
 
-                    let points = await AsyncStorage.getItem(
-                        'totalPoints'
-                    );
+                    let points = await AsyncStorage.getItem('totalPoints');
                     const numPoints = parseInt(points as string);
 
-                    await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
-
+                    await gamificationEndpoints.updatePoints(
+                        currentUser.sub,
+                        numPoints
+                    );
                 }
 
-                let pathName = 'KeyTakeaway';
-                let currLessonID = lessonID;
-                let currLessonIdx = parseInt(currentLessonIdx as string);
+                // let pathName = 'KeyTakeaway';
+                // let currLessonID = lessonID;
+                // let currLessonIdx = parseInt(currentLessonIdx as string);
 
-                console.log('nextLessonID:', nextLessonID);
+                // console.log('nextLessonID:', nextLessonID);
 
-                // if nextlessonID have "." then route back to Lesson page
-                if (nextLessonID.includes('.')) {
-                    pathName = 'Lesson';
-                    currLessonID = nextLessonID;
-                    currLessonIdx += 1;
-                }
+                // // if nextlessonID have "." then route back to Lesson page
+                // if (nextLessonID.includes('.')) {
+                //     pathName = 'Lesson';
+                //     currLessonID = nextLessonID;
+                //     currLessonIdx += 1;
+                // }
 
                 router.push({
-                    pathname: pathName,
+                    pathname: 'KeyTakeaway',
                     params: {
                         sectionID,
                         unitID,
-                        lessonID: currLessonID,
-                        currentLessonIdx: currLessonIdx,
-                        totalLesson,
-                        currentUnit,
-                        totalUnits,
-                        currentProgress: (
-                            parseInt(currentProgress as string) + 1
-                        ).toString(),
-                        totalProgress,
+                        lessonID,
+                        stoneIndex,
+                        screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                        totalScreens,
                     },
                 });
                 stopTimer();

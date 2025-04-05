@@ -7,6 +7,7 @@ import {CustomButton} from '@/components/CustomButton';
 import axios from 'axios';
 import {router} from 'expo-router';
 import * as accountEndpoints from '@/helpers/accountEndpoints';
+import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
 
 export default function FormComplete() {
     const handlePress = async () => {
@@ -19,21 +20,23 @@ export default function FormComplete() {
             careerStage: await AsyncStorage.getItem('careerStage'),
         };
 
-        const learningStylesArr = await AsyncStorage.getItem('preferredLearningStyles');
+        const learningStylesArr = await AsyncStorage.getItem(
+            'preferredLearningStyles'
+        );
 
         const learningStyleAndSkills = {
             userID: userID,
             educationLevel: await AsyncStorage.getItem('educationLevel'),
             // preferredLearningStyles: await AsyncStorage.getItem('preferredLearningStyles'),
             preferredLearningStyles: JSON.parse(learningStylesArr!),
-            currentSkillLevelInLeadership: await AsyncStorage.getItem('currentSkillLevelInLeadership'),
+            currentSkillLevelInLeadership: await AsyncStorage.getItem(
+                'currentSkillLevelInLeadership'
+            ),
         };
 
         const socialAndTechHabits = {
             userID: userID,
-            workStyle: await AsyncStorage.getItem(
-                'workStyle'
-            ),
+            workStyle: await AsyncStorage.getItem('workStyle'),
             computerSkills: await AsyncStorage.getItem('computerSkills'),
         };
 
@@ -43,7 +46,9 @@ export default function FormComplete() {
             userID: userID,
             // motivations: await AsyncStorage.getItem('motivations'),
             motivations: JSON.parse(motivationsArr!),
-            learningMotivation: await AsyncStorage.getItem('learningMotivation'),
+            learningMotivation: await AsyncStorage.getItem(
+                'learningMotivation'
+            ),
         };
 
         try {
@@ -77,7 +82,22 @@ export default function FormComplete() {
                 hasOnboarded: true,
             };
 
-            const accountResponse = await accountEndpoints.editUserDetails(account);
+            // set default user stone progress
+            const userStoneProgress = {
+                userID: userID!,
+                last_completed_stone_index: -1,
+                current_stone_index: null,
+                current_screen_index: null,
+            };
+
+            const accountResponse = await accountEndpoints.editUserDetails(
+                account
+            );
+
+            const userStoneProgressResponse =
+                await userStoneProgressEndpoints.createUserStoneProgress(
+                    userStoneProgress
+                );
 
             console.log(
                 'About You created successfully: ',
@@ -96,6 +116,7 @@ export default function FormComplete() {
                 motivationResponse.data
             );
             console.log('Account has been updated', accountResponse);
+            console.log('User stone progress created successfully: ', userStoneProgressResponse);
 
             router.push('/Home');
         } catch (e) {

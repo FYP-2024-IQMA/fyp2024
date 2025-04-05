@@ -16,43 +16,31 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {OverviewCard} from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
-import YoutubePlayer from 'react-native-youtube-iframe';
 import {formatSection} from '@/helpers/formatSectionID';
 import {useNavigation} from '@react-navigation/native';
 import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import VideoPlayer from '@/components/VideoPlayer';
 import {Ionicons} from '@expo/vector-icons';
 
-// where things show up
 export default function SectionIntroduction() {
     const navigation = useNavigation();
 
-    const {
-        sectionID,
-        unitID,
-        lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
-    } = useLocalSearchParams();
-    // const sectionID = 'SEC0001'; // to be removed
-    const [sectionNumber, setSectionNumber] = useState<string>('');
-    const [sectionName, setSectionName] = useState<string>('');
-    const [videoId, setVideoId] = useState<string>('');
-    const [playing, setPlaying] = useState<boolean>(true);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
+        useLocalSearchParams();
+
+    const [sectionNumber, setSectionNumber] = useState('');
+    const [sectionName, setSectionName] = useState('');
+    const [videoId, setVideoId] = useState('');
+    const [playing, setPlaying] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const {startTimer, stopTimer} = useTimer(
         sectionID as string,
         'Introduction'
     );
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
+
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -60,23 +48,17 @@ export default function SectionIntroduction() {
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity
-                    onPress={() => {
-                        router.replace('Home');
-                    }}
-                >
+                <TouchableOpacity onPress={() => router.replace('Home')}>
                     <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
-    }, [navigation]);
+    }, [navigation, screenIndex, totalScreens]);
 
     useFocusEffect(
         useCallback(() => {
             setPlaying(true);
-            return () => {
-                setPlaying(false);
-            };
+            return () => setPlaying(false);
         }, [])
     );
 
@@ -89,17 +71,19 @@ export default function SectionIntroduction() {
                         await sectionEndpoints.getSectionDetails(
                             sectionID as string
                         );
-
                     setVideoId(sectionDetails.introductionURL);
                     setSectionName(sectionDetails.sectionName);
-
                     setSectionNumber(formatSection(sectionID as string));
                     await AsyncStorage.setItem(
                         'section',
                         sectionDetails.sectionName
                     );
+
+                    console.log('stoneindex', stoneIndex);
+                    console.log('currentscreenindex', screenIndex);
+                    console.log('totalscreens', totalScreens);
                 } catch (error) {
-                    console.error('Error fetching Lesson details:', error);
+                    console.error('Error fetching Section details:', error);
                 } finally {
                     setIsLoading(false);
                 }
@@ -115,39 +99,21 @@ export default function SectionIntroduction() {
                 sectionID,
                 unitID,
                 lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
             },
         });
-        // console.log("STATE: " + playing)
         stopTimer();
     };
 
     const onStateChange = (state: string) => {
-        if (state === 'ended' || state === 'paused') {
-            setPlaying(false);
-        }
-        if (state === 'playing') {
-            setPlaying(true);
-        }
+        if (state === 'ended' || state === 'paused') setPlaying(false);
+        if (state === 'playing') setPlaying(true);
     };
 
     return (
-        <ScrollView
-            // contentContainerStyle={{flexGrow: 1}}
-            // style={styles.container}
-            contentContainerStyle={{
-                flexGrow: 1,
-                padding: 20,
-                backgroundColor: Colors.light.background
-            }}
-        >
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
             {isLoading ? (
                 <LoadingIndicator />
             ) : (
@@ -168,7 +134,7 @@ export default function SectionIntroduction() {
                             />
                         ) : (
                             <OverviewCard
-                                isError={true}
+                                isError
                                 text="Video is not available. Please check with your administrator."
                             />
                         )}
@@ -185,14 +151,13 @@ export default function SectionIntroduction() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: Colors.light.background,
+    scrollContainer: {
+        flexGrow: 1,
         padding: 20,
-        flex: 1,
+        backgroundColor: Colors.light.background,
     },
     insideContainer: {
         flexGrow: 1,
-        // margin: 20,
     },
     screenTitle: {
         fontSize: Colors.lessonName.fontSize,

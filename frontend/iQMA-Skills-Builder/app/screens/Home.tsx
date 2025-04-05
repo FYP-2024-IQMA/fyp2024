@@ -17,7 +17,6 @@ import {
 import ProgressPath, { ProgressPathProps } from '@/components/ProgressPath';
 import React, { useEffect, useRef, useState, useContext } from 'react';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from '@/context/AuthContext';
 import { Colors } from '@/constants/Colors';
 import FeedbackComponent from '@/components/Feedback';
@@ -33,10 +32,13 @@ const HomeScreen: React.FC = () => {
     const { currentUser } = useContext(AuthContext);
     const [loading, setLoading] = useState(true);
     const [sections, setSections] = useState<any[]>([]);
-    const [iconsData, setIconsData] = useState<{ [sectionIndex: number]: { [unitIndex: number]: ProgressPathProps['icons'] } }>({});
+    const [iconsData, setIconsData] = useState<{ [sectionIndex: number]: { [unitIndex: string]: ProgressPathProps['icons'] } }>({});
     const [showButton, setShowButton] = useState(false);
     const scrollViewRef = useRef<ScrollView>(null);
-    const unitRefs = useRef<{ [key: string]: View | null }>({}); // 🔥 track unit Views for auto-scroll
+    const unitRefs = useRef<{ [key: string]: View | null }>({});
+
+    const [currentStoneIndex, setCurrentStoneIndex] = useState<number | null>(null);
+    const [currentScreenIndex, setCurrentScreenIndex] = useState<number>(0);
 
     const onScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
         const yOffset = event.nativeEvent.contentOffset.y;
@@ -52,13 +54,10 @@ const HomeScreen: React.FC = () => {
         sectionID: string,
         unitID: string,
         lessonID: string,
-        currentLessonIdx: number,
-        totalLesson: number,
-        currentUnit: number,
-        totalUnits: number,
         isFinal: boolean,
-        currentProgress: number,
-        totalProgress: number
+        stoneIndex: number,
+        screenIndex: number,
+        totalScreens: number
     ) => {
         router.push({
             pathname: pathName,
@@ -66,13 +65,10 @@ const HomeScreen: React.FC = () => {
                 sectionID,
                 unitID,
                 lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
                 isFinal: isFinal.toString(),
-                currentProgress,
-                totalProgress,
+                stoneIndex: stoneIndex.toString(),
+                screenIndex: screenIndex.toString(),
+                totalScreens: totalScreens.toString(),
             },
         });
     };
@@ -81,15 +77,17 @@ const HomeScreen: React.FC = () => {
         section: any,
         overallStartingIndex: number,
         lastCompletedIndex: number
-    ): Promise<{ unitIcons: { [unitIndex: number]: ProgressPathProps['icons'] }, nextOverallIndex: number }> => {
-        const unitIcons: { [unitIndex: number]: ProgressPathProps['icons'] } = {};
+    ): Promise<{
+        unitIcons: { [unitIndex: string]: ProgressPathProps['icons'] };
+        nextOverallIndex: number;
+    }> => {
+        const unitIcons: { [unitIndex: string]: ProgressPathProps['icons'] } = {};
         const sectionID = section.sectionID;
         const units = await unitEndpoints.getUnitsForSection(sectionID);
-        const totalUnits = units.length;
 
-        if (units.length === 0) return { unitIcons, nextOverallIndex: overallStartingIndex };
+        if (units.length === 0)
+            return { unitIcons, nextOverallIndex: overallStartingIndex };
 
-        const totalProgress = totalUnits * 5;
         let overallIndex = overallStartingIndex;
 
         const getStoneStatus = (stoneIndex: number) => {
@@ -102,49 +100,88 @@ const HomeScreen: React.FC = () => {
             const unit = units[u];
             const unitID = unit.unitID;
             const lessons = await lessonEndpoints.getAllLesson(sectionID, unitID);
-            const totalLesson = lessons.length;
-            const currentUnit = u + 1;
 
             const currentUnitIcons: ProgressPathProps['icons'] = [];
 
-            // 1️⃣ Unit Intro
-            if (u === 0) {
-                currentUnitIcons.push({
-                    name: 'playcircleo',
-                    status: getStoneStatus(overallIndex),
-                    onPress: () => handlePress('SectionIntroduction', sectionID, unitID, '', 0, 0, currentUnit, totalUnits, false, 0, totalProgress)
-                });
-                overallIndex++;
-            } else {
-                currentUnitIcons.push({
-                    name: 'infocirlceo',
-                    status: getStoneStatus(overallIndex),
-                    onPress: () => handlePress('UnitIntroduction', sectionID, unitID, '', 0, 0, currentUnit, totalUnits, false, u * 5, totalProgress)
-                });
-                overallIndex++;
-            }
+            const introStoneIndex = overallIndex;
+            currentUnitIcons.push({
+                name: u === 0 ? 'playcircleo' : 'infocirlceo',
+                status: getStoneStatus(introStoneIndex),
+                onPress: () =>
+                    handlePress(
+                        u === 0 ? 'SectionIntroduction' : 'UnitIntroduction',
+                        sectionID,
+                        unitID,
+                        '',
+                        false,
+                        introStoneIndex,
+                        currentStoneIndex === introStoneIndex ? currentScreenIndex : 0,
+                        u === 0 ? 2 : 1
+                    ),
+            });
+            overallIndex++;
 
-            // 2️⃣ Lessons
             for (let i = 0; i < lessons.length; i++) {
                 const lesson = lessons[i];
+                const lessonStoneIndex = overallIndex;
                 currentUnitIcons.push({
                     name: 'book',
-                    status: getStoneStatus(overallIndex),
-                    onPress: () => handlePress('Lesson', sectionID, unitID, lesson.lessonID, i, totalLesson, currentUnit, totalUnits, false, 1 + (u * 5) + i, totalProgress)
+                    status: getStoneStatus(lessonStoneIndex),
+                    onPress: () =>
+                        handlePress(
+                            'Lesson',
+                            sectionID,
+                            unitID,
+                            lesson.lessonID,
+                            false,
+                            lessonStoneIndex,
+                            currentStoneIndex === lessonStoneIndex ? currentScreenIndex : 0,
+                            3
+                        ),
                 });
                 overallIndex++;
             }
 
-            // 3️⃣ Unit Assessment
+            const assessmentStoneIndex = overallIndex;
             currentUnitIcons.push({
                 name: 'key',
-                status: getStoneStatus(overallIndex),
-                onPress: () => handlePress('AssessmentIntroduction', sectionID, unitID, '', 0, 0, currentUnit, totalUnits, false, currentUnit * 5 - 1, totalProgress)
+                status: getStoneStatus(assessmentStoneIndex),
+                onPress: () =>
+                    handlePress(
+                        'AssessmentIntroduction',
+                        sectionID,
+                        unitID,
+                        '',
+                        false,
+                        assessmentStoneIndex,
+                        currentStoneIndex === assessmentStoneIndex ? currentScreenIndex : 0,
+                        5
+                    ),
             });
             overallIndex++;
 
             unitIcons[u] = currentUnitIcons;
         }
+
+        const finalAssessmentStoneIndex = overallIndex;
+        unitIcons['final'] = [
+            {
+                name: 'smileo',
+                status: getStoneStatus(finalAssessmentStoneIndex),
+                onPress: () =>
+                    handlePress(
+                        'AssessmentIntroduction',
+                        sectionID,
+                        '',
+                        '',
+                        true,
+                        finalAssessmentStoneIndex,
+                        currentStoneIndex === finalAssessmentStoneIndex ? currentScreenIndex : 0,
+                        5
+                    ),
+            },
+        ];
+        overallIndex++;
 
         return { unitIcons, nextOverallIndex: overallIndex };
     };
@@ -154,12 +191,10 @@ const HomeScreen: React.FC = () => {
             try {
                 setLoading(true);
 
-                // 🔥 Fetch user progress
                 const progressData = await userStoneProgressEndpoints.getUserStoneProgress(currentUser.sub);
-                const lastCompletedIndex = progressData?.last_completed_stone_index ?? -1;
-                console.log('User Progress:', lastCompletedIndex);
+                setCurrentStoneIndex(progressData?.current_stone_index ?? null);
+                setCurrentScreenIndex(progressData?.current_screen_index ?? 0);
 
-                // 🔥 Fetch sections
                 const sectionList = await sectionEndpoints.getAllSectionDetails();
                 setSections(sectionList);
 
@@ -168,7 +203,11 @@ const HomeScreen: React.FC = () => {
 
                 for (let i = 0; i < sectionList.length; i++) {
                     const section = sectionList[i];
-                    const { unitIcons, nextOverallIndex } = await buildSectionProgressPath(section, overallStartingIndex, lastCompletedIndex);
+                    const { unitIcons, nextOverallIndex } = await buildSectionProgressPath(
+                        section,
+                        overallStartingIndex,
+                        progressData?.last_completed_stone_index ?? -1
+                    );
                     newIconsData[i] = unitIcons;
                     overallStartingIndex = nextOverallIndex;
                 }
@@ -181,37 +220,6 @@ const HomeScreen: React.FC = () => {
             }
         })();
     }, []);
-
-    // 🔥 Scroll to in-progress unit after iconsData is ready
-    useEffect(() => {
-        if (!loading) {
-            setTimeout(() => {
-                for (const [sectionIndexStr, units] of Object.entries(iconsData)) {
-                    for (const [unitIndexStr, unitIcons] of Object.entries(units)) {
-                        const foundInProgress = unitIcons.some(icon => icon.status === 'in-progress');
-                        if (foundInProgress) {
-                            const key = `${sectionIndexStr}-${unitIndexStr}`;
-                            const targetRef = unitRefs.current[key];
-    
-                            if (targetRef && scrollViewRef.current) {
-                                (targetRef as any).measureLayout(
-                                    scrollViewRef.current,
-                                    (x: number, y: number) => {
-                                        scrollViewRef.current?.scrollTo({ y: y - 0, animated: true });
-                                    },
-                                    (error: any) => {
-                                        console.error('Auto-scroll measure error:', error);
-                                    }
-                                );
-                            }
-                            return;
-                        }
-                    }
-                }
-            }, 500);
-        }
-    }, [loading, iconsData]);
-    
 
     if (loading) return <LoadingIndicator />;
 
@@ -232,11 +240,13 @@ const HomeScreen: React.FC = () => {
                             return (
                                 <View
                                     key={key}
-                                    ref={el => { unitRefs.current[key] = el; }}
+                                    ref={(el) => {
+                                        unitRefs.current[key] = el;
+                                    }}
                                     style={{ marginBottom: 20 }}
                                 >
                                     <SectionCard
-                                        title={`Section ${sectionIndex + 1}, Unit ${parseInt(unitIndex) + 1}`}
+                                        title={`Section ${sectionIndex + 1}${unitIndex !== 'final' ? `, Unit ${parseInt(unitIndex) + 1}` : ': Final Assessment'}`}
                                         subtitle={section.sectionName}
                                     />
                                     <ProgressPath icons={unitIcons} circularProgress={0} />
@@ -277,4 +287,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-

@@ -23,10 +23,11 @@ export default function Badge() {
     const {
         sectionID,
         unitID,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
+        lessonID,
+        isFinal,
+        stoneIndex,
+        screenIndex,
+        totalScreens,
     } = useLocalSearchParams();
     const [unitName, setUnitName] = useState('');
     const [badgeUrl, setBadgeUrl] = useState('');
@@ -77,10 +78,11 @@ export default function Badge() {
             params: {
                 sectionID,
                 unitID,
-                currentUnit,
-                totalUnits,
-                currentProgress: parseInt(currentProgress as string).toString(),
-                totalProgress,
+                lessonID,
+                isFinal,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
             },
         });
     };

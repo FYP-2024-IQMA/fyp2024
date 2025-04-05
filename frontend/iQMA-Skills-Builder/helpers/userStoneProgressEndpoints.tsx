@@ -1,8 +1,8 @@
 interface userStoneProgress {
     userID: string,
     last_completed_stone_index: number,
-    current_stone_index: number,
-    current_screen_index: number,
+    current_stone_index: number | null,
+    current_screen_index: number | null,
 }
 
 export const createUserStoneProgress = async (userStoneProgress: userStoneProgress) => {
