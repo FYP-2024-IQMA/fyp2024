@@ -24,7 +24,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
     iconSize = 24,
     position = 'left',
     status,
-    progress = 0,
+    progress,
     onPress,
 }) => {
     const getColors = () => {
@@ -69,6 +69,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                             strokeWidth={5}
                             progress={progress}
                             style={styles.circularProgress}
+                            isStone={true}
                         />
                     </>
                 )}
@@ -108,14 +109,14 @@ export interface ProgressPathProps {
         // size?: number;
         status: string;
         onPress: () => void;
+        circularProgress?: number;
     }[];
-    circularProgress?: number;
+    
 }
 
 // higher level
 const ProgressPath: React.FC<ProgressPathProps> = ({
     icons,
-    circularProgress,
 }) => {
     return (
         <View style={styles.progressContainer}>
@@ -127,7 +128,7 @@ const ProgressPath: React.FC<ProgressPathProps> = ({
                     iconSize={40}
                     position={index % 2 === 0 ? 'left' : 'right'}
                     status={icon.status}
-                    progress={circularProgress}
+                    progress={icon.circularProgress}
                     onPress={icon.onPress}
                 />
             ))}
