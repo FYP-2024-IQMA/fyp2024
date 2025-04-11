@@ -1,5 +1,12 @@
 import React, {useEffect, useState, useContext} from 'react';
-import {Image, View, Text, ActivityIndicator, StyleSheet, ScrollView} from 'react-native';
+import {
+    Image,
+    View,
+    Text,
+    ActivityIndicator,
+    StyleSheet,
+    ScrollView,
+} from 'react-native';
 import {getStreak} from '@/helpers/gamificationEndpoints'; // Adjust the import path as necessary
 import {AuthContext} from '@/context/AuthContext';
 import {CustomButton} from '@/components/CustomButton';
@@ -12,7 +19,8 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {globalStyles} from '@/constants/styles';
 import {ScreenStackHeaderBackButtonImage} from 'react-native-screens';
 import {experimentalSetDeliveryMetricsExportedToBigQueryEnabled} from '@react-native-firebase/messaging';
-import { Colors } from '@/constants/Colors';
+import {Colors} from '@/constants/Colors';
+import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
 const StreakComponent: React.FC = () => {
     const [streakData, setStreakData] = useState<{
@@ -74,6 +82,10 @@ const StreakComponent: React.FC = () => {
                         daysOfWeek,
                         tickMarks,
                     }); // Set the fetched data to state
+
+                    await gamificationEndpoints.updateStreakUnit(
+                        currentUser.sub, ""
+                    );
                 } catch (err) {
                     console.error(err); // Log the error for debugging
                     setError('Failed to load streak data'); // Handle any errors
@@ -165,7 +177,6 @@ const StreakComponent: React.FC = () => {
             ticksArray.push(true);
         }
     } else {
-
         ticksArray.fill(false);
 
         const streakcounter = new Date().getDay() - userStreak + 1;
@@ -173,7 +184,7 @@ const StreakComponent: React.FC = () => {
         // tues 2
         // thurs 4
         for (let i = streakcounter; i <= new Date().getDay(); i++) {
-            ticksArray[i-1] = true;
+            ticksArray[i - 1] = true;
         }
     }
 
@@ -213,11 +224,13 @@ const StreakComponent: React.FC = () => {
     }
 
     return (
-        <ScrollView contentContainerStyle={{
-            flexGrow: 1,
-            padding: 20,
-            backgroundColor: Colors.light.background
-        }}>
+        <ScrollView
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background,
+            }}
+        >
             <View style={styles.insideContainer}>
                 <Image
                     source={StreakImage} // Ensure correct path

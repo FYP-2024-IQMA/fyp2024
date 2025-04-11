@@ -170,6 +170,7 @@ export default function VideoQuiz() {
                 //     currLessonID = nextLessonID;
                 //     currLessonIdx += 1;
                 // }
+                
 
                 router.push({
                     pathname: 'KeyTakeaway',
@@ -180,6 +181,7 @@ export default function VideoQuiz() {
                         stoneIndex,
                         screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
                         totalScreens,
+                        
                     },
                 });
                 stopTimer();

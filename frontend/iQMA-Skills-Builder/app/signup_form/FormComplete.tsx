@@ -86,8 +86,9 @@ export default function FormComplete() {
             const userStoneProgress = {
                 userID: userID!,
                 last_completed_stone_index: -1,
-                current_stone_index: null,
-                current_screen_index: null,
+                current_stone_index: 0,
+                current_screen_index: 0,
+                current_screen_pathname: null,
             };
 
             const accountResponse = await accountEndpoints.editUserDetails(

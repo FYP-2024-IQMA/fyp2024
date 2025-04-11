@@ -37,6 +37,18 @@ export const getStreak = async (userID: string) => {
     }
 };
 
+export const getShouldShowStreak = async (userID: string) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getshouldshowstreak/${userID}`;
+        const response = await fetch(url);
+        const showStreak = await response.json();
+        return showStreak;
+    } catch (error) {
+        console.error('Error fetching ShouldShowStreak:', error);
+        return [];
+    }
+};
+
 export const updatePoints = async (userID: string, points: number) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;

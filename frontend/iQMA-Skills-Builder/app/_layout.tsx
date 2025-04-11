@@ -19,6 +19,14 @@ import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
 
+import {LogBox} from 'react-native';
+
+// Disable red screen errors
+ErrorUtils.setGlobalHandler((error: any, isFatal?: boolean) => {
+    console.log('Suppressed error:', error.message);
+});
+// Disable yellow warnings
+LogBox.ignoreAllLogs(true);
 
 // place to put ur headers, footers, and other layout components
 export default function RootLayout() {
@@ -66,7 +74,7 @@ export default function RootLayout() {
                         options={{
                             headerTitle: () => (
                                 <ProgressBar
-                                    progress={0.50}
+                                    progress={0.5}
                                     isQuestionnaire={true}
                                 />
                             ),

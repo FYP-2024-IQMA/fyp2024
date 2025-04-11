@@ -59,6 +59,7 @@ export default function Assessment() {
         unitID as string
     );
     const [totalPoints, setTotalPoints] = useState<number>(0);
+    const [quizID, setQuizID] = useState<number>(0);
 
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
@@ -83,6 +84,7 @@ export default function Assessment() {
                         );
                     setQuestions(assessmentQuestions);
                     setCheckFinal(true);
+                    setQuizID(assessmentQuestions[0].quizID);
                 } catch (error) {
                     console.error(
                         'Error fetching final assessment details:',
@@ -108,6 +110,7 @@ export default function Assessment() {
                             unitID as string
                         );
                     setQuestions(assessmentQuestions);
+                    setQuizID(assessmentQuestions[0].quizID);
                 } catch (error) {
                     console.error('Error fetching assessment details:', error);
                 } finally {
@@ -181,6 +184,31 @@ export default function Assessment() {
 
                 router.replace('Home');
             } else {
+
+                try {
+                    const ifCompleted =
+                        await resultEndpoints.checkIfCompletedQuiz(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                    if (!ifCompleted) {
+                        await resultEndpoints.createResult(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                        let points = await AsyncStorage.getItem('totalPoints');
+                        const numPoints = parseInt(points as string);
+
+                        await gamificationEndpoints.updatePoints(
+                            currentUser.sub,
+                            numPoints
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error in Assessment:', error);}
+
                 router.push({
                     pathname: 'SelfReflection',
                     params: {
@@ -191,6 +219,7 @@ export default function Assessment() {
                         stoneIndex,
                         screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
                         totalScreens,
+                        quizID
                     },
                 });
             }

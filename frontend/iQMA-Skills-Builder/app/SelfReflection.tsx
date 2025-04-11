@@ -26,6 +26,7 @@ import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
+import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -38,6 +39,7 @@ export default function SelfReflection() {
         stoneIndex,
         screenIndex,
         totalScreens,
+        quizID,
     } = useLocalSearchParams();
 
     const [sectionNumber, setSectionNumber] = useState<string>('');
@@ -120,6 +122,8 @@ export default function SelfReflection() {
                 parseInt(quizID as string)
             );
 
+            console.log('QUIZ ID ', quizID);
+
             // add number of interactions to clickstream
             const numberOfInteractions = (chatHistoryLength - 1) / 2;
             await chatInteractionsEndpoints.chatInteractions(
@@ -128,55 +132,49 @@ export default function SelfReflection() {
                 numberOfInteractions
             );
 
-            if (!ifCompleted) {
-                let points = await AsyncStorage.getItem('totalPoints');
-                const numPoints = parseInt(points as string);
+            let points = await AsyncStorage.getItem('totalPoints');
+            const numPoints = parseInt(points as string);
 
-                await gamificationEndpoints.updatePoints(
-                    currentUser.sub,
-                    numPoints
+            await gamificationEndpoints.updatePoints(
+                currentUser.sub,
+                numPoints
+            );
+
+            // await gamificationEndpoints.updateStreakUnit(
+            //     currentUser.sub,
+            //     quizID as string
+            // );
+
+            const userStoneProgress = {
+                userID: currentUser.sub,
+                last_completed_stone_index: parseInt(stoneIndex as string),
+                current_stone_index: parseInt(stoneIndex as string) + 1,
+                current_screen_index: 0,
+                current_screen_pathname: null,
+            };
+
+            const updateUserStoneProgress =
+                await userStoneProgressEndpoints.updateUserStoneProgress(
+                    userStoneProgress
                 );
 
-                await gamificationEndpoints.updateStreakUnit(
-                    currentUser.sub,
-                    quizID as string
-                );
+            console.log(
+                'User stone progress updated successfully: ',
+                updateUserStoneProgress
+            );
 
-                router.push({
-                    pathname: 'Badge',
-                    params: {
-                        sectionID,
-                        unitID,
-                        lessonID,
-                        isFinal,
-                        stoneIndex,
-                        screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
-                        totalScreens,
-                    },
-                });
-            } else {
-                // if (parseInt(unitNumber) === parseInt(totalUnits as string)) {
-                //     // if last unit, go back to Assessment Intro for Final Assessment (AssessmentIntroduction.tsx)
-                //     router.push({
-                //         pathname: 'AssessmentIntroduction',
-                //         params: {
-                //             sectionID,
-                //             unitID,
-                //             currentUnit,
-                //             totalUnits,
-                //             isFinal: 'true',
-                //             currentProgress: (
-                //                 parseInt(currentProgress as string) + 1
-                //             ).toString(),
-                //             totalProgress,
-                //         },
-                //     });
-                // } else {
-                //     // after self-reflection navigate back to home for next unit
-                //     router.replace('Home');
-                // }
-                router.replace('Home');
-            }
+            router.push({
+                pathname: 'Badge',
+                params: {
+                    sectionID,
+                    unitID,
+                    lessonID,
+                    isFinal,
+                    stoneIndex,
+                    screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                    totalScreens,
+                },
+            });
         } catch (error) {
             console.error(
                 'Error in Submitting Unit Assessment (Self-Reflection Page):',
@@ -193,7 +191,7 @@ export default function SelfReflection() {
             contentContainerStyle={{
                 flexGrow: 1,
                 padding: 20,
-                backgroundColor: Colors.light.background
+                backgroundColor: Colors.light.background,
             }}
         >
             {isLoading ? (

@@ -34,6 +34,7 @@ export default function Badge() {
     const [loading, setLoading] = useState(true);
     const [showConfetti, setShowConfetti] = useState(false);
     const [scale] = useState(new Animated.Value(1)); // For scaling animation
+    const [shouldShowStreak, setShouldShowStreak] = useState<boolean>();
 
     const fetchBadge = async (sectionID: string, unitID: string) => {
         try {
@@ -52,9 +53,22 @@ export default function Badge() {
         }
     };
 
+    const fetchShouldShowStreak = async (userID: string) => {
+        try {
+            const getShouldShowStreak =
+                await gamificationEndpoints.getShouldShowStreak(
+                    currentUser.sub
+                );
+            setShouldShowStreak(getShouldShowStreak);
+        } catch (error) {
+            console.error('Error fetching ShouldShowStreak', error);
+        }
+    };
+
     useEffect(() => {
         if (sectionID && unitID) {
             fetchBadge(sectionID as string, unitID as string);
+            fetchShouldShowStreak(currentUser.sub);
         }
     }, []);
 
@@ -73,18 +87,34 @@ export default function Badge() {
     };
 
     const handlePress = () => {
-        router.push({
-            pathname: 'Streak',
-            params: {
-                sectionID,
-                unitID,
-                lessonID,
-                isFinal,
-                stoneIndex,
-                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
-                totalScreens,
-            },
-        });
+        if (shouldShowStreak) {
+            router.push({
+                pathname: 'Streak',
+                params: {
+                    sectionID,
+                    unitID,
+                    lessonID,
+                    isFinal,
+                    stoneIndex,
+                    screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                    totalScreens,
+                },
+            });
+        } else {
+            router.replace('Home');
+        }
+        // router.push({
+        //     pathname: 'Streak',
+        //     params: {
+        //         sectionID,
+        //         unitID,
+        //         lessonID,
+        //         isFinal,
+        //         stoneIndex,
+        //         screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+        //         totalScreens,
+        //     },
+        // });
     };
 
     if (loading) {

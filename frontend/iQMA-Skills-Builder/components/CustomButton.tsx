@@ -32,7 +32,8 @@ export const CustomButton = ({
             }, 1000);
             return () => clearInterval(timer);
         } else if (isChatButton && timeLeft === 0) {
-            setButtonText('Attempt Assessment');
+            // setButtonText('Attempt Assessment');
+            setButtonText('Finish Unit');
             setButtonBgColor(Colors.default.purple500);
             setTextColor('white');
         }

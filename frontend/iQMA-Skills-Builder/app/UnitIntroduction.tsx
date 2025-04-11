@@ -8,7 +8,13 @@ import {
     TouchableOpacity,
     ScrollView,
 } from 'react-native';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,10 +30,14 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
+import {AuthContext} from '@/context/AuthContext';
 
 // where things show up
 export default function UnitIntroduction() {
     const navigation = useNavigation();
+
+    const {currentUser} = useContext(AuthContext);
 
     const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
         useLocalSearchParams();
@@ -47,8 +57,8 @@ export default function UnitIntroduction() {
         //     parseInt(currentProgress as string) /
         //     parseInt(totalProgress as string);
 
-        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
-
+        const progress =
+            (Number(screenIndex) + 1 || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -115,6 +125,22 @@ export default function UnitIntroduction() {
     // Route back to home after clicking continue button
     const handlePress = async () => {
         // router.push('Lesson');
+
+        const userStoneProgress = {
+            userID: currentUser.sub,
+            last_completed_stone_index: parseInt(stoneIndex as string),
+            current_stone_index: parseInt(stoneIndex as string)+1,
+            current_screen_index: 0,
+            current_screen_pathname: null,
+        };
+
+        const updateUserStoneProgress =
+            await userStoneProgressEndpoints.updateUserStoneProgress(
+                userStoneProgress
+            );
+
+        console.log('User stone progress updated successfully: ', updateUserStoneProgress);
+
         router.push({
             pathname: 'Home',
         });
