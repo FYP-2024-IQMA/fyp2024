@@ -32,6 +32,7 @@ import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
 import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
 import {AuthContext} from '@/context/AuthContext';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
 
 // where things show up
 export default function UnitIntroduction() {
@@ -39,8 +40,23 @@ export default function UnitIntroduction() {
 
     const {currentUser} = useContext(AuthContext);
 
-    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
-        useLocalSearchParams();
+    const {
+        sectionID,
+        unitID,
+        lessonID,
+        stoneIndex,
+        screenIndex,
+        totalScreens,
+        inProgress,
+    } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+        stoneIndex: Number(stoneIndex),
+        screenIndex: Number(screenIndex),
+        screenPathname: 'UnitIntroduction',
+        inProgress: inProgress === 'true',
+    });
+
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -129,7 +145,7 @@ export default function UnitIntroduction() {
         const userStoneProgress = {
             userID: currentUser.sub,
             last_completed_stone_index: parseInt(stoneIndex as string),
-            current_stone_index: parseInt(stoneIndex as string)+1,
+            current_stone_index: parseInt(stoneIndex as string) + 1,
             current_screen_index: 0,
             current_screen_pathname: null,
         };
@@ -139,7 +155,10 @@ export default function UnitIntroduction() {
                 userStoneProgress
             );
 
-        console.log('User stone progress updated successfully: ', updateUserStoneProgress);
+        console.log(
+            'User stone progress updated successfully: ',
+            updateUserStoneProgress
+        );
 
         router.push({
             pathname: 'Home',

@@ -1,6 +1,7 @@
 import {StyleSheet, Text, Touchable, View} from 'react-native';
 
 import {AntDesign} from '@expo/vector-icons';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import CircularProgress from './CircularProgress';
 import {Colors} from '@/constants/Colors';
 import React from 'react';

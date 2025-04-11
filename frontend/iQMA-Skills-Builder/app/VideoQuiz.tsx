@@ -28,12 +28,22 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 export default function VideoQuiz() {
     const navigation = useNavigation();
     const {currentUser, isLoading} = useContext(AuthContext);
-    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens} =
+    const {sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens, inProgress} =
         useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'VideoQuiz',
+                inProgress: inProgress === 'true',
+            });
+
     const [currentQnsIdx, setCurrentQnsIdx] = useState(0);
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
@@ -181,6 +191,7 @@ export default function VideoQuiz() {
                         stoneIndex,
                         screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
                         totalScreens,
+                        inProgress
                         
                     },
                 });

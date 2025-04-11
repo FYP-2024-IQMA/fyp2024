@@ -24,13 +24,24 @@ import {useNavigation} from '@react-navigation/native';
 import VideoPlayer from '@/components/VideoPlayer';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
     const {
-        sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens
+        sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens, inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+            stoneIndex: Number(stoneIndex),
+            screenIndex: Number(screenIndex),
+            screenPathname: 'Lesson',
+            inProgress: inProgress === 'true',
+        });
+
+
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -84,6 +95,7 @@ export default function Lesson() {
                 stoneIndex,
                 screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
                 totalScreens,
+                inProgress
             },
         });
         console.log('ISPLAYING: ' + playing);

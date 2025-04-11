@@ -352,6 +352,8 @@ import { AudioPlayer } from '@/components/AudioPlayer';
 import { OverviewCard } from '@/components/OverviewCard';
 import { CustomButton } from '@/components/CustomButton';
 import { LoadingIndicator } from '@/components/LoadingIndicator';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 export default function KeyTakeaway() {
   const navigation = useNavigation();
@@ -364,7 +366,16 @@ export default function KeyTakeaway() {
     stoneIndex,
     screenIndex,
     totalScreens,
+    inProgress
   } = useLocalSearchParams();
+
+  useUpdateUserScreenProgress({
+              stoneIndex: Number(stoneIndex),
+              screenIndex: Number(screenIndex),
+              screenPathname: 'KeyTakeaway',
+              inProgress: inProgress === 'true',
+          });
+  
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [shouldShowStreak, setShouldShowStreak] = useState<boolean>(false);

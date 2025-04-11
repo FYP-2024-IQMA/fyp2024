@@ -30,6 +30,8 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -50,7 +52,16 @@ export default function Assessment() {
         stoneIndex,
         screenIndex,
         totalScreens,
+        inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'Assessment',
+                inProgress: inProgress === 'true',
+            });
+
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
     const {startTimer, stopTimer} = useTimer(
@@ -219,7 +230,8 @@ export default function Assessment() {
                         stoneIndex,
                         screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
                         totalScreens,
-                        quizID
+                        quizID,
+                        inProgress
                     },
                 });
             }

@@ -27,6 +27,8 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 export default function SelfReflection() {
     const navigation = useNavigation();
@@ -40,7 +42,16 @@ export default function SelfReflection() {
         screenIndex,
         totalScreens,
         quizID,
+        inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'SelfReflection',
+                inProgress: inProgress === 'true',
+            });
+    
 
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');

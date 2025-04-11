@@ -16,6 +16,8 @@ import {useNavigation} from '@react-navigation/native';
 import { useTimer } from '@/helpers/useTimer';
 import VideoPlayer from '@/components/VideoPlayer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 // where things show up
 export default function RealityCheck() {
@@ -23,8 +25,16 @@ export default function RealityCheck() {
 
     // Use this for Routing
     const {
-        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens
+        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens, inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'RealityCheck',
+                inProgress: inProgress === 'true',
+            });
+    
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -118,6 +128,7 @@ export default function RealityCheck() {
                 stoneIndex,
                 screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
                 totalScreens,
+                inProgress
             },
         });
         stopTimer();
