@@ -70,6 +70,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                             progress={progress}
                             style={styles.circularProgress}
                             isStone={true}
+                            showText={false} // dont show percentage text for stones
                         />
                     </>
                 )}
