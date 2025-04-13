@@ -298,7 +298,7 @@ const ProgressItem: React.FC<ProgressItemProps> = ({
                     <CircularProgress
                         size={101}
                         strokeWidth={5}
-                        progress={progress}
+                        progress={progress ?? 0}
                         style={styles.circularProgress}
                         isStone={true}
                         showText={false}

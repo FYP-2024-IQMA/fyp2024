@@ -18,6 +18,7 @@ import {Stack, useNavigation} from 'expo-router';
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
+import { StatusBar } from 'expo-status-bar';
 
 import {LogBox} from 'react-native';
 

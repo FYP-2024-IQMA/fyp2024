@@ -88,7 +88,7 @@ export default function FormComplete() {
                 last_completed_stone_index: -1,
                 current_stone_index: 0,
                 current_screen_index: 0,
-                current_screen_pathname: null,
+                current_screen_pathname: "SectionIntroduction",
             };
 
             const accountResponse = await accountEndpoints.editUserDetails(

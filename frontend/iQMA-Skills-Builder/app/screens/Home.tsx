@@ -311,6 +311,7 @@ import SectionCard from '@/components/SectionCard';
 import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
 import FeedbackComponent from '@/components/Feedback';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
+import { StatusBar } from 'expo-status-bar';
 
 const HomeScreen: React.FC = () => {
     const {currentUser} = useContext(AuthContext);
@@ -433,7 +434,7 @@ const HomeScreen: React.FC = () => {
                     //   : undefined;
 
                     let rawProgress =
-                        ((currentScreenIndex + 1) / totalScreens) * 100;
+                        ((currentScreenIndex) / totalScreens) * 100;
                     if (rawProgress >= 100) {
                         rawProgress = 80;
                     }

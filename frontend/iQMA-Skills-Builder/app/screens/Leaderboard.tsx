@@ -6,6 +6,8 @@ import {getLeaderboard} from '@/helpers/gamificationEndpoints';
 import {globalStyles} from '@/constants/styles';
 import {Colors} from '@/constants/Colors';
 import {useFocusEffect} from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface User {
     name: string;

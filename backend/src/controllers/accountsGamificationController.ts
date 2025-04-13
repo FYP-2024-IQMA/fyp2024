@@ -105,6 +105,7 @@ export const updateStreaksFromLogin = async (req: Request, res: Response) => {
 		const updatedStreak =
 			await accountsGamificationService.updateStreaksFromLogin(userID);
 		res.status(200).json({
+			updatedStreak,
 			status: 200,
 			statusText: "Streak Updated Successfully",
 		});
@@ -125,6 +126,7 @@ export const updateStreaksFromUnit = async (req: Request, res: Response) => {
 				req.params.userid
 			);
 		res.status(200).json({
+			updatedStreak,
 			status: 200,
 			statusText: "Streak Updated Successfully",
 		});

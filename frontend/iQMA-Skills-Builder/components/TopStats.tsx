@@ -1,160 +1,315 @@
-// components/TopStats.tsx
+// // components/TopStats.tsx
+
+// import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
+
+// import {Image, StyleSheet, Text, View} from 'react-native';
+// import React, {useCallback, useEffect, useState} from 'react';
+
+// import {AuthContext} from '@/context/AuthContext';
+// import CircularProgress from './CircularProgress';
+// import {Colors} from '@/constants/Colors';
+// import {useContext} from 'react';
+// import {useFocusEffect} from 'expo-router';
+
+// interface TopStatsProps {
+//     circularProgress: number;
+// }
+
+// const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
+//     const {currentUser, isLoading} = useContext(AuthContext);
+//     const [updatedStreak, setUpdatedStreak] = useState<number>(0);
+//     const [updatedPoints, setUpdatedPoints] = useState<number>(0);
+//     const [key, setKey] = useState(0);
+
+
+//     useEffect(() => {
+//         const updateStreak = async () => {
+//             try {
+//                 const updated = await gamificationEndpoints.updateStreakInLogin(
+//                     currentUser.sub
+//                 );
+//                 const getStreak = await gamificationEndpoints.getStreak(
+//                     currentUser.sub
+//                 );
+//                 console.log("STREAK UPDATED??")
+//                 console.log(getStreak);
+//                 setUpdatedStreak(getStreak.streaks);
+//                 setUpdatedPoints(getStreak.points);
+//             } catch (error) {
+//                 console.error('Error updating streak:', error);
+//             }
+//         };
+
+//         updateStreak();
+//     }, [currentUser, key]);
+
+//     useFocusEffect(
+//         useCallback(() => {
+//             // Change the key to force a re-render
+//             setKey((prevKey) => prevKey + 1);
+//         }, [])
+//     );
+    
+    
+
+//     return (
+//         <View style={styles.statsContainer}>
+//             <View style={[styles.statBox]}>
+//                 <View style={styles.statContent}>
+//                     <View>
+//                         <Image
+//                             source={require('@/assets/images/fire_icon.png')}
+//                             style={styles.statIcon}
+//                         />
+//                     </View>
+//                     <View>
+//                         <Text style={styles.statNumber} allowFontScaling={false}>{updatedStreak} Day</Text>
+//                         <Text style={styles.statLabel} allowFontScaling={false}>streak</Text>
+//                     </View>
+//                 </View>
+//             </View>
+//             <View style={[styles.statBox]}>
+//                 <View style={styles.statContent}>
+//                     <View>
+//                         <Image
+//                             source={require('@/assets/images/xp_icon.png')}
+//                             style={styles.statIcon}
+//                         />
+//                     </View>
+//                     <View>
+//                         <Text style={styles.statNumber} allowFontScaling={false}>{updatedPoints}</Text>
+//                         <Text style={styles.statLabel} allowFontScaling={false}>Total XP</Text>
+//                     </View>
+//                 </View>
+//             </View>
+//             <View style={[styles.statBox]}>
+//                 <View style={styles.sectionContent}>
+//                     <CircularProgress
+//                         size={40}
+//                         strokeWidth={5}
+//                         progress={circularProgress}
+//                     />
+//                     <Text style={styles.statLabelRight} allowFontScaling={false}>
+//                         Section{'\n'}Completion
+//                     </Text>
+//                 </View>
+//             </View>
+//         </View>
+//     );
+// };
+
+// const styles = StyleSheet.create({
+//     statsContainer: {
+//         display: 'flex',
+//         flexDirection: 'row',
+//         marginBottom: 20,
+//         gap: 10,
+        
+//     },
+//     statBox: {
+//         flex: 1,
+//         flexDirection: 'row',
+//         padding: 5,
+//         borderRadius: 15,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         borderWidth: 2,
+//         borderColor: Colors.default.purple100,
+//         // backgroundColor: "red"
+//     },
+//     statContent: {
+//         flexDirection: 'row',
+//         // alignItems: 'center',
+//         justifyContent: 'center',
+//         flex: 1,
+//         gap: 2
+//     },
+//     sectionContent: {
+//         flexDirection: 'row',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         gap: 5,
+//         flex: 1,
+//         flexWrap: "wrap"
+//     },
+//     statIcon: {
+//         width: 30,
+//         height: 30,
+//         resizeMode: "contain",
+//         // backgroundColor: "red"
+//         // marginRight: 10,
+//     },
+//     statNumber: {
+//         fontSize: 13,
+//         fontWeight: 'bold',
+//         color: '#333',
+//         flexShrink: 1
+//     },
+//     statLabel: {
+//         fontSize: 10,
+//         color: '#333',
+//         flexShrink: 1
+//     },
+//     statLabelRight: {
+//         fontSize: 10,
+//         color: '#333',
+//         flexShrink: 1
+//     },
+// });
+
+// export default TopStats;
 
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
-import {Image, StyleSheet, Text, View} from 'react-native';
-import React, {useCallback, useEffect, useState} from 'react';
+import { Image, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 
-import {AuthContext} from '@/context/AuthContext';
+import { AuthContext } from '@/context/AuthContext';
 import CircularProgress from './CircularProgress';
-import {Colors} from '@/constants/Colors';
-import {useContext} from 'react';
-import {useFocusEffect} from 'expo-router';
+import { Colors } from '@/constants/Colors';
+import { useFocusEffect } from 'expo-router';
 
 interface TopStatsProps {
-    circularProgress: number;
+  circularProgress: number;
 }
 
-const TopStats: React.FC<TopStatsProps> = ({circularProgress}) => {
-    const {currentUser, isLoading} = useContext(AuthContext);
-    const [updatedStreak, setUpdatedStreak] = useState<number>(0);
-    const [updatedPoints, setUpdatedPoints] = useState<number>(0);
-    const [key, setKey] = useState(0);
+const TopStats: React.FC<TopStatsProps> = ({ circularProgress }) => {
+  const { currentUser } = useContext(AuthContext);
+  const [updatedStreak, setUpdatedStreak] = useState<number>(0);
+  const [updatedPoints, setUpdatedPoints] = useState<number>(0);
+  const [key, setKey] = useState(0);
 
+  useEffect(() => {
+    const updateStreak = async () => {
+      try {
+        const response = await gamificationEndpoints.updateStreakInLogin(currentUser.sub);
+        const updatedInfo = response.updatedStreak?.[0];
 
-    useEffect(() => {
-        const updateStreak = async () => {
-            try {
-                const updated = await gamificationEndpoints.updateStreakInLogin(
-                    currentUser.sub
-                );
-                const getStreak = await gamificationEndpoints.getStreak(
-                    currentUser.sub
-                );
-                console.log("STREAK UPDATED??")
-                console.log(getStreak);
-                setUpdatedStreak(getStreak.streaks);
-                setUpdatedPoints(getStreak.points);
-            } catch (error) {
-                console.error('Error updating streak:', error);
-            }
-        };
+        if (updatedInfo) {
+          setUpdatedStreak(updatedInfo.streaks);
+          setUpdatedPoints(updatedInfo.points);
+        }
+      } catch (error) {
+        console.error('Error updating streak from login:', error);
+      }
+    };
 
-        updateStreak();
-    }, [currentUser, key]);
+    updateStreak();
+  }, [currentUser, key]);
 
-    useFocusEffect(
-        useCallback(() => {
-            // Change the key to force a re-render
-            setKey((prevKey) => prevKey + 1);
-        }, [])
-    );
-    
-    
+  useFocusEffect(
+    useCallback(() => {
+      setKey(prevKey => prevKey + 1);
+    }, [])
+  );
 
-    return (
-        <View style={styles.statsContainer}>
-            <View style={[styles.statBox]}>
-                <View style={styles.statContent}>
-                    <View>
-                        <Image
-                            source={require('@/assets/images/fire_icon.png')}
-                            style={styles.statIcon}
-                        />
-                    </View>
-                    <View>
-                        <Text style={styles.statNumber} allowFontScaling={false}>{updatedStreak} Day</Text>
-                        <Text style={styles.statLabel} allowFontScaling={false}>streak</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={[styles.statBox]}>
-                <View style={styles.statContent}>
-                    <View>
-                        <Image
-                            source={require('@/assets/images/xp_icon.png')}
-                            style={styles.statIcon}
-                        />
-                    </View>
-                    <View>
-                        <Text style={styles.statNumber} allowFontScaling={false}>{updatedPoints}</Text>
-                        <Text style={styles.statLabel} allowFontScaling={false}>Total XP</Text>
-                    </View>
-                </View>
-            </View>
-            <View style={[styles.statBox]}>
-                <View style={styles.sectionContent}>
-                    <CircularProgress
-                        size={40}
-                        strokeWidth={5}
-                        progress={circularProgress}
-                    />
-                    <Text style={styles.statLabelRight} allowFontScaling={false}>
-                        Section{'\n'}Completion
-                    </Text>
-                </View>
-            </View>
+  return (
+    <View style={styles.statsContainer}>
+      <View style={[styles.statBox]}>
+        <View style={styles.statContent}>
+          <View>
+            <Image
+              source={require('@/assets/images/fire_icon.png')}
+              style={styles.statIcon}
+            />
+          </View>
+          <View>
+            <Text style={styles.statNumber} allowFontScaling={false}>
+              {updatedStreak} Day
+            </Text>
+            <Text style={styles.statLabel} allowFontScaling={false}>
+              streak
+            </Text>
+          </View>
         </View>
-    );
+      </View>
+      <View style={[styles.statBox]}>
+        <View style={styles.statContent}>
+          <View>
+            <Image
+              source={require('@/assets/images/xp_icon.png')}
+              style={styles.statIcon}
+            />
+          </View>
+          <View>
+            <Text style={styles.statNumber} allowFontScaling={false}>
+              {updatedPoints}
+            </Text>
+            <Text style={styles.statLabel} allowFontScaling={false}>
+              Total XP
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={[styles.statBox]}>
+        <View style={styles.sectionContent}>
+          <CircularProgress
+            size={40}
+            strokeWidth={5}
+            progress={circularProgress}
+          />
+          <Text style={styles.statLabelRight} allowFontScaling={false}>
+            Section{'\n'}Completion
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    statsContainer: {
-        display: 'flex',
-        flexDirection: 'row',
-        marginBottom: 20,
-        gap: 10,
-        
-    },
-    statBox: {
-        flex: 1,
-        flexDirection: 'row',
-        padding: 5,
-        borderRadius: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderWidth: 2,
-        borderColor: Colors.default.purple100,
-        // backgroundColor: "red"
-    },
-    statContent: {
-        flexDirection: 'row',
-        // alignItems: 'center',
-        justifyContent: 'center',
-        flex: 1,
-        gap: 2
-    },
-    sectionContent: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 5,
-        flex: 1,
-        flexWrap: "wrap"
-    },
-    statIcon: {
-        width: 30,
-        height: 30,
-        resizeMode: "contain",
-        // backgroundColor: "red"
-        // marginRight: 10,
-    },
-    statNumber: {
-        fontSize: 13,
-        fontWeight: 'bold',
-        color: '#333',
-        flexShrink: 1
-    },
-    statLabel: {
-        fontSize: 10,
-        color: '#333',
-        flexShrink: 1
-    },
-    statLabelRight: {
-        fontSize: 10,
-        color: '#333',
-        flexShrink: 1
-    },
+  statsContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: 20,
+    gap: 10,
+  },
+  statBox: {
+    flex: 1,
+    flexDirection: 'row',
+    padding: 5,
+    borderRadius: 15,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: Colors.default.purple100,
+  },
+  statContent: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flex: 1,
+    gap: 2,
+  },
+  sectionContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    flex: 1,
+    flexWrap: 'wrap',
+  },
+  statIcon: {
+    width: 30,
+    height: 30,
+    resizeMode: 'contain',
+  },
+  statNumber: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#333',
+    flexShrink: 1,
+  },
+  statLabel: {
+    fontSize: 10,
+    color: '#333',
+    flexShrink: 1,
+  },
+  statLabelRight: {
+    fontSize: 10,
+    color: '#333',
+    flexShrink: 1,
+  },
 });
 
 export default TopStats;
+

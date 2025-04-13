@@ -353,13 +353,13 @@ export async function updateStreaksFromUnit(userID: string) {
     try {
         const today = new Date();
 
+        let currentStreak = 1; // default if no previous date
         if (data.lastUnitCompletionDate != null) {
             const lastUnitDate = new Date(data.lastUnitCompletionDate);
             const daysSegment = calculateStreak(lastUnitDate, today);
             console.log("days segment is", daysSegment);
 
-            let currentStreak = data.getStreaks();
-
+            currentStreak = data.getStreaks();
             if (daysSegment == 1) {
                 console.log("diff 1 day, so +1");
                 currentStreak += 1;
@@ -367,23 +367,23 @@ export async function updateStreaksFromUnit(userID: string) {
                 console.log("diff >1 day, so reset to 1");
                 currentStreak = 1;
             }
-
-            await supabase
-                .from("accountsgamification")
-                .update({
-                    streaks: currentStreak,
-                    lastUnitCompletionDate: formatDate(today),
-                })
-                .eq("userID", userID);
-        } else {
-            await supabase
-                .from("accountsgamification")
-                .update({
-                    streaks: 1,
-                    lastUnitCompletionDate: formatDate(today),
-                })
-                .eq("userID", userID);
         }
+
+        const { data: updatedData, error } = await supabase
+            .from("accountsgamification")
+            .update({
+                streaks: currentStreak,
+                lastUnitCompletionDate: formatDate(today),
+            })
+            .eq("userID", userID)
+            .select()
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        return updatedData;
     } catch (error) {
         console.log(error);
         throw error;
@@ -418,12 +418,14 @@ export async function updateStreaksFromLogin(userID: string) {
                 currentStreak = 0;
             }
 
-            const { status, statusText, error } = await supabase
+            const { data: updatedData, status, statusText, error } = await supabase
                 .from("accountsgamification")
                 .update({
                     streaks: currentStreak,
                 })
-                .eq("userID", userID);
+                .eq("userID", userID).select();
+
+            return updatedData;
         }
     } catch (error) {
         console.log(error);

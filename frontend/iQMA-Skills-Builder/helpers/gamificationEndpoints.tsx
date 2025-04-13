@@ -85,6 +85,8 @@ export const updateStreakInLogin = async (userID: string) => {
         const response = await axios.patch(url);
         const result = await response.data;
         console.log('Streak successfully updated:', result);
+
+        return response.data
     } catch (error: any) {
         console.error('Error updating streak:', error.response.data);
     }
@@ -96,6 +98,8 @@ export const updateStreakUnit = async (userID: string, quizID: string) => {
         const response = await axios.patch(url);
         const result = await response.data;
         console.log('Streak successfully updated:', result);
+
+        return response.data
     } catch (error: any) {
         console.error('Error updating streak:', error.response.data);
     }
