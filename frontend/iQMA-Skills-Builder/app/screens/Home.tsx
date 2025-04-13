@@ -466,6 +466,7 @@ const HomeScreen: React.FC = () => {
                             );
                         },
                         circularProgress: circularProgress,
+                        resolvedScreenIndex: resolvedScreenIndex,
                     });
                 };
 
