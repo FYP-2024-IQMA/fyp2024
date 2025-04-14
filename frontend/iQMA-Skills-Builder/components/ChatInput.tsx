@@ -1,5 +1,6 @@
 import {
     Alert,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
@@ -102,11 +103,17 @@ const ChatInput: React.FC<ChatInputProps> = ({handleSend}) => {
                 onSubmitEditing={onSend}
                 keyboardType="email-address"
             />
-            <TouchableOpacity onPress={onSend} style={styles.button}>
+            <Pressable
+                onPress={onSend}
+                style={({pressed}) => [
+                    styles.button,
+                    pressed && {transform: [{scale: 0.96}]}, // pressed in animation
+                ]}
+            >
                 <View style={styles.sendButtonCircle}>
                     <Feather name="send" size={24} color="#000000" />
                 </View>
-            </TouchableOpacity>
+            </Pressable>
         </>
     );
 };

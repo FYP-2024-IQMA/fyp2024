@@ -7,12 +7,14 @@ import {router} from 'expo-router';
 
 export default function IntroductionSegment() {
     const handlePress = () => {
-        router.push('LearnerAssessmentDemographics');
+        // router.push('LearnerAssessmentDemographics');
+        router.push('/signup_form/AboutYou');
+
     };
 
     return (
         <ScrollView
-            // style={styles.container}
+            style={styles.container}
             contentContainerStyle={{
                 flexGrow: 1,
                 padding: 20,

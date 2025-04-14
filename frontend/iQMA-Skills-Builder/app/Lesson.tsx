@@ -24,21 +24,24 @@ import {useNavigation} from '@react-navigation/native';
 import VideoPlayer from '@/components/VideoPlayer';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 // where things show up
 export default function Lesson() {
     const navigation = useNavigation();
     const {
-        sectionID,
-        unitID,
-        lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens, inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+            stoneIndex: Number(stoneIndex),
+            screenIndex: Number(screenIndex),
+            screenPathname: 'Lesson',
+            inProgress: inProgress === 'true',
+        });
+
+
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -57,9 +60,12 @@ export default function Lesson() {
     const screenHeight = Dimensions.get('window').height;
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
+
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -86,14 +92,10 @@ export default function Lesson() {
                 sectionID,
                 unitID,
                 lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
+                inProgress
             },
         });
         console.log('ISPLAYING: ' + playing);

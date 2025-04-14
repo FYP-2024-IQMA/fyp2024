@@ -46,3 +46,16 @@ export const getUnitDetailsBySectionAndUnit = async (req: Request, res: Response
         }
     }
 }
+
+// get every unit in the database
+export const getAllUnits = async (req: Request, res: Response) => {
+  try {
+    const lessons = await unitService.getAllUnits();
+    res.status(200).json(lessons);
+  } catch (error: any) {
+    const errorResponse = handleError(error);
+    if (errorResponse) {
+      res.status(errorResponse.status).json(errorResponse);
+    }
+  }
+};

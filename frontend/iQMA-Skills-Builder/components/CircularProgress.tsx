@@ -12,12 +12,14 @@ interface CircularProgressProps {
     progress: number;
     children?: React.ReactNode;
     style?: any;
+    showText?: boolean;
 }
 
 const CircularProgress: React.FC<CircularProgressProps> = ({
     size,
     strokeWidth,
     progress,
+    showText = true // default to true
 }) => {
     const radius = (size - strokeWidth) / 2;
     const circumference = 2 * Math.PI * radius;
@@ -50,7 +52,13 @@ const CircularProgress: React.FC<CircularProgressProps> = ({
                     origin={`${size / 2}, ${size / 2}`}
                 />
             </Svg>
-            <Text style={styles.progressText} allowFontScaling={false}>{`${progress}%`}</Text>
+            {/* <Text style={styles.progressText} allowFontScaling={false}>{`${progress}%`}</Text> */}
+            {/* Only show text if showText is true */}
+            {showText && (
+                <Text style={styles.progressText} allowFontScaling={false}>
+                    {`${progress}%`}
+                </Text>
+            )}
         </View>
     );
 };

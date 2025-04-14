@@ -1,4 +1,12 @@
-import {Image, ScrollView, StyleSheet, Text, View, Dimensions} from 'react-native';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    View,
+    Dimensions
+} from 'react-native';
 import React, {useState} from 'react';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,65 +16,73 @@ import {CustomButton} from '@/components/CustomButton';
 import {Picker} from '@react-native-picker/picker';
 import {router} from 'expo-router';
 
-export default function LearnerAssessmentCognitive() {
-    const [selectedEducation, setEducation] = useState<string>('');
-    const [selectedLanguage, setLanguage] = useState<string>('');
-    const [selectedLiteracy, setLiteracy] = useState<string>('');
-    const [selectedLearning, setLearning] = useState<string>('');
-    const [selectedSkill, setSkill] = useState<string>('');
+export default function LearnerAssessmentDemographics() {
+    const [selectedRace, setRace] = useState<string>('');
+    const [ethnic, setEthnic] = useState<string>('');
+    const [selectedJob, setJob] = useState<string>('');
+    const [selectedLife, setLife] = useState<string>('');
+    const [selectedCareer, setCareer] = useState<string>('');
+    const [selectedNeed, setNeed] = useState<string>('');
+    const [isContinue, setIsContinue] = useState(true);
     const [isScroll, setIsScroll] = useState<boolean>(false);
     const screenHeight = Dimensions.get('window').height;
 
-    const education: string[] = [
-        'High school or below',
-        'Some college',
-        "Bachelor's degree",
-        "Master's degree",
-        'Doctoral degree',
+    const race: string[] = [
+        'Caucasian',
+        'African American',
+        'Asian',
+        'Hispanic/Latino',
+        'Other',
     ];
-    const language: string[] = ['Fluent', 'Proficient', 'Basic', 'None'];
-    const literacy: string[] = ['Advanced', 'Intermediate', 'Basic', 'None'];
-    const learning: string[] = [
-        'Visual',
-        'Auditory',
-        'Kinesthetic',
-        'Reading/Writing',
+    const job: string[] = [
+        'Entry-level',
+        'Mid-level',
+        'Senior-level',
+        'Executive',
     ];
-
-    const [isContinue, setIsContinue] = useState(true);
+    const life: string[] = [
+        'Early career',
+        'Mid-career',
+        'Late career',
+        'Retirement',
+    ];
+    const career: string[] = ['Starter', 'Builder', 'Accelerator', 'Expert'];
+    const need: string[] = ['None', 'Physical', 'Mental', 'Other'];
 
     const handlePress = async () => {
         if (
-            !selectedEducation ||
-            !selectedLanguage ||
-            !selectedLiteracy ||
-            !selectedLearning ||
-            !selectedSkill
+            !selectedRace ||
+            !ethnic ||
+            !selectedJob ||
+            !selectedLife ||
+            !selectedCareer ||
+            !selectedNeed
         ) {
             setIsContinue(false);
         } else {
             setIsContinue(true);
-            const educationalLevel = await AsyncStorage.setItem(
-                'educationalLevel',
-                selectedEducation
+            const race = await AsyncStorage.setItem('race', selectedRace);
+            const ethnicGroup = await AsyncStorage.setItem(
+                'ethnicGroup',
+                ethnic
             );
-            const languageAbilities = await AsyncStorage.setItem(
-                'languageAbilities',
-                selectedLanguage
+            const jobCategory = await AsyncStorage.setItem(
+                'jobCategory',
+                selectedJob
             );
-            const litNumProficiency = await AsyncStorage.setItem(
-                'litNumProficiency',
-                selectedLiteracy
+            const lifeStage = await AsyncStorage.setItem(
+                'lifeStage',
+                selectedLife
             );
-            const learningPreferences = await AsyncStorage.setItem(
-                'learningPreferences',
-                selectedLearning
+            const careerStage = await AsyncStorage.setItem(
+                'careerStage',
+                selectedCareer
             );
-            const priorKnowledge = await AsyncStorage.setItem(
-                'priorKnowledge',
-                selectedSkill
+            const specialNeeds = await AsyncStorage.setItem(
+                'specialNeeds',
+                selectedNeed
             );
-            router.push('LearnerAssessmentDynamics');
+            router.push('/legacy_signup_form/LearnerAssessmentCognitive');
         }
     };
 
@@ -86,37 +102,34 @@ export default function LearnerAssessmentCognitive() {
                     />
                     <View style={{marginTop: 5}}>
                         <ChatBubble position="left" isUser={true}>
-                            What cognitive abilities do you possess?
+                            What are your demographics?
                         </ChatBubble>
                     </View>
                 </View>
-
                 <View style={{marginVertical: 20}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Text style={[styles.text, {flex: 1}]}>
-                            Education Level
-                        </Text>
+                        <Text style={[styles.text, {flex: 1}]}>Race</Text>
                         <View
                             style={[
                                 styles.selectOption,
-                                !isContinue && !selectedEducation
+                                !isContinue && !selectedRace
                                     ? styles.wrongBorder
                                     : styles.correctBorder,
                             ]}
                         >
                             <Picker
-                                selectedValue={selectedEducation}
+                                selectedValue={selectedRace}
                                 onValueChange={(itemValue: string) =>
-                                    setEducation(itemValue)
+                                    setRace(itemValue)
                                 }
                             >
                                 <Picker.Item
                                     style={styles.defaultOptionText}
-                                    label="Select Education Level"
+                                    label="Select Race"
                                     value=""
                                     enabled={false}
                                 />
-                                {education.map((value) => (
+                                {race.map((value) => (
                                     <Picker.Item
                                         style={{fontSize: 14}}
                                         key={value}
@@ -129,8 +142,8 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={styles.alignFieldRequired}>
-                            {!selectedEducation && !isContinue && (
+                        <View style={{flex: 2.5}}>
+                            {!selectedRace && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
                                 </Text>
@@ -140,43 +153,26 @@ export default function LearnerAssessmentCognitive() {
 
                     <View style={styles.alignOption}>
                         <Text style={[styles.text, {flex: 1}]}>
-                            Language Abilities
+                            Ethnic{'\n'}Group
                         </Text>
-                        <View
+                        <TextInput
                             style={[
-                                styles.selectOption,
-                                !isContinue && !selectedLanguage
+                                styles.textInputStyle,
+                                !isContinue && !ethnic
                                     ? styles.wrongBorder
                                     : styles.correctBorder,
                             ]}
-                        >
-                            <Picker
-                                selectedValue={selectedLanguage}
-                                onValueChange={(itemValue: string) =>
-                                    setLanguage(itemValue)
-                                }
-                            >
-                                <Picker.Item
-                                    style={styles.defaultOptionText}
-                                    label="Select Language Abilities"
-                                    value=""
-                                    enabled={false}
-                                />
-                                {language.map((value) => (
-                                    <Picker.Item
-                                        style={{fontSize: 14}}
-                                        key={value}
-                                        label={value}
-                                        value={value}
-                                    />
-                                ))}
-                            </Picker>
-                        </View>
+                            multiline={true}
+                            numberOfLines={4}
+                            value={ethnic}
+                            onChangeText={setEthnic}
+                            placeholder="Specify ethnic groups relevant to your region or organization"
+                        />
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={styles.alignFieldRequired}>
-                            {!selectedLanguage && !isContinue && (
+                        <View style={{flex: 2.5}}>
+                            {!ethnic && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
                                 </Text>
@@ -186,29 +182,29 @@ export default function LearnerAssessmentCognitive() {
 
                     <View style={styles.alignOption}>
                         <Text style={[styles.text, {flex: 1}]}>
-                            Literacy & Numeracy
+                            Job{'\n'}Category
                         </Text>
                         <View
                             style={[
                                 styles.selectOption,
-                                !isContinue && !selectedLiteracy
+                                !isContinue && !selectedJob
                                     ? styles.wrongBorder
                                     : styles.correctBorder,
                             ]}
                         >
                             <Picker
-                                selectedValue={selectedLiteracy}
+                                selectedValue={selectedJob}
                                 onValueChange={(itemValue: string) =>
-                                    setLiteracy(itemValue)
+                                    setJob(itemValue)
                                 }
                             >
                                 <Picker.Item
                                     style={styles.defaultOptionText}
-                                    label="Select Literacy & Numeracy Proficiency"
+                                    label="Select Job Category"
                                     value=""
                                     enabled={false}
                                 />
-                                {literacy.map((value) => (
+                                {job.map((value) => (
                                     <Picker.Item
                                         style={{fontSize: 14}}
                                         key={value}
@@ -221,8 +217,8 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={styles.alignFieldRequired}>
-                            {!selectedLiteracy && !isContinue && (
+                        <View style={{flex: 2.5}}>
+                            {!selectedJob && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
                                 </Text>
@@ -232,29 +228,29 @@ export default function LearnerAssessmentCognitive() {
 
                     <View style={styles.alignOption}>
                         <Text style={[styles.text, {flex: 1}]}>
-                            Learning{'\n'}Preferences
+                            Life{'\n'}Stage
                         </Text>
                         <View
                             style={[
                                 styles.selectOption,
-                                !isContinue && !selectedLearning
+                                !isContinue && !selectedLife
                                     ? styles.wrongBorder
                                     : styles.correctBorder,
                             ]}
                         >
                             <Picker
-                                selectedValue={selectedLearning}
+                                selectedValue={selectedLife}
                                 onValueChange={(itemValue: string) =>
-                                    setLearning(itemValue)
+                                    setLife(itemValue)
                                 }
                             >
                                 <Picker.Item
                                     style={styles.defaultOptionText}
-                                    label="Select Learning Preferences"
+                                    label="Select Life Stage"
                                     value=""
                                     enabled={false}
                                 />
-                                {learning.map((value) => (
+                                {life.map((value) => (
                                     <Picker.Item
                                         style={{fontSize: 14}}
                                         key={value}
@@ -267,8 +263,8 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={styles.alignFieldRequired}>
-                            {!selectedLearning && !isContinue && (
+                        <View style={{flex: 2.5}}>
+                            {!selectedLife && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
                                 </Text>
@@ -278,29 +274,29 @@ export default function LearnerAssessmentCognitive() {
 
                     <View style={styles.alignOption}>
                         <Text style={[styles.text, {flex: 1}]}>
-                            Prior Knowledge & Skills
+                            Career{'\n'}Stage
                         </Text>
                         <View
                             style={[
                                 styles.selectOption,
-                                !isContinue && !selectedSkill
+                                !isContinue && !selectedCareer
                                     ? styles.wrongBorder
                                     : styles.correctBorder,
                             ]}
                         >
                             <Picker
-                                selectedValue={selectedSkill}
+                                selectedValue={selectedCareer}
                                 onValueChange={(itemValue: string) =>
-                                    setSkill(itemValue)
+                                    setCareer(itemValue)
                                 }
                             >
                                 <Picker.Item
                                     style={styles.defaultOptionText}
-                                    label="Select Prior Knowledge & Skills"
+                                    label="Select Career Stage"
                                     value=""
                                     enabled={false}
                                 />
-                                {literacy.map((value) => (
+                                {career.map((value) => (
                                     <Picker.Item
                                         style={{fontSize: 14}}
                                         key={value}
@@ -313,8 +309,54 @@ export default function LearnerAssessmentCognitive() {
                     </View>
                     <View style={{flexDirection: 'row'}}>
                         <View style={{flex: 1}}></View>
-                        <View style={styles.alignFieldRequired}>
-                            {!selectedSkill && !isContinue && (
+                        <View style={{flex: 2.5}}>
+                            {!selectedCareer && !isContinue && (
+                                <Text style={[styles.errorText]}>
+                                    This field is required.
+                                </Text>
+                            )}
+                        </View>
+                    </View>
+
+                    <View style={styles.alignOption}>
+                        <Text style={[styles.text, {flex: 1}]}>
+                            Special{'\n'}Needs
+                        </Text>
+                        <View
+                            style={[
+                                styles.selectOption,
+                                !isContinue && !selectedNeed
+                                    ? styles.wrongBorder
+                                    : styles.correctBorder,
+                            ]}
+                        >
+                            <Picker
+                                selectedValue={selectedNeed}
+                                onValueChange={(itemValue: string) =>
+                                    setNeed(itemValue)
+                                }
+                            >
+                                <Picker.Item
+                                    style={styles.defaultOptionText}
+                                    label="Select Special Needs"
+                                    value=""
+                                    enabled={false}
+                                />
+                                {need.map((value) => (
+                                    <Picker.Item
+                                        style={{fontSize: 14}}
+                                        key={value}
+                                        label={value}
+                                        value={value}
+                                    />
+                                ))}
+                            </Picker>
+                        </View>
+                    </View>
+                    <View style={{flexDirection: 'row'}}>
+                        <View style={{flex: 1}}></View>
+                        <View style={{flex: 2.5}}>
+                            {!selectedNeed && !isContinue && (
                                 <Text style={[styles.errorText]}>
                                     This field is required.
                                 </Text>
@@ -342,7 +384,7 @@ const styles = StyleSheet.create({
     },
     insideContainer: {
         flexGrow: 1,
-        // margin: 20,
+        // margin: 20
     },
     mascotImage: {
         height: 150,
@@ -350,11 +392,8 @@ const styles = StyleSheet.create({
         marginRight: 40,
         marginLeft: 20,
     },
-    alignFieldRequired: {
-        flex: 1.5
-    },
     selectOption: {
-        flex: 1.5,
+        flex: 2.5,
         borderWidth: 1,
         borderRadius: 10,
     },
@@ -369,6 +408,13 @@ const styles = StyleSheet.create({
     wrongBorder: {
         borderColor: Colors.border.wrongColor,
     },
+    textInputStyle: {
+        flex: 2.3,
+        borderWidth: 1,
+        borderRadius: 10,
+        padding: 10,
+        textAlignVertical: 'top',
+    },
     text: {
         textTransform: 'uppercase',
         fontWeight: 'bold',
@@ -377,7 +423,7 @@ const styles = StyleSheet.create({
     },
     defaultOptionText: {
         color: Colors.default.optionText,
-        fontSize: Colors.default.optionFontSize,
+        fontSize: 14,
     },
     errorText: {
         color: Colors.border.wrongColor,

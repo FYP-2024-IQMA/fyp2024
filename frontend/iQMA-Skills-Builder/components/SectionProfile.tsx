@@ -1,6 +1,6 @@
 // components/SectionProfile.tsx
 
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View, Image, Pressable} from 'react-native';
 
 import {Colors} from '@/constants/Colors';
 import React, {useEffect, useRef, useState, useContext} from 'react';
@@ -332,10 +332,14 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
 
     return (
         <View style={styles.main}>
-            <TouchableOpacity
-                style={styles.sectionCard}
+            <Pressable
+                style={({pressed}) => [
+                    styles.sectionCard,
+                    pressed && {transform: [{scale: 0.99}]},
+                  ]}
                 onPress={handlePress}
                 disabled={status === 'not-started'}
+                
             >
                 <Image
                     source={require('../assets/images/communication.jpg')}
@@ -367,7 +371,7 @@ const SectionProfile: React.FC<SectionProfileProps> = ({
                         <Text style={styles.lockedText}>LOCKED</Text>
                     </View>
                 )}
-            </TouchableOpacity>
+            </Pressable>
         </View>
     );
 };

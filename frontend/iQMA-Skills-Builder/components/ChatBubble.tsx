@@ -42,6 +42,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                         style={styles.icon}
                     />
                 )}
+                
                 <View
                     style={[
                         styles.bubble,

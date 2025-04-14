@@ -7,7 +7,7 @@ export interface Accounts {
     email: string;
     role: Enums<"role">;
     dateCreated: Date;
-    age: Enums<"age_type">;
+    age: Enums<"age_type"> | null;
     gender: Enums<"gender_type">;
     hasOnboarded: boolean;
     profilePic: string | null;
@@ -17,7 +17,7 @@ export interface Accounts {
     getEmail(): string;
     getRole(): Enums<"role">;
     getDateCreated(): Date;
-    getAge(): Enums<"age_type">;
+    getAge(): Enums<"age_type"> | null;
     getGender(): Enums<"gender_type">;
     getHasOnboarded(): boolean;
 }
@@ -29,7 +29,7 @@ export class Learner implements Accounts {
     email: string;
     role: Enums<"role">;
     dateCreated: Date;
-    age: Enums<"age_type">;
+    age: Enums<"age_type"> | null;
     gender: Enums<"gender_type">;
     hasOnboarded: boolean;
     profilePic: string | null;
@@ -41,7 +41,7 @@ export class Learner implements Accounts {
         email: string,
         role: Enums<"role">,
         dateCreated: Date,
-        age: Enums<"age_type">,
+        age: Enums<"age_type"> | null,
         gender: Enums<"gender_type">,
         hasOnboarded: boolean,
         profilePic: string | null
@@ -79,7 +79,7 @@ export class Learner implements Accounts {
         return this.dateCreated;
     }
 
-    getAge(): Enums<"age_type"> {
+    getAge(): Enums<"age_type"> | null {
         return this.age;
     }
 
@@ -99,7 +99,7 @@ export class Admin implements Accounts {
     email: string;
     role: Enums<"role">;
     dateCreated: Date;
-    age: Enums<"age_type">;
+    age: Enums<"age_type"> | null;
     gender: Enums<"gender_type">;
     hasOnboarded: boolean;
     profilePic: string | null;
@@ -111,7 +111,7 @@ export class Admin implements Accounts {
         email: string,
         role: Enums<"role">,
         dateCreated: Date,
-        age: Enums<"age_type">,
+        age: Enums<"age_type"> | null,
         gender: Enums<"gender_type">,
         hasOnboarded: boolean,
         profilePic: string | null
@@ -148,7 +148,7 @@ export class Admin implements Accounts {
         return this.dateCreated;
     }
 
-    getAge(): Enums<"age_type"> {
+    getAge(): Enums<"age_type"> | null{
         return this.age;
     }
 

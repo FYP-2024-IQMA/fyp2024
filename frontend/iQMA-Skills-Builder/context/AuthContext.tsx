@@ -49,7 +49,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
     // Watch for changes in User Session
     const watchUserSession = async () => {
-        if (user) {
+        // if (user) {
+        if (user && user.sub !== currentUser?.sub) {
             setCurrentUser(user);
             await fetchToken();
             console.log(user);

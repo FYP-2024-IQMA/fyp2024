@@ -1,5 +1,6 @@
 import {
     Modal,
+    Pressable,
     StyleSheet,
     Text,
     TextInput,
@@ -12,6 +13,8 @@ import {Colors} from '@/constants/Colors';
 import {Picker} from '@react-native-picker/picker';
 
 import {packageFeedback, sendFeedback} from '@/helpers/feedbackEndpoints';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 // Define types for the component
 type FeedbackComponentProps = {
@@ -120,12 +123,18 @@ const FeedbackComponent: React.FC<FeedbackComponentProps> = ({userID}) => {
     return (
         <View style={styles.container}>
             {/* Floating Button */}
-            <TouchableOpacity
-                style={styles.bubble}
+            <Pressable
+                // style={styles.bubble}
+                style={({pressed}) => [
+                    styles.bubble,
+                    pressed && {transform: [{scale: 0.96}]},
+                ]}
                 onPress={() => setVisible(true)}
             >
-                <Text style={styles.bubbleText} allowFontScaling={false}>🗳️</Text>
-            </TouchableOpacity>
+                {/* <Text style={styles.bubbleText} allowFontScaling={false}>🗳️</Text> */}
+                <Text style={styles.bubbleText} allowFontScaling={false}><MaterialCommunityIcons name="mailbox-up-outline" size={34} color="white" /></Text>
+
+            </Pressable>
 
             {/* Modal for Form */}
             <Modal visible={visible} transparent={true} animationType="slide">
@@ -255,7 +264,7 @@ const styles = StyleSheet.create({
         left: 20,
         position: 'absolute',
         zIndex: 1000,
-        elevation: 3
+        elevation: 4
     },
     bubbleText: {
         color: Colors.chatbot.inputColor,

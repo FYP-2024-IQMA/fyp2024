@@ -32,21 +32,6 @@ export default function Index() {
     console.log("currentUser: ", currentUser);
     console.log("checkUID: ", checkUID);
 
-    // if (isStorageLoading || isLoading || currentUser || checkUID) {
-    //     return (
-    //         <>
-    //             <View
-    //                 style={{
-    //                     flex: 1,
-    //                     justifyContent: 'center',
-    //                     alignItems: 'center',
-    //                     backgroundColor: Colors.light.background,
-    //                 }}
-    //             ></View>
-    //         </>
-    //     );
-    // }
-
     return (
         <>
             <View
@@ -55,7 +40,7 @@ export default function Index() {
                         justifyContent: 'center',
                         alignItems: 'center',
                         backgroundColor: '#C3B1FF',
-                        padding: 20
+                        padding: 40
                     }}
                 >
                     <LogoVisual />

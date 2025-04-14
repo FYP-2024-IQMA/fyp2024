@@ -16,6 +16,8 @@ import {useNavigation} from '@react-navigation/native';
 import { useTimer } from '@/helpers/useTimer';
 import VideoPlayer from '@/components/VideoPlayer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 // where things show up
 export default function RealityCheck() {
@@ -23,14 +25,16 @@ export default function RealityCheck() {
 
     // Use this for Routing
     const {
-        sectionID,
-        unitID,
-        currentUnit,
-        totalUnits,
-        isFinal,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens, inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'RealityCheck',
+                inProgress: inProgress === 'true',
+            });
+    
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -45,9 +49,11 @@ export default function RealityCheck() {
     const [playing, setPlaying] = useState<boolean>(true);
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: "center",
@@ -117,13 +123,12 @@ export default function RealityCheck() {
             params: {
                 sectionID,
                 unitID,
-                currentUnit,
-                totalUnits,
+                lessonID,
                 isFinal,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
+                inProgress
             },
         });
         stopTimer();

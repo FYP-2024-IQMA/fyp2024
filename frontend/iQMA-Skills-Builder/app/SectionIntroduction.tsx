@@ -1,204 +1,167 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
-import {
-    StyleSheet,
-    Text,
-    View,
-    ScrollView,
-    TouchableOpacity,
-} from 'react-native';
-import {router, useFocusEffect, useLocalSearchParams} from 'expo-router';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from 'react-native';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 
-import {Colors} from '@/constants/Colors';
-import {CustomButton} from '@/components/CustomButton';
-import {LoadingIndicator} from '@/components/LoadingIndicator';
-import {useTimer} from '@/helpers/useTimer';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {OverviewCard} from '@/components/OverviewCard';
+import * as sectionEndpoints from '@/helpers/sectionEndpoints';
+
+import { Colors } from '@/constants/Colors';
+import { CustomButton } from '@/components/CustomButton';
+import { LoadingIndicator } from '@/components/LoadingIndicator';
+import { OverviewCard } from '@/components/OverviewCard';
 import ProgressBar from '@/components/ProgressBar';
 import SectionCard from '@/components/SectionCard';
-import YoutubePlayer from 'react-native-youtube-iframe';
-import {formatSection} from '@/helpers/formatSectionID';
-import {useNavigation} from '@react-navigation/native';
-import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import VideoPlayer from '@/components/VideoPlayer';
-import {Ionicons} from '@expo/vector-icons';
 
-// where things show up
+import { formatSection } from '@/helpers/formatSectionID';
+import { useTimer } from '@/helpers/useTimer';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useUpdateUserScreenProgress } from '@/hooks/useUpdateUserScreenProgress';
+
 export default function SectionIntroduction() {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
+  const { sectionID, unitID, lessonID, stoneIndex, screenIndex, totalScreens, inProgress } = useLocalSearchParams();
 
-    const {
-        sectionID,
-        unitID,
-        lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
-    } = useLocalSearchParams();
-    // const sectionID = 'SEC0001'; // to be removed
-    const [sectionNumber, setSectionNumber] = useState<string>('');
-    const [sectionName, setSectionName] = useState<string>('');
-    const [videoId, setVideoId] = useState<string>('');
-    const [playing, setPlaying] = useState<boolean>(true);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const {startTimer, stopTimer} = useTimer(
-        sectionID as string,
-        'Introduction'
-    );
+  useUpdateUserScreenProgress({
+    stoneIndex: Number(stoneIndex),
+    screenIndex: Number(screenIndex),
+    screenPathname: 'SectionIntroduction',
+    inProgress: inProgress === 'true',
+  });
 
-    useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+  const [isLoading, setIsLoading] = useState(true);
+  const [sectionNumber, setSectionNumber] = useState('');
+  const [sectionName, setSectionName] = useState('');
+  const [videoId, setVideoId] = useState('');
+  const [playing, setPlaying] = useState(true);
 
-        navigation.setOptions({
-            headerTitleAlign: 'center',
-            headerTitle: () => (
-                <ProgressBar progress={progress} isQuestionnaire={false} />
-            ),
-            headerRight: () => (
-                <TouchableOpacity
-                    onPress={() => {
-                        router.replace('Home');
-                    }}
-                >
-                    <Ionicons name="home" size={24} color="black" />
-                </TouchableOpacity>
-            ),
-        });
-    }, [navigation]);
+  const { startTimer, stopTimer } = useTimer(
+    sectionID as string,
+    'Introduction'
+  );
 
-    useFocusEffect(
-        useCallback(() => {
-            setPlaying(true);
-            return () => {
-                setPlaying(false);
-            };
-        }, [])
-    );
+  useLayoutEffect(() => {
+    const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
 
-    useEffect(() => {
+    navigation.setOptions({
+      headerTitleAlign: 'center',
+      headerTitle: () => (
+        <ProgressBar progress={progress} isQuestionnaire={false} />
+      ),
+      headerRight: () => (
+        <TouchableOpacity onPress={() => router.replace('Home')}>
+          <Ionicons name="home" size={24} color="black" />
+        </TouchableOpacity>
+      ),
+    });
+  }, [navigation, screenIndex, totalScreens]);
+
+  useFocusEffect(
+    useCallback(() => {
+      setPlaying(true);
+      return () => setPlaying(false);
+    }, [])
+  );
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setIsLoading(true);
         startTimer();
+
         if (sectionID) {
-            (async () => {
-                try {
-                    const sectionDetails =
-                        await sectionEndpoints.getSectionDetails(
-                            sectionID as string
-                        );
-
-                    setVideoId(sectionDetails.introductionURL);
-                    setSectionName(sectionDetails.sectionName);
-
-                    setSectionNumber(formatSection(sectionID as string));
-                    await AsyncStorage.setItem(
-                        'section',
-                        sectionDetails.sectionName
-                    );
-                } catch (error) {
-                    console.error('Error fetching Lesson details:', error);
-                } finally {
-                    setIsLoading(false);
-                }
-            })();
+          const sectionDetails = await sectionEndpoints.getSectionDetails(sectionID as string);
+          setVideoId(sectionDetails.introductionURL);
+          setSectionName(sectionDetails.sectionName);
+          setSectionNumber(formatSection(sectionID as string));
+          await AsyncStorage.setItem('section', sectionDetails.sectionName);
         }
-    }, [sectionID]);
+      } catch (error) {
+        console.error('Error fetching Section details:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    })();
+  }, [sectionID]);
 
-    const handlePress = async () => {
-        setPlaying(false);
-        router.push({
-            pathname: 'UnitIntroduction',
-            params: {
-                sectionID,
-                unitID,
-                lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
-            },
-        });
-        // console.log("STATE: " + playing)
-        stopTimer();
-    };
+  const handlePress = async () => {
+    try {
+      setPlaying(false);
+      router.push({
+        pathname: 'UnitIntroduction',
+        params: {
+          sectionID,
+          unitID,
+          lessonID,
+          stoneIndex,
+          screenIndex: (Number(screenIndex) + 1).toString(),
+          totalScreens,
+          inProgress
+        },
+      });
+    } finally {
+      stopTimer();
+    }
+  };
 
-    const onStateChange = (state: string) => {
-        if (state === 'ended' || state === 'paused') {
-            setPlaying(false);
-        }
-        if (state === 'playing') {
-            setPlaying(true);
-        }
-    };
+  const onStateChange = (state: string) => {
+    if (state === 'ended' || state === 'paused') setPlaying(false);
+    if (state === 'playing') setPlaying(true);
+  };
 
-    return (
-        <ScrollView
-            // contentContainerStyle={{flexGrow: 1}}
-            // style={styles.container}
-            contentContainerStyle={{
-                flexGrow: 1,
-                padding: 20,
-                backgroundColor: Colors.light.background
-            }}
-        >
-            {isLoading ? (
-                <LoadingIndicator />
+  return (
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {isLoading ? (
+        <LoadingIndicator />
+      ) : (
+        <>
+          <View style={styles.insideContainer}>
+            <SectionCard
+              title={`SECTION ${sectionNumber}`}
+              subtitle={sectionName}
+            />
+            <Text style={styles.screenTitle}>
+              Section {sectionNumber}: Introduction
+            </Text>
+            {videoId ? (
+              <VideoPlayer
+                videoUrl={videoId}
+                playing={playing}
+                onStateChange={onStateChange}
+              />
             ) : (
-                <>
-                    <View style={styles.insideContainer}>
-                        <SectionCard
-                            title={`SECTION ${sectionNumber}`}
-                            subtitle={sectionName}
-                        />
-                        <Text style={styles.screenTitle}>
-                            Section {sectionNumber}: Introduction
-                        </Text>
-                        {videoId ? (
-                            <VideoPlayer
-                                videoUrl={videoId}
-                                playing={playing}
-                                onStateChange={onStateChange}
-                            />
-                        ) : (
-                            <OverviewCard
-                                isError={true}
-                                text="Video is not available. Please check with your administrator."
-                            />
-                        )}
-                    </View>
-                    <CustomButton
-                        label="Continue"
-                        backgroundColor="white"
-                        onPressHandler={handlePress}
-                    />
-                </>
+              <OverviewCard
+                isError
+                text="Video is not available. Please check with your administrator."
+              />
             )}
-        </ScrollView>
-    );
+          </View>
+          <CustomButton
+            label="Continue"
+            backgroundColor="white"
+            onPressHandler={handlePress}
+          />
+        </>
+      )}
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: Colors.light.background,
-        padding: 20,
-        flex: 1,
-    },
-    insideContainer: {
-        flexGrow: 1,
-        // margin: 20,
-    },
-    screenTitle: {
-        fontSize: Colors.lessonName.fontSize,
-        fontWeight: 'bold',
-        color: Colors.header.color,
-        marginBottom: 20,
-        marginHorizontal: 10,
-    },
+  scrollContainer: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: Colors.light.background,
+  },
+  insideContainer: {
+    flexGrow: 1,
+  },
+  screenTitle: {
+    fontSize: Colors.lessonName.fontSize,
+    fontWeight: 'bold',
+    color: Colors.header.color,
+    marginBottom: 20,
+    marginHorizontal: 10,
+  },
 });

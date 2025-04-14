@@ -105,7 +105,7 @@ export default function LearnerAssessmentComplete() {
             );
             console.log('Account has been updated', accountResponse);
 
-            router.push('Home');
+            router.push('/Home');
         } catch (e) {
             console.log('here');
             console.error(e);

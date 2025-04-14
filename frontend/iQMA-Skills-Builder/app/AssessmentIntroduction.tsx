@@ -36,6 +36,8 @@ import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import {AudioPlayer} from '@/components/AudioPlayer';
 import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 export default function AssessmentIntroduction() {
     const navigation = useNavigation();
@@ -46,14 +48,16 @@ export default function AssessmentIntroduction() {
     // const currentUnit = "1";
     // const totalUnits = "1"
     const {
-        sectionID,
-        unitID,
-        currentUnit,
-        totalUnits,
-        isFinal,
-        currentProgress,
-        totalProgress,
+        sectionID, unitID, lessonID, isFinal, stoneIndex, screenIndex, totalScreens, inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'AssessmentIntroduction',
+                inProgress: inProgress === 'true',
+            });
+
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [seconds, setSeconds] = useState<number>(0);
@@ -78,9 +82,11 @@ export default function AssessmentIntroduction() {
     }, []);
 
     useLayoutEffect(() => {
-        const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
+        const progress = ((Number(screenIndex) + 1) || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -142,18 +148,18 @@ export default function AssessmentIntroduction() {
         if (checkFinal) {
             pathName = 'Assessment';
         }
+
         router.push({
             pathname: pathName,
             params: {
                 sectionID,
                 unitID,
-                currentUnit,
-                totalUnits,
+                lessonID,
                 isFinal,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
+                stoneIndex,
+                screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                totalScreens,
+                inProgress
             },
         });
         stopTimer();

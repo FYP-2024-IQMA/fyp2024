@@ -8,6 +8,7 @@ import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 import {
     NativeScrollEvent,
     NativeSyntheticEvent,
+    Pressable,
     ScrollView,
     StyleSheet,
     Text,
@@ -25,9 +26,9 @@ import {router, useFocusEffect} from 'expo-router';
 import {useContext} from 'react';
 import {Achievements} from '@/components/Achievement';
 import CertificationsList from '@/components/Certification';
-import { globalStyles } from '@/constants/styles';
-import { AudioPlayer } from '@/components/AudioPlayer';
-import { Colors } from '@/constants/Colors';
+import {globalStyles} from '@/constants/styles';
+import {AudioPlayer} from '@/components/AudioPlayer';
+import {Colors} from '@/constants/Colors';
 
 const ProfilePage: React.FC = () => {
     const {currentUser, isLoading} = useContext(AuthContext);
@@ -102,7 +103,12 @@ const ProfilePage: React.FC = () => {
                         >
                             Courses
                         </Text>
-                        <TouchableOpacity onPress={handlePressCourses}>
+                        <Pressable
+                            onPress={handlePressCourses}
+                            style={({pressed}) => [
+                                pressed && {transform: [{scale: 0.96}]},
+                            ]}
+                        >
                             <Text
                                 style={{
                                     textDecorationLine: 'underline',
@@ -112,7 +118,7 @@ const ProfilePage: React.FC = () => {
                             >
                                 View all
                             </Text>
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                     <View
                         style={{
@@ -158,10 +164,9 @@ const ProfilePage: React.FC = () => {
 const styles = StyleSheet.create({
     scrollView: {
         flexGrow: 1,
-        backgroundColor: Colors.light.background
+        backgroundColor: Colors.light.background,
     },
-    container: {
-    },
+    container: {},
 });
 
 export default ProfilePage;

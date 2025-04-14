@@ -103,7 +103,7 @@ export async function getAccountsByRole(role: "admin" | "learner") {
 /* UPDATE */
 
 export async function updateAccount(account: Accounts) {
-    const { userID, firstName, lastName, email, hasOnboarded } = account;
+    const { userID, firstName, lastName, email, age, hasOnboarded } = account;
 
     const updateFields: { [key: string]: any } = {};
 
@@ -111,6 +111,7 @@ export async function updateAccount(account: Accounts) {
     if (lastName) updateFields.lastName = lastName;
     if (email) updateFields.email = email;
     if (hasOnboarded) updateFields.hasOnboarded = hasOnboarded;
+    if (age) updateFields.age = age;
 
     if (Object.keys(updateFields).length === 0) {
         throw new Error("No fields to update");

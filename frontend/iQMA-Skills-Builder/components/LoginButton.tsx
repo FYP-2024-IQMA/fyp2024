@@ -27,9 +27,17 @@ export const LoginButton = () => {
                     </View>
                 </Pressable>
             )} */}
-            <Pressable onPress={logIn} style={[styles.button]}>
+            <Pressable
+                onPress={logIn}
+                style={({pressed}) => [
+                    styles.button,
+                    pressed && {transform: [{scale: 0.96}]},
+                ]}
+            >
                 <View>
-                    <Text style={{color: 'white', padding: 10}}>Get Started</Text>
+                    <Text style={{color: 'white', padding: 15, fontWeight: 'bold'}}>
+                        GET STARTED
+                    </Text>
                 </View>
             </Pressable>
         </>
@@ -38,11 +46,19 @@ export const LoginButton = () => {
 const styles = StyleSheet.create({
     button: {
         // width: screenWidth * 0.8,
-        width: "100%",
+        width: '100%',
         borderRadius: 5,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: Colors.default.purple500,
         // height: 40,
+        shadowColor: '#000', // black shadow
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        elevation: 5,
     },
 });

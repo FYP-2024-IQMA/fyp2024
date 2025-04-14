@@ -37,6 +37,18 @@ export const getStreak = async (userID: string) => {
     }
 };
 
+export const getShouldShowStreak = async (userID: string) => {
+    try {
+        const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/getshouldshowstreak/${userID}`;
+        const response = await fetch(url);
+        const showStreak = await response.json();
+        return showStreak;
+    } catch (error) {
+        console.error('Error fetching ShouldShowStreak:', error);
+        return [];
+    }
+};
+
 export const updatePoints = async (userID: string, points: number) => {
     try {
         const url = `${process.env.EXPO_PUBLIC_LOCALHOST_URL}/accounts/updatepoints`;
@@ -73,6 +85,8 @@ export const updateStreakInLogin = async (userID: string) => {
         const response = await axios.patch(url);
         const result = await response.data;
         console.log('Streak successfully updated:', result);
+
+        return response.data
     } catch (error: any) {
         console.error('Error updating streak:', error.response.data);
     }
@@ -84,6 +98,8 @@ export const updateStreakUnit = async (userID: string, quizID: string) => {
         const response = await axios.patch(url);
         const result = await response.data;
         console.log('Streak successfully updated:', result);
+
+        return response.data
     } catch (error: any) {
         console.error('Error updating streak:', error.response.data);
     }

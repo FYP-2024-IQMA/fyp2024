@@ -7,19 +7,21 @@ const router = Router();
 
 /* READ */
 router.get(
-	"/getnumberoflessons/:sectionID/:unitID",
-	verifyToken,
-	lessonController.getNoOfLessonPerUnit
+  "/getnumberoflessons/:sectionID/:unitID",
+  verifyToken,
+  lessonController.getNoOfLessonPerUnit
 );
 router.get(
-	"/getlesson/:sectionID/:unitID/:lessonID",
-	verifyToken,
-	lessonController.getLesson
+  "/getlesson/:sectionID/:unitID/:lessonID",
+  verifyToken,
+  lessonController.getLesson
 );
 router.get(
-	"/getalllessons/:sectionID/:unitID",
-	verifyToken,
-	lessonController.getAllLessons
+  "/getalllessons/:sectionID/:unitID",
+  verifyToken,
+  lessonController.getAllLessons
 );
+
+router.get("/getalllessons", verifyToken, lessonController.getAllLesson);
 
 export default router;

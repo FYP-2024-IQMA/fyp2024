@@ -8,7 +8,13 @@ import {
     TouchableOpacity,
     ScrollView,
 } from 'react-native';
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {
+    useContext,
+    useEffect,
+    useLayoutEffect,
+    useRef,
+    useState,
+} from 'react';
 import {router, useLocalSearchParams, useRouter} from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -24,22 +30,33 @@ import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
 import {useTimer} from '@/helpers/useTimer';
 import {Ionicons} from '@expo/vector-icons';
+import * as userStoneProgressEndpoints from '@/helpers/userStoneProgressEndpoints';
+import {AuthContext} from '@/context/AuthContext';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
 
 // where things show up
 export default function UnitIntroduction() {
     const navigation = useNavigation();
 
+    const {currentUser} = useContext(AuthContext);
+
     const {
         sectionID,
         unitID,
         lessonID,
-        currentLessonIdx,
-        totalLesson,
-        currentUnit,
-        totalUnits,
-        currentProgress,
-        totalProgress,
+        stoneIndex,
+        screenIndex,
+        totalScreens,
+        inProgress,
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+        stoneIndex: Number(stoneIndex),
+        screenIndex: Number(screenIndex),
+        screenPathname: 'UnitIntroduction',
+        inProgress: inProgress === 'true',
+    });
+
     const [sectionNumber, setSectionNumber] = useState<string>('');
     const [unitNumber, setUnitNumber] = useState<string>('');
     const [unitName, setUnitName] = useState<string>('');
@@ -52,9 +69,12 @@ export default function UnitIntroduction() {
     );
 
     useLayoutEffect(() => {
+        // const progress =
+        //     parseInt(currentProgress as string) /
+        //     parseInt(totalProgress as string);
+
         const progress =
-            parseInt(currentProgress as string) /
-            parseInt(totalProgress as string);
+            (Number(screenIndex) + 1 || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
             headerTitleAlign: 'center',
@@ -96,24 +116,52 @@ export default function UnitIntroduction() {
         }
     }, [sectionID, unitID]);
 
+    // const handlePress = async () => {
+    //     // router.push('Lesson');
+    //     router.push({
+    //         pathname: 'Lesson',
+    //         // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
+    //         params: {
+    //             sectionID,
+    //             unitID,
+    //             lessonID,
+    //             currentLessonIdx,
+    //             totalLesson,
+    //             currentUnit,
+    //             totalUnits,
+    //             currentProgress: (
+    //                 parseInt(currentProgress as string) + 1
+    //             ).toString(),
+    //             totalProgress,
+    //         },
+    //     });
+    //     stopTimer();
+    // };
+
+    // Route back to home after clicking continue button
     const handlePress = async () => {
         // router.push('Lesson');
+
+        const userStoneProgress = {
+            userID: currentUser.sub,
+            last_completed_stone_index: parseInt(stoneIndex as string),
+            current_stone_index: parseInt(stoneIndex as string) + 1,
+            current_screen_index: 0,
+            current_screen_pathname: null,
+        };
+
+        const updateUserStoneProgress =
+            await userStoneProgressEndpoints.updateUserStoneProgress(
+                userStoneProgress
+            );
+
+        console.log(
+            'User stone progress updated successfully: ',
+            updateUserStoneProgress
+        );
+
         router.push({
-            pathname: 'Lesson',
-            // params: {sectionID: sectionID, unitID: unitID, lessonID: '1a'},
-            params: {
-                sectionID,
-                unitID,
-                lessonID,
-                currentLessonIdx,
-                totalLesson,
-                currentUnit,
-                totalUnits,
-                currentProgress: (
-                    parseInt(currentProgress as string) + 1
-                ).toString(),
-                totalProgress,
-            },
+            pathname: 'Home',
         });
         stopTimer();
     };
@@ -125,7 +173,7 @@ export default function UnitIntroduction() {
             contentContainerStyle={{
                 flexGrow: 1,
                 padding: 20,
-                backgroundColor: Colors.light.background
+                backgroundColor: Colors.light.background,
             }}
         >
             {isLoading ? (
@@ -158,7 +206,7 @@ export default function UnitIntroduction() {
                             style={{
                                 width: '100%',
                                 flexDirection: 'row-reverse',
-                                marginBottom: 20
+                                marginBottom: 20,
                             }}
                         >
                             <Image

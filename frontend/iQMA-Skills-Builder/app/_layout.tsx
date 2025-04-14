@@ -18,104 +18,30 @@ import {Stack, useNavigation} from 'expo-router';
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
-import {useDrawerStatus} from '@react-navigation/drawer';
-import EditProfile from './EditProfile';
+import {StatusBar} from 'expo-status-bar';
 
-const Tab = createBottomTabNavigator();
+import {LogBox} from 'react-native';
 
-// for bottom tabs
-const AppTabs: React.FC = () => {
-    const colorScheme = useColorScheme();
-    const tabBarOptions = {
-        activeTintColor: Colors.light.background,
-        inactiveTintColor: '#BBBBBB',
-        style: {
-            backgroundColor: Colors.default.purple500,
-        },
-    };
-
-    return (
-        // screen options expects an object or a function that returns an object
-        <Tab.Navigator
-            screenOptions={({route}) => ({
-                headerTitleAlign: 'center',
-                headerStyle: {backgroundColor: Colors.default.purple100},
-                tabBarActiveTintColor: tabBarOptions.activeTintColor,
-                tabBarInactiveTintColor: tabBarOptions.inactiveTintColor,
-                tabBarStyle: tabBarOptions.style,
-            })}
-        >
-            <Tab.Screen
-                name="screens/Home"
-                component={HomeScreen}
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({color, size}) => (
-                        <Ionicons name="home" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="screens/Chatbot"
-                component={ChatbotDrawer}
-                options={{
-                    headerShown: false,
-                    tabBarIcon: ({color, size}) => (
-                        <Ionicons
-                            name="chatbox-ellipses-outline"
-                            color={color}
-                            size={size}
-                        />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name="screens/ProfilePage"
-                component={ProfilePage}
-                options={{
-                    title: 'Profile',
-                    tabBarIcon: ({color, size}) => (
-                        <MaterialIcons
-                            name="manage-accounts"
-                            size={size}
-                            color={color}
-                        />
-                    ),
-                }}
-            />
-        </Tab.Navigator>
-    );
-};
+// Disable red screen errors
+ErrorUtils.setGlobalHandler((error: any, isFatal?: boolean) => {
+    console.log('Suppressed error:', error.message);
+});
+// Disable yellow warnings
+LogBox.ignoreAllLogs(true);
 
 // place to put ur headers, footers, and other layout components
 export default function RootLayout() {
     const [loading, setLoading] = useState(true);
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //     }, 1000);
-    // }, []);
-    // if (loading) {
-    //     return (
-    //         <View
-    //             style={{
-    //                 flex: 1,
-    //                 justifyContent: 'center',
-    //                 alignItems: 'center',
-    //             }}
-    //         >
-    //             <ActivityIndicator size="large" color="#8A2BE2" />
-    //         </View>
-    //     );
-    // }
 
     return (
-        <Auth0Provider domain={config.domain} clientId={config.clientId}>
+        <Auth0Provider domain={config.domain!} clientId={config.clientId!}>
             <AuthProvider>
                 <Stack
                     screenOptions={{
                         headerTitle: '',
                         headerTitleAlign: 'center',
+                        statusBarStyle: 'dark',
+                        statusBarColor: Colors.light.background
                     }}
                 >
                     {/* <Stack.Screen name="index" /> */}
@@ -126,14 +52,80 @@ export default function RootLayout() {
                             headerShown: false,
                         }}
                     />
+
                     <Stack.Screen
                         name="CreateProfile"
                         options={{
                             headerShown: false,
                         }}
                     />
+
                     <Stack.Screen
-                        name="LearnerAssessmentDemographics"
+                        name="IntroductionMascot"
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="IntroductionSegment"
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+
+                    {/* Sign up form */}
+                    <Stack.Screen
+                        name="signup_form/AboutYou"
+                        options={{
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={0.25}
+                                    isQuestionnaire={true}
+                                />
+                            ),
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="signup_form/LearningStyleAndSkills"
+                        options={{
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={0.5}
+                                    isQuestionnaire={true}
+                                />
+                            ),
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="signup_form/SocialAndTechHabits"
+                        options={{
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={0.75}
+                                    isQuestionnaire={true}
+                                />
+                            ),
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="signup_form/Motivation"
+                        options={{
+                            headerTitle: () => (
+                                <ProgressBar
+                                    progress={1}
+                                    isQuestionnaire={true}
+                                />
+                            ),
+                        }}
+                    />
+
+                    {/* Legacy Sign up form */}
+                    <Stack.Screen
+                        name="legacy_signup_form/LearnerAssessmentDemographics"
                         options={{
                             headerTitle: () => (
                                 <ProgressBar
@@ -144,7 +136,7 @@ export default function RootLayout() {
                         }}
                     />
                     <Stack.Screen
-                        name="LearnerAssessmentCognitive"
+                        name="legacy_signup_form/LearnerAssessmentCognitive"
                         options={{
                             headerTitle: () => (
                                 <ProgressBar
@@ -155,7 +147,7 @@ export default function RootLayout() {
                         }}
                     />
                     <Stack.Screen
-                        name="LearnerAssessmentDynamics"
+                        name="legacy_signup_form/LearnerAssessmentDynamics"
                         options={{
                             headerTitle: () => (
                                 <ProgressBar
@@ -166,7 +158,7 @@ export default function RootLayout() {
                         }}
                     />
                     <Stack.Screen
-                        name="LearnerAssessmentExperience"
+                        name="legacy_signup_form/LearnerAssessmentExperience"
                         options={{
                             headerTitle: () => (
                                 <ProgressBar
@@ -180,34 +172,35 @@ export default function RootLayout() {
                         name="(tabs)"
                         options={{headerShown: false}}
                     />
+
                     <Stack.Screen
                         name="EditProfile"
                         options={{
-                            headerTitle: "Edit Profile",
+                            headerTitle: 'Edit Profile',
                             headerStyle: {
                                 backgroundColor: Colors.default.purple100,
                             },
-                            headerTintColor: Colors.light.background
+                            headerTintColor: Colors.light.background,
                         }}
                     />
                     <Stack.Screen
                         name="Achievements"
                         options={{
-                            headerTitle: "Achievements",
+                            headerTitle: 'Achievements',
                             headerStyle: {
                                 backgroundColor: Colors.default.purple100,
                             },
-                            headerTintColor: Colors.light.background
+                            headerTintColor: Colors.light.background,
                         }}
                     />
                     <Stack.Screen
                         name="Courses"
                         options={{
-                            headerTitle: "All Courses",
+                            headerTitle: 'All Courses',
                             headerStyle: {
                                 backgroundColor: Colors.default.purple100,
                             },
-                            headerTintColor: Colors.light.background
+                            headerTintColor: Colors.light.background,
                         }}
                     />
                 </Stack>

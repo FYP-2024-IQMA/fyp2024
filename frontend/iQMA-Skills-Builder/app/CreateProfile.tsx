@@ -52,12 +52,12 @@ export default function CreateProfile() {
         setIsValidEmail(emailRegex.test(email));
     };
 
-    const age: {[key: string]: string} = {
-        '18 - 24 years old': 'Generation Z (18-24)',
-        '25 - 40 years old': 'Millennials (25-40)',
-        '40 - 55 years old': 'Generation X (40-55)',
-        '55 - 75 years old': 'Baby Boomers (55-75)',
-    };
+    // const age: {[key: string]: string} = {
+    //     '18 - 24 years old': 'Generation Z (18-24)',
+    //     '25 - 40 years old': 'Millennials (25-40)',
+    //     '40 - 55 years old': 'Generation X (40-55)',
+    //     '55 - 75 years old': 'Baby Boomers (55-75)',
+    // };
     const gender: string[] = ['Male', 'Female', 'Other'];
 
     const handlePress = async () => {
@@ -69,7 +69,7 @@ export default function CreateProfile() {
             lastName: lastName,
             email: email,
             role: 'learner',
-            age: selectedAge,
+            // age: selectedAge,
             gender: selectedGender,
             has_onboarded: 'true',
             profilePic: currentUser.picture ? currentUser.picture : null,
@@ -79,7 +79,7 @@ export default function CreateProfile() {
             !firstName ||
             !lastName ||
             !email ||
-            !selectedAge ||
+            // !selectedAge ||
             !selectedGender ||
             !isValidEmail
         ) {
@@ -200,6 +200,7 @@ export default function CreateProfile() {
                 placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
+                editable={false}
             />
 
             {!email && !isContinue && (
@@ -224,7 +225,7 @@ export default function CreateProfile() {
                 </View>
             )}
 
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            {/* <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View
                     style={{
                         flex: 2.5,
@@ -269,7 +270,7 @@ export default function CreateProfile() {
                         </Text>
                     </View>
                 </View>
-            )}
+            )} */}
 
             <View
                 style={{

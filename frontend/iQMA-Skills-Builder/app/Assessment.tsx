@@ -4,7 +4,14 @@ import * as sectionEndpoints from '@/helpers/sectionEndpoints';
 import * as unitEndpoints from '@/helpers/unitEndpoints';
 import * as gamificationEndpoints from '@/helpers/gamificationEndpoints';
 
-import {Image, ScrollView, StyleSheet, Text, View, TouchableOpacity} from 'react-native';
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+} from 'react-native';
 import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
 import {router, useLocalSearchParams} from 'expo-router';
 
@@ -21,8 +28,10 @@ import axios from 'axios';
 import {formatSection} from '@/helpers/formatSectionID';
 import {formatUnit} from '@/helpers/formatUnitID';
 import {useNavigation} from '@react-navigation/native';
-import {useTimer} from '@/helpers/useTimer'
-import {Ionicons} from '@expo/vector-icons';;
+import {useTimer} from '@/helpers/useTimer';
+import {Ionicons} from '@expo/vector-icons';
+import {useUpdateUserScreenProgress} from '@/hooks/useUpdateUserScreenProgress';
+
 
 export default function Assessment() {
     const navigation = useNavigation();
@@ -38,16 +47,30 @@ export default function Assessment() {
     const {
         sectionID,
         unitID,
-        currentUnit,
-        totalUnits,
+        lessonID,
         isFinal,
-        currentProgress,
-        totalProgress,
+        stoneIndex,
+        screenIndex,
+        totalScreens,
+        inProgress
     } = useLocalSearchParams();
+
+    useUpdateUserScreenProgress({
+                stoneIndex: Number(stoneIndex),
+                screenIndex: Number(screenIndex),
+                screenPathname: 'Assessment',
+                inProgress: inProgress === 'true',
+            });
+
     const [finalScenario, setFinalScenario] = useState<string>('');
     const [checkFinal, setCheckFinal] = useState<boolean>(false);
-    const { startTimer, stopTimer } = useTimer(sectionID as string, 'Assessment', unitID as string);
+    const {startTimer, stopTimer} = useTimer(
+        sectionID as string,
+        'Assessment',
+        unitID as string
+    );
     const [totalPoints, setTotalPoints] = useState<number>(0);
+    const [quizID, setQuizID] = useState<number>(0);
 
     // Hardcoded for now until routing confirmed
     // const isFinal: boolean = false;
@@ -72,6 +95,7 @@ export default function Assessment() {
                         );
                     setQuestions(assessmentQuestions);
                     setCheckFinal(true);
+                    setQuizID(assessmentQuestions[0].quizID);
                 } catch (error) {
                     console.error(
                         'Error fetching final assessment details:',
@@ -97,6 +121,7 @@ export default function Assessment() {
                             unitID as string
                         );
                     setQuestions(assessmentQuestions);
+                    setQuizID(assessmentQuestions[0].quizID);
                 } catch (error) {
                     console.error('Error fetching assessment details:', error);
                 } finally {
@@ -109,23 +134,26 @@ export default function Assessment() {
     }, [sectionID, unitID, checkFinal]);
 
     useLayoutEffect(() => {
-        let progress = checkFinal
-            ? 1
-            : parseInt(currentProgress as string) /
-              parseInt(totalProgress as string);
+        // let progress = checkFinal
+        //     ? 1
+        //     : parseInt(currentProgress as string) /
+        //       parseInt(totalProgress as string);
+
+        const progress =
+            (Number(screenIndex) + 1 || 1) / (Number(totalScreens) || 1);
 
         navigation.setOptions({
-            headerTitleAlign: "center",
+            headerTitleAlign: 'center',
             headerTitle: () => (
                 <ProgressBar progress={progress} isQuestionnaire={false} />
             ),
             headerRight: () => (
-                <TouchableOpacity onPress={() => {router.replace("Home")}}>
-                    <Ionicons
-                        name="home"
-                        size={24}
-                        color="black"
-                    />
+                <TouchableOpacity
+                    onPress={() => {
+                        router.replace('Home');
+                    }}
+                >
+                    <Ionicons name="home" size={24} color="black" />
                 </TouchableOpacity>
             ),
         });
@@ -153,13 +181,13 @@ export default function Assessment() {
                             questions[currentQnsIdx].quizID
                         );
 
-                        let points = await AsyncStorage.getItem(
-                            'totalPoints'
-                        );
+                        let points = await AsyncStorage.getItem('totalPoints');
                         const numPoints = parseInt(points as string);
 
-                        await gamificationEndpoints.updatePoints(currentUser.sub, numPoints);
-
+                        await gamificationEndpoints.updatePoints(
+                            currentUser.sub,
+                            numPoints
+                        );
                     }
                 } catch (error) {
                     console.error('Error in Assessment:', error);
@@ -167,17 +195,43 @@ export default function Assessment() {
 
                 router.replace('Home');
             } else {
+
+                try {
+                    const ifCompleted =
+                        await resultEndpoints.checkIfCompletedQuiz(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                    if (!ifCompleted) {
+                        await resultEndpoints.createResult(
+                            currentUser.sub,
+                            questions[currentQnsIdx].quizID
+                        );
+
+                        let points = await AsyncStorage.getItem('totalPoints');
+                        const numPoints = parseInt(points as string);
+
+                        await gamificationEndpoints.updatePoints(
+                            currentUser.sub,
+                            numPoints
+                        );
+                    }
+                } catch (error) {
+                    console.error('Error in Assessment:', error);}
+
                 router.push({
                     pathname: 'SelfReflection',
                     params: {
                         sectionID,
                         unitID,
-                        currentUnit,
-                        totalUnits,
-                        quizID: questions[currentQnsIdx].quizID,
+                        lessonID,
                         isFinal,
-                        currentProgress,
-                        totalProgress,
+                        stoneIndex,
+                        screenIndex: (Number(screenIndex) + 1).toString(), // increment by 1 screen
+                        totalScreens,
+                        quizID,
+                        inProgress
                     },
                 });
             }

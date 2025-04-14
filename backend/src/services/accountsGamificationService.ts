@@ -247,6 +247,20 @@ export async function updatePoints(userID: string, points: number) {
     }
 }
 
+export async function shouldShowStreakScreen(userID: string): Promise<boolean> {
+    const gamificationData = await getGamificationData(userID);
+
+    const lastCompletionDate = gamificationData.getLastUnitCompletionDate(); // from AccountsGamification
+    const today = new Date().toISOString().split('T')[0];
+
+    if (!lastCompletionDate) {
+        return true; // No last completion yet → should show Streak
+    }
+
+    const completedDay = lastCompletionDate.toISOString().split('T')[0];
+    return completedDay !== today; // if not same day, show Streak
+}
+
 // Ensure that the GET request fetches accurate streak data for the specified user.
 // for both login and normal streak calculation
 // export async function getStreaks(userID: string) {
@@ -283,56 +297,99 @@ function formatDate(date: Date) {
 }
 
 // Ensure that the POST request correctly updates the user's streak when they complete a new unit.
-export async function updateStreaksFromUnit(userID: string, quizID: number) {
-    const resultInstance = new Result(userID, quizID);
+// export async function updateStreaksFromUnit(userID: string, quizID: number) {
+//     const resultInstance = new Result(userID, quizID);
 
-    await createResult(resultInstance);
+//     await createResult(resultInstance);
+//     const data = await getGamificationData(userID);
+
+//     console.log("quiz is", quizID);
+//     console.log(data);
+//     try {
+//         const today = new Date();
+
+//         if (data.lastUnitCompletionDate != null) {
+//             const lastUnitDate = new Date(data.lastUnitCompletionDate);
+
+//             const daysSegment = calculateStreak(lastUnitDate, today);
+//             console.log("days segment is", daysSegment);
+//             let currentStreak = data.getStreaks();
+
+//             // Check the difference in days to update the streak
+//             if (daysSegment == 1) {
+//                 // If the difference is 1 day, increment the streak
+//                 console.log("diff 1 day, so + 1");
+//                 currentStreak += 1;
+//             } else if (daysSegment > 1) {
+//                 // If the difference is greater than 1 day, reset the streak to 1
+//                 console.log("diff > 1 day, so reset to 1");
+//                 currentStreak = 1;
+//             }
+
+//             const { status, statusText, error } = await supabase
+//                 .from("accountsgamification")
+//                 .update({
+//                     streaks: currentStreak,
+//                     lastUnitCompletionDate: formatDate(today),
+//                 })
+//                 .eq("userID", userID);
+//         } else {
+//             const { status, statusText, error } = await supabase
+//                 .from("accountsgamification")
+//                 .update({
+//                     streaks: 1,
+//                     lastUnitCompletionDate: formatDate(today),
+//                 })
+//                 .eq("userID", userID);
+//         }
+//     } catch (error) {
+//         console.log(error);
+//         throw error;
+//     }
+// }
+
+export async function updateStreaksFromUnit(userID: string) {
     const data = await getGamificationData(userID);
-
-    console.log("quiz is", quizID);
-    console.log(data);
     try {
         const today = new Date();
 
+        let currentStreak = 1; // default if no previous date
         if (data.lastUnitCompletionDate != null) {
             const lastUnitDate = new Date(data.lastUnitCompletionDate);
-
             const daysSegment = calculateStreak(lastUnitDate, today);
             console.log("days segment is", daysSegment);
-            let currentStreak = data.getStreaks();
 
-            // Check the difference in days to update the streak
+            currentStreak = data.getStreaks();
             if (daysSegment == 1) {
-                // If the difference is 1 day, increment the streak
-                console.log("diff 1 day, so + 1");
+                console.log("diff 1 day, so +1");
                 currentStreak += 1;
             } else if (daysSegment > 1) {
-                // If the difference is greater than 1 day, reset the streak to 1
-                console.log("diff > 1 day, so reset to 1");
+                console.log("diff >1 day, so reset to 1");
                 currentStreak = 1;
             }
-
-            const { status, statusText, error } = await supabase
-                .from("accountsgamification")
-                .update({
-                    streaks: currentStreak,
-                    lastUnitCompletionDate: formatDate(today),
-                })
-                .eq("userID", userID);
-        } else {
-            const { status, statusText, error } = await supabase
-                .from("accountsgamification")
-                .update({
-                    streaks: 1,
-                    lastUnitCompletionDate: formatDate(today),
-                })
-                .eq("userID", userID);
         }
+
+        const { data: updatedData, error } = await supabase
+            .from("accountsgamification")
+            .update({
+                streaks: currentStreak,
+                lastUnitCompletionDate: formatDate(today),
+            })
+            .eq("userID", userID)
+            .select()
+            .single();
+
+        if (error) {
+            throw error;
+        }
+
+        return updatedData;
     } catch (error) {
         console.log(error);
         throw error;
     }
 }
+
 
 // Update user streak for homepage display
 export async function updateStreaksFromLogin(userID: string) {
@@ -361,12 +418,14 @@ export async function updateStreaksFromLogin(userID: string) {
                 currentStreak = 0;
             }
 
-            const { status, statusText, error } = await supabase
+            const { data: updatedData, status, statusText, error } = await supabase
                 .from("accountsgamification")
                 .update({
                     streaks: currentStreak,
                 })
-                .eq("userID", userID);
+                .eq("userID", userID).select();
+
+            return updatedData;
         }
     } catch (error) {
         console.log(error);

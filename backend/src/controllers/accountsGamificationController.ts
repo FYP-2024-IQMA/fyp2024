@@ -61,6 +61,20 @@ export const getLatestBadge = async (req: Request, res: Response) => {
     }
 };
 
+export const getShouldShowStreak = async (req: Request, res: Response) => {
+    try {
+        const showStreak = await accountsGamificationService.shouldShowStreakScreen(
+            req.params.userid
+        );
+        res.status(200).json(showStreak);
+    } catch (error: any) {
+        const errorResponse = handleError(error);
+        if (errorResponse) {
+            res.status(errorResponse.status).json(errorResponse);
+        }
+    }
+};
+
 /* UPDATE */
 
 export const updatePoints = async (req: Request, res: Response) => {
@@ -91,6 +105,7 @@ export const updateStreaksFromLogin = async (req: Request, res: Response) => {
 		const updatedStreak =
 			await accountsGamificationService.updateStreaksFromLogin(userID);
 		res.status(200).json({
+			updatedStreak,
 			status: 200,
 			statusText: "Streak Updated Successfully",
 		});
@@ -104,14 +119,14 @@ export const updateStreaksFromLogin = async (req: Request, res: Response) => {
 
 export const updateStreaksFromUnit = async (req: Request, res: Response) => {
 	console.log("in this unit");
-	console.log(req.params.userid, req.params.quizid);
+	console.log(req.params.userid);
 	try {
 		const updatedStreak =
 			await accountsGamificationService.updateStreaksFromUnit(
-				req.params.userid,
-				parseInt(req.params.quizid)
+				req.params.userid
 			);
 		res.status(200).json({
+			updatedStreak,
 			status: 200,
 			statusText: "Streak Updated Successfully",
 		});

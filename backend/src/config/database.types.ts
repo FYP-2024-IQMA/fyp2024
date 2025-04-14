@@ -11,7 +11,7 @@ export type Database = {
     Tables: {
       accounts: {
         Row: {
-          age: Database["public"]["Enums"]["age_type"]
+          age: Database["public"]["Enums"]["age_type"] | null
           dateCreated: string | null
           email: string
           firstName: string
@@ -23,7 +23,7 @@ export type Database = {
           userID: string
         }
         Insert: {
-          age: Database["public"]["Enums"]["age_type"]
+          age?: Database["public"]["Enums"]["age_type"] | null
           dateCreated?: string | null
           email: string
           firstName: string
@@ -35,7 +35,7 @@ export type Database = {
           userID: string
         }
         Update: {
-          age?: Database["public"]["Enums"]["age_type"]
+          age?: Database["public"]["Enums"]["age_type"] | null
           dateCreated?: string | null
           email?: string
           firstName?: string
@@ -47,6 +47,116 @@ export type Database = {
           userID?: string
         }
         Relationships: []
+      }
+      accounts_about_you: {
+        Row: {
+          ageGroup: Database["public"]["Enums"]["age_type"]
+          careerStage: Database["public"]["Enums"]["career_stage_type"]
+          jobLevel: Database["public"]["Enums"]["job_category_type"]
+          userID: string
+        }
+        Insert: {
+          ageGroup: Database["public"]["Enums"]["age_type"]
+          careerStage: Database["public"]["Enums"]["career_stage_type"]
+          jobLevel: Database["public"]["Enums"]["job_category_type"]
+          userID: string
+        }
+        Update: {
+          ageGroup?: Database["public"]["Enums"]["age_type"]
+          careerStage?: Database["public"]["Enums"]["career_stage_type"]
+          jobLevel?: Database["public"]["Enums"]["job_category_type"]
+          userID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_about_you_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
+      accounts_learning_style_and_skills: {
+        Row: {
+          currentSkillLevelInLeadership: Database["public"]["Enums"]["current_skill_level_in_leadership_type"]
+          educationLevel: Database["public"]["Enums"]["education_level_type"]
+          preferredLearningStyles: Database["public"]["Enums"]["preferred_learning_style_type"][]
+          userID: string
+        }
+        Insert: {
+          currentSkillLevelInLeadership: Database["public"]["Enums"]["current_skill_level_in_leadership_type"]
+          educationLevel: Database["public"]["Enums"]["education_level_type"]
+          preferredLearningStyles: Database["public"]["Enums"]["preferred_learning_style_type"][]
+          userID: string
+        }
+        Update: {
+          currentSkillLevelInLeadership?: Database["public"]["Enums"]["current_skill_level_in_leadership_type"]
+          educationLevel?: Database["public"]["Enums"]["education_level_type"]
+          preferredLearningStyles?: Database["public"]["Enums"]["preferred_learning_style_type"][]
+          userID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_learning_style_and_skills_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
+      accounts_motivation: {
+        Row: {
+          learningMotivation: Database["public"]["Enums"]["learning_motivation_type"]
+          motivations: Database["public"]["Enums"]["motivation_type"][]
+          userID: string
+        }
+        Insert: {
+          learningMotivation: Database["public"]["Enums"]["learning_motivation_type"]
+          motivations: Database["public"]["Enums"]["motivation_type"][]
+          userID: string
+        }
+        Update: {
+          learningMotivation?: Database["public"]["Enums"]["learning_motivation_type"]
+          motivations?: Database["public"]["Enums"]["motivation_type"][]
+          userID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_motivation_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
+      accounts_social_and_tech_habits: {
+        Row: {
+          computerSkills: Database["public"]["Enums"]["computer_skills_type"]
+          userID: string
+          workStyle: Database["public"]["Enums"]["work_style_type"]
+        }
+        Insert: {
+          computerSkills: Database["public"]["Enums"]["computer_skills_type"]
+          userID: string
+          workStyle: Database["public"]["Enums"]["work_style_type"]
+        }
+        Update: {
+          computerSkills?: Database["public"]["Enums"]["computer_skills_type"]
+          userID?: string
+          workStyle?: Database["public"]["Enums"]["work_style_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "accounts_social_and_tech_habits_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
       }
       accountsaffective: {
         Row: {
@@ -648,6 +758,47 @@ export type Database = {
           },
         ]
       }
+      user_stone_progress: {
+        Row: {
+          current_screen_index: number | null
+          current_screen_pathname:
+            | Database["public"]["Enums"]["path_name"]
+            | null
+          current_stone_index: number | null
+          last_completed_stone_index: number | null
+          updated_at: string | null
+          userID: string
+        }
+        Insert: {
+          current_screen_index?: number | null
+          current_screen_pathname?:
+            | Database["public"]["Enums"]["path_name"]
+            | null
+          current_stone_index?: number | null
+          last_completed_stone_index?: number | null
+          updated_at?: string | null
+          userID: string
+        }
+        Update: {
+          current_screen_index?: number | null
+          current_screen_pathname?:
+            | Database["public"]["Enums"]["path_name"]
+            | null
+          current_stone_index?: number | null
+          last_completed_stone_index?: number | null
+          updated_at?: string | null
+          userID?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stone_progress_userID_fkey"
+            columns: ["userID"]
+            isOneToOne: true
+            referencedRelation: "accounts"
+            referencedColumns: ["userID"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -657,18 +808,41 @@ export type Database = {
     }
     Enums: {
       age_type:
-        | "Baby Boomers (55-75)"
-        | "Generation X (40-55)"
-        | "Millennials (25-40)"
-        | "Generation Z (18-24)"
+        | "Baby Boomers (60-75+)"
+        | "Generation X (45-59)"
+        | "Millennials (30-44)"
+        | "Generation Z (18-29)"
+        | "Other"
       attitude_towards_learning_type: "Positive" | "Neutral" | "Negative"
       barriers_to_learning_interests_type:
         | "Time"
         | "Resources"
         | "Accessibility"
         | "Interest"
-      career_stage_type: "Starter" | "Builder" | "Accelerator" | "Expert"
-      computer_literacy_type: "Advanced" | "Intermediate" | "Basic" | "None"
+      career_stage_type:
+        | "Starter"
+        | "Builder"
+        | "Accelerator"
+        | "Expert"
+        | "Other"
+      computer_literacy_type:
+        | "Advanced"
+        | "Intermediate"
+        | "Basic"
+        | "None"
+        | "Other"
+      computer_skills_type: "Advanced" | "Intermediate" | "Basic" | "Other"
+      current_skill_level_in_leadership_type:
+        | "Beginner"
+        | "Intermediate"
+        | "Advanced"
+        | "Other"
+      education_level_type:
+        | "High school"
+        | "Bachelor’s"
+        | "Master’s"
+        | "Doctorate"
+        | "Other"
       educational_level_type:
         | "High school or below"
         | "Some college"
@@ -681,7 +855,9 @@ export type Database = {
         | "Mid-level"
         | "Senior-level"
         | "Executive"
+        | "Other"
       language_abilities_type: "Fluent" | "Proficient" | "Basic" | "None"
+      learning_motivation_type: "High" | "Medium" | "Low" | "Other"
       learning_preferences_type:
         | "Visual"
         | "Auditory"
@@ -697,13 +873,39 @@ export type Database = {
         | "Intermediate"
         | "Basic"
         | "None"
+      motivation_type:
+        | "Career growth"
+        | "Skill development"
+        | "Personal interest"
+        | "Other"
       motivational_level_type: "High" | "Medium" | "Low"
+      path_name:
+        | "Achievement"
+        | "Assessment"
+        | "AssessmentIntroduction"
+        | "Badge"
+        | "CheatSheet"
+        | "KeyTakeaway"
+        | "Lesson"
+        | "RealityCheck"
+        | "SectionIntroduction"
+        | "SelfReflection"
+        | "Streak"
+        | "UnitIntroduction"
+        | "VideoQuiz"
       personality_type: "Extroverted" | "Introverted" | "Ambivert"
+      preferred_learning_style_type:
+        | "Watching videos or visuals"
+        | "Listening to audio or podcasts"
+        | "Hands-on practice"
+        | "Reading or writing"
+        | "Other"
       prior_knowledge_skills_type:
         | "Advanced"
         | "Intermediate"
         | "Basic"
         | "None"
+      progress_type: "intro" | "lesson" | "assessment"
       quiz_type: "section" | "unit" | "lesson"
       race_type:
         | "Caucasian"
@@ -729,11 +931,13 @@ export type Database = {
       role: "admin" | "learner"
       social_background_type: "Urban" | "Suburban" | "Rural"
       special_needs_type: "None" | "Physical" | "Mental" | "Other"
+      stone_progress: "in_progress" | "completed"
       tendency_to_compete_or_cooperate_type:
         | "Competitive"
         | "Cooperative"
         | "Both"
         | "Neither"
+      work_style_type: "Collaborative" | "Competitive" | "Independent" | "Other"
     }
     CompositeTypes: {
       [_ in never]: never

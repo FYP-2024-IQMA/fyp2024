@@ -7,43 +7,49 @@ const router = Router();
 
 /* READ */
 router.get(
-	"/gamificationdata/:userid",
-	verifyToken,
-	accountsGamificationController.getGamificationData
+  "/gamificationdata/:userid",
+  verifyToken,
+  accountsGamificationController.getGamificationData
 );
 router.get(
-	"/leaderboard/:userid",
-	verifyToken,
-	accountsGamificationController.getTop5Accounts
+  "/leaderboard/:userid",
+  verifyToken,
+  accountsGamificationController.getTop5Accounts
 );
 router.get(
-	"/badges/:userid",
-	verifyToken,
-	accountsGamificationController.getBadges
+  "/badges/:userid",
+  verifyToken,
+  accountsGamificationController.getBadges
 );
 
 router.get(
-    "/getlatestbadge/:sectionid/:unitid",
-    verifyToken,
-    accountsGamificationController.getLatestBadge
+  "/getlatestbadge/:sectionid/:unitid",
+  verifyToken,
+  accountsGamificationController.getLatestBadge
+);
+
+router.get(
+  "/getshouldshowstreak/:userid",
+  verifyToken,
+  accountsGamificationController.getShouldShowStreak
 );
 
 /* UPDATE */
 router.patch(
-	"/updatepoints",
-	verifyToken,
-	accountsGamificationController.updatePoints
+  "/updatepoints",
+  verifyToken,
+  accountsGamificationController.updatePoints
 );
 
 router.patch(
-	"/updateloginstreaks/:userid",
-	verifyToken,
-	accountsGamificationController.updateStreaksFromLogin
+  "/updateloginstreaks/:userid",
+  verifyToken,
+  accountsGamificationController.updateStreaksFromLogin
 );
 
 router.patch(
-	"/updateunitstreaks/:userid/:quizid",
-	verifyToken,
-	accountsGamificationController.updateStreaksFromUnit
+  "/updateunitstreaks/:userid",
+  verifyToken,
+  accountsGamificationController.updateStreaksFromUnit
 );
 export default router;

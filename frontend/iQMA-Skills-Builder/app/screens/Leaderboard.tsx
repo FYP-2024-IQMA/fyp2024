@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Image, StatusBar} from 'react-native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {AuthContext} from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
@@ -6,6 +6,7 @@ import {getLeaderboard} from '@/helpers/gamificationEndpoints';
 import {globalStyles} from '@/constants/styles';
 import {Colors} from '@/constants/Colors';
 import {useFocusEffect} from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface User {
     name: string;
