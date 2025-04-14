@@ -12,7 +12,7 @@ export default function LearnerAssessment() {
 
     return (
         <ScrollView 
-        // style={styles.container}
+        style={styles.container}
         contentContainerStyle={{
             flexGrow: 1,
             padding: 20,

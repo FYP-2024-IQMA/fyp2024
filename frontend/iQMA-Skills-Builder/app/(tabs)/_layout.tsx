@@ -24,7 +24,16 @@ export default function AppTabs() {
         <Tab.Navigator
             screenOptions={({route}) => ({
                 headerTitleAlign: 'center',
-                headerStyle: {backgroundColor: Colors.default.purple100},
+                // headerStyle: {backgroundColor: Colors.default.purple100},
+                headerStyle: {
+                    backgroundColor: Colors.default.purple100,
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+                    elevation: 5,
+                },
+                headerTintColor: Colors.light.background,
                 tabBarActiveTintColor: Colors.light.background,
                 tabBarInactiveTintColor: '#BBBBBB',
                 tabBarStyle: {
@@ -71,7 +80,6 @@ export default function AppTabs() {
                     tabBarIcon: ({color, size}) => (
                         <MaterialIcons name="leaderboard" size={size} color={color} />
                     ),
-                    headerTintColor: '#fff',
                 }}
             />
             <Tab.Screen
@@ -81,7 +89,6 @@ export default function AppTabs() {
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="person" size={size} color={color} />
                     ),
-                    headerTintColor: '#fff',
                 }}
             />
             <Tab.Screen
@@ -91,7 +98,6 @@ export default function AppTabs() {
                     tabBarIcon: ({color, size}) => (
                         <Ionicons name="settings" size={size} color={color} />
                     ),
-                    headerTintColor: '#fff',
                 }}
             />
         </Tab.Navigator>

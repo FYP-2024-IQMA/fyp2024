@@ -14,8 +14,8 @@ export const LoadingIndicator = () => {
                 }}
             >
                 <Image
-                    style={{width: 100, height: 100, marginBottom: 10}}
-                    source={require('@/assets/images/iqma_logo.png')}
+                    style={{width: 100, height: 100, marginBottom: 10, resizeMode: 'contain'}}
+                    source={require('@/assets/images/logo_removebg.png')}
                 />
                 <ActivityIndicator size="large" color="#8A2BE2" />
             </View>

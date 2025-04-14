@@ -18,7 +18,7 @@ import {Stack, useNavigation} from 'expo-router';
 import config from '../config/auth0-configuration';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import useColorScheme from '@/hooks/useColorScheme';
-import { StatusBar } from 'expo-status-bar';
+import {StatusBar} from 'expo-status-bar';
 
 import {LogBox} from 'react-native';
 
@@ -36,11 +36,12 @@ export default function RootLayout() {
     return (
         <Auth0Provider domain={config.domain!} clientId={config.clientId!}>
             <AuthProvider>
-                <StatusBar style="dark"></StatusBar>
                 <Stack
                     screenOptions={{
                         headerTitle: '',
                         headerTitleAlign: 'center',
+                        statusBarStyle: 'dark',
+                        statusBarColor: Colors.light.background
                     }}
                 >
                     {/* <Stack.Screen name="index" /> */}
@@ -51,8 +52,23 @@ export default function RootLayout() {
                             headerShown: false,
                         }}
                     />
+
                     <Stack.Screen
                         name="CreateProfile"
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="IntroductionMascot"
+                        options={{
+                            headerShown: false,
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="IntroductionSegment"
                         options={{
                             headerShown: false,
                         }}
@@ -156,6 +172,7 @@ export default function RootLayout() {
                         name="(tabs)"
                         options={{headerShown: false}}
                     />
+
                     <Stack.Screen
                         name="EditProfile"
                         options={{

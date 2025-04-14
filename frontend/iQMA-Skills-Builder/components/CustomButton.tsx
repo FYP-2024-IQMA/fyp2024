@@ -108,7 +108,8 @@
 
 import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Colors } from '@/constants/Colors';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from 'expo-router';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -130,21 +131,46 @@ export const CustomButton = ({
     const [buttonBgColor, setButtonBgColor] = useState(backgroundColor);
     const [textColor, setTextColor] = useState(labelColor);
 
-    useEffect(() => {
-        if (isChatButton && timeLeft > 0) {
+    // useEffect(() => {
+    //     if (isChatButton && timeLeft > 0) {
+    //         const timer = setInterval(() => {
+    //             setTimeLeft(prevTime => {
+    //                 console.log(`Time left: ${prevTime - 1}s`);
+    //                 return prevTime - 1;
+    //             });
+    //         }, 1000);
+    //         return () => clearInterval(timer);
+    //     } else if (isChatButton && timeLeft === 0) {
+    //         setButtonText('Finish Unit');
+    //         setButtonBgColor(Colors.default.purple500);
+    //         setTextColor('white');
+    //     }
+    // }, [isChatButton, timeLeft]);
+
+    useFocusEffect(
+        useCallback(() => {
+          if (isChatButton) {
+            setTimeLeft(60); // reset timer every time screen focuses
+      
             const timer = setInterval(() => {
-                setTimeLeft(prevTime => {
-                    console.log(`Time left: ${prevTime - 1}s`);
-                    return prevTime - 1;
-                });
+              setTimeLeft(prevTime => {
+                console.log(`Time left: ${prevTime - 1}s`);
+                if (prevTime - 1 <= 0) {
+                  
+                  setButtonText('Finish Unit');
+                  setButtonBgColor(Colors.default.purple500);
+                  setTextColor('white');
+                  clearInterval(timer); // stop timer when finished
+                  return 0;
+                }
+                return prevTime - 1;
+              });
             }, 1000);
-            return () => clearInterval(timer);
-        } else if (isChatButton && timeLeft === 0) {
-            setButtonText('Finish Unit');
-            setButtonBgColor(Colors.default.purple500);
-            setTextColor('white');
-        }
-    }, [isChatButton, timeLeft]);
+      
+            return () => clearInterval(timer); 
+          }
+        }, [isChatButton])
+      );
 
     return (
         <View

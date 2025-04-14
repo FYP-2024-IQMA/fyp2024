@@ -52,7 +52,6 @@ export default function Leaderboard() {
 
     return (
         <ScrollView style={globalStyles.container}>
-            <StatusBar style="light" />
             <View style={styles.leaderboard}>
                 <View style={{alignItems: 'center'}}>
                     <Text style={styles.title}>Top 5 Learners</Text>

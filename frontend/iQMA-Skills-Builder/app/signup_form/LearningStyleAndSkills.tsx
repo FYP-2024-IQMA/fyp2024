@@ -91,7 +91,7 @@ export default function LearningStyleAndSkills() {
 
     return (
         <ScrollView
-            contentContainerStyle={{flexGrow: 1}}
+            contentContainerStyle={{flexGrow: 1, padding: 20}}
             style={styles.container}
             onContentSizeChange={(width, height) => {
                 setIsScroll(height * 1.1 > screenHeight);

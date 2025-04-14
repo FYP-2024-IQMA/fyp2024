@@ -6,6 +6,7 @@ import {
     TouchableOpacity,
     StyleSheet,
     FlatList,
+    Pressable,
 } from 'react-native';
 import {OverviewCard} from '@/components/OverviewCard';
 import {router} from 'expo-router';
@@ -47,7 +48,11 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
     return (
         <View style={styles.outerContainer}>
             <View
-                style={{flexDirection: 'row', justifyContent: 'space-between', flexWrap: "wrap"}}
+                style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                }}
             >
                 <Text
                     style={[
@@ -58,7 +63,12 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
                 >
                     Achievements
                 </Text>
-                <TouchableOpacity onPress={handlePress}>
+                <Pressable
+                    onPress={handlePress}
+                    style={({pressed}) => [
+                        pressed && {transform: [{scale: 0.96}]},
+                    ]}
+                >
                     <Text
                         style={{
                             textDecorationLine: 'underline',
@@ -68,7 +78,7 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
                     >
                         View all
                     </Text>
-                </TouchableOpacity>
+                </Pressable>
             </View>
             {firstThreeUnlocked.length === 0 && (
                 <OverviewCard
@@ -79,22 +89,20 @@ export const Achievements: React.FC<AchievementsProps> = ({achievements}) => {
 
             {firstThreeUnlocked.length > 0 && (
                 <View style={styles.achievementsContainer}>
-                    {firstThreeUnlocked.map(
-                        (badgeUrl: any, index: number) => (
-                            <View
-                                key={index}
-                                style={[
-                                    styles.achievementImageContainer,
-                                    index === 1 && styles.middleItemBorder,
-                                ]}
-                            >
-                                <Image
-                                    style={styles.achievementImage}
-                                    source={{uri: badgeUrl}}
-                                />
-                            </View>
-                        )
-                    )}
+                    {firstThreeUnlocked.map((badgeUrl: any, index: number) => (
+                        <View
+                            key={index}
+                            style={[
+                                styles.achievementImageContainer,
+                                index === 1 && styles.middleItemBorder,
+                            ]}
+                        >
+                            <Image
+                                style={styles.achievementImage}
+                                source={{uri: badgeUrl}}
+                            />
+                        </View>
+                    ))}
                 </View>
             )}
         </View>

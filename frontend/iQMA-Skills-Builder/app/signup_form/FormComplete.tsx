@@ -1,4 +1,4 @@
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, ScrollView, StyleSheet, View} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {ChatBubble} from '@/components/ChatBubble';
@@ -88,7 +88,7 @@ export default function FormComplete() {
                 last_completed_stone_index: -1,
                 current_stone_index: 0,
                 current_screen_index: 0,
-                current_screen_pathname: "SectionIntroduction",
+                current_screen_pathname: 'SectionIntroduction',
             };
 
             const accountResponse = await accountEndpoints.editUserDetails(
@@ -117,7 +117,10 @@ export default function FormComplete() {
                 motivationResponse.data
             );
             console.log('Account has been updated', accountResponse);
-            console.log('User stone progress created successfully: ', userStoneProgressResponse);
+            console.log(
+                'User stone progress created successfully: ',
+                userStoneProgressResponse
+            );
 
             router.push('/Home');
         } catch (e) {
@@ -127,7 +130,14 @@ export default function FormComplete() {
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{
+                flexGrow: 1,
+                padding: 20,
+                backgroundColor: Colors.light.background,
+            }}
+        >
             <View style={styles.mascot}>
                 <Image
                     style={styles.mascotImage}
@@ -143,7 +153,7 @@ export default function FormComplete() {
                 backgroundColor="white"
                 onPressHandler={handlePress}
             />
-        </View>
+        </ScrollView>
     );
 }
 
