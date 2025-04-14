@@ -311,7 +311,7 @@ import SectionCard from '@/components/SectionCard';
 import ProgressPath, {ProgressPathProps} from '@/components/ProgressPath';
 import FeedbackComponent from '@/components/Feedback';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from 'react-native';
 
 const HomeScreen: React.FC = () => {
     const {currentUser} = useContext(AuthContext);
@@ -433,8 +433,7 @@ const HomeScreen: React.FC = () => {
                     //   ? Math.min((currentScreenIndex+1 / totalScreens) * 100, 100)
                     //   : undefined;
 
-                    let rawProgress =
-                        ((currentScreenIndex) / totalScreens) * 100;
+                    let rawProgress = (currentScreenIndex / totalScreens) * 100;
                     if (rawProgress >= 100) {
                         rawProgress = 80;
                     }

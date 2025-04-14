@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View, ScrollView, Image} from 'react-native';
+import {StyleSheet, Text, View, ScrollView, Image, StatusBar} from 'react-native';
 import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {AuthContext} from '@/context/AuthContext';
 import {LoadingIndicator} from '@/components/LoadingIndicator';
@@ -6,7 +6,6 @@ import {getLeaderboard} from '@/helpers/gamificationEndpoints';
 import {globalStyles} from '@/constants/styles';
 import {Colors} from '@/constants/Colors';
 import {useFocusEffect} from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface User {
@@ -53,6 +52,7 @@ export default function Leaderboard() {
 
     return (
         <ScrollView style={globalStyles.container}>
+            <StatusBar style="light" />
             <View style={styles.leaderboard}>
                 <View style={{alignItems: 'center'}}>
                     <Text style={styles.title}>Top 5 Learners</Text>

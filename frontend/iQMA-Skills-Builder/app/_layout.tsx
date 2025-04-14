@@ -36,6 +36,7 @@ export default function RootLayout() {
     return (
         <Auth0Provider domain={config.domain!} clientId={config.clientId!}>
             <AuthProvider>
+                <StatusBar style="dark"></StatusBar>
                 <Stack
                     screenOptions={{
                         headerTitle: '',
