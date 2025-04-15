@@ -11,6 +11,7 @@ export const AuthContext = createContext<any>(null);
 export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     const {authorize, clearSession, user, error, getCredentials} = useAuth0();
     const [currentUser, setCurrentUser] = useState<User | null>(null); // Store current User object
+
     const [token, setToken] = useState<string | null>(null); // Store Access Token of current User
     const [isLoading, setIsLoading] = useState(true);
 
@@ -49,8 +50,8 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
     // Watch for changes in User Session
     const watchUserSession = async () => {
-        // if (user) {
-        if (user && user.sub !== currentUser?.sub) {
+        if (user) {
+        // if (user && user.sub !== currentUser?.sub) {
             setCurrentUser(user);
             await fetchToken();
             console.log(user);

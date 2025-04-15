@@ -5,6 +5,7 @@ import {AuthContext} from '@/context/AuthContext';
 import {Colors} from '@/constants/Colors';
 import {LoginButton} from '@/components/LoginButton';
 import {LogoVisual} from '@/components/LogoVisual';
+import {StatusBar} from 'expo-status-bar';
 
 // where things show upp
 export default function Index() {
@@ -12,40 +13,25 @@ export default function Index() {
     const [checkUID, setCheckUID] = useState<string>('');
     const [isStorageLoading, setIsStorageLoading] = useState(true);
 
-    useEffect(() => {
-        const fetchUserID = async () => {
-            try {
-                const userID = await AsyncStorage.getItem('userID');
-                setCheckUID(userID ?? '');
-            } catch (error) {
-                console.error('Error fetching userID from AsyncStorage', error);
-            } finally {
-                setIsStorageLoading(false);
-            }
-        };
-
-        fetchUserID();
-    }, []);
-
-    console.log("isStorageLoading: ", isStorageLoading);
-    console.log("isLoading: ", isLoading);
-    console.log("currentUser: ", currentUser);
-    console.log("checkUID: ", checkUID);
+    console.log('isStorageLoading: ', isStorageLoading);
+    console.log('isLoading: ', isLoading);
+    console.log('currentUser: ', currentUser);
+    console.log('checkUID: ', checkUID);
 
     return (
         <>
             <View
-                    style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: '#C3B1FF',
-                        padding: 40
-                    }}
-                >
-                    <LogoVisual />
-                    <LoginButton />
-                </View>
+                style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: '#C3B1FF',
+                    padding: 40,
+                }}
+            >
+                <LogoVisual />
+                <LoginButton />
+            </View>
         </>
     );
 }

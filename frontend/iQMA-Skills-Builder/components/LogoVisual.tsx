@@ -20,7 +20,7 @@ export const LogoVisual = () => {
                 source={require('../assets/images/logo_removebg.png')}
                 style={[styles.logo]} // Apply scale transform
             />
-            <Text style={{color: "black", fontWeight: "bold", marginTop: 10}}>iQMA Skills Builder</Text>
+            {/* <Text style={{color: "black", fontWeight: "bold", marginTop: 10, fontSize: 20}}>iQMA Skills Builder</Text> */}
             <Text style={styles.text}>Leadership Skills For A New Self</Text>
         </Animated.View>
     );
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 60,
+        marginBottom: 50,
     },
     logo: {
         width: 160,
@@ -38,8 +38,9 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     text: {
-        fontSize: 14,
+        fontSize: 15,
         fontStyle: 'italic',
+        fontWeight: 'bold',
         color: '#FFF',
         textAlign: 'center',
         marginTop: 10

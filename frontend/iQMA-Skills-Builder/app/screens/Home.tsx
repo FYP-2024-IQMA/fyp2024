@@ -709,15 +709,20 @@ const HomeScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={globalStyles.container}>
+
+<View style={styles.header}>
+    <TopStats circularProgress={(completedStones / totalStones) * 100} />
+  </View>
+
             <ScrollView
                 contentContainerStyle={styles.container}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
                 ref={scrollViewRef}
             >
-                <TopStats
+                {/* <TopStats
                     circularProgress={(completedStones / totalStones) * 100}
-                />
+                /> */}
 
                 {sections.map((section, sectionIndex) => (
                     <View key={sectionIndex}>
@@ -771,6 +776,14 @@ const styles = StyleSheet.create({
         zIndex: 1,
         elevation: 4,
     },
+    header: {
+        backgroundColor: Colors.light.background,
+        paddingHorizontal: 20,
+        paddingBottom: 0,
+        paddingTop: 20,
+        zIndex: 2,  // float
+        elevation: 5
+      },
 });
 
 export default HomeScreen;

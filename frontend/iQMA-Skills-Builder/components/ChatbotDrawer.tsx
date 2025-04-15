@@ -1,4 +1,4 @@
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {
     DrawerContentComponentProps,
     DrawerContentScrollView,
@@ -6,66 +6,36 @@ import {
     DrawerItemList,
     createDrawerNavigator,
 } from '@react-navigation/drawer';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {useContext, useEffect, useState} from 'react';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {AuthContext} from '@/context/AuthContext';
-import ChatbotScreen from '../app/screens/Chatbot';
-import {Colors} from '@/constants/Colors';
-import CustomLabel from './CustomLabel';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {Colors} from '@/constants/Colors';
+import ChatbotScreen from '@/app/screens/Chatbot';
+import CustomLabel from './CustomLabel';
+import {Alert} from 'react-native';
 
-type SectionData = {
-    sectionID: string;
-    sectionName: string;
-};
-
-const sectionData: SectionData[] = [
+const sectionData = [
     {
         sectionID: 'SEC0001',
-        sectionName: 'Section 1: Communication',
-    },
-    {
-        sectionID: 'SEC0002',
-        sectionName: 'Section 2: Decision Making',
-    },
-    {
-        sectionID: 'SEC0003',
-        sectionName: 'Section 3: Developing People',
+        sectionName: 'Section 1: Communication', // hardcoded for now
     },
 ];
 
-export type ChatDrawerParamList = {
-    [K in (typeof sectionData)[number]['sectionName']]: {sectionID: string};
-};
+const Drawer = createDrawerNavigator();
 
-// to know about the route
-const Drawer = createDrawerNavigator<ChatDrawerParamList>();
-
-// function to clear all chat history
 const clearAllChats = async () => {
-    await AsyncStorage.clear();
-    console.log('All chats cleared');
+    // clearing logic in the future
 };
 
-// function for delete alert message
 const deleteAlert = async () => {
     Alert.alert(
         'Delete All Chats',
         'Are you sure you want to delete all chats?',
         [
-            {
-                text: 'Cancel',
-                onPress: () => console.log('Delete all chats cancelled.'),
-                style: 'cancel',
-            },
+            {text: 'Cancel', style: 'cancel'},
             {text: 'OK', onPress: async () => await clearAllChats()},
         ]
     );
 };
 
-// to ensure receives correct props for rendering drawer content
 const CustomDrawerContent = (props: DrawerContentComponentProps) => {
     return (
         <DrawerContentScrollView {...props}>
@@ -78,7 +48,6 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                     label="Clear All Chats"
                     onPress={async () => {
                         deleteAlert();
-
                         props.navigation.reset({
                             index: 0,
                             routes: [{name: sectionData[0].sectionName}],
@@ -86,54 +55,12 @@ const CustomDrawerContent = (props: DrawerContentComponentProps) => {
                     }}
                     style={styles.closeDrawer}
                 />
-                {/* <DrawerItem
-                    label="Clear Chats"
-                    onPress={props.onClearChats}
-                    style={styles.clearChats}
-                /> */}
             </View>
         </DrawerContentScrollView>
     );
 };
 
-const handleClearChats = async () => {
-    // Implement clear chats functionality here
-    // await AsyncStorage.clear();
-    // Then refresh the drawer or navigate to a specific screen
-};
-
-// to open left tab for chat bot
-const ChatbotDrawer: React.FC<any> = ({navigation}) => {
-    const {currentUser, isLoading} = useContext(AuthContext);
-    const [sectionID, setSectionID] = useState<string | null>(null); // Initialize with null
-    const [Id, setId] = useState<number | null>(null); // Initialize with null
-    const [isFetching, setIsFetching] = useState<boolean>(true); // Add a loading state
-
-    useEffect(() => {
-        const fetchSectionID = async () => {
-            try {
-                let currSection = await AsyncStorage.getItem('currentSection');
-                const newSectionID = await AsyncStorage.getItem('sectionID');
-                setId(parseInt(currSection!));
-                setSectionID(newSectionID);
-            } catch (error) {
-                console.error(
-                    'Failed to retrieve currSection and sectionID from AsyncStorage',
-                    error
-                );
-            } finally {
-                setIsFetching(false); // Set loading state to false after fetch
-            }
-        };
-
-        fetchSectionID();
-    }, [currentUser]);
-
-    // Render a loading state until sectionID is set
-    if (isFetching || !Id) {
-        return <Text>Loading...</Text>; // Or a spinner
-    }
-
+const ChatbotDrawer = () => {
     return (
         <Drawer.Navigator
             screenOptions={{
@@ -141,8 +68,15 @@ const ChatbotDrawer: React.FC<any> = ({navigation}) => {
                 drawerInactiveTintColor: '#000000',
                 drawerActiveBackgroundColor: '#C3B1FF',
                 drawerLabelStyle: styles.labelItem,
-                headerTintColor: Colors.light.background,
-                headerStyle: {backgroundColor: Colors.default.purple100},
+                headerTintColor: Colors.default.purple500,
+                headerStyle: {
+                    backgroundColor: Colors.light.background,
+                    shadowColor: '#000',
+                    shadowOffset: {width: 0, height: 44},
+                    shadowOpacity: 0.4,
+                    shadowRadius: 6,
+                    elevation: 5,
+                },
                 headerTitleAlign: 'center',
                 headerTitleStyle: {fontSize: 18, fontWeight: 'bold'},
                 drawerItemStyle: {
@@ -153,66 +87,31 @@ const ChatbotDrawer: React.FC<any> = ({navigation}) => {
             }}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
-            {/* need to set initial params or it will be undefined */}
-            {/* drawer screen needs to be in navigation level */}
-            {sectionData
-                // Filter the sections chat to show based on the sectionID (for future purposes if past section chat history is needed)
-                .filter((section) => {
-                    // Extract the numeric part of the sectionID
-                    const sectionNumber = parseInt(
-                        section.sectionID.replace('SEC', '')
-                    );
-                    return sectionNumber === Id!; // (Currently, only need ID =) (For future: Render only sections with ID less than or equal to `Id`)
-                })
-                .map((section) => (
-                    <Drawer.Screen
-                        key={section.sectionID}
-                        name={section.sectionName}
-                        component={ChatbotScreen}
-                        initialParams={{
-                            sectionID: section.sectionID,
-                        }}
-                        options={{
-                            drawerIcon: ({color, size}) => (
-                                <Ionicons
-                                    name="chatbox-ellipses-sharp"
-                                    size={20}
-                                    color={color}
-                                />
-                            ),
-                            drawerLabel: ({color}) => (
-                                <CustomLabel
-                                    label={section.sectionName}
-                                    color={color}
-                                />
-                            ),
-                        }}
-                    />
-                ))}
-
-            {/* <Drawer.Screen
-                key={sectionID}
-                name={section!.sectionName}
-                component={ChatbotScreen}
-                initialParams={{
-                    sectionID: sectionID,
-                }}
-                options={{
-                    drawerIcon: ({ color, size }) => (
-                        <Ionicons
-                            name="chatbox-ellipses-sharp"
-                            size={20}
-                            color={color}
-                        />
-                    ),
-                    drawerLabel: ({ color }) => (
-                        <CustomLabel
-                            label={section!.sectionName}
-                            color={color}
-                        />
-                    ),
-                }}
-            /> */}
+            {sectionData.map((section) => (
+                <Drawer.Screen
+                    key={section.sectionID}
+                    name={section.sectionName}
+                    component={ChatbotScreen}
+                    initialParams={{
+                        sectionID: section.sectionID,
+                    }}
+                    options={{
+                        drawerIcon: ({color, size}) => (
+                            <Ionicons
+                                name="chatbox-ellipses-sharp"
+                                size={20}
+                                color={color}
+                            />
+                        ),
+                        drawerLabel: ({color}) => (
+                            <CustomLabel
+                                label={section.sectionName}
+                                color={color}
+                            />
+                        ),
+                    }}
+                />
+            ))}
         </Drawer.Navigator>
     );
 };
@@ -224,8 +123,6 @@ const styles = StyleSheet.create({
         textAlign: 'left',
     },
     closeDrawer: {
-        // backgroundColor: '#8A2BE2',
-        // borderWidth: 1,
         justifyContent: 'center',
     },
     bottomDrawerSection: {
@@ -241,11 +138,6 @@ const styles = StyleSheet.create({
         color: Colors.header.color,
         fontSize: 18,
         fontWeight: 'bold',
-    },
-    clearChats: {
-        borderWidth: 1,
-        justifyContent: 'center',
-        marginTop: 10,
     },
 });
 

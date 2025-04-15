@@ -26,14 +26,15 @@ export default function AppTabs() {
                 headerTitleAlign: 'center',
                 // headerStyle: {backgroundColor: Colors.default.purple100},
                 headerStyle: {
-                    backgroundColor: Colors.default.purple100,
+                    backgroundColor: Colors.light.background,
                     shadowColor: '#000',
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
+                    shadowOffset: { width: 0, height: 44 },
+                    shadowOpacity: 0.4,
+                    shadowRadius: 6,
                     elevation: 5,
                 },
-                headerTintColor: Colors.light.background,
+                headerTitleStyle: { fontSize: 18, fontWeight: 'bold' },
+                headerTintColor: Colors.default.purple500,
                 tabBarActiveTintColor: Colors.light.background,
                 tabBarInactiveTintColor: '#BBBBBB',
                 tabBarStyle: {
@@ -83,7 +84,7 @@ export default function AppTabs() {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name="My Profile"
                 component={ProfilePage}
                 options={{
                     tabBarIcon: ({color, size}) => (

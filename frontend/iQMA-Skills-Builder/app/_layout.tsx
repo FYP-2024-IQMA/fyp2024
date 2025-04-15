@@ -49,7 +49,10 @@ export default function RootLayout() {
                     <Stack.Screen
                         name="index"
                         options={{
-                            headerShown: false,
+                            headerShown: true,
+                            headerTitle: 'iQMA Skills Builder',
+                            headerTitleStyle: { fontSize: 18, fontWeight: 'bold' },
+                            headerTintColor: Colors.default.purple500,
                         }}
                     />
 
