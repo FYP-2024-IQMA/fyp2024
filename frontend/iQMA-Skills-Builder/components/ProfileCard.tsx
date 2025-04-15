@@ -116,7 +116,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   name: {
-    color: '#4143A3',
+    // color: '#4143A3',
+    color: Colors.default.purple500,
     fontWeight: 'bold',
     fontSize: 20,
   },
@@ -140,7 +141,8 @@ const styles = StyleSheet.create({
   },
   editText: {
     fontSize: 12,
-    color: "#4143A3",
+    // color: "#4143A3",
+    color: Colors.default.purple500,
     fontWeight: 'bold',
   },
   shareButton: {
