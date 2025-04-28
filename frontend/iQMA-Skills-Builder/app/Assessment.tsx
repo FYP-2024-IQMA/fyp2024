@@ -291,10 +291,11 @@ export default function Assessment() {
 
                     {questions.length > 0 && questions[currentQnsIdx] && (
                         <QuizCard
-                            sectionID={sectionID as string}
-                            questionData={questions[currentQnsIdx]}
-                            onNextQuestion={handleNextQuestion}
-                        />
+                        key={questions[currentQnsIdx].questionNo}
+                        sectionID={sectionID as string}
+                        questionData={questions[currentQnsIdx]}
+                        onNextQuestion={handleNextQuestion}
+                      />
                     )}
                 </>
             )}
