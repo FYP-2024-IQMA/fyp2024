@@ -424,7 +424,7 @@ export default function VideoQuiz() {
     <ScrollView contentContainerStyle={{ flexGrow: 1 }} style={styles.container}>
       <SectionCard title={`SECTION ${sectionNumber}, UNIT ${unitNumber}`} subtitle={unitName} />
 
-      <View style={{ marginHorizontal: 10}}>
+      <View style={{ marginHorizontal: 10 }}>
         <Text style={styles.lessonTitle}>{lessonName}</Text>
         <Text style={styles.instructionText}>
           Choose the most appropriate option for each question.
@@ -436,6 +436,7 @@ export default function VideoQuiz() {
 
         {questions.length > 0 && questions[currentQnsIdx] && (
           <QuizCard
+            key={questions[currentQnsIdx].questionNo} // <-- ensures rerender
             sectionID={sectionID as string}
             questionData={questions[currentQnsIdx]}
             onNextQuestion={handleNextQuestion}
